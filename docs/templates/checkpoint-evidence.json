@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "template": true,
+  "work_item": null,
+  "checkpoint": null,
+  "repository": null,
+  "branch": null,
+  "pull_request": null,
+  "base_commit": null,
+  "reviewed_head": null,
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "executions": [],
+  "not_executed": [],
+  "falsifications": [],
+  "falsification_fields": [
+    "id",
+    "mutation",
+    "expected_oracle",
+    "observed_exit_code",
+    "failure_reason",
+    "restored_digest",
+    "green_command",
+    "green_exit_code"
+  ],
+  "review": {
+    "status": "not_performed",
+    "reviewed_commit": null,
+    "evidence": []
+  },
+  "merge_status": "not_verified",
+  "limitations": [],
+  "note": "Modelo vazio: não evidencia execução. Preencher registros reais, sem registrar PASS para itens ausentes."
+}

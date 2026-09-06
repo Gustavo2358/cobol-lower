@@ -1,0 +1,34 @@
+schema_version: 1
+id: WORK-AREA-NNN
+title: Preencher objetivo autorizado
+status: proposed
+risk: high
+goal: Resultado observável a definir
+authorization:
+  state: not_granted
+  scope: proposal_only
+  current_checkpoint: null
+  authorized_checkpoints: []
+backlog_ids: []
+must_read:
+- AGENTS.md
+- docs/work/index.md
+related_domain_rules: []
+related_decisions: []
+related_invariants: []
+evals: []
+source_scope: []
+test_scope: []
+docs_scope: []
+must_not_change: []
+gate_profile: docs-only
+gates:
+- docs
+- git
+checkpoints: []
+git:
+  branch: null
+  pull_request: null
+  suggested_branch: null
+  one_pr_per_work_item: true
+  merge_authorized: false

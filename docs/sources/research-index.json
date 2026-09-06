@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-09-06",
+  "sources": [
+    {
+      "id": "REF-CLEAN",
+      "authors": "Robert C. Martin",
+      "title": "The Clean Architecture",
+      "edition": "2012",
+      "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html",
+      "access_level": "Artigo primário: seção Dependency Rule e passagem de dados entre fronteiras."
+    },
+    {
+      "id": "REF-HEX",
+      "authors": "Alistair Cockburn",
+      "title": "Hexagonal architecture — original 2005 article",
+      "edition": "2005",
+      "url": "https://alistair.cockburn.us/hexagonal-architecture",
+      "access_level": "Artigo primário: intent, ports/adapters e isolamento de testes."
+    },
+    {
+      "id": "REF-MLIR",
+      "authors": "LLVM/MLIR project",
+      "title": "Dialect Conversion",
+      "edition": "documentação consultada em 2026-09-06",
+      "url": "https://mlir.llvm.org/docs/DialectConversion/",
+      "access_level": "Documentação oficial: conversion target, legalidade, patterns e modos."
+    },
+    {
+      "id": "REF-TV",
+      "authors": "Amir Pnueli; M. Siegel; E. Singerman",
+      "title": "Translation validation — TACAS 1998, LNCS 1384, 151–166",
+      "edition": "1998",
+      "url": "https://weizmann.esploro.exlibrisgroup.com/esploro/outputs/conferenceProceeding/Translation-validation/993262143603596",
+      "access_level": "Resumo e metadata em repositório institucional; não leitura integral do paper. DOI 10.1007/BFb0054170."
+    },
+    {
+      "id": "REF-COMPCERT",
+      "authors": "CompCert project / Xavier Leroy",
+      "title": "CompCert C: a trustworthy compiler",
+      "edition": "manual consultado em 2026-09-06",
+      "url": "https://compcert.org/man/manual001.html",
+      "access_level": "Manual oficial: semantic preservation e limites de escopo."
+    },
+    {
+      "id": "REF-MT",
+      "authors": "T. Y. Chen; F.-C. Kuo; H. Liu; P.-L. Poon; D. Towey; T. H. Tse; Z. Q. Zhou",
+      "title": "Metamorphic Testing: A Review of Challenges and Opportunities, ACM Computing Surveys 51(1), art. 4",
+      "edition": "2018",
+      "url": "https://nottingham-repository.worktribe.com/output/925152/metamorphic-testing-a-review-of-challenges-and-opportunities",
+      "access_level": "Resumo autoral e metadata institucional; não leitura integral. DOI 10.1145/3143561."
+    },
+    {
+      "id": "REF-MAVEN",
+      "authors": "Apache Maven project",
+      "title": "Guide to Working with Multiple Modules",
+      "edition": "guia Maven 3 consultado em 2026-09-06",
+      "url": "https://maven.apache.org/guides/mini/guide-multiple-modules.html",
+      "access_level": "Documentação oficial: reactor e ordenação de módulos."
+    }
+  ]
+}

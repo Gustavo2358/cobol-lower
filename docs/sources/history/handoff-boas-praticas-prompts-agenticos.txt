@@ -1,0 +1,518 @@
+PROLEAP-POC — HANDOFF: BOAS PRÁTICAS DE PROMPT PARA AGENTES
+Data de contexto: 04/09/2026
+Objetivo: transferir o padrão de prompt engineering que funcionou melhor nesta conversa
+
+1. CONTEXTO
+
+Durante o desenvolvimento agentic do proleap-poc, testamos prompts longos, detalhados e altamente prescritivos e comparamos isso com prompts menores, densos e orientados a objetivo.
+
+A conclusão prática desta conversa foi:
+
+    prompts pequenos, diretos e com alto sinal útil
+    tendem a funcionar melhor do que prompts gigantes
+    que tentam antecipar todo o raciocínio do agente.
+
+O agente já possui capacidade de:
+- inspecionar código;
+- seguir referências;
+- comparar alternativas;
+- raciocinar sobre arquitetura;
+- executar testes;
+- navegar no harness.
+
+Portanto, o prompt não deve tentar substituir o raciocínio do agente.
+Ele deve funcionar como uma interface de orquestração.
+
+2. PRINCÍPIO CENTRAL
+
+Prompt bom:
+
+    objetivo claro
+    +
+    contexto mínimo necessário
+    +
+    constraints/invariants
+    +
+    fonte de verdade
+    +
+    critério observável de conclusão
+
+Prompt ruim:
+
+    transcrição gigante de como o agente deve pensar
+    +
+    dezenas de passos desnecessários
+    +
+    decisões arquiteturais pré-impostas
+    +
+    repetição de conhecimento já presente no harness
+
+Regra:
+
+    maximizar sinal útil;
+    minimizar instrução redundante.
+
+3. O HARNESS É PARTE DO PROMPT
+
+Para o proleap-poc, prompts devem normalmente instruir o agente a:
+
+    ler AGENTS.md
+    e buscar o contexto relevante no próprio harness e código.
+
+Não repetir no prompt todo o conteúdo de:
+- AGENTS.md;
+- ADRs;
+- work items;
+- docs de arquitetura;
+- regras de domínio;
+- scripts de gates.
+
+O prompt deve apontar para essas fontes.
+
+Exemplo:
+
+    "Leia AGENTS.md, o work item ativo e o contexto relevante no código.
+     O repositório é a fonte de verdade."
+
+Isso é preferível a copiar dezenas de regras do harness para dentro do prompt.
+
+4. PROMPT = INTERFACE, NÃO TRANSCRIÇÃO DE RACIOCÍNIO
+
+Evitar instruções como:
+
+    "primeiro pense nisso;
+     depois avalie aquilo;
+     então considere três hipóteses;
+     depois faça uma matriz;
+     depois revise a matriz..."
+
+A menos que a ordem seja realmente uma restrição do processo.
+
+Prefira:
+
+    "Objetivo: avaliar se X é suficiente para Y.
+     Preserve A, B e C.
+     Use o repo como fonte de verdade.
+     Considere concluído quando houver evidência observável de Z."
+
+O agente deve escolher o raciocínio interno necessário.
+
+5. UM CHECKPOINT ACIONÁVEL POR PROMPT
+
+Uma das conclusões mais importantes desta conversa:
+
+    se apenas um checkpoint está autorizado,
+    o prompt deve falar apenas desse checkpoint.
+
+Não fazer:
+
+    "Faça 3A.
+     Depois faremos 3B.
+     Depois 3C.
+     Depois 3D."
+
+Isso desperdiça contexto e pode induzir o agente a antecipar trabalho.
+
+Fazer:
+
+    "Está autorizado somente o Checkpoint 3A.
+     Execute apenas este checkpoint e pare para review humano."
+
+O próximo prompt contém apenas o próximo trabalho autorizado.
+
+Essa regra é especialmente importante ao usar modelos com contexto menor.
+
+6. NÃO DITAR O TIPO DE TRABALHO SEM NECESSIDADE
+
+A skill discutida nesta conversa foi refinada para não assumir que todo pedido é implementação.
+
+O prompt pode servir para:
+- discovery;
+- implementação;
+- review;
+- remediation;
+- falsificação;
+- investigação;
+- documentação;
+- qualquer outro tipo de trabalho.
+
+O tipo do trabalho deve vir da tarefa real, não de um template fixo.
+
+As boas práticas são universais:
+
+    objetivo
+    contexto
+    restrições
+    evidência
+    conclusão observável
+
+7. SEPARAR FATO DE HIPÓTESE
+
+Evitar transformar hipótese do usuário em decisão obrigatória.
+
+Ruim:
+
+    "Crie uma facade porque essa é a arquitetura correta."
+
+Melhor:
+
+    "Avalie a seam aprovada A2+B.
+     Se o código atual contradizer a hipótese, registre a evidência."
+
+Quando a decisão já foi tomada e aprovada pelo lifecycle do projeto, aí sim ela pode virar constraint.
+
+Regra:
+
+    hipótese ainda em avaliação != decisão arquitetural aprovada.
+
+8. REPOSITÓRIO COMO FONTE DE VERDADE
+
+O agente deve validar o estado real no código.
+
+O prompt não deve forçar uma narrativa se o repo disser outra coisa.
+
+Use linguagem como:
+
+    "O repo é a fonte de verdade."
+    "Inspecione o código existente antes de concluir."
+    "Reutilize produtos semânticos canônicos existentes."
+    "Se a informação não existir, registre o gap; não a invente."
+
+9. COMPLETION CRITERIA > PASSO A PASSO
+
+Prompts melhores descrevem o que precisa ser verdade no final.
+
+Exemplo:
+
+    [ ] consumer usa apenas a boundary
+    [ ] runtime target continua UNKNOWN
+    [ ] provenance atravessa
+    [ ] não há dependency de frontend
+    [ ] nenhum lowering foi implementado
+
+Isso é melhor do que prescrever dezenas de microações.
+
+O agente pode encontrar o caminho mais adequado dentro do repo.
+
+10. CONSTRAINTS DEVEM SER POUCAS E REAIS
+
+Incluir constraints quando elas evitam risco concreto.
+
+Exemplos bons:
+
+    não alterar src/main/**
+    não corrigir F-01 neste work item
+    não implementar CFG
+    não reparsar writtenText
+    não fazer merge
+    preservar nominal binding != runtime value
+
+Evitar constraints genéricas que todo bom agente já conhece:
+
+    "escreva código limpo"
+    "tenha cuidado"
+    "siga boas práticas"
+    "pense bastante"
+    "não faça bugs"
+
+11. PROMPTS CIRÚRGICOS PARA REMEDIATION
+
+Quando o finding é pequeno, o prompt também deve ser pequeno.
+
+Exemplo real de padrão usado nesta conversa:
+
+    "No PR #26, faça apenas a correção textual restante no work-item.yaml.
+     Atualize o campo goal...
+     Não altere nenhum outro arquivo, teste ou comportamento.
+     Revise o diff, rode git diff --check, commit focalizado e push.
+     Não faça merge."
+
+Não reabrir toda a arquitetura para corrigir uma linha de documentação.
+
+Regra:
+
+    tamanho do prompt proporcional ao espaço de decisão.
+
+12. PROMPTS PARA DISCOVERY
+
+Para discovery, não prescrever a resposta.
+
+Estrutura boa:
+
+    Objetivo:
+        responder uma pergunta arquitetural específica.
+
+    Fonte:
+        AGENTS.md + work item + código real.
+
+    Invariantes:
+        fatos que não podem ser violados.
+
+    Evidência:
+        exigir conclusão apoiada em repo/testes.
+
+    Stop condition:
+        parar para review humano.
+
+Evitar:
+
+    "descubra que a facade é melhor"
+    "prove que nossa ideia está certa"
+
+O discovery deve poder falsificar a hipótese.
+
+13. PROMPTS PARA FALSIFICAÇÃO
+
+Quando o objetivo é validar arquitetura:
+
+    formular uma hipótese falsificável;
+    exigir um consumer independente;
+    definir leakage proibido;
+    permitir FAIL como resultado válido.
+
+Exemplo:
+
+    "Falsificar se a boundary A2+B é semanticamente suficiente para MOVE literal → CALL variável."
+
+Resultado aceitável:
+
+    PASS
+    FAIL
+    INCONCLUSIVE
+
+Nunca forçar PASS.
+
+14. STRONGEST-OPPONENT / STEELMAN
+
+Essa técnica foi útil em decisões arquiteturais de alto risco.
+
+Usar quando existem alternativas reais.
+
+Exemplo:
+
+    antes de aprovar A2+B,
+    comparar seriamente a melhor versão de A2 puro,
+    B puro,
+    envelope,
+    etc.
+
+Não usar por rotina em tarefas pequenas.
+
+Regra:
+
+    adversarial review é valioso quando a decisão é cara de mudar.
+
+15. NÃO GENERALIZAR PREMATURAMENTE
+
+O prompt deve proteger contra abstrações sem consumidor atual.
+
+No proleap-poc:
+
+    não pedir framework universal;
+    não pedir semantic product multi-language;
+    não pedir plugin architecture sem necessidade;
+    não pedir IR universal final;
+    não pedir serializer genérico cedo demais.
+
+Diga apenas o necessário para o slice atual.
+
+16. MODELOS MENORES / CONTEXTO LIMITADO
+
+Para agentes/modelos menores:
+
+    dividir trabalho complexo em checkpoints independentes;
+    dar apenas contexto necessário ao checkpoint atual;
+    confiar no harness para detalhes persistentes;
+    evitar repetir histórico inteiro.
+
+Cada prompt deve ser auto-suficiente para a tarefa atual,
+mas não carregar o roadmap completo.
+
+17. GIT HYGIENE
+
+Só incluir instruções de git quando são realmente importantes para o fluxo.
+
+Padrão usado:
+
+    partir de main limpa;
+    criar branch focalizada;
+    revisar diff;
+    evitar git add . cegamente;
+    commit focalizado;
+    push;
+    abrir PR;
+    não mergear automaticamente quando review humano é obrigatório.
+
+Para remediations pequenas, reduzir isso ao mínimo necessário.
+
+18. NÃO REPETIR INFORMAÇÃO QUE O AGENTE PODE LER
+
+Se a informação está em:
+- AGENTS.md;
+- work item;
+- ADR;
+- relatório;
+- código;
+
+o prompt deve apontar para ela, não reproduzi-la inteira.
+
+Só repetir no prompt o que:
+- muda a tarefa atual;
+- é uma decisão humana recente;
+- ainda não está persistido no repo;
+- é uma constraint crítica que pode ser esquecida.
+
+19. TEMPLATE UNIVERSAL CURTO
+
+Use este esqueleto como default:
+
+    Leia AGENTS.md, o work item ativo e o contexto relevante no código.
+    O repo é a fonte de verdade.
+
+    Objetivo:
+    [uma frase clara]
+
+    Preserve:
+    - [invariante crítico]
+    - [invariante crítico]
+
+    Fora de escopo:
+    - [trabalho que não deve ser antecipado]
+
+    Considere concluído quando:
+    - [evidência observável]
+    - [evidência observável]
+
+    Se a hipótese não se sustentar, registre o gap em vez de contorná-lo.
+
+    Pare para review humano.
+    Não faça merge.
+
+Nem todo prompt precisa de todas as seções.
+
+20. TEMPLATE DE REMEDIATION
+
+    No PR atual, corrija apenas [finding].
+
+    Faça:
+    - [mudança objetiva]
+
+    Não altere:
+    - [superfície que deve permanecer intacta]
+
+    Valide [gate mínimo].
+    Commit focalizado e push.
+    Não faça merge.
+
+21. TEMPLATE DE DISCOVERY
+
+    Leia AGENTS.md, o work item e o código relevante.
+
+    Objetivo:
+    responder [pergunta específica].
+
+    Avalie a hipótese:
+    [hipótese falsificável].
+
+    Preserve:
+    - [invariantes]
+
+    Não implemente [fora de escopo].
+
+    Baseie a conclusão em evidência do repo.
+    PASS/FAIL/INCONCLUSIVE são resultados válidos.
+
+    Pare para review humano.
+
+22. TEMPLATE DE IMPLEMENTAÇÃO
+
+    Leia AGENTS.md, o work item e o código relevante.
+
+    Implemente:
+    [capacidade única e observável].
+
+    Preserve:
+    - [contratos existentes]
+    - [invariantes]
+
+    Não antecipe:
+    - [fases futuras]
+
+    Critérios de conclusão:
+    - [teste/oracle]
+    - [gate]
+    - [artefato observável]
+
+    Revise o diff e pare para review humano.
+
+23. ANTI-PADRÕES OBSERVADOS
+
+Evitar:
+
+A. Prompt gigante que contém o projeto inteiro.
+B. Repetir AGENTS.md dentro do prompt.
+C. Dar quatro checkpoints quando apenas um está autorizado.
+D. Especificar raciocínio interno passo a passo.
+E. Transformar hipótese em arquitetura obrigatória.
+F. Pedir abstrações futuras sem consumidor atual.
+G. Misturar discovery e implementação no mesmo prompt sem necessidade.
+H. Pedir "faça tudo" sem completion criteria.
+I. Permitir que remediation pequena vire refactor.
+J. Forçar o agente a resolver gaps fora do work item.
+K. Antecipar IR/CFG/dataflow quando o checkpoint atual é Semantic Product.
+L. Tratar FAIL como falha do agente em um experimento de falsificação.
+
+24. REGRA DE TAMANHO
+
+Não existe número mágico de tokens.
+
+A regra prática adotada nesta conversa é:
+
+    use o menor prompt que preserve
+    objetivo + contexto decisivo + constraints + completion criteria.
+
+Se remover uma seção não muda o comportamento esperado do agente,
+provavelmente ela não precisa estar no prompt.
+
+Se o prompt começa a recontar toda a história do projeto,
+provavelmente o contexto deveria estar no harness ou em um handoff,
+não no prompt operacional.
+
+25. RELAÇÃO COM HANDOFFS
+
+Handoff e prompt têm papéis diferentes.
+
+Handoff:
+    transfere contexto amplo entre chats/agentes.
+
+Prompt operacional:
+    autoriza e delimita uma tarefa específica.
+
+Portanto:
+
+    handoff pode ser relativamente rico;
+    prompt deve continuar pequeno.
+
+O agente pode ler o handoff como contexto,
+mas a tarefa atual ainda deve ser expressa em um prompt curto.
+
+26. PRINCÍPIO FINAL
+
+A filosofia consolidada nesta conversa é:
+
+    contexto persistente fica no repo/harness/handoff;
+    prompt contém apenas a decisão humana necessária para a tarefa atual.
+
+Ou, de forma ainda mais curta:
+
+    PROMPT = objetivo + limites + evidência esperada.
+
+Não usar o prompt para carregar todo o projeto.
+
+27. RESUMO EM UMA FRASE PARA O PRÓXIMO CHAT
+
+    "No proleap-poc, prefira prompts pequenos, diretos e densos:
+     mande o agente ler AGENTS.md e o contexto relevante no repo,
+     dê uma única tarefa autorizada, preserve poucos invariantes críticos,
+     defina evidência observável de conclusão e deixe o agente escolher
+     o raciocínio interno."

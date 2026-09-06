@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "INV-LWR-001",
+      "title": "Autoridade bilateral",
+      "rule": "AIR/SP normativos governam; Java e corpus não criam semântica.",
+      "canonical_rule": "docs/engineering/semantic-analysis-policy.md",
+      "evals": [
+        "EVAL-LWR-001",
+        "EVAL-LWR-002"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-002",
+      "title": "Dependency Inversion",
+      "rule": "Domínio/aplicação não dependem de tecnologia nem tipos de adapters; abstrações de necessidade ficam no lado interno.",
+      "canonical_rule": "docs/architecture/ports-and-adapters.md",
+      "evals": [
+        "EVAL-LWR-003",
+        "EVAL-LWR-004"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-003",
+      "title": "Boundary-only",
+      "rule": "Nenhuma tradução consulta source/AST/resolver/report/frontend/CFG para completar fatos.",
+      "canonical_rule": "docs/domain/semantic-input-contract.md",
+      "evals": [
+        "EVAL-LWR-003",
+        "EVAL-LWR-005"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-004",
+      "title": "AIR única",
+      "rule": "O output usa Publication/tipos/validator de air-java; não existe IR concorrente local.",
+      "canonical_rule": "docs/domain/air-target-contract.md",
+      "evals": [
+        "EVAL-LWR-002",
+        "EVAL-LWR-003"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-005",
+      "title": "Input em memória equivalente",
+      "rule": "Validação e regras são as mesmas independentemente de arquivo ou construção em memória.",
+      "canonical_rule": "docs/architecture/ports-and-adapters.md",
+      "evals": [
+        "EVAL-LWR-004",
+        "EVAL-LWR-017"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-006",
+      "title": "Versão explícita",
+      "rule": "A versão é negociada antes da interpretação das variantes; não aceitar 1.x indiscriminadamente.",
+      "canonical_rule": "docs/domain/semantic-input-contract.md",
+      "evals": [
+        "EVAL-LWR-006"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-007",
+      "title": "Identidades completas",
+      "rule": "Joins usam namespace/owner completo; revisão e política integram a identidade da publicação.",
+      "canonical_rule": "docs/domain/identity-and-provenance.md",
+      "evals": [
+        "EVAL-LWR-007",
+        "EVAL-LWR-018"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-008",
+      "title": "Entry start explícito",
+      "rule": "Label inicial deriva do start publicado e fechado, nunca de ordem física ou nome.",
+      "canonical_rule": "docs/domain/first-slice-entry-goback.md",
+      "evals": [
+        "EVAL-LWR-008"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-009",
+      "title": "Assinatura não inventada",
+      "rule": "Zero conhecido é distinto de null/UNKNOWN/PARTIAL; resultados vazios exigem ausência conhecida no perfil.",
+      "canonical_rule": "docs/domain/first-slice-entry-goback.md",
+      "evals": [
+        "EVAL-LWR-009"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-010",
+      "title": "GOBACK não é Halt",
+      "rule": "Saída CURRENT_PROGRAM_INVOCATION vira Return no perfil, sem inferir término de processo.",
+      "canonical_rule": "docs/domain/first-slice-entry-goback.md",
+      "evals": [
+        "EVAL-LWR-010"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-011",
+      "title": "Sem fallthrough inventado",
+      "rule": "GOBACK/terminadores não ganham successor por haver outro statement no array.",
+      "canonical_rule": "docs/domain/first-slice-entry-goback.md",
+      "evals": [
+        "EVAL-LWR-011"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-012",
+      "title": "Inventário sem omissão",
+      "rule": "Occurrences fora de suporte são preservadas ou impedem sucesso; não filtrar para caber na fixture.",
+      "canonical_rule": "docs/domain/first-slice-entry-goback.md",
+      "evals": [
+        "EVAL-LWR-011",
+        "EVAL-LWR-012",
+        "EVAL-LWR-022"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-013",
+      "title": "Coverage dimensional",
+      "rule": "Inventário, coverage, readiness e precisão não se colapsam; partial não é COMPLETE.",
+      "canonical_rule": "docs/domain/coverage-readiness-uncertainty.md",
+      "evals": [
+        "EVAL-LWR-013",
+        "EVAL-LWR-014"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-014",
+      "title": "Incerteza materializada",
+      "rule": "Lacuna necessária ao consumidor atravessa na AIR e não somente em log/relatório.",
+      "canonical_rule": "docs/domain/coverage-readiness-uncertainty.md",
+      "evals": [
+        "EVAL-LWR-013",
+        "EVAL-LWR-014"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-015",
+      "title": "Provenance honesta",
+      "rule": "Origem/coordinates/units/derivações não são fabricadas; preservar limite conhecido.",
+      "canonical_rule": "docs/domain/identity-and-provenance.md",
+      "evals": [
+        "EVAL-LWR-015"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-016",
+      "title": "Snapshot fechado",
+      "rule": "Input/output imutáveis sem lazy callbacks, recursos abertos ou dependência de arquivo vivo.",
+      "canonical_rule": "docs/architecture/ports-and-adapters.md",
+      "evals": [
+        "EVAL-LWR-016",
+        "EVAL-LWR-017"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-017",
+      "title": "Determinismo por revisão",
+      "rule": "Mesmos fatos/contexto/opções produzem observações/IDs equivalentes; runtime metadata não interfere.",
+      "canonical_rule": "docs/domain/identity-and-provenance.md",
+      "evals": [
+        "EVAL-LWR-018"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-018",
+      "title": "Validação sem reparo",
+      "rule": "INPUT_ERROR, INVALID_INPUT, unsupported e falha AIR são distintos; não reparar por omissão.",
+      "canonical_rule": "docs/domain/validation-and-results.md",
+      "evals": [
+        "EVAL-LWR-006",
+        "EVAL-LWR-019"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-019",
+      "title": "Sem overclaim do checker",
+      "rule": "STRUCTURALLY_VALID não certifica tradução, perfil completo ou verdade de premissas.",
+      "canonical_rule": "docs/domain/air-target-contract.md",
+      "evals": [
+        "EVAL-LWR-002",
+        "EVAL-LWR-010",
+        "EVAL-LWR-019"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-020",
+      "title": "Regra geral pesquisada",
+      "rule": "Algoritmo não trivial exige premissas/fontes verificáveis/oracle; não heurística semântica de corpus.",
+      "canonical_rule": "docs/engineering/semantic-analysis-policy.md",
+      "evals": [
+        "EVAL-LWR-020"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-021",
+      "title": "Custo verificável",
+      "rule": "Índices não são reconstruídos por query; limites não truncam facts nem passam silenciosamente.",
+      "canonical_rule": "docs/engineering/performance.md",
+      "evals": [
+        "EVAL-LWR-021",
+        "EVAL-LWR-022"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-022",
+      "title": "Extensão explícita",
+      "rule": "Nova variante tem contrato/regra/eval, falha clara sem handler; sem classes genéricas que escondam loss.",
+      "canonical_rule": "docs/architecture/extensibility.md",
+      "evals": [
+        "EVAL-LWR-012",
+        "EVAL-LWR-023"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-023",
+      "title": "Oracle independente",
+      "rule": "Expected e falsificação não são derivados exclusivamente da implementação sob teste.",
+      "canonical_rule": "docs/engineering/testing.md",
+      "evals": [
+        "EVAL-LWR-010",
+        "EVAL-LWR-020",
+        "EVAL-LWR-024"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-024",
+      "title": "Lifecycle e Git verdadeiros",
+      "rule": "Autorização, estado local, review e merge são distintos; mesma branch/PR por trabalho e sem mutações persistidas.",
+      "canonical_rule": "docs/engineering/work-item-protocol.md",
+      "evals": [
+        "EVAL-LWR-001",
+        "EVAL-LWR-024"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-025",
+      "title": "Transporte fora do domínio",
+      "rule": "AIR JSON é binding externo fixado; writer/reader não alteram Publication nem adicionam framework ao core.",
+      "canonical_rule": "docs/architecture/ports-and-adapters.md",
+      "evals": [
+        "EVAL-LWR-003",
+        "EVAL-LWR-017",
+        "EVAL-LWR-025"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "id": "INV-LWR-026",
+      "title": "Integração independente",
+      "rule": "Lowerer e CFG validam suas responsabilidades sem importar os algoritmos do outro.",
+      "canonical_rule": "docs/product/ecosystem.md",
+      "evals": [
+        "EVAL-LWR-026"
+      ],
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+    }
+  ]
+}

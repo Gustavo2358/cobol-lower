@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "evals": [
+    {
+      "id": "EVAL-LWR-001",
+      "title": "Integridade do harness",
+      "property": "Links/IDs/lifecycle/routing coerentes e nenhuma implementação não autorizada.",
+      "positive": "Checkout documental íntegro com proposal pronta, active vazio e referências existentes.",
+      "negative": "Link quebrado, ID inexistente, work item duplicado/ativo completed, must_read inexistente ou scope futuro sem planned.",
+      "oracle": "Checker estrutural independente de conteúdo de produção, mais revisão semântica de autoridade.",
+      "stage": "docs",
+      "gates": [
+        "docs"
+      ],
+      "invariants": [
+        "INV-LWR-001",
+        "INV-LWR-024"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-002",
+      "title": "Destino AIR manual",
+      "property": "Shape Entry→Return é representável e checks AIR cobrem o alvo mínimo.",
+      "positive": "Publication manual de 1 Unit/Entry/Sequence e Return vazio, sem lowerer/decoder.",
+      "negative": "Label pendente, assinatura incompatível ou biblioteca não fixada; falha deve ser tipada.",
+      "oracle": "AirValidator real + assertions manuais de shape; não certificado integral de tradução.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-001",
+        "INV-LWR-004",
+        "INV-LWR-019"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-003",
+      "title": "Fronteiras arquiteturais",
+      "property": "Dependências entram no núcleo; AIR compartilhada e sem internals frontend.",
+      "positive": "Core só usa tipos próprios/air-java e JDK permitido.",
+      "negative": "Path/JsonNode/annotation JSON no core, dependência de ProLeap/CFG, API ou modelo AIR paralelo.",
+      "oracle": "Imports + API/signatures + bytecode/dependency graph, com contracasos adequados a cada mecanismo.",
+      "stage": "bootstrap",
+      "gates": [
+        "architecture"
+      ],
+      "invariants": [
+        "INV-LWR-002",
+        "INV-LWR-003",
+        "INV-LWR-004",
+        "INV-LWR-025"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-004",
+      "title": "Porta em memória",
+      "property": "Mesmo caso de uso recebe input tipado sem codec.",
+      "positive": "Input manual imutável chama a porta e obtém resultado esperado.",
+      "negative": "Caso de uso serializa internamente para JSON ou depende de arquivo temporário para executar.",
+      "oracle": "Teste sem adapter/carregamento JSON no classpath do core; assertions de resultado.",
+      "stage": "first_slice",
+      "gates": [
+        "architecture",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-002",
+        "INV-LWR-005"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-005",
+      "title": "Fixture upstream genuína",
+      "property": "Input positivo é output real do frontend fixado, não JSON inventado.",
+      "positive": "Fixture capturada com SHA do produtor, configuração, fonte autorizada e digest.",
+      "negative": "Payload manual rotulado real; SHA divergente; regeneração modifica expected silenciosamente.",
+      "oracle": "Manifesto/procedimento auditáveis e digest verificado; produção do frontend isolada fora do teste ordinário.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-003"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-006",
+      "title": "Negociação e forma física",
+      "property": "Separar schema/version unsupported de JSON inválido.",
+      "positive": "1.1.0 reconhecido e todos os campos válidos do envelope.",
+      "negative": "1.0.0, versão futura, schema errado, propriedade duplicada, null físico ilegal, campo obrigatório ausente.",
+      "oracle": "Assertions de diagnóstico tipado/phase; nunca default automático para variante/versão.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-006",
+        "INV-LWR-018"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-007",
+      "title": "Namespaces e unicidade",
+      "property": "IDs locais não colidem entre unidades/owners.",
+      "positive": "Inputs separados com local handles iguais mantêm identidades independentes.",
+      "negative": "Dangling reference, ID duplicado na mesma unit e start tipado que aponta a outra unit.",
+      "oracle": "Testes da porta em memória e do decoder dentro das formas físicas reais, sem inventar schema cross-unit.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-007"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-008",
+      "title": "Entry→start",
+      "property": "A referência explícita governa a entrada.",
+      "positive": "Renomear handle conhecido e todas as referências preserva Entry→Return.",
+      "negative": "Start ausente/inexistente/indisponível; fake tenta escolher root/menor ID/array[0].",
+      "oracle": "Oracle manual source-start→label; cenário maior fora do perfil deve rejeitar sem fabricar start.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-008"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-009",
+      "title": "Assinatura zero versus desconhecida",
+      "property": "Return vazio não nasce de null, UNKNOWN ou PARTIAL.",
+      "positive": "KNOWN/count0/ABSENT admite o perfil.",
+      "negative": "UNAVAILABLE/countnull/UNKNOWN, PARTIAL/count1, RETURNING PRESENT.",
+      "oracle": "Tabela de decisão independente com diagnósticos e ausência de Publication de sucesso.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-009"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-010",
+      "title": "Tradução GOBACK→Return",
+      "property": "Controle local é preservado mesmo quando AIR alternativa é bem formada.",
+      "positive": "GOBACK CURRENT_PROGRAM_INVOCATION/NONE gera Return vazio e nenhum Halt/Jump.",
+      "negative": "Mutante gera Halt NORMAL ou usa filename/nome/nesting para decidir.",
+      "oracle": "Assertion de espécie/escopo de saída independente de AirValidator; nomes variados.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-010",
+        "INV-LWR-019",
+        "INV-LWR-023"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-011",
+      "title": "Statement posterior e cardinalidade",
+      "property": "Não criar fallthrough nem amputar input para manter sucesso.",
+      "positive": "Fixture mínima satisfaz shape; propriedades de GOBACK preservadas.",
+      "negative": "GOBACK;CONTINUE ou vários statements recebem unsupported no perfil inicial, nunca sucesso filtrado.",
+      "oracle": "Admissão/inventário comparados com input conhecido; expansão plural futura possui oracle próprio.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-011",
+        "INV-LWR-012"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-012",
+      "title": "Variante conhecida não suportada",
+      "property": "Unsupported slice não é semântica inventada nem versão desconhecida.",
+      "positive": "GOBACK tipado reconhecido; MOVE/IF/CALL/OBSERVED identificados como fora do slice.",
+      "negative": "OBSERVED com texto/shape GOBACK vira Return; variante nova ignorada por default.",
+      "oracle": "Diagnóstico estável com variante/ID e ausência de output de sucesso.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-012",
+        "INV-LWR-022"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-013",
+      "title": "Entries alternativas abertas",
+      "property": "PRIMARY_ONLY/PARTIAL não se converte em inventário global completo.",
+      "positive": "Entry conhecida e gap ALTERNATE_ENTRIES_NOT_PROJECTED coexistem no output/relatório.",
+      "negative": "Mutante remove gap ou marca COMPLETE por existir apenas uma entry publicada.",
+      "oracle": "Oracle de cobertura/Uncertainty AIR independente do mapper.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-013",
+        "INV-LWR-014"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-014",
+      "title": "Readiness e precisão por dimensão",
+      "property": "Garantia local não promove effects/storage/values nem satisfaz AIR por enum.",
+      "positive": "Controle local provado com limitações restantes explícitas.",
+      "negative": "Copiar SUFFICIENT→EXACT global; converter BLOCKED em NOT_APPLICABLE sem razão; gap só em log.",
+      "oracle": "Matriz normativa por dimensão/escopo revisada e assertions sobre Publication/relatório.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-013",
+        "INV-LWR-014"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-015",
+      "title": "Provenance e convenções",
+      "property": "Origem Entry/GOBACK e derivados não fabricam spans.",
+      "positive": "Origem publicada correlacionada com Entry/Return; convenções confirmadas preservadas.",
+      "negative": "Usar path do JSON como fonte COBOL; inferir unidade/base/fim; inventar coordenadas ausentes.",
+      "oracle": "Mapeamento esperado manual + cenário de convenção não conhecida e limitação explícita.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-015"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-016",
+      "title": "Imutabilidade e lifetime",
+      "property": "Publicação fechada não depende de recursos/vistas vivas.",
+      "positive": "Fechar/remover arquivo após decode não altera input/resultados; coleções não mutáveis.",
+      "negative": "Lista externa modifica snapshot ou callback abre fonte ao consultar referência.",
+      "oracle": "Testes de defensive copy/retention e architecture API gate.",
+      "stage": "first_slice",
+      "gates": [
+        "architecture",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-016"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-017",
+      "title": "Substituição de adapter",
+      "property": "Arquivo e memória chegam à mesma porta e preservam semântica.",
+      "positive": "Fixture decodificada e input manual equivalente produzem mesma observação/correlação.",
+      "negative": "In-memory path exige JSON ou parser corrige semanticamente dados que core deixa passar.",
+      "oracle": "Comparador independente de observações, sem usar output de um caminho como única norma do outro.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-005",
+        "INV-LWR-016",
+        "INV-LWR-025"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-018",
+      "title": "Determinismo e revisão",
+      "property": "IDs/resultado não dependem de execução; revisões diferentes não se misturam.",
+      "positive": "Duas construções independentes equivalentes; propriedades JSON permutadas.",
+      "negative": "Timestamp/UUID/identityHashCode; mesmo PublicationId para revisions distintas pelo nome da unit.",
+      "oracle": "Comparação semântica/ID conforme política fixada; não exigir estabilidade após edição.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-007",
+        "INV-LWR-017"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-019",
+      "title": "Classes de falha e checker",
+      "property": "Saída inválida/incompleta não é sucesso nem culpa automática do input.",
+      "positive": "Checker real e relatório distinguem obrigações de erros.",
+      "negative": "Mutante ignora INVALID_IR/INCOMPLETE_VALIDATION ou repara removendo operação.",
+      "oracle": "Casos controlados e asserts do resultado/ausência de Publication de sucesso.",
+      "stage": "first_slice",
+      "gates": [
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-018",
+        "INV-LWR-019"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-020",
+      "title": "Regra geral e literatura",
+      "property": "Escolha não trivial tem fonte, premissas e contracaso.",
+      "positive": "Nota curta liga fonte verificada, algoritmo aplicável, complexidade e oracle.",
+      "negative": "Paper apenas nomeado, inferência de corpus como regra ou implementação gerando seu expected.",
+      "oracle": "Review humano/adversarial da nota e do teste; não simples busca por URL.",
+      "stage": "all_semantic",
+      "gates": [
+        "docs",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-020",
+        "INV-LWR-023"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-021",
+      "title": "Custo proporcional",
+      "property": "Índices/visitas não são repetidos quadraticamente.",
+      "positive": "Input sintético N/2N; contadores dentro de limite derivado.",
+      "negative": "Scan integral por query, cópias profundas repetidas ou threshold de tempo como única prova.",
+      "oracle": "Contador estrutural independente; tempos são telemetria complementar.",
+      "stage": "first_slice",
+      "gates": [
+        "performance"
+      ],
+      "invariants": [
+        "INV-LWR-021"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-022",
+      "title": "Limites sem truncamento",
+      "property": "Limite operacional impede sucesso parcial não declarado.",
+      "positive": "Input dentro do limite e diagnóstico de limite fora dele.",
+      "negative": "Take(limit) apaga facts, overflow de contagem, memória/diagnóstico esconde restante.",
+      "oracle": "Inventário reconciliado e status IMPLEMENTATION_LIMIT, com seed/limites registrados.",
+      "stage": "first_slice",
+      "gates": [
+        "performance",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-012",
+        "INV-LWR-021"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-023",
+      "title": "Extensão localizada",
+      "property": "Nova família altera pontos de extensão explícitos, não a boundary de transporte.",
+      "positive": "Contrato de evolução identifica adapter/input/rule/validator/eval afetados.",
+      "negative": "Registro escolhe primeiro handler ambiguamente ou faz catch-all silencioso.",
+      "oracle": "Dispatch exaustivo/contracaso de registro quando existir, mais review de dependências.",
+      "stage": "expansion",
+      "gates": [
+        "architecture",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-022"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-024",
+      "title": "Falsificação e honestidade de evidência",
+      "property": "Gates aceitam baseline e rejeitam defeito relevante; mutações não persistem.",
+      "positive": "Baseline green → mutante red correto → restauração confirmada → green.",
+      "negative": "RED por setup, gate que sempre falha, teste pulado, evidência de outro SHA ou mutante commitado.",
+      "oracle": "Evidência/hash/diff/exit code e review; não autoassert narrativo.",
+      "stage": "first_slice",
+      "gates": [
+        "docs",
+        "semantic"
+      ],
+      "invariants": [
+        "INV-LWR-023",
+        "INV-LWR-024"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-025",
+      "title": "AIR JSON futuro",
+      "property": "Codec externo preserva semântica/IDs/unknowns da Publication.",
+      "positive": "Writer/reader independentes no binding fixado e equivalência com memória.",
+      "negative": "Nome de classe Java como schema, unknown perdido, tipo mudado ou draft anunciado accepted.",
+      "oracle": "Round-trip semântico + fixtures normativas + mutações de perda; não apenas writer-reader simétricos.",
+      "stage": "transport_followup",
+      "gates": [
+        "transport",
+        "architecture"
+      ],
+      "invariants": [
+        "INV-LWR-025"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    },
+    {
+      "id": "EVAL-LWR-026",
+      "title": "Composição com CFG",
+      "property": "Composição produz o controle esperado sem acoplamento dos cores.",
+      "positive": "Publication Return do lowerer alimenta BuildCfg autorizado, preservando origem/gap/saída.",
+      "negative": "Lowerer importa CFG ou E2E green encobre erro de tradução local.",
+      "oracle": "Oracle E2E independente de produtores/consumidores; ambos mantêm suas suítes.",
+      "stage": "integration_followup",
+      "gates": [
+        "integration"
+      ],
+      "invariants": [
+        "INV-LWR-026"
+      ],
+      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "test_path": null,
+      "last_execution": null
+    }
+  ]
+}

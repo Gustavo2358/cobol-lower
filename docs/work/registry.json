@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "active": [],
+  "proposals": [
+    {
+      "id": "WORK-LOWER-001",
+      "status": "ready_for_authorization",
+      "path": "docs/work/proposals/WORK-LOWER-001",
+      "authorized_checkpoints": [],
+      "git_branch": null,
+      "pull_request": null,
+      "backlog_ids": [
+        "BACKLOG-LOWER-001"
+      ]
+    }
+  ],
+  "history": [],
+  "backlog": [
+    {
+      "id": "BACKLOG-LOWER-001",
+      "title": "Primeiro slice Entry/GOBACK → AIR Return",
+      "status": "ready_for_authorization",
+      "phase": "foundation",
+      "dependencies": [],
+      "path": "docs/work/backlog/BACKLOG-LOWER-001.md",
+      "work_item": "WORK-LOWER-001"
+    },
+    {
+      "id": "BACKLOG-LOWER-002",
+      "title": "Sequenciamento e inventários executáveis maiores",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-002.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-003",
+      "title": "Adapter AIR JSON de saída e prova interoperável",
+      "status": "candidate",
+      "phase": "transport",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-003.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-004",
+      "title": "Primeira integração com analysis-cfg",
+      "status": "candidate",
+      "phase": "integration",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-004.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-005",
+      "title": "DATA nominal e tipos/storage explicitamente desconhecidos",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-005.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-006",
+      "title": "MOVE preciso e normalização de valores",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-005"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-006.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-007",
+      "title": "IF e controle condicional sustentado",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-002"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-007.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-008",
+      "title": "CALL e contrato por site de interação",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-005"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-008.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-009",
+      "title": "Fallback opaco com envelopes conservadores",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-009.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-010",
+      "title": "PERFORM e controle local",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-002"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-010.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-011",
+      "title": "EVALUATE/SEARCH e seleção",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-002"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-011.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-012",
+      "title": "Outros terminais e transferências",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-002"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-012.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-013",
+      "title": "Storage declarativo preciso e aliases",
+      "status": "needs_discovery",
+      "phase": "capability",
+      "dependencies": [
+        "BACKLOG-LOWER-005"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-013.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-014",
+      "title": "Hardening de escala e limites",
+      "status": "candidate",
+      "phase": "hardening",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-014.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-015",
+      "title": "Adapter de integração em memória e composição Maven",
+      "status": "candidate",
+      "phase": "integration",
+      "dependencies": [
+        "BACKLOG-LOWER-001"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-015.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-016",
+      "title": "Evolução do harness e conformidade declarada",
+      "status": "candidate",
+      "phase": "harness",
+      "dependencies": [],
+      "path": "docs/work/backlog/BACKLOG-LOWER-016.md",
+      "work_item": null
+    }
+  ]
+}

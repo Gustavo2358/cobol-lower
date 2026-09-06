@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "gates": [
+    {
+      "name": "docs",
+      "id": "G-DOCS",
+      "purpose": "Integridade documental/offline",
+      "contract": "Links, anchors, IDs, JSON/YAML, registry/lifecycle, source lock e ausência de implementação não autorizada.",
+      "activation": "docs",
+      "negative_oracle": "Link ausente, ID quebrado, active completed ou fonte sem SHA deve falhar.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "architecture",
+      "id": "G-ARCH",
+      "purpose": "Regra de dependência",
+      "contract": "Source/imports, API, bytecode e dependências: core sem transportes/ProLeap/CFG/modelo AIR paralelo.",
+      "activation": "bootstrap",
+      "negative_oracle": "Introduzir dependência proibida e comprovar detector adequado; restaurar.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "fast",
+      "id": "G-FAST",
+      "purpose": "Feedback estrutural",
+      "contract": "Agrega docs e architecture quando este existir; perfil docs-only usa docs e declara arquitetura runtime indisponível.",
+      "activation": "bootstrap",
+      "negative_oracle": "Não anunciar fast-runtime PASS sem architecture executor.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "semantic",
+      "id": "G-SEMANTIC",
+      "purpose": "Corretude do slice",
+      "contract": "Testes reais input/core/adapters, oracle independente, AIR checker, readiness, provenance e determinismo; contagem >0.",
+      "activation": "first_slice",
+      "negative_oracle": "Return→Halt deve passar/falhar nos lugares esperados e nunca passar no oracle de tradução.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "performance",
+      "id": "G-PERFORMANCE",
+      "purpose": "Custo/limites",
+      "contract": "Contadores de traversal/indexação e limites explícitos; telemetria não substitui propriedade.",
+      "activation": "first_slice",
+      "negative_oracle": "Scan repetido ou truncamento deve quebrar oracle.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "transport",
+      "id": "G-TRANSPORT",
+      "purpose": "AIR JSON externo",
+      "contract": "Writer/reader independentes contra binding fixado; versão, round-trip e ausência de dados voláteis. Não faz parte do primeiro slice.",
+      "activation": "transport_followup",
+      "negative_oracle": "Remover gap/campo crítico detectado sem regenerar expected.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "integration",
+      "id": "G-INTEGRATION",
+      "purpose": "Lowerer→CFG",
+      "contract": "Composição explicitamente autorizada preserva Publication/controle/diagnósticos.",
+      "activation": "integration_followup",
+      "negative_oracle": "Sem dependência de CFG no core nem sucesso em AIR inválida.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "full",
+      "id": "G-FULL",
+      "purpose": "Fechamento do perfil",
+      "contract": "Agrega todos os gates obrigatórios do perfil/work item e challenge final; especificar manifestamente o conjunto.",
+      "activation": "first_slice",
+      "negative_oracle": "Subgate obrigatório ausente/falho impede PASS; zero tests não passa.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    },
+    {
+      "name": "git",
+      "id": "G-GIT",
+      "purpose": "Higiene local/remota",
+      "contract": "Branch/base/head/working tree/PR e evidências de review/merge com fontes confiáveis; não consulta remota no G-DOCS.",
+      "activation": "all",
+      "negative_oracle": "Metadata ausente não permite inferir aprovação/merge.",
+      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
+      "entrypoint": null
+    }
+  ],
+  "profiles": {
+    "docs-only": [
+      "docs",
+      "git"
+    ],
+    "first-slice": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "air-transport": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "transport",
+      "full",
+      "git"
+    ],
+    "pipeline-integration": [
+      "docs",
+      "architecture",
+      "semantic",
+      "integration",
+      "full",
+      "git"
+    ]
+  }
+}

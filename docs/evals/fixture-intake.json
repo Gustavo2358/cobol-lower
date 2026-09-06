@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "id": "FIXTURE-SP-FIRST-001",
+      "kind": "upstream_golden",
+      "status": "NOT_CAPTURED",
+      "producer_repository": "Gustavo2358/proleap-poc",
+      "producer_commit": "c8a891e0827ae1dc1140246f625fd16c2ac9bd97",
+      "contract_schema": "cobol-semantic-product",
+      "contract_version": "1.1.0",
+      "canonical_filename": "cobol-semantic-product.json",
+      "source_description": "AIR-FIRST: PROCEDURE DIVISION com GOBACK único e assinatura sem cláusulas",
+      "artifact_path": null,
+      "sha256": null,
+      "generation_command": null,
+      "capture_checkpoint": "WORK-LOWER-001/CP1"
+    }
+  ]
+}

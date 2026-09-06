@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-06",
+  "delivery": "docs-only cobol-lower harness",
+  "audit_scope": "temporary local documentation/package auditor; not an installed repository gate",
+  "status": "PASS",
+  "checks": [
+    "UTF-8 and allowed documentation file types; no Java/POM/executable scripts/workflows",
+    "relative Markdown links and local anchors outside code fences",
+    "JSON/YAML parsing and concrete work-item validation against supplied schema",
+    "unique IDs and bilateral references among invariants, evals, gates and work items",
+    "backlog registry and acyclic dependency graphs",
+    "five-file work item, proposal not authorized, no active implementation",
+    "must_read existence, declared future paths and status consistency",
+    "pinned source references and byte-exact historical handoff hashes",
+    "no fabricated runtime gate execution, fixture capture or PR metadata",
+    "SHA-256 manifest coverage, ZIP CRC and fresh extraction equivalence"
+  ],
+  "falsification": {
+    "challenge_type": "temporary_documentation_auditor_self_tests",
+    "cases": [
+      {
+        "id": "DOC-MUT-01",
+        "expected_error": "LINK_MISSING",
+        "observed_status": "FAIL",
+        "targeted_errors": [
+          "LINK_MISSING: AGENTS.md: docs/engineering/prompt-authoring.md"
+        ],
+        "restoration": "baseline unchanged; mutation existed only in disposable copy"
+      },
+      {
+        "id": "DOC-MUT-02",
+        "expected_error": "EVAL_INVARIANT_REFERENCE",
+        "observed_status": "FAIL",
+        "targeted_errors": [
+          "EVAL_INVARIANT_REFERENCE: EVAL-LWR-001"
+        ],
+        "restoration": "baseline unchanged; mutation existed only in disposable copy"
+      },
+      {
+        "id": "DOC-MUT-03",
+        "expected_error": "WORK_LIFECYCLE",
+        "observed_status": "FAIL",
+        "targeted_errors": [
+          "WORK_LIFECYCLE: docs/work/active/WORK-LOWER-001"
+        ],
+        "restoration": "baseline unchanged; mutation existed only in disposable copy"
+      },
+      {
+        "id": "DOC-MUT-04",
+        "expected_error": "MUST_READ",
+        "observed_status": "FAIL",
+        "targeted_errors": [
+          "MUST_READ: docs/work/proposals/WORK-LOWER-001 docs/domain/does-not-exist.md"
+        ],
+        "restoration": "baseline unchanged; mutation existed only in disposable copy"
+      }
+    ],
+    "baseline_after_challenge": "PASS"
+  },
+  "runtime_tests_executed": false,
+  "repository_ci_executed": false,
+  "remote_changes_made": false,
+  "permanent_gate_runners_included": false,
+  "limitations": [
+    "Documentary integrity is not proof of COBOL-to-AIR semantic correctness.",
+    "No real Semantic Product fixture was captured in this docs-only delivery.",
+    "No lowerer, AIR JSON codec, CFG, Maven build or bytecode architectural test exists in this package.",
+    "External references were consulted through connected sources/web; the package auditor does not refetch external URLs.",
+    "Git merge/review state for a future target repository is not inferred by local documentation checks."
+  ],
+  "verified_counts": {
+    "files": 106,
+    "utf8_files": 106,
+    "markdown": 92,
+    "local_links": 249,
+    "json_parsed": 10,
+    "external_links": 7,
+    "yaml_parsed": 2,
+    "invariants": 26,
+    "evals": 26,
+    "gates": 9,
+    "adrs": 7,
+    "backlog": 16,
+    "checkpoints": 6,
+    "active_work_items": 0,
+    "proposed_work_items": 1,
+    "repo_source_roles": 5,
+    "historical_archives": 2,
+    "research_sources": 7,
+    "manifest_entries": 105
+  }
+}

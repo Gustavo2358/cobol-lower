@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-09-06",
+  "policy": "Pinned snapshots; update only via reviewed contract change, never floating main at build time.",
+  "sources": [
+    {
+      "id": "SRC-SP",
+      "repository": "Gustavo2358/proleap-poc",
+      "commit": "c8a891e0827ae1dc1140246f625fd16c2ac9bd97",
+      "role": "input_contract",
+      "contract_schema": "cobol-semantic-product",
+      "contract_version": "1.1.0",
+      "paths": [
+        "docs/domain/cobol-semantic-product.md",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
+        "src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java"
+      ],
+      "evidence_level": "files_reviewed_in_this_conversation; ref_rechecked_during_package_creation",
+      "repository_url": "https://github.com/Gustavo2358/proleap-poc",
+      "file_urls": [
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/domain/cobol-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java"
+      ]
+    },
+    {
+      "id": "SRC-HARNESS",
+      "repository": "Gustavo2358/proleap-poc",
+      "commit": "c8a891e0827ae1dc1140246f625fd16c2ac9bd97",
+      "role": "harness_inspiration_not_lowering_authority",
+      "paths": [
+        "AGENTS.md",
+        "docs/engineering/work-item-protocol.md",
+        "docs/engineering/gates.md",
+        "docs/engineering/semantic-analysis-policy.md",
+        "docs/engineering/semantic-testing.md",
+        "docs/engineering/downstream-impact-classification.md"
+      ],
+      "evidence_level": "read_during_package_creation",
+      "repository_url": "https://github.com/Gustavo2358/proleap-poc",
+      "file_urls": [
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/AGENTS.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/engineering/work-item-protocol.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/engineering/gates.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/engineering/semantic-analysis-policy.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/engineering/semantic-testing.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c8a891e0827ae1dc1140246f625fd16c2ac9bd97/docs/engineering/downstream-impact-classification.md"
+      ]
+    },
+    {
+      "id": "SRC-AIR",
+      "repository": "Gustavo2358/analysis-ir",
+      "commit": "122ce54e1b9ef9b00646f93ece409ca8b63bc933",
+      "role": "normative_semantics",
+      "semantic_version": "2.0.0",
+      "paths": [
+        "especificacao/01-modelo-e-identidades.md",
+        "especificacao/02-tipos-valores-e-operandos.md",
+        "especificacao/03-memoria-e-aliases.md",
+        "especificacao/04-operacoes.md",
+        "especificacao/05-controle-e-invocacoes.md",
+        "especificacao/06-incompletude-e-proveniencia.md",
+        "conformidade/01-invariantes.md",
+        "bindings/revisao-json-v1.md",
+        "bindings/json-v1.md"
+      ],
+      "evidence_level": "normative_files_and_binding_reviewed_in_conversation; ref_and_reconciliation_handoff_rechecked_during_package_creation",
+      "json_binding": {
+        "path": "bindings/json-v1.md",
+        "version": "1.0.0",
+        "status": "DRAFT"
+      },
+      "repository_url": "https://github.com/Gustavo2358/analysis-ir",
+      "file_urls": [
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/01-modelo-e-identidades.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/02-tipos-valores-e-operandos.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/03-memoria-e-aliases.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/04-operacoes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/05-controle-e-invocacoes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/06-incompletude-e-proveniencia.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/conformidade/01-invariantes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/bindings/revisao-json-v1.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/bindings/json-v1.md"
+      ]
+    },
+    {
+      "id": "SRC-AIR-JAVA",
+      "repository": "Gustavo2358/air-java",
+      "commit": "6a4091e5394fc22b3d2ada9abbdb530eb3572a58",
+      "role": "shared_model_and_validator_not_normative_spec",
+      "maven": {
+        "group_id": "io.github.gustavo2358",
+        "artifact_id": "air-java",
+        "version": "0.1.0-SNAPSHOT"
+      },
+      "java_release": 21,
+      "paths": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "docs/sources.lock.json",
+        "docs/reconciliation-air-2.md",
+        "docs/implementation-status.md",
+        "src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "examples/MinimalPublication.java"
+      ],
+      "evidence_level": "reconciliation_review_in_conversation; merged_ref_rechecked_during_package_creation",
+      "runtime_conformance_executed_for_this_package": false,
+      "repository_url": "https://github.com/Gustavo2358/air-java",
+      "file_urls": [
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/README.md",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/ARCHITECTURE.md",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/sources.lock.json",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/reconciliation-air-2.md",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/implementation-status.md",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/examples/MinimalPublication.java"
+      ]
+    },
+    {
+      "id": "SRC-CFG",
+      "repository": "Gustavo2358/analysis-cfg",
+      "commit": "4685dca32bf4f31a0e699ec6a3927018ab1b1d84",
+      "role": "consumer_boundary_context_not_runtime_dependency",
+      "paths": [
+        "AGENTS.md",
+        "docs/architecture/ports-and-adapters.md",
+        "docs/work/backlog/BACKLOG-CFG-002.md"
+      ],
+      "evidence_level": "ports_and_ref_rechecked_during_package_creation; other_docs_reviewed_in_conversation",
+      "repository_url": "https://github.com/Gustavo2358/analysis-cfg",
+      "file_urls": [
+        "https://github.com/Gustavo2358/analysis-cfg/blob/4685dca32bf4f31a0e699ec6a3927018ab1b1d84/AGENTS.md",
+        "https://github.com/Gustavo2358/analysis-cfg/blob/4685dca32bf4f31a0e699ec6a3927018ab1b1d84/docs/architecture/ports-and-adapters.md",
+        "https://github.com/Gustavo2358/analysis-cfg/blob/4685dca32bf4f31a0e699ec6a3927018ab1b1d84/docs/work/backlog/BACKLOG-CFG-002.md"
+      ]
+    }
+  ],
+  "local_sources": [
+    {
+      "id": "SRC-HANDOFF",
+      "path": "docs/sources/history/handoff-cobol-lower-first-slice.md",
+      "role": "user_handoff_historical_original",
+      "sha256": "ec5628b75776422fecc5313c420ba608ca7d0ba0b61b6feebcc79c80aeee9dd0"
+    },
+    {
+      "id": "SRC-PROMPTS",
+      "path": "docs/sources/history/handoff-boas-praticas-prompts-agenticos.txt",
+      "role": "user_prompt_guidelines_historical_original",
+      "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
+    }
+  ],
+  "implementation_state": "docs_only; no runtime tests or upstream builds performed for this package"
+}
