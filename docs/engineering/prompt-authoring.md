@@ -22,7 +22,20 @@ O template é ilustrativo: substituir identificadores antes de executar. Se a pr
 
 ## Prompts multi-checkpoint
 
-Somente quando autorizados explicitamente. Executar um por vez; verificar, registrar e commitar cada checkpoint antes de avançar. Blocker real ou mudança de contrato suspende avanço; não contornar apenas para cumprir “não pare”. O plano completo fica no work item, não repetido no prompt.
+O prompt seleciona trabalho, autorização e modo; a [transação](agent-session-protocol.md) fornece o algoritmo. Sem modo e lista explícitos, manter o padrão; uma lista no plano ou “faça tudo” não autoriza avanço automático.
+
+Modelo ilustrativo para uma sessão futura, após review/merge da preparação do harness (não é autorização atual):
+
+```text
+Leia AGENTS.md e WORK-LOWER-001. Autorizo promover a proposta e executar
+CP0..CP5 em modo multi-checkpoint, conforme o protocolo de sessão.
+Siga a higiene Git; use uma única branch e o mesmo PR para todo o work item.
+Certifique, faça commit/push de cada checkpoint e avance sem esperar review
+humano intermediário. Pare em blocker material e ao final para review humano.
+Sem merge/auto-merge. Nenhuma capability fora do plano está autorizada.
+```
+
+Persistir modo, lista expandida e origem da autorização no manifesto/state ao recebê-la. Não copiar o exemplo como autoridade. Alterações de contrato e demais stop conditions suspendem avanço mesmo sob pedido de execução contínua.
 
 ## Anti-padrões
 

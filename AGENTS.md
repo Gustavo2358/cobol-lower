@@ -15,7 +15,7 @@ Produzir AIR a partir do contrato público do COBOL Semantic Product, sem reanal
 7. Não copie tipos AIR nem implemente validador AIR paralelo. Valide a entrada também na porta em memória e a saída com `AirValidator`; preserve os limites desse validador.
 8. Teste por regra → classes → oracle independente → RED → implementação → GREEN → challenge/falsificação → segundo GREEN. Não altere esperado para acomodar implementação defeituosa.
 9. Use a mesma branch/PR nos checkpoints do mesmo trabalho. Preserve dirty state alheio; sem reset/stash/discard/force-push silencioso, merge ou auto-merge.
-10. Estado e evidência devem ser verdadeiros. Gate ausente/não executado não é PASS. Pare no checkpoint autorizado para review humano; não promova escopo sozinho.
+10. Estado e evidência devem ser verdadeiros. Gate ausente/não executado não é PASS. Pare na fronteira humana autorizada conforme os [modos de sessão](docs/engineering/agent-session-protocol.md); o padrão é um checkpoint. Não promova escopo sozinho.
 
 ## Roteamento
 

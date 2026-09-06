@@ -1,6 +1,6 @@
 # WORK-LOWER-001 — Plano de checkpoints
 
-Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e review humano; continuar automaticamente somente se houver autorização explícita que liste o conjunto. As dependências externas são fixadas por SHA. Alteração dos nomes de módulos no CP0 exige atualizar o manifesto, não criar arquivos fora do scope silenciosamente.
+Seis checkpoints preparados, não autorizados. Todos seguem a [transação de sessão](../../../engineering/agent-session-protocol.md): no padrão, certificação e commit/push autorizados terminam em parada humana; no modo multi-checkpoint explicitamente autorizado, certificar, commit/push na mesma branch/PR e avançar somente sem stop condition e com próximo CP autorizado. As revisões focais abaixo integram REVIEW em ambos os modos; CP5 mantém parada humana final. Regressão cumulativa em todos os CPs; full/challenge em CP4 e CP5. As dependências externas são fixadas por SHA. Alteração dos nomes de módulos no CP0 exige atualizar o manifesto, não criar arquivos fora do scope silenciosamente.
 
 ## CP0 — Bootstrap reproduzível e target AIR independente
 
@@ -15,7 +15,7 @@ Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e
 
 **Fora de escopo:** Decoder, regra GOBACK de produção, output AIR JSON ou CFG.
 
-**Stop gate:** Review do bootstrap e da admissibilidade do target, sem avançar CP1.
+**Revisão focal / fronteira CP0:** Bootstrap e admissibilidade do target. CP0 é bootstrap da trusted execution boundary: executores previstos e certificação documental, oracles positivos/negativos, falsificações restauradas e segundo GREEN devem estar provados e commitados antes de CP1, conforme protocolo; gate apenas especificado bloqueia.
 
 ## CP1 — Contrato real de entrada e adapter JSON
 
@@ -30,7 +30,7 @@ Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e
 
 **Fora de escopo:** Produzir AIR pelo lowerer ou interpretar outras famílias.
 
-**Stop gate:** Review do contrato/decoder e evidência de fixture real.
+**Revisão focal:** Contrato/decoder e evidência de fixture real.
 
 ## CP2 — Validação semântica da entrada e admissão do perfil
 
@@ -45,7 +45,7 @@ Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e
 
 **Fora de escopo:** Escolher primeiro statement, validar todo SP por afirmação ou ampliar slice.
 
-**Stop gate:** Review da tabela de decisão e dos contracasos, sem CP3 automático.
+**Revisão focal:** Tabela de decisão e contracasos.
 
 ## CP3 — Regra Entry/GOBACK → Publication/Return
 
@@ -60,7 +60,7 @@ Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e
 
 **Fora de escopo:** Halt por contexto runtime, copiar readiness global ou apagar gap para checker passar.
 
-**Stop gate:** Review da tradução contra os dois contratos.
+**Revisão focal:** Tradução contra os dois contratos.
 
 ## CP4 — Prova vertical, escala e CI
 
@@ -75,7 +75,7 @@ Seis checkpoints preparados. Cada um termina em commit/push na mesma branch/PR e
 
 **Fora de escopo:** Reader/writer AIR, build de CFG ou aumentar perfil para fazer E2E parecer maior.
 
-**Stop gate:** Review do primeiro proof point e limites reais.
+**Revisão focal:** Primeiro proof point e limites reais, com full/challenge.
 
 ## CP5 — Challenge final e handoff de fechamento
 

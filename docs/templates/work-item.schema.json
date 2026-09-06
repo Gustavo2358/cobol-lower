@@ -90,9 +90,76 @@
             "minLength": 1
           },
           "uniqueItems": true
+        },
+        "execution_mode": {
+          "enum": [
+            "single-checkpoint",
+            "multi-checkpoint"
+          ],
+          "default": "single-checkpoint"
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "execution_mode": {
+                "const": "multi-checkpoint"
+              }
+            },
+            "required": [
+              "execution_mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "authority"
+            ],
+            "properties": {
+              "state": {
+                "const": "granted"
+              },
+              "authorized_checkpoints": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "authorized_checkpoints": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_granted",
+                  "revoked"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "authorized_checkpoints": {
+                "maxItems": 0
+              },
+              "current_checkpoint": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "backlog_ids": {
       "type": "array",

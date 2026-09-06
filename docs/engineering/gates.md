@@ -24,6 +24,12 @@ O pacote foi verificado por um checker temporário de documentação durante sua
 
 Offline e sem inference de GitHub. Verificar links relativos/anchors, existência de must_read, unicidade/fechamento de IDs de ADR/invariantes/evals/backlog, referências entre catálogos, JSON/YAML parseáveis, status e localização de work items, ausência de completed em active, registry/index coerentes, propostas sem autorização automática e hashes/paths de fontes. Scopes planejados não equivalem a arquivos existentes. Rejeitar caminhos externos absolutos e scripts/POM/Java em entrega declarada docs-only.
 
+A certificação segue a [transação](agent-session-protocol.md). O bootstrap de G-DOCS deve conferir modo/lista/autoridade pelo schema e relações com plano/state; evidência obrigatória preenchida, resultados PASS, digest do candidato, restauração, segundo GREEN, regressão cumulativa e review identificado. Rejeitar `NOT_RUN` obrigatório, mutação não restaurada e claim independente sem outro revisor/contexto e evidência. A checagem documental verifica registros e referências; não prova a verdade dos logs nem substitui execução dos oracles. G-GIT confere vínculo do commit/trailer/digest e confirmação remota.
+
+Para evitar circularidade, distinguir validação de registro em elaboração de certificação final: G-DOCS pode validar forma/referências do candidato ainda pendente, mas não rotulá-lo certificado. Depois dos gates, a checagem de certificação exige todos os resultados obrigatórios e rejeita pendências; a finalização apenas de evidência/state exige revisão documental final. G-GIT verifica branch/base/worktree/PR antes do commit; confirmação do SHA publicado é pós-commit e bloqueia ADVANCE, sem exigir conhecer o SHA futuro antes de criá-lo. O bootstrap deve provar ambas as fases, inclusive rejeição de tentativa de avanço com push não confirmado.
+
+Nesta adaptação somente o schema fornece restrições estruturais reutilizáveis, sem executor instalado. Contracasos adicionais para CP0: multi-checkpoint sem lista/autoridade, múltiplos CPs no modo padrão, certificação com gate ausente/falho, regressão omitida, digest divergente e self-review apresentado como independente. Revisão da prosa deve preservar default, stop conditions e ausência de autorização nas propostas; schema sozinho não compreende essas claims.
+
 Falsificações mínimas: link quebrado; invariant inexistente em eval; active completed; required must_read inexistente. Checker precisa aceitar a baseline para ser considerado válido.
 
 ## Perfis

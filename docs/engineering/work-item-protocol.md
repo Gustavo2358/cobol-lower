@@ -10,7 +10,7 @@ Um pacote de work item contém exatamente cinco arquivos: `work-item.yaml`, `spe
 
 Backlog: `candidate`, `needs_discovery`, `ready_for_authorization`, `in_progress`, `completed`, `deferred`. Work item: `proposed`, `ready_for_authorization`, `active`, `blocked`, `completed`. Em active só podem existir `active`/`blocked`; review_pending fica como fase no state. PR possui estado remoto separado.
 
-IDs nunca são reutilizados. Uma proposta pronta não começa sozinha. Novo trabalho exige objetivo autorizado e checkpoint(s) explicitamente incluídos. Por padrão só um checkpoint está autorizado por prompt.
+IDs nunca são reutilizados. Uma proposta pronta não começa sozinha. Novo trabalho exige objetivo autorizado e checkpoint(s) explicitamente incluídos. Por padrão só um checkpoint está autorizado por prompt. Ausência de `authorization.execution_mode` significa `single-checkpoint`. Modo `multi-checkpoint` exige autorização humana expressa, `state: granted`, lista finita não vazia em `authorized_checkpoints` e referência factual em `authorization.authority` (pedido/data ou link, registrada também no state). Expandir ranges nos IDs existentes do plano, conferir dependências e checkpoint atual; não inferir modo pela quantidade de IDs. Templates e plano não são autoridade.
 
 ## Promoção
 
@@ -21,6 +21,8 @@ Campos mínimos do manifesto: schema_version, id, title, status, risk, goal, aut
 Caminho futuro deve aparecer como `planned:<path>` somente em scope de produção/teste/artefato planejado. `must_read` sempre referencia arquivo existente. No bootstrap, pai ainda inexistente é legítimo se a criação do módulo estiver explicitamente no scope. Isso adapta o protocolo ProLeap a um repo sem src/POM; não simular que esses caminhos já existem. Converter planned em caminho real no checkpoint que o cria.
 
 ## Checkpoint
+
+A [transação de sessão](agent-session-protocol.md) governa certificação, regressão, recovery e avanço nos dois modos. Certificação técnica fica na evidência; não introduz aprovação humana: `ready_for_review` pode ter certificação técnica e permitir avanço apenas no modo explicitamente multi-checkpoint. State registra modo/autoridade, CP atual, último certificado e referência Git verificável; status completed do work item continua seguindo o fechamento.
 
 Cada checkpoint tem objetivo, dependências, artefato, oracle independente, classes negativas, gates aplicáveis e condição de parada. Concluir um checkpoint não conclui o work item inteiro. Evidência de execução aponta para commit/SHA e logs; modificar código depois da evidência exige nova execução dos checks afetados.
 

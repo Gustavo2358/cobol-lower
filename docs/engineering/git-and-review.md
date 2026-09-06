@@ -10,6 +10,8 @@ Não mudar branch nem aplicar sincronização que sobrescreva alterações locai
 
 Um work item usa uma branch e um PR. Checkpoints subsequentes e request changes continuam nesse par. Revalidar PR/head antes do push; não criar PR novo por checkpoint. Atualizar main durante o trabalho somente de forma não destrutiva, sem reescrever commits publicados por iniciativa própria. Conflitos resolvidos exigem review e gates novamente.
 
+No modo multi-checkpoint, seguir a [transação](agent-session-protocol.md): 1 work item → 1 branch → 1 PR → N commits certificados. Cada CP exige commit/push antes de avançar, PR atualizado e recovery vinculado à evidência. O SHA publicado é parte da memória persistente; corrigir bugs antigos no HEAD, sem amend/rewrite de checkpoint certificado. Stop humano final permanece.
+
 Commits são focalizados e incluem testes/documentação ligados à regra. Nunca commitar mutação temporária, credenciais, fixture confidencial ou output de diagnóstico não intencional. Rever o diff staged completo; não confiar só em `git status`.
 
 ## Gates antes do handoff
