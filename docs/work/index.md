@@ -16,4 +16,4 @@ Promoção registrada conforme o [protocolo](../engineering/work-item-protocol.m
 
 ## Estado remoto
 
-Base confirmada: origin/main em `14aaafc5051eb287af6a8f126e8eaff78e30e365`, merge do PR de preparação #1 deste repositório. Branch do trabalho: `feat/first-entry-goback-slice`. PR de implementação ainda não criado; nenhuma certificação/CI presumida.
+Base confirmada: origin/main em `14aaafc5051eb287af6a8f126e8eaff78e30e365`, merge do PR de preparação #1. Branch `feat/first-entry-goback-slice`, [PR #2 Draft](https://github.com/Gustavo2358/cobol-lower/pull/2). CP0 teve certificação local e primeiro push; CI falhou na validação do workflow, remediação no mesmo checkpoint. Nenhum recovery remoto ainda.

@@ -5,15 +5,15 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "feat/first-entry-goback-slice",
-  "pull_request": null,
+  "pull_request": 2,
   "base_commit": "14aaafc5051eb287af6a8f126e8eaff78e30e365",
-  "reviewed_head": "14aaafc5051eb287af6a8f126e8eaff78e30e365",
+  "reviewed_head": "98dbb60f204f42191fa1ee6f1a5b7caca89355ed",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "execution_mode": "multi-checkpoint",
   "authorization_reference": "docs/quality/WORK-LOWER-001/CP0-contract.md",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "4f0bffc4101fc2acde5f5e08852c9dfa9458dfe76c63a358ff3cf534339bb509",
+  "candidate_diff_sha256": "3f7d78628b50917500f47e331946c0571ffa08ed68d6666079d7a4f2dc8b866d",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-001/CP0.json",
     "docs/work/active/WORK-LOWER-001/state.md"
@@ -182,7 +182,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 0,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-docs.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-docs.log"
     },
     {
       "gate": "architecture",
@@ -193,7 +193,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 0,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-architecture.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-architecture.log"
     },
     {
       "gate": "semantic",
@@ -204,7 +204,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 20,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-semantic.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-semantic.log"
     },
     {
       "gate": "git",
@@ -215,7 +215,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 0,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-git.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-git.log"
     },
     {
       "gate": "harness-tests",
@@ -226,7 +226,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 58,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-harness-tests.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-harness-tests.log"
     },
     {
       "gate": "fast",
@@ -237,7 +237,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 0,
-      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-regression-fast.log"
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP0-remediation-fast.log"
     },
     {
       "gate": "bootstrap",
@@ -378,7 +378,8 @@
         "All CP0 focal gates rerun; no previous certified checkpoint",
         "20 AIR/manual memory-boundary assertions",
         "58 harness checks including certification/remote/Git counterexamples",
-        "Restored falsifications and second GREEN"
+        "Restored falsifications and second GREEN",
+        "CP0 workflow remediation: all focal gates rerun on the same checkpoint; original CI failure retained."
       ],
       "execution_references": [
         0,
@@ -416,8 +417,21 @@
     "all_mutations_restored": true,
     "required_results_pass": true,
     "scope": "pre_commit",
-    "verification_command": "python3 scripts/harness/run.py certify",
-    "verification_exit_code": 0,
-    "verification_output": "PASS certify"
-  }
+    "verification_command": "python3 scripts/harness/run.py certify"
+  },
+  "remote_observations": [
+    {
+      "published_sha": "98dbb60f204f42191fa1ee6f1a5b7caca89355ed",
+      "first_push_at": "2026-09-06T21:45:08Z",
+      "run_id": 34062009803,
+      "url": "https://github.com/Gustavo2358/cobol-lower/actions/runs/34062009803",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [],
+      "required_check": "checkpoint",
+      "required_check_status": "missing",
+      "queried_at": "2026-09-06 21:50:23 UTC",
+      "note": "Workflow validation failure before jobs. No recovery point; same CP0 remediation, original wait limit unchanged."
+    }
+  ]
 }

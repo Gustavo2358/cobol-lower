@@ -240,7 +240,7 @@ checkpoints:
   status: not_started
 git:
   branch: feat/first-entry-goback-slice
-  pull_request: null
+  pull_request: 2
   suggested_branch: feat/first-entry-goback-slice
   one_pr_per_work_item: true
   merge_authorized: false

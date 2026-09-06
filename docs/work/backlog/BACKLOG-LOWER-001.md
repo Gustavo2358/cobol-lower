@@ -32,4 +32,4 @@ MOVE/IF/CALL/DATA/storage/opaque amplo/CFG/writer AIR e qualquer atualização u
 
 ## Evidência atual
 
-CP0 em revisão/certificação. Build, smoke AIR e gates do bootstrap têm execução local; nenhum commit certificado, CI, benchmark ou aprovação remota ainda. Estado factual no pacote ativo.
+CP0 com certificação local e primeiro commit/push; run remoto falhou antes dos jobs. Remediação no mesmo checkpoint e PR #2; nenhum recovery pleno, benchmark ou aprovação humana ainda. Estado factual no pacote ativo.

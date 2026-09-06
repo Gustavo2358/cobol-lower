@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      LOWER_BUILD_ROOT: ${{ runner.temp }}/lower-build
+      LOWER_BUILD_ROOT: /tmp/lower-build-${{ github.run_id }}-${{ github.run_attempt }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4

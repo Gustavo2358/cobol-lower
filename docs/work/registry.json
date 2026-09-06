@@ -7,7 +7,7 @@
       "path": "docs/work/active/WORK-LOWER-001",
       "authorized_checkpoints": ["CP0", "CP1", "CP2", "CP3", "CP4", "CP5"],
       "git_branch": "feat/first-entry-goback-slice",
-      "pull_request": null,
+      "pull_request": 2,
       "backlog_ids": [
         "BACKLOG-LOWER-001"
       ]

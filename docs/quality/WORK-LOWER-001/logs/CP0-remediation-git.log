@@ -1,0 +1,8 @@
+Command: python3 scripts/harness/run.py git; gh api repos/Gustavo2358/cobol-lower/actions/runs/34062009803 (selected metadata)
+Cwd: cobol-lower
+Environment: Git and authenticated gh
+Exit: 0
+Queried at: 2026-09-06 21:50:23 UTC
+{"autoMergeRequest": null, "baseRefName": "main", "headRefOid": "98dbb60f204f42191fa1ee6f1a5b7caca89355ed", "isDraft": true, "number": 2, "state": "OPEN", "url": "https://github.com/Gustavo2358/cobol-lower/pull/2"}
+PASS git
+{"conclusion":"failure","head_sha":"98dbb60f204f42191fa1ee6f1a5b7caca89355ed","html_url":"https://github.com/Gustavo2358/cobol-lower/actions/runs/34062009803","id":34062009803,"status":"completed","updated_at":"2026-09-06T21:45:17Z"}
