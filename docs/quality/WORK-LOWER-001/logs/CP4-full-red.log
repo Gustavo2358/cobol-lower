@@ -1,0 +1,81 @@
+Command: python3 -m unittest discover -s scripts/harness/tests -p test_full.py -v
+Exit: 1
+Output (trailing whitespace stripped):
+test_absent_zero_and_incomplete_performance_suites (test_full.Full.test_absent_zero_and_incomplete_performance_suites) ... FAIL
+test_all_required_components_once (test_full.Full.test_all_required_components_once) ... FAIL
+test_cannot_shrink_or_expand_required_set (test_full.Full.test_cannot_shrink_or_expand_required_set) ... FAIL
+test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates) ... FAIL
+test_missing_runner (test_full.Full.test_missing_runner) ... FAIL
+test_real_nonzero_performance_suites (test_full.Full.test_real_nonzero_performance_suites) ... FAIL
+
+======================================================================
+FAIL: test_absent_zero_and_incomplete_performance_suites (test_full.Full.test_absent_zero_and_incomplete_performance_suites)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 42, in test_absent_zero_and_incomplete_performance_suites
+    with self.assertRaisesRegex(RuntimeError, "performance tests absent/zero"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_all_required_components_once (test_full.Full.test_all_required_components_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 15, in test_all_required_components_once
+    self.assertEqual(observed, names)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['docs', 'semantic', 'performance', 'archi[41 chars]nge']
+
+Second list contains 7 additional elements.
+First extra element 0:
+'docs'
+
+- []
++ ['docs',
++  'semantic',
++  'performance',
++  'architecture',
++  'git',
++  'harness-tests',
++  'challenge']
+
+======================================================================
+FAIL: test_cannot_shrink_or_expand_required_set (test_full.Full.test_cannot_shrink_or_expand_required_set)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 23, in test_cannot_shrink_or_expand_required_set
+    with self.assertRaisesRegex(RuntimeError, "FULL.*set"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 33, in test_failed_leaf_propagates
+    with self.assertRaisesRegex(RuntimeError, "independent failing performance"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_missing_runner (test_full.Full.test_missing_runner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 18, in test_missing_runner
+    with self.assertRaisesRegex(RuntimeError, "FULL.*missing"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_real_nonzero_performance_suites (test_full.Full.test_real_nonzero_performance_suites)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 38, in test_real_nonzero_performance_suites
+    self.assertEqual(performance_counts("LOWER_PERFORMANCE_TESTS=17\nLOWER_PERFORMANCE_TESTS=23\n"), 40)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 40
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+FAILED (failures=6)

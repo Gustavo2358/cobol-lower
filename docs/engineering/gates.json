@@ -60,8 +60,11 @@
       "contract": "Contadores de traversal/indexação e limites explícitos; telemetria não substitui propriedade.",
       "activation": "first_slice",
       "negative_oracle": "Scan repetido ou truncamento deve quebrar oracle.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py performance",
+      "verification_scope": "CP4 structural N/2N ledger and restored index-scan challenge; no throughput SLA",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "name": "transport",
@@ -90,8 +93,11 @@
       "contract": "Agrega todos os gates obrigatórios do perfil/work item e challenge final; especificar manifestamente o conjunto.",
       "activation": "first_slice",
       "negative_oracle": "Subgate obrigatório ausente/falho impede PASS; zero tests não passa.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py full",
+      "verification_scope": "CP4 actual full execution, positive/counterexamples and restored challenges; checkpoint remote certification remains separate",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "name": "git",

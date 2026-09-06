@@ -1,0 +1,66 @@
+Command: python3 -m unittest discover -s scripts/harness/tests -p test_full.py -v
+Environment: Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; isolated build root
+Exit: 1
+Output (trailing whitespace stripped):
+test_absent_zero_and_incomplete_performance_suites (test_full.Full.test_absent_zero_and_incomplete_performance_suites) ... ok
+test_all_required_components_once (test_full.Full.test_all_required_components_once) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+FAIL
+test_cannot_shrink_or_expand_required_set (test_full.Full.test_cannot_shrink_or_expand_required_set) ... ok
+test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+FAIL
+test_local_git_keeps_branch_preflight (test_full.Full.test_local_git_keeps_branch_preflight) ... ok
+test_missing_runner (test_full.Full.test_missing_runner) ... ok
+test_published_git_cannot_bypass_certificate (test_full.Full.test_published_git_cannot_bypass_certificate) ... ok
+test_published_git_rejects_wrong_head_and_dirty (test_full.Full.test_published_git_rejects_wrong_head_and_dirty) ... ok
+test_published_git_requires_exact_clean_head (test_full.Full.test_published_git_requires_exact_clean_head) ... ok
+test_real_nonzero_performance_suites (test_full.Full.test_real_nonzero_performance_suites) ... ok
+
+======================================================================
+FAIL: test_all_required_components_once (test_full.Full.test_all_required_components_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 17, in test_all_required_components_once
+    self.assertEqual(observed, names)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['docs', 'semantic', 'architecture', 'git', 'harness-tests', 'challenge'] != ['docs', 'semantic', 'performance', 'architecture', 'git', 'har[20 chars]nge']
+
+First differing element 2:
+'architecture'
+'performance'
+
+Second list contains 1 additional elements.
+First extra element 6:
+'challenge'
+
+- ['docs', 'semantic', 'architecture', 'git', 'harness-tests', 'challenge']
++ ['docs',
++  'semantic',
++  'performance',
++  'architecture',
++  'git',
++  'harness-tests',
++  'challenge']
+
+======================================================================
+FAIL: test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 35, in test_failed_leaf_propagates
+    with self.assertRaisesRegex(RuntimeError, "independent failing performance"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.002s
+
+FAILED (failures=2)

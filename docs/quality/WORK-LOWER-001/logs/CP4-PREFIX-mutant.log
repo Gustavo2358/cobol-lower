@@ -1,0 +1,425 @@
+Command: python3 scripts/harness/run.py performance
+Environment: Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; isolated build root
+Exit: 1
+Output (trailing whitespace stripped):
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] cobol-lower                                                        [pom]
+[INFO] cobol-lower-core                                                   [jar]
+[INFO] cobol-lower-adapters                                               [jar]
+[INFO]
+[INFO] -----------------< io.github.gustavo2358:cobol-lower >------------------
+[INFO] Building cobol-lower 0.1.0-SNAPSHOT                                [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT                           [2/3]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/cobol-lower/core/src/main/resources
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/cobol-lower/core/src/test/resources
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-core ---
+[INFO]
+[INFO] --- exec:3.5.0:java (boundary-contract-suite) @ cobol-lower-core ---
+ok 1 - manual AIR accepted by real validator
+ok 2 - AIR 2.0.0
+ok 3 - one unit
+ok 4 - available body
+ok 5 - one entry and sequence
+ok 6 - entry label closes
+ok 7 - closed zero parameters
+ok 8 - closed zero results
+ok 9 - no common instructions
+ok 10 - expected Return, never Halt
+ok 11 - empty Return
+ok 12 - real validator rejects dangling label
+ok 13 - boundary must preserve INVALID_IR for dangling label
+ok 14 - boundary preserves complete result and issues
+ok 15 - profile fixture contains a real semantic obligation
+ok 16 - semantic obligations remain visible
+ok 17 - Halt can be valid AIR but is not the frozen Return shape
+ok 18 - publication immutable
+ok 19 - independent construction deterministic
+ok 20 - nonzero executed assertions
+lower 1 - admitted input must produce SUCCESS: SUCCESS
+lower 2 - entire source evidence retained
+lower 3 - AIR 2 one unit
+lower 4 - available singular shape
+lower 5 - typed GOBACK must be Return, never Halt
+lower 6 - no return values
+lower 7 - closed known zero parameters
+lower 8 - closed known zero results
+lower 9 - total typed correlation
+lower 10 - entry identity correlation
+lower 11 - start correlation uses published reference
+lower 12 - start label join closes
+lower 13 - Return ID and provenance correlation
+lower 14 - alternative entry inventory stays PARTIAL
+lower 15 - alternate gap visible in AIR coverage
+lower 16 - entry and statement coverage retained
+lower 17 - local control exact
+lower 18 - no global strengthening STORAGE
+lower 19 - dimension reason present STORAGE
+lower 20 - no global strengthening EFFECTS
+lower 21 - dimension reason present EFFECTS
+lower 22 - no global strengthening VALUES
+lower 23 - dimension reason present VALUES
+lower 24 - no global strengthening DEPENDENCIES
+lower 25 - dimension reason present DEPENDENCIES
+lower 26 - zero DATA maps no storage declarations
+lower 27 - no unproved AIR profile claim
+lower 28 - complete real checker report preserved
+lower 29 - real checker GREEN
+lower 30 - independent construction deterministic
+lower 31 - operational metadata excluded from identity
+lower 32 - admitted input must produce SUCCESS: SUCCESS
+lower 33 - entire source evidence retained
+lower 34 - AIR 2 one unit
+lower 35 - available singular shape
+lower 36 - typed GOBACK must be Return, never Halt
+lower 37 - no return values
+lower 38 - closed known zero parameters
+lower 39 - closed known zero results
+lower 40 - total typed correlation
+lower 41 - entry identity correlation
+lower 42 - start correlation uses published reference
+lower 43 - start label join closes
+lower 44 - Return ID and provenance correlation
+lower 45 - alternative entry inventory stays PARTIAL
+lower 46 - alternate gap visible in AIR coverage
+lower 47 - entry and statement coverage retained
+lower 48 - local control exact
+lower 49 - no global strengthening STORAGE
+lower 50 - dimension reason present STORAGE
+lower 51 - no global strengthening EFFECTS
+lower 52 - dimension reason present EFFECTS
+lower 53 - no global strengthening VALUES
+lower 54 - dimension reason present VALUES
+lower 55 - no global strengthening DEPENDENCIES
+lower 56 - dimension reason present DEPENDENCIES
+lower 57 - zero DATA maps no storage declarations
+lower 58 - no unproved AIR profile claim
+lower 59 - complete real checker report preserved
+lower 60 - real checker GREEN
+lower 61 - revision namespace distinguishes unit and handles
+lower 62 - admitted input must produce SUCCESS: SUCCESS
+lower 63 - entire source evidence retained
+lower 64 - AIR 2 one unit
+lower 65 - available singular shape
+lower 66 - typed GOBACK must be Return, never Halt
+lower 67 - no return values
+lower 68 - closed known zero parameters
+lower 69 - closed known zero results
+lower 70 - total typed correlation
+lower 71 - entry identity correlation
+lower 72 - start correlation uses published reference
+lower 73 - start label join closes
+lower 74 - Return ID and provenance correlation
+lower 75 - alternative entry inventory stays PARTIAL
+lower 76 - alternate gap visible in AIR coverage
+lower 77 - entry and statement coverage retained
+lower 78 - local control exact
+lower 79 - no global strengthening STORAGE
+lower 80 - dimension reason present STORAGE
+lower 81 - no global strengthening EFFECTS
+lower 82 - dimension reason present EFFECTS
+lower 83 - no global strengthening VALUES
+lower 84 - dimension reason present VALUES
+lower 85 - no global strengthening DEPENDENCIES
+lower 86 - dimension reason present DEPENDENCIES
+lower 87 - zero DATA maps no storage declarations
+lower 88 - no unproved AIR profile claim
+lower 89 - complete real checker report preserved
+lower 90 - real checker GREEN
+lower 91 - revision namespace distinguishes unit and handles
+lower 92 - admitted input must produce SUCCESS: SUCCESS
+lower 93 - entire source evidence retained
+lower 94 - AIR 2 one unit
+lower 95 - available singular shape
+lower 96 - typed GOBACK must be Return, never Halt
+lower 97 - no return values
+lower 98 - closed known zero parameters
+lower 99 - closed known zero results
+lower 100 - total typed correlation
+lower 101 - entry identity correlation
+lower 102 - start correlation uses published reference
+lower 103 - start label join closes
+lower 104 - Return ID and provenance correlation
+lower 105 - alternative entry inventory stays PARTIAL
+lower 106 - alternate gap visible in AIR coverage
+lower 107 - entry and statement coverage retained
+lower 108 - local control exact
+lower 109 - no global strengthening STORAGE
+lower 110 - dimension reason present STORAGE
+lower 111 - no global strengthening EFFECTS
+lower 112 - dimension reason present EFFECTS
+lower 113 - no global strengthening VALUES
+lower 114 - dimension reason present VALUES
+lower 115 - no global strengthening DEPENDENCIES
+lower 116 - dimension reason present DEPENDENCIES
+lower 117 - zero DATA maps no storage declarations
+lower 118 - no unproved AIR profile claim
+lower 119 - complete real checker report preserved
+lower 120 - real checker GREEN
+lower 121 - revision namespace distinguishes unit and handles
+lower 122 - exact published GOBACK original coordinates
+lower 123 - explicit SP coordinate conventions
+lower 124 - golden exact without include
+lower 125 - auxiliary sequence origin derived
+lower 126 - entry and GOBACK distinct origins
+lower 127 - identity limit never publishes prefix
+lower 128 - exact identity bound succeeds
+lower 129 - invalid AIR never success
+lower 130 - invalid issues preserved
+lower 131 - semantic obligation preserved not proved
+lower 132 - real validation limit never success
+lower 133 - real validation limit issue preserved
+lower 134 - in-memory input always validated
+lower 135 - identity includes rule and semantic versions
+lower 136 - admitted input must produce SUCCESS: SUCCESS
+lower 137 - entire source evidence retained
+lower 138 - AIR 2 one unit
+lower 139 - available singular shape
+lower 140 - typed GOBACK must be Return, never Halt
+lower 141 - no return values
+lower 142 - closed known zero parameters
+lower 143 - closed known zero results
+lower 144 - total typed correlation
+lower 145 - entry identity correlation
+lower 146 - start correlation uses published reference
+lower 147 - start label join closes
+lower 148 - Return ID and provenance correlation
+lower 149 - alternative entry inventory stays PARTIAL
+lower 150 - alternate gap visible in AIR coverage
+lower 151 - entry and statement coverage retained
+lower 152 - local control exact
+lower 153 - no global strengthening STORAGE
+lower 154 - dimension reason present STORAGE
+lower 155 - no global strengthening EFFECTS
+lower 156 - dimension reason present EFFECTS
+lower 157 - no global strengthening VALUES
+lower 158 - dimension reason present VALUES
+lower 159 - no global strengthening DEPENDENCIES
+lower 160 - dimension reason present DEPENDENCIES
+lower 161 - zero DATA maps no storage declarations
+lower 162 - no unproved AIR profile claim
+lower 163 - complete real checker report preserved
+lower 164 - real checker GREEN
+lower 165 - same unit new policy revision changes PublicationId
+lower 166 - admitted input must produce SUCCESS: SUCCESS
+lower 167 - entire source evidence retained
+lower 168 - AIR 2 one unit
+lower 169 - available singular shape
+lower 170 - typed GOBACK must be Return, never Halt
+lower 171 - no return values
+lower 172 - closed known zero parameters
+lower 173 - closed known zero results
+lower 174 - total typed correlation
+lower 175 - entry identity correlation
+lower 176 - start correlation uses published reference
+lower 177 - start label join closes
+lower 178 - Return ID and provenance correlation
+lower 179 - alternative entry inventory stays PARTIAL
+lower 180 - alternate gap visible in AIR coverage
+lower 181 - entry and statement coverage retained
+lower 182 - local control exact
+lower 183 - no global strengthening STORAGE
+lower 184 - dimension reason present STORAGE
+lower 185 - no global strengthening EFFECTS
+lower 186 - dimension reason present EFFECTS
+lower 187 - no global strengthening VALUES
+lower 188 - dimension reason present VALUES
+lower 189 - no global strengthening DEPENDENCIES
+lower 190 - dimension reason present DEPENDENCIES
+lower 191 - zero DATA maps no storage declarations
+lower 192 - no unproved AIR profile claim
+lower 193 - complete real checker report preserved
+lower 194 - real checker GREEN
+lower 195 - same unit new structural fact changes PublicationId
+lower 196 - admitted input must produce SUCCESS: SUCCESS
+lower 197 - entire source evidence retained
+lower 198 - AIR 2 one unit
+lower 199 - available singular shape
+lower 200 - typed GOBACK must be Return, never Halt
+lower 201 - no return values
+lower 202 - closed known zero parameters
+lower 203 - closed known zero results
+lower 204 - total typed correlation
+lower 205 - entry identity correlation
+lower 206 - start correlation uses published reference
+lower 207 - start label join closes
+lower 208 - Return ID and provenance correlation
+lower 209 - alternative entry inventory stays PARTIAL
+lower 210 - alternate gap visible in AIR coverage
+lower 211 - entry and statement coverage retained
+lower 212 - local control exact
+lower 213 - no global strengthening STORAGE
+lower 214 - dimension reason present STORAGE
+lower 215 - no global strengthening EFFECTS
+lower 216 - dimension reason present EFFECTS
+lower 217 - no global strengthening VALUES
+lower 218 - dimension reason present VALUES
+lower 219 - no global strengthening DEPENDENCIES
+lower 220 - dimension reason present DEPENDENCIES
+lower 221 - zero DATA maps no storage declarations
+lower 222 - no unproved AIR profile claim
+lower 223 - complete real checker report preserved
+lower 224 - real checker GREEN
+lower 225 - readiness scope is revision evidence not dropped
+lower 226 - admitted input must produce SUCCESS: SUCCESS
+lower 227 - entire source evidence retained
+lower 228 - AIR 2 one unit
+lower 229 - available singular shape
+lower 230 - typed GOBACK must be Return, never Halt
+lower 231 - no return values
+lower 232 - closed known zero parameters
+lower 233 - closed known zero results
+lower 234 - total typed correlation
+lower 235 - entry identity correlation
+lower 236 - start correlation uses published reference
+lower 237 - start label join closes
+lower 238 - Return ID and provenance correlation
+lower 239 - alternative entry inventory stays PARTIAL
+lower 240 - alternate gap visible in AIR coverage
+lower 241 - entry and statement coverage retained
+lower 242 - local control exact
+lower 243 - no global strengthening STORAGE
+lower 244 - dimension reason present STORAGE
+lower 245 - no global strengthening EFFECTS
+lower 246 - dimension reason present EFFECTS
+lower 247 - no global strengthening VALUES
+lower 248 - dimension reason present VALUES
+lower 249 - no global strengthening DEPENDENCIES
+lower 250 - dimension reason present DEPENDENCIES
+lower 251 - zero DATA maps no storage declarations
+lower 252 - no unproved AIR profile claim
+lower 253 - complete real checker report preserved
+lower 254 - real checker GREEN
+lower 255 - source provenance participates in revision
+lower 256 - original and expanded roles both preserved
+lower 257 - unrepresentable coordinates do not fabricate span or exactness
+lower 258 - include chain order retained without invented site columns
+lower 259 - logical source artifact not transport or fabricated digest
+lower 260 - provenance limitations explicitly reported
+lower 261 - raw include lines and coordinates retained
+lower 262 - admitted input must produce SUCCESS: SUCCESS
+lower 263 - entire source evidence retained
+lower 264 - AIR 2 one unit
+lower 265 - available singular shape
+lower 266 - typed GOBACK must be Return, never Halt
+lower 267 - no return values
+lower 268 - closed known zero parameters
+lower 269 - closed known zero results
+lower 270 - total typed correlation
+lower 271 - entry identity correlation
+lower 272 - start correlation uses published reference
+lower 273 - start label join closes
+lower 274 - Return ID and provenance correlation
+lower 275 - alternative entry inventory stays PARTIAL
+lower 276 - alternate gap visible in AIR coverage
+lower 277 - entry and statement coverage retained
+lower 278 - local control exact
+lower 279 - no global strengthening STORAGE
+lower 280 - dimension reason present STORAGE
+lower 281 - no global strengthening EFFECTS
+lower 282 - dimension reason present EFFECTS
+lower 283 - no global strengthening VALUES
+lower 284 - dimension reason present VALUES
+lower 285 - no global strengthening DEPENDENCIES
+lower 286 - dimension reason present DEPENDENCIES
+lower 287 - zero DATA maps no storage declarations
+lower 288 - no unproved AIR profile claim
+lower 289 - complete real checker report preserved
+lower 290 - real checker GREEN
+lower 291 - source provenance participates in revision
+lower 292 - original and expanded roles both preserved
+lower 293 - unrepresentable coordinates do not fabricate span or exactness
+lower 294 - include chain order retained without invented site columns
+lower 295 - logical source artifact not transport or fabricated digest
+lower 296 - provenance limitations explicitly reported
+lower 297 - raw include lines and coordinates retained
+lower 298 - length framed identity resists delimiter collision
+lower 299 - dangling start rejected before AIR
+lower 300 - same semantic admission and diagnostics in lower port
+lower 301 - larger input never lowered as selected prefix
+lower 302 - correlation immutable
+PERFORMANCE_CORE n=1 visits=16 references=2 provenance=6 elapsed_ns=96835 java=21.0.12.1 os=Linux heap_used=28110216
+PERFORMANCE_CORE n=64 visits=457 references=65 provenance=195 elapsed_ns=587687 java=21.0.12.1 os=Linux heap_used=29172528
+PERFORMANCE_CORE n=128 visits=905 references=129 provenance=387 elapsed_ns=788841 java=21.0.12.1 os=Linux heap_used=29172528
+PERFORMANCE_CORE n=1024 visits=7177 references=1025 provenance=3075 elapsed_ns=4323515 java=21.0.12.1 os=Linux heap_used=31269104
+PERFORMANCE_CORE n=2048 visits=14345 references=2049 provenance=6147 elapsed_ns=8376580 java=21.0.12.1 os=Linux heap_used=35462968
+LOWER_TESTS=585
+LOWER_PERFORMANCE_TESTS=45
+[INFO]
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-core ---
+[INFO]
+[INFO] --- jar:3.4.2:test-jar (independent-test-fixtures) @ cobol-lower-core ---
+[INFO]
+[INFO] -------------< io.github.gustavo2358:cobol-lower-adapters >-------------
+[INFO] Building cobol-lower-adapters 0.1.0-SNAPSHOT                       [3/3]
+[INFO]   from adapters/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-adapters ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/cobol-lower/adapters/src/main/resources
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-adapters ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 6 source files with javac [debug release 21] to target/classes
+[INFO]
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-adapters ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-adapters ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug release 21] to target/test-classes
+[INFO]
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-adapters ---
+[INFO]
+[INFO] --- exec:3.5.0:java (decoder-contract-suite) @ cobol-lower-adapters ---
+[WARNING]
+java.lang.AssertionError: CP4 valid prefix plus trailing input must not become a successful Publication
+    at io.github.gustavo2358.lower.adapters.testing.VerticalSuite.check (VerticalSuite.java:22)
+    at io.github.gustavo2358.lower.adapters.testing.VerticalSuite.run (VerticalSuite.java:74)
+    at io.github.gustavo2358.lower.adapters.testing.DecoderSuite.main (DecoderSuite.java:193)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doMain (ExecJavaMojo.java:375)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:364)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:286)
+    at java.lang.Thread.run (Thread.java:1583)
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO]
+[INFO] cobol-lower ........................................ SUCCESS [  0.001 s]
+[INFO] cobol-lower-core ................................... SUCCESS [  0.832 s]
+[INFO] cobol-lower-adapters ............................... FAILURE [  1.245 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.158 s
+[INFO] Finished at: 2026-09-06T20:37:39-03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.0:java (decoder-contract-suite) on project cobol-lower-adapters: An exception occurred while executing the Java class. CP4 valid prefix plus trailing input must not become a successful Publication -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :cobol-lower-adapters
+FAIL command exit 1: ['mvn', '-B', '-ntp', '-Dmaven.repo.local=/tmp/work-lower-001.nucAJ2/m2', '-Dlower.performance=true', 'verify']

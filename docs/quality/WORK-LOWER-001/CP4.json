@@ -1,0 +1,596 @@
+{
+  "schema_version": 1,
+  "template": false,
+  "work_item": "WORK-LOWER-001",
+  "checkpoint": "CP4",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "feat/first-entry-goback-slice",
+  "pull_request": 2,
+  "base_commit": "d3867118e51a0654dcd995ae04e26ed68d124e99",
+  "reviewed_head": "d3867118e51a0654dcd995ae04e26ed68d124e99",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "multi-checkpoint",
+  "authorization_reference": "docs/quality/WORK-LOWER-001/CP4-contract.md",
+  "previous_certified_checkpoint": {
+    "checkpoint": "CP3",
+    "commit": "d3867118e51a0654dcd995ae04e26ed68d124e99",
+    "evidence": "docs/quality/WORK-LOWER-001/CP3.json",
+    "remote_receipt": "docs/quality/WORK-LOWER-001/CP3-remote.json"
+  },
+  "certified_commit": null,
+  "candidate_diff_sha256": "812564c15d924d4129ad14e6679681ed93185122867fdcef701e7dae335da586",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-001/CP4.json",
+    "docs/work/active/WORK-LOWER-001/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": ".github/workflows/checkpoint.yml",
+        "sha256": "fb63769b3304cae3ac29b5aa1f53d78d73524b08bd6d744c1668e6c5fe7e4ab0",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "6b7659aa53f1868a943d379abbd1e81b04c49f0b23264d750de865a27a903408",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "6cacef74b24f9299b601ce162bf5866cb960d4bfafb7a163ba37482d8e59b7df",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+        "sha256": "3c95d2ae2936f83bf67305c73b34c391ea563aa95e814d1504f69f901975c1f6",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "8df795bafb43f4878a8ae21286ab0742d893e564679d079b3461066c73d6d7e7",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "7d499d00b48e5f319bdb0818cf7dbdc3a1cd5f25d08582fc2e0bbf2dd38fa6e7",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/air-target-contract.md",
+        "sha256": "3b35272c5460c632e30971227d4928d8317e8cdaaaf3ecbe00e918eed1b369ea",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/coverage-readiness-uncertainty.md",
+        "sha256": "4b116f08629dc12ca3d7d765e90cfa4e16ebc00342d64d3598ad19164048721d",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "05edf47174a37c6fc59d057b83f549584915df59ade0ae485adde0ef1c239e1a",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/identity-and-provenance.md",
+        "sha256": "0a4baf320bd92e695e1868b9c47e70c872bf717c2d9c5e4f9e0aa4d4c772c75d",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/semantic-input-contract.md",
+        "sha256": "2551665877212401a07759fae658a3ad73e07fb07414200f6198c7c4597d2fee",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/domain/validation-and-results.md",
+        "sha256": "0f3995559f2036000ef9ccaae9527206eb17f365eb7ce75d3159faf52f662446",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "962a8f5d985ecc7855dd076168d404aac6d520025484984cccd0f63cddb4b360",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "00fc5133eb837f37c671a530778bb7317ab7dedfd37034f5aa8dbea1f3306194",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "d1d7e1656436af0efa1ac4dca9a642a265147eb8f28305af0b7cbbab0211e8b3",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "f80bce4c329d3a9884d72e5201365e7d97fe06924d3fc937d08ae0c3e7c0303e",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/observability-and-input-safety.md",
+        "sha256": "079f25456ceea70a9f636ba70d15c784ea2a69cd5630c4f63e9d0211bc666cf9",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "4d5c27526affc7c62327d85cd87b902b1e227fd06d269349eab6e730d027dec0",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "b1bafc29e64f3e100f3459be9ed8a46fd7df4d93e169ccf0c0a3bd2bf749ec6d",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/evals/first-slice-oracle.md",
+        "sha256": "e2908eccb6f32d57b81156f270f278d107f970ffe88fb3b10a3fe9a13f88af2f",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/evals/fixtures.md",
+        "sha256": "36ff611956701afc0054e827df04df851dae9c2e17eb601337d691f16661f460",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-001/CP4-contract.md",
+        "sha256": "edfbd9ed3607e6f359154dabc8143dd1dfcc9cc039c5ee458a4d647bb8d008e4",
+        "git_revision": null
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-001/CP4-manifest.yaml",
+        "sha256": "5388bdc636107207df7cff8ecabfcf5266f0ec31aab0a35a35578d1ea6896f10",
+        "git_revision": null
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "5b4f5dba5d23ae2245b634c355839aec4746526311c2f16558f593f26486f651",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/templates/work-item.schema.json",
+        "sha256": "83e131bc11f1b145f2c9b2b2bca0fed053e120fc369dff88858d730e3e693fae",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/eval.md",
+        "sha256": "c1bc6aa36ebce7fae9c876cd72663406377969ea5616806d4b6fd0fc8169ccfd",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/plan.md",
+        "sha256": "531cad9e7e44e2b1e4e0285e8060fdf95f0d6af1a810113b01122a14737699cd",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/spec.md",
+        "sha256": "6cb873d705cac1ea8fa4ddb0759f7eae3b4be32aae520d9f8dda30e2dab16283",
+        "git_revision": "d3867118e51a0654dcd995ae04e26ed68d124e99"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1200
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component docs",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component architecture",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component semantic",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 779,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component performance",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 95,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component full",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component git",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "harness-tests",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator; component harness-tests",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 73,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "gate": "fast",
+      "required": false,
+      "command": "python3 scripts/harness/run.py fast",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; pinned air-java; component executed by canonical full aggregator",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-fast.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "CP4-FULL-SKIP",
+      "mutation": "skip performance in FULL_ORDER execution",
+      "expected_oracle": "test_all_required_components_once and test_failed_leaf_propagates",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "test_all_required_components_once and test_failed_leaf_propagates",
+      "baseline_digest": "8881840dc32cd1dc56c09363d956142ec55edab0219a53f7dce7ccb14135573d",
+      "restored_digest": "8881840dc32cd1dc56c09363d956142ec55edab0219a53f7dce7ccb14135573d",
+      "digest_scope": "scripts/harness/full_checks.py",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 -m unittest discover -s scripts/harness/tests -p test_full.py -v",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP4-FULL-SKIP-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-FULL-SKIP-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-FULL-SKIP-restored.log"
+      ]
+    },
+    {
+      "id": "CP4-PREFIX",
+      "mutation": "ignore extra byte when it is whitespace; accept bounded valid prefix",
+      "expected_oracle": "valid prefix plus trailing input must not become a successful Publication",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "valid prefix plus trailing input must not become a successful Publication",
+      "baseline_digest": "7f79277c9dbfb95540d63c2c2d1937bd82b3af4c7e3b124698fefdbce19bbc6f",
+      "restored_digest": "7f79277c9dbfb95540d63c2c2d1937bd82b3af4c7e3b124698fefdbce19bbc6f",
+      "digest_scope": "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP4-PREFIX-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-PREFIX-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-PREFIX-restored.log"
+      ]
+    },
+    {
+      "id": "CP4-CERTIFICATE",
+      "mutation": "omit certificate_errors from explicit published Git mode",
+      "expected_oracle": "test_published_git_rejects_uncertified_record",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "test_published_git_rejects_uncertified_record: RuntimeError not raised",
+      "baseline_digest": "89ec1873d6efc5025e50847ca6feff19c2fa40a66598fb2d8596864daff6f3d7",
+      "restored_digest": "89ec1873d6efc5025e50847ca6feff19c2fa40a66598fb2d8596864daff6f3d7",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 -m unittest discover -s scripts/harness/tests -p test_full.py -v",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP4-CERTIFICATE-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-CERTIFICATE-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP4-CERTIFICATE-restored.log"
+      ]
+    },
+    {
+      "id": "DOC-LINK",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "LINK README.md: missing.md",
+      "baseline_digest": "b8d11c1e5b3eaa7e88c02dcc327d5422edcae24b4f4ed9ce3582809175c53cca",
+      "restoration_status": "RESTORED",
+      "restored_digest": "b8d11c1e5b3eaa7e88c02dcc327d5422edcae24b4f4ed9ce3582809175c53cca",
+      "green_exit_code": 0,
+      "mutation": "DOC-LINK controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "LINK",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "DOC-INVARIANT",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "INVARIANT EVAL-LWR-001: INV-LWR-999",
+      "baseline_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796",
+      "restoration_status": "RESTORED",
+      "restored_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796",
+      "green_exit_code": 0,
+      "mutation": "DOC-INVARIANT controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "INVARIANT",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "DOC-ACTIVE-COMPLETED",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "LIFECYCLE active WORK-LOWER-001: completed; REGISTRY WORK-LOWER-001",
+      "baseline_digest": "dc3938b7e73918c3e2eedd33ca3e373001db960d0c74a23235a50cb2b7625cde",
+      "restoration_status": "RESTORED",
+      "restored_digest": "dc3938b7e73918c3e2eedd33ca3e373001db960d0c74a23235a50cb2b7625cde",
+      "green_exit_code": 0,
+      "mutation": "DOC-ACTIVE-COMPLETED controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "LIFECYCLE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "DOC-MUST-READ",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "MUST_READ WORK-LOWER-001: docs/missing.md",
+      "baseline_digest": "dc3938b7e73918c3e2eedd33ca3e373001db960d0c74a23235a50cb2b7625cde",
+      "restoration_status": "RESTORED",
+      "restored_digest": "dc3938b7e73918c3e2eedd33ca3e373001db960d0c74a23235a50cb2b7625cde",
+      "green_exit_code": 0,
+      "mutation": "DOC-MUST-READ controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "MUST_READ",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "ARCH-PATH-API-BYTECODE",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_BYTECODE forbidden type/member/annotation; ARCH_API forbidden signature",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-API-BYTECODE controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_BYTECODE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "ARCH-PATH-INTERNAL",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_BYTECODE forbidden type/member/annotation",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-INTERNAL controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_BYTECODE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "ARCH-PATH-SOURCE",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_SOURCE forbidden dependency",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-SOURCE controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_SOURCE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "RETURN-HALT",
+      "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)",
+      "expected_oracle": "typed GOBACK must be Return, never Halt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt",
+      "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "6a0f6aa638dba293bb48d1e61337bbaa4e0b6540dc973c2439382e157ef0f335",
+      "red_output_sha256": "0ae4eec0cec678bc29c7d153da2b7fa02f63fcdb393685500bf62b4452cfd79e",
+      "restored_output_sha256": "1f015278bb6fbcc7931b2c3005d74d5704782bc62c0e759c8b8a9f922248c7af",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "OPEN-COMPLETE",
+      "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE",
+      "expected_oracle": "alternative entry inventory stays PARTIAL",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL",
+      "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "694484a53ef2c6c14c86def6bf544346d661262150c26e66e96814002e40575a",
+      "red_output_sha256": "a9b1d5a009ec9f4a53168b9a155cd253985ad27ba1cb33787ecf81a78902ba1f",
+      "restored_output_sha256": "f1db9f9c3a3a84345a82bf3c75495f186527ed0adda949c88eaa8467fb8cc904",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    },
+    {
+      "id": "INDEX-SCAN",
+      "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }",
+      "expected_oracle": "reference ledger N+1, no repeated scan",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan",
+      "baseline_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff",
+      "restored_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "b0d6cc8084cf84388968251c9502a832e3279bed79760a66031f41f6ddd63b93",
+      "red_output_sha256": "36417cefa2e4c9b7ee733c8e3c35ce14e29b85712a34c19d04fceb9bd503b4c1",
+      "restored_output_sha256": "c51920af0a20b5bf17fc2271c6280a8766010709b19c2ec210e581e4f08b9501",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP4-regression-full.log"
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": "CP3",
+      "guarantees": [
+        "CP0..CP3 cheap gates and complete available semantic suite rerun inside full",
+        "779 semantic assertions (540 core + 239 adapter), 95 additional performance assertions (45 core + 50 adapter)",
+        "Performance invocation reruns semantic assertions: 874 total; 73 harness tests",
+        "Six focal gate/semantic/cost mutations and seven documentary/architecture mutations restored; full repeated after published Git certificate finding"
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "kind": "self-review",
+    "reviewer_context": "codex-root-WORK-LOWER-001-CP4",
+    "evidence": [
+      "docs/quality/WORK-LOWER-001/CP4-review.md"
+    ],
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "Structural counters cover instrumented traversal/lookup and physical validation, not every internal Jackson/JDK action; time/heap are telemetry, no throughput SLA.",
+    "Decoder materializes a bounded complete JSON tree before typed projection; not a streaming implementation.",
+    "N>1 inventories remain UNSUPPORTED_SLICE with full input retained, never a capability expansion.",
+    "Canonical identity/provenance/dimensional limitations of CP3 remain; no AIR writer or CFG integration.",
+    "Full local certification precedes commit and cannot presume remote full success; exact pushed SHA must pass before CP5.",
+    "Self-review only; final human review pending."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true,
+    "verification_command": "python3 scripts/harness/run.py certify --evidence docs/quality/WORK-LOWER-001/CP4.json"
+  }
+}

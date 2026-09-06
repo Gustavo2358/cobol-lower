@@ -39,6 +39,10 @@ public final class SpJsonDecoder {
         public Decoded { Objects.requireNonNull(input); unsupportedVariants = List.copyOf(unsupportedVariants); }
     }
     public record Rejected(Diagnostic diagnostic) implements Result { }
+    public record Statistics(long bytesProcessed, long jsonNodesVisited, long physicalValuesVisited) { }
+    public record Measurement(Result result, Statistics statistics) {
+        public Measurement { Objects.requireNonNull(result); Objects.requireNonNull(statistics); }
+    }
 
     private final Limits limits;
     private final ObjectMapper mapper;
@@ -61,8 +65,19 @@ public final class SpJsonDecoder {
     }
 
     public Result decode(byte[] bytes) {
+        return decodeMeasured(bytes).result();
+    }
+
+    public Measurement decodeMeasured(byte[] bytes) {
+        var meter = new Meter();
+        var result = decodePayload(bytes, meter);
+        return new Measurement(result, new Statistics(meter.bytes, meter.nodes, meter.physical));
+    }
+
+    private Result decodePayload(byte[] bytes, Meter meter) {
         if (bytes == null) return reject(Code.INPUT_ERROR, "$");
         if (bytes.length > limits.maxBytes()) return reject(Code.IMPLEMENTATION_LIMIT, "$");
+        meter.bytes = bytes.length;
         try {
             // Reject non-UTF-8 encodings even if the JSON library can autodetect them.
             StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
@@ -70,15 +85,15 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            var pending = new ArrayDeque<JsonNode>(); pending.push(node); int count = 0;
+            var pending = new ArrayDeque<JsonNode>(); pending.push(node);
             while (!pending.isEmpty()) {
-                if (++count > limits.maxNodes()) return reject(Code.IMPLEMENTATION_LIMIT, "$");
+                if (++meter.nodes > limits.maxNodes()) return reject(Code.IMPLEMENTATION_LIMIT, "$");
                 pending.pop().elements().forEachRemaining(pending::push);
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
             if (!node.path("schema").textValue().equals("cobol-semantic-product") || !node.path("contractVersion").textValue().equals("1.1.0")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema,contractVersion");
             var wire = mapper.treeToValue(node, Wire.Document.class);
-            requirePhysical(wire, "$");
+            requirePhysical(wire, "$", meter);
             var input = Materialize.input(wire);
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
                 .map(SpInput.OtherStatement.class::cast).map(v -> new UnsupportedVariant(v.header().id(), v.variant())).toList();
@@ -101,22 +116,24 @@ public final class SpJsonDecoder {
         return new Rejected(new Diagnostic(code, "physical", location));
     }
 
-    private static void requirePhysical(Object value, String location) {
+    private static void requirePhysical(Object value, String location, Meter meter) {
         if (value == null) throw new PhysicalShape(location);
+        meter.physical++;
         if (value instanceof List<?> list) {
-            for (int i = 0; i < list.size(); i++) requirePhysical(list.get(i), location + "/" + i);
+            for (int i = 0; i < list.size(); i++) requirePhysical(list.get(i), location + "/" + i, meter);
         } else if (value.getClass().isRecord()) {
             for (var component : value.getClass().getRecordComponents()) {
                 try {
                     Object nested = component.getAccessor().invoke(value);
                     if (nested != null || component.getAnnotation(Wire.Nullable.class) == null)
-                        requirePhysical(nested, location + "/" + component.getName());
+                        requirePhysical(nested, location + "/" + component.getName(), meter);
                 } catch (ReflectiveOperationException ex) {
                     throw new IllegalStateException("wire record inaccessible", ex);
                 }
             }
         }
     }
+    private static final class Meter { long bytes; long nodes; long physical; }
     private static final class PhysicalShape extends RuntimeException {
         private static final long serialVersionUID = 1L;
         PhysicalShape(String location) { super(location); }

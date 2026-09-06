@@ -220,7 +220,7 @@ checkpoints:
   - EVAL-LWR-021
   - EVAL-LWR-022
   - EVAL-LWR-024
-  status: ready_for_review
+  status: active
 - id: CP5
   goal: Revisar todas as claims e fechar documentação do primeiro slice com evidência
     ligada ao head final.

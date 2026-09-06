@@ -1,6 +1,6 @@
 # Gates: contratos e estado real
 
-**CP0 implementa executores de docs, architecture, fast, semantic e git**, com positivos e contracasos; estado por gate em [gates.json](gates.json) e evidência de checkpoint em [CP0](../quality/WORK-LOWER-001/CP0.json). Enforcement automatizado desses mecanismos não certifica antecipadamente o checkpoint nem o slice completo. Performance/full/transport/integration continuam `SPECIFIED_NOT_IMPLEMENTED`. Execução, certificação local e resultado remoto são estados distintos.
+**CP0 implementa executores de docs, architecture, fast, semantic e git**, com positivos e contracasos; estado por gate em [gates.json](gates.json) e evidência em [CP0](../quality/WORK-LOWER-001/CP0.json). [CP4](../quality/WORK-LOWER-001/CP4.json) acrescenta performance (ledger estrutural e mutação de scan restaurada) e full (agregação executada, contracasos e challenge restaurado). Transport/integration continuam `SPECIFIED_NOT_IMPLEMENTED`. Enforcement não certifica antecipadamente checkpoint/slice; execução, certificação local e resultado remoto são estados distintos.
 
 Entrypoints: `python3 scripts/harness/run.py <gate>`. Java 21, Maven e dependências Python fixadas em `scripts/harness/requirements.txt` são necessários. Configurar `LOWER_BUILD_ROOT` para diretório temporário isolado e executar `bootstrap` para resolver/construir/testar air-java pelo SHA do lock. `semantic` executa o build e exige contagem de assertions não zero; `architecture` examina sources, API, bytecode/jdeps e árvore Maven. `harness-tests` exercita os contracasos; `python3 scripts/harness/challenge.py` demonstra restaurações. `certify` exige evidência pre_commit completa mais digest/index/FREEZE; `verify-commit --commit <SHA>` resolve trailer e diff publicado; `remote --commit <SHA>` confirma o único PR, push e checks do SHA.
 
@@ -17,6 +17,10 @@ G-DOCS verifica o grafo documental corrente; os handoffs em `docs/sources/histor
 | `integration` / G-INTEGRATION | Composição explicitamente autorizada preserva Publication/controle/diagnósticos. | `integration_followup` |
 | `full` / G-FULL | Agrega todos os gates obrigatórios do perfil/work item e challenge final; especificar manifestamente o conjunto. | `first_slice` |
 | `git` / G-GIT | Branch/base/head/working tree/PR e evidências de review/merge com fontes confiáveis; não consulta remota no G-DOCS. | `all` |
+
+`performance` executa as suítes core/adapter de N/2N com contagem própria não-zero, além da regressão semântica. `full` exige o conjunto first-slice congelado e agrega docs, semantic, performance, architecture, git, harness-tests e challenge, sem recursão. `challenge` inclui os sete desafios documentais/arquiteturais e as mutações Return/Halt, cobertura e custo de lookup em cópias isoladas; exige restauração e segundo GREEN. Essas cópias não alteram o checkout certificado.
+
+No checkout publicado, `full --commit <SHA completo>` verifica também HEAD exato, worktree limpa, certificado/trailer/digest/FREEZE e PR/head. O modo local conserva preflight de branch/escopo/PR; não aceita detached como fallback. O CI executa bootstrap, full publicado e verify-commit; sua própria conclusão só é consultada depois por remote, nunca presumida pelo job em andamento.
 
 ## Estado de execução e enforcement
 

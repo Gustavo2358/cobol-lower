@@ -4,6 +4,7 @@ on:
     branches: ['feat/first-entry-goback-slice']
 permissions:
   contents: read
+  pull-requests: read
 jobs:
   checkpoint:
     runs-on: ubuntu-latest
@@ -26,15 +27,7 @@ jobs:
         run: python3 -m pip install -r scripts/harness/requirements.txt
       - name: Fixed AIR snapshot and upstream tests
         run: python3 scripts/harness/run.py bootstrap
-      - name: Documentary gate
-        run: python3 scripts/harness/run.py docs
-      - name: Semantic gate
-        run: python3 scripts/harness/run.py semantic
-      - name: Architecture gate
-        run: python3 scripts/harness/run.py architecture
-      - name: Harness positive and counterexamples
-        run: python3 scripts/harness/run.py harness-tests
-      - name: Restored documentary and architecture challenge
-        run: python3 scripts/harness/challenge.py
+      - name: Full first-slice gates and restored challenge
+        run: python3 scripts/harness/run.py full --commit "$GITHUB_SHA"
       - name: Published candidate and certificate
         run: python3 scripts/harness/run.py verify-commit --commit "$GITHUB_SHA"

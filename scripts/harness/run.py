@@ -11,6 +11,7 @@ import sys
 from architecture import architecture_errors
 from checks import certificate_errors, digest, document_errors, read_data, remote_errors
 from git_checks import candidate_errors, evidence_path, git, preflight
+from full_checks import execute_full, performance_counts
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -83,6 +84,39 @@ def semantic(extra=()):
     if len(counts) != expected_suites or min(counts) <= 0:
         raise RuntimeError("semantic tests absent/zero")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
+    return output
+
+
+def performance():
+    output = semantic(("-Dlower.performance=true",))
+    print("PERFORMANCE_TEST_COUNT=" + str(performance_counts(output)))
+
+
+def git_gate(record, commit=None):
+    if commit is None:
+        fail_on(preflight(ROOT, record))
+    else:
+        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, commit))
+        if git(ROOT, "rev-parse", "HEAD").decode().strip() != commit or git(ROOT, "status", "--porcelain"):
+            raise RuntimeError("GIT_PUBLISHED_HEAD_OR_WORKTREE")
+    check_pr(record, commit)
+
+
+def challenge():
+    run([sys.executable, "scripts/harness/challenge.py"])
+    run([sys.executable, "scripts/harness/semantic_challenge.py"])
+
+
+def full(record, commit=None):
+    execute_full(record["frozen_contract"]["required_gates"], {
+        "docs": lambda: fail_on(document_errors(ROOT)),
+        "semantic": semantic,
+        "performance": performance,
+        "architecture": architecture,
+        "git": lambda: git_gate(record, commit),
+        "harness-tests": lambda: run([sys.executable, "-m", "unittest", "discover", "-s", "scripts/harness/tests", "-v"]),
+        "challenge": challenge,
+    })
 
 
 def architecture():
@@ -147,7 +181,7 @@ def remote(record, sha):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return"])
+    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "performance", "full", "challenge", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return"])
     parser.add_argument("--evidence")
     parser.add_argument("--commit")
     args = parser.parse_args()
@@ -157,7 +191,7 @@ def main():
         else:
             checkpoint = read_data(ROOT / "docs/work/active/WORK-LOWER-001/work-item.yaml")["authorization"]["current_checkpoint"]
             args.evidence = f"docs/quality/WORK-LOWER-001/{checkpoint}.json"
-    if args.gate in ("verify-commit", "remote") and args.commit:
+    if args.commit:
         record = json.loads(git(ROOT, "show", args.commit + ":" + args.evidence))
     else:
         record = read_data(ROOT / args.evidence)
@@ -172,13 +206,18 @@ def main():
         architecture()
     elif args.gate == "semantic":
         semantic()
+    elif args.gate == "performance":
+        performance()
+    elif args.gate == "full":
+        full(record, args.commit)
+    elif args.gate == "challenge":
+        challenge()
     elif args.gate == "challenge-return":
         semantic(("-Dchallenge.halt=true",))
     elif args.gate == "harness-tests":
         run([sys.executable, "-m", "unittest", "discover", "-s", "scripts/harness/tests", "-v"])
     elif args.gate == "git":
-        fail_on(preflight(ROOT, record))
-        check_pr(record)
+        git_gate(record, args.commit)
     elif args.gate in ("certify", "verify-commit"):
         if args.gate == "verify-commit" and not args.commit:
             raise RuntimeError("--commit required")

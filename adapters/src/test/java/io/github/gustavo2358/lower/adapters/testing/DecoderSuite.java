@@ -190,6 +190,9 @@ public final class DecoderSuite {
         check(decoded(bytes(reordered(golden))).input().equals(input), "property order is immaterial");
         var renamed = golden.deepCopy(); ((ObjectNode)renamed.path("unit")).put("canonicalProgramName", "OTHER");
         check(!decoded(bytes(renamed)).input().statements().get(0).header().id().equals(goback.header().id()), "same local handle in distinct namespace is distinct");
-        System.out.println("LOWER_TESTS=" + (assertions + AdmissionAdapterSuite.run(raw)));
+        int semantic = assertions + AdmissionAdapterSuite.run(raw) + VerticalSuite.run(raw);
+        int performance = Boolean.getBoolean("lower.performance") ? DecoderPerformanceSuite.run(raw) : 0;
+        System.out.println("LOWER_TESTS=" + (semantic + performance));
+        if (Boolean.getBoolean("lower.performance")) System.out.println("LOWER_PERFORMANCE_TESTS=" + performance);
     }
 }

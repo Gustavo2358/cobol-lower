@@ -63,6 +63,9 @@ public final class BoundarySuite {
         }
         require(ManualAir.create(false, false).equals(baseline), "independent construction deterministic");
         require(count > 0, "nonzero executed assertions");
-        System.out.println("LOWER_TESTS=" + (count + InputSuite.run() + LoweringSuite.run()));
+        int semantic = count + InputSuite.run() + LoweringSuite.run();
+        int performance = Boolean.getBoolean("lower.performance") ? PerformanceSuite.run() : 0;
+        System.out.println("LOWER_TESTS=" + (semantic + performance));
+        if (Boolean.getBoolean("lower.performance")) System.out.println("LOWER_PERFORMANCE_TESTS=" + performance);
     }
 }
