@@ -1,6 +1,6 @@
-# WORK-LOWER-001 — Especificação preparada
+# WORK-LOWER-001 — Especificação
 
-**Estado:** ready_for_authorization. Não iniciou implementação. A autorização atual cobre somente preparar o harness.
+**Estado:** active. Autorização explícita de 2026-09-06 para CP0..CP5 em modo multi-checkpoint, registrada no manifesto e no state. O contrato semântico preparado permanece inalterado.
 
 ## Problema
 

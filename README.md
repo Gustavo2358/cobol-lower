@@ -1,6 +1,6 @@
 # cobol-lower
 
-**Harness documental v1 — 6 de setembro de 2026.** Este pacote prepara o repositório do produtor COBOL da Analysis IR. Não contém Java, POM, scripts, workflows executáveis, codecs ou implementação de lowering. JSON/YAML neste pacote são registros e contratos do harness, não payloads de produção.
+**Bootstrap do primeiro slice — 6 de setembro de 2026.** O repositório partiu do harness documental v1. WORK-LOWER-001 está autorizado e CP0 implementa build, boundary AIR e gates; a evidência distingue certificação local de confirmação remota. Não há decoder SP nem implementação de lowering neste checkpoint.
 
 O objetivo do produto é transformar fatos públicos do COBOL Semantic Product em uma `Publication` AIR rastreável, determinística e conservadora quando necessário. A aplicação não é outro parser COBOL, não calcula CFG e não implementa dataflow.
 
@@ -14,7 +14,7 @@ proleap-poc → Semantic Product → cobol-lower → air-java::Publication → a
 
 Para agentes, [AGENTS.md](AGENTS.md) é a entrada. Para humanos, leia [arquitetura](ARCHITECTURE.md), [primeiro slice](docs/domain/first-slice-entry-goback.md) e [trabalho](docs/work/index.md). O [índice](docs/index.md) organiza o restante por assunto; não é uma lista de leitura obrigatória.
 
-O primeiro trabalho de implementação está **preparado, não autorizado**, em [WORK-LOWER-001](docs/work/proposals/WORK-LOWER-001/spec.md). Seus checkpoints têm objetivos, testes, gates e condições de parada. Criar este harness não autoriza executá-los. Nenhum work item de implementação está ativo.
+O primeiro trabalho de implementação está autorizado em [WORK-LOWER-001](docs/work/active/WORK-LOWER-001/spec.md), CP0..CP5, modo multi-checkpoint, conforme pedido explícito de 2026-09-06. CP0 só encerra UNTRUSTED BOOTSTRAP após certificação, commit/push e remoto green. O [state](docs/work/active/WORK-LOWER-001/state.md) registra execução e limitações.
 
 ## Primeiro resultado demonstrável
 
@@ -33,7 +33,7 @@ Essa admissão estreita é um perfil inicial explícito, não um filtro que esco
 
 ## Garantias e limites desta entrega
 
-Os [invariantes](docs/architecture/invariants.md) têm evals e gates correspondentes. Os [gates](docs/engineering/gates.md) estão especificados, **não implementados**. Seu estado inicial é `SPECIFIED_NOT_IMPLEMENTED`; ausência de executor nunca equivale a PASS. A checagem documental realizada sobre o ZIP está descrita em [validação do pacote](docs/quality/harness-validation.md), sem alegar testes de software inexistente.
+Os [invariantes](docs/architecture/invariants.md) têm evals e gates correspondentes. O bootstrap autorizado implementa os mecanismos de docs/architecture/semantic/git e seus contracasos; [gates](docs/engineering/gates.md) distingue enforcement, execução e certificação. Performance/full e o lowering completo permanecem pendentes. A checagem histórica do ZIP em [validação do pacote](docs/quality/harness-validation.md) não substitui testes do checkout.
 
 Os snapshots e fontes consultados estão no [source lock](docs/sources/sources.lock.json). O [mapa de absorção](docs/sources/handoff-integration.md) distingue o que veio do handoff, das decisões da conversa e das escolhas deste harness. A [matriz de paridade](docs/sources/proleap-harness-parity.md) registra o que foi aproveitado do ProLeap e o que não se aplica a um lowerer.
 

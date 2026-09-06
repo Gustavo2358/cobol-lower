@@ -1,0 +1,40 @@
+name: Checkpoint verification
+on:
+  push:
+    branches: ['feat/first-entry-goback-slice']
+permissions:
+  contents: read
+jobs:
+  checkpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LOWER_BUILD_ROOT: ${{ runner.temp }}/lower-build
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Harness dependencies
+        run: python3 -m pip install -r scripts/harness/requirements.txt
+      - name: Fixed AIR snapshot and upstream tests
+        run: python3 scripts/harness/run.py bootstrap
+      - name: Documentary gate
+        run: python3 scripts/harness/run.py docs
+      - name: Semantic gate
+        run: python3 scripts/harness/run.py semantic
+      - name: Architecture gate
+        run: python3 scripts/harness/run.py architecture
+      - name: Harness positive and counterexamples
+        run: python3 scripts/harness/run.py harness-tests
+      - name: Restored documentary and architecture challenge
+        run: python3 scripts/harness/challenge.py
+      - name: Published candidate and certificate
+        run: python3 scripts/harness/run.py verify-commit --commit "$GITHUB_SHA"

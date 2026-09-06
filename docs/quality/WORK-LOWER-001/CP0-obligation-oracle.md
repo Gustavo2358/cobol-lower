@@ -1,0 +1,7 @@
+# CP0 — Contracaso de preservação de obrigações
+
+Durante VERIFY, o teste inicial exigiu SEMANTIC_OBLIGATION não vazio na fixture mínima. Essa cardinalidade não é requisito do FREEZE nem fato do runtime fixado. A delegação integral já passou; o teste adicional falhou com exit 1 em `semantic obligations remain visible`. A inspeção de ReferenceChecks.checkCapabilities e OperationChecks.returnOperation no air-java fixado mostra emissão condicional: Return vazio com uma entrada compatível não emite obrigação por si.
+
+Preservar obrigações continua obrigatório. Acrescentar um contracaso de teste com o mesmo shape AIR e uma declaração de perfil AIR-STRUCTURE@2 deve produzir SEMANTIC_OBLIGATION `profile`; o resultado da boundary deve conservá-la integralmente. AIR normativa, especificacao/10-perfis-de-conformidade.md §§1–3, exige evidência separada para o perfil; a declaração na fixture é input controlado do teste, nunca uma claim do cobol-lower. A baseline de Return, assinatura, contagens e invalidez de label permanece inalterada. Nenhuma regra upstream/produção ou expected de controle é alterado.
+
+Esta correção do arranjo de teste torna não vacuosa a prova congelada de preservação de obrigações. Não remove a assertion de obrigação: aplica-a à fixture que contém a condição emissora verificada. É refinamento dentro de CP0, sem necessidade de redesenhar contrato/invariante certificado (nenhum CP certificado). Adicionar ao FREEZE antes do novo arranjo executável.

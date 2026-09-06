@@ -2,13 +2,13 @@
 
 ## Item ativo
 
-**Nenhum work item de implementação ativo.** Esta entrega é um harness docs-only. Não criar Java, POM, scripts ou adapters a partir deste índice sem autorização.
+[WORK-LOWER-001](active/WORK-LOWER-001/spec.md): CP0 em revisão/certificação, UNTRUSTED BOOTSTRAP até commit/push e remoto green. Autorização explícita de 2026-09-06 para CP0..CP5 em modo multi-checkpoint; manifesto e [state](active/WORK-LOWER-001/state.md) registram o limite. Certificação local é registrada na evidência; nenhum recovery remoto é presumido.
 
 ## Próximo candidato
 
-[BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) está ready_for_authorization. A proposta [WORK-LOWER-001](proposals/WORK-LOWER-001/spec.md) contém manifesto, spec, seis checkpoints, evals e estado inicial factual. Ela não é tarefa já iniciada.
+[BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) está in_progress, vinculado ao único work item ativo. Demais candidatos permanecem sem autorização.
 
-Antes de começar, adotar/revisar o harness no repo e autorizar o checkpoint desejado. O agente promove a proposta para active conforme o [protocolo](../engineering/work-item-protocol.md), sem abrir PR a partir de um número antigo de outro repositório.
+Promoção registrada conforme o [protocolo](../engineering/work-item-protocol.md), sem duplicata em proposals.
 
 ## Mapas
 
@@ -16,4 +16,4 @@ Antes de começar, adotar/revisar o harness no repo e autorizar o checkpoint des
 
 ## Estado remoto
 
-Branch, PR e commit do repositório de destino não são conhecidos por este pacote. Nenhum merge/review local é presumido. Este arquivo não herda os PRs #27/#1 de outros projetos como o PR do cobol-lower.
+Base confirmada: origin/main em `14aaafc5051eb287af6a8f126e8eaff78e30e365`, merge do PR de preparação #1 deste repositório. Branch do trabalho: `feat/first-entry-goback-slice`. PR de implementação ainda não criado; nenhuma certificação/CI presumida.

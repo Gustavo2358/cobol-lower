@@ -22,8 +22,8 @@ O original foi preservado sem alteração em [history](history/handoff-cobol-low
 | 16 | Validação AIR | [documento](../domain/air-target-contract.md) | Reutilizar checker, conservar limites e não certificar tradução por green. |
 | 17 | Fixture AIR independente | [documento](../evals/first-slice-oracle.md) | Esperado manual antecede integração com frontend. |
 | 18 | TDD e adversariais | [documento](../evals/catalog.md) | Casos convertidos em evals estáveis com oracle/negativo explícitos. |
-| 19 | Critério primeiro sucesso | [documento](../work/proposals/WORK-LOWER-001/spec.md) | JSON real→AIR válida; sem output codec exigido neste slice. |
-| 20 | Fora de escopo | [documento](../work/proposals/WORK-LOWER-001/spec.md) | Demais capacidades no backlog, não autorizadas. |
+| 19 | Critério primeiro sucesso | [documento](../work/active/WORK-LOWER-001/spec.md) | JSON real→AIR válida; sem output codec exigido neste slice. |
+| 20 | Fora de escopo | [documento](../work/active/WORK-LOWER-001/spec.md) | Demais capacidades no backlog, não autorizadas. |
 | 21 | Transporte | [documento](../architecture/ports-and-adapters.md) | Core sem Jackson/Path; substituição arquivo/memória testável. |
 | 22 | E2E futuro | [documento](../product/ecosystem.md) | Parallel tracks e rendezvous explícito com CFG. |
 | 23 | Sem nova análise COBOL | [documento](../engineering/semantic-analysis-policy.md) | Regra central preservada e reforçada com fontes/contraexemplos. |

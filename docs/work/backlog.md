@@ -4,7 +4,7 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 
 | ID | Objetivo | Estado |
 | --- | --- | --- |
-| [BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) | Primeiro slice Entry/GOBACK → AIR Return | `ready_for_authorization` |
+| [BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) | Primeiro slice Entry/GOBACK → AIR Return | `in_progress` |
 | [BACKLOG-LOWER-002](backlog/BACKLOG-LOWER-002.md) | Sequenciamento e inventários executáveis maiores | `needs_discovery` |
 | [BACKLOG-LOWER-003](backlog/BACKLOG-LOWER-003.md) | Adapter AIR JSON de saída e prova interoperável | `candidate` |
 | [BACKLOG-LOWER-004](backlog/BACKLOG-LOWER-004.md) | Primeira integração com analysis-cfg | `candidate` |

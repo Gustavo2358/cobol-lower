@@ -1,6 +1,6 @@
 # WORK-LOWER-001 — Plano de checkpoints
 
-Seis checkpoints preparados, não autorizados. Todos seguem a [transação de sessão](../../../engineering/agent-session-protocol.md): no padrão, certificação e commit/push autorizados terminam em parada humana; no modo multi-checkpoint explicitamente autorizado, certificar, commit/push na mesma branch/PR e avançar somente sem stop condition e com próximo CP autorizado. As revisões focais abaixo integram REVIEW em ambos os modos; CP5 mantém parada humana final. Regressão cumulativa em todos os CPs; full/challenge em CP4 e CP5. As dependências externas são fixadas por SHA. Alteração dos nomes de módulos no CP0 exige atualizar o manifesto, não criar arquivos fora do scope silenciosamente.
+Seis checkpoints autorizados explicitamente em 2026-09-06 no modo multi-checkpoint; autoridade no manifesto/state. Todos seguem a [transação de sessão](../../../engineering/agent-session-protocol.md): no padrão, certificação e commit/push autorizados terminam em parada humana; no modo multi-checkpoint explicitamente autorizado, certificar, commit/push na mesma branch/PR e avançar somente sem stop condition e com próximo CP autorizado. As revisões focais abaixo integram REVIEW em ambos os modos; CP5 mantém parada humana final. Regressão cumulativa em todos os CPs; full/challenge em CP4 e CP5. As dependências externas são fixadas por SHA. Alteração dos nomes de módulos no CP0 exige atualizar o manifesto, não criar arquivos fora do scope silenciosamente.
 
 ## CP0 — Bootstrap reproduzível e target AIR independente
 

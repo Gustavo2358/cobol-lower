@@ -1,15 +1,17 @@
 schema_version: 1
 id: WORK-LOWER-001
 title: 'Primeiro slice: Semantic Product 1.1.0 para AIR Entry/Return'
-status: ready_for_authorization
+status: active
 risk: high
 goal: Produzir Publication AIR válida com Entry e Return a partir de fixture SP real,
   sem dependência de transporte no core.
 authorization:
-  state: not_granted
-  scope: documentation_preparation_only
-  current_checkpoint: null
-  authorized_checkpoints: []
+  state: granted
+  scope: WORK-LOWER-001 CP0..CP5, sequencialmente mediante certificação e checks remotos; sem merge/auto-merge ou expansão de capability.
+  execution_mode: multi-checkpoint
+  authority: Pedido explícito do usuário nesta sessão em 2026-09-06, seção Autorização, WORK-LOWER-001, CP0/CP1/CP2/CP3/CP4/CP5; review humano final do PR.
+  current_checkpoint: CP0
+  authorized_checkpoints: [CP0, CP1, CP2, CP3, CP4, CP5]
 backlog_ids:
 - BACKLOG-LOWER-001
 must_read:
@@ -85,6 +87,7 @@ evals:
 - EVAL-LWR-022
 - EVAL-LWR-024
 source_scope:
+- planned:.gitignore
 - planned:core/src/main/java
 - planned:adapters/src/main/java
 - planned:pom.xml
@@ -93,6 +96,7 @@ source_scope:
 - planned:scripts/harness
 - planned:.github/workflows
 test_scope:
+- planned:scripts/harness/tests
 - planned:core/src/test
 - planned:adapters/src/test
 docs_scope:
@@ -131,7 +135,7 @@ checkpoints:
   - EVAL-LWR-002
   - EVAL-LWR-003
   - EVAL-LWR-004
-  status: not_started
+  status: active
 - id: CP1
   goal: Capturar golden SP 1.1.0 real e materializar contrato interno sem transporte.
   depends_on:
@@ -235,7 +239,7 @@ checkpoints:
   - EVAL-LWR-024
   status: not_started
 git:
-  branch: null
+  branch: feat/first-entry-goback-slice
   pull_request: null
   suggested_branch: feat/first-entry-goback-slice
   one_pr_per_work_item: true

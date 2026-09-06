@@ -8,8 +8,11 @@
       "contract": "Links, anchors, IDs, JSON/YAML, registry/lifecycle, source lock e ausência de implementação não autorizada.",
       "activation": "docs",
       "negative_oracle": "Link ausente, ID quebrado, active completed ou fonte sem SHA deve falhar.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py docs",
+      "verification_scope": "CP0 bootstrap; complete first-slice evidence remains checkpoint-specific",
+      "evidence": "docs/quality/WORK-LOWER-001/CP0.json"
     },
     {
       "name": "architecture",
@@ -18,8 +21,11 @@
       "contract": "Source/imports, API, bytecode e dependências: core sem transportes/ProLeap/CFG/modelo AIR paralelo.",
       "activation": "bootstrap",
       "negative_oracle": "Introduzir dependência proibida e comprovar detector adequado; restaurar.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py architecture",
+      "verification_scope": "CP0 bootstrap; complete first-slice evidence remains checkpoint-specific",
+      "evidence": "docs/quality/WORK-LOWER-001/CP0.json"
     },
     {
       "name": "fast",
@@ -28,8 +34,11 @@
       "contract": "Agrega docs e architecture quando este existir; perfil docs-only usa docs e declara arquitetura runtime indisponível.",
       "activation": "bootstrap",
       "negative_oracle": "Não anunciar fast-runtime PASS sem architecture executor.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py fast",
+      "verification_scope": "CP0 bootstrap; complete first-slice evidence remains checkpoint-specific",
+      "evidence": "docs/quality/WORK-LOWER-001/CP0.json"
     },
     {
       "name": "semantic",
@@ -38,8 +47,11 @@
       "contract": "Testes reais input/core/adapters, oracle independente, AIR checker, readiness, provenance e determinismo; contagem >0.",
       "activation": "first_slice",
       "negative_oracle": "Return→Halt deve passar/falhar nos lugares esperados e nunca passar no oracle de tradução.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py semantic",
+      "verification_scope": "CP0 bootstrap; complete first-slice evidence remains checkpoint-specific",
+      "evidence": "docs/quality/WORK-LOWER-001/CP0.json"
     },
     {
       "name": "performance",
@@ -88,8 +100,11 @@
       "contract": "Branch/base/head/working tree/PR e evidências de review/merge com fontes confiáveis; não consulta remota no G-DOCS.",
       "activation": "all",
       "negative_oracle": "Metadata ausente não permite inferir aprovação/merge.",
-      "implementation_status": "SPECIFIED_NOT_IMPLEMENTED",
-      "entrypoint": null
+      "implementation_status": "AUTOMATED_VERIFIED",
+      "entrypoint": "scripts/harness/run.py",
+      "command": "python3 scripts/harness/run.py git",
+      "verification_scope": "CP0 bootstrap; complete first-slice evidence remains checkpoint-specific",
+      "evidence": "docs/quality/WORK-LOWER-001/CP0.json"
     }
   ],
   "profiles": {
