@@ -2,26 +2,26 @@
 
 ## Onde estamos
 
-Autorização explícita do usuário em 2026-09-06: `multi-checkpoint`, CP0..CP5, sequencialmente mediante certificação e checks remotos; review humano final. `current_checkpoint: CP1`, implementação e falsificação concluídas, regressão/certificação em curso. CP2..CP5 não iniciados.
+Autorização explícita de 2026-09-06: `multi-checkpoint`, CP0..CP5 sequenciais, certificação/checks remotos antes de avançar, review humano final. `current_checkpoint: CP2`, implementação/falsificações concluídas, regressão/certificação em curso. CP3..CP5 não iniciados.
 
-Branch `feat/first-entry-goback-slice`, [PR #2 Draft/open](https://github.com/Gustavo2358/cobol-lower/pull/2), base main `14aaafc5051eb287af6a8f126e8eaff78e30e365`. Working tree limpa no início de CP1; alterações atuais pertencem a este checkpoint.
+Branch `feat/first-entry-goback-slice`, [PR #2 Draft/open](https://github.com/Gustavo2358/cobol-lower/pull/2), base main `14aaafc5051eb287af6a8f126e8eaff78e30e365`. Working tree limpa na entrada do CP; alterações atuais pertencem a CP2.
 
 ## Último recovery plenamente certificado
 
-CP0: `1cc40112a7f57adb4a71861db8a101e6bec242dc`; [certificação](../../../quality/WORK-LOWER-001/CP0.json), [recibo remoto](../../../quality/WORK-LOWER-001/CP0-remote.json). Check `checkpoint`/github-actions/push concluído success no SHA exato, run 34062323376, check 101564913729, consulta 2026-09-06T21:55:31.726660+00:00. Dentro do prazo original até 22:05:08 UTC. CP0 estabeleceu a trusted execution boundary.
+CP1: `2e4c55afdaee3e31210f0e295a8e95b2d516ca00`, [certificação](../../../quality/WORK-LOWER-001/CP1.json), [recibo](../../../quality/WORK-LOWER-001/CP1-remote.json). Check checkpoint/github-actions/push success no SHA exato, run 34063640930/check 101568507628, consulta 2026-09-06T22:20:26.194146+00:00; dentro dos 1200 segundos do primeiro push.
 
-Commit inicial CP0 `98dbb60f204f42191fa1ee6f1a5b7caca89355ed` permanece preservado; workflow inválido foi corrigido e recertificado no mesmo checkpoint, sem rewrite.
+CP0: `1cc40112a7f57adb4a71861db8a101e6bec242dc`, [evidência](../../../quality/WORK-LOWER-001/CP0.json)/[recibo](../../../quality/WORK-LOWER-001/CP0-remote.json). Inicial `98dbb60f204f42191fa1ee6f1a5b7caca89355ed` preservado; remediação CI no próprio CP0, sem rewrite.
 
-## Verde conhecido
+## Verde cumulativo conhecido
 
-CP0: docs/architecture/semantic/git/fast exit 0; 58 testes do harness e 20 assertions AIR/boundary. Upstream air-java fixado: 172 checks. Oito falsificações com RED esperado, restauração e segundo GREEN. Review: self-review, sem revisor independente.
+CP1: docs/architecture/semantic/git/fast exit 0; 211 assertions (20 AIR + 191 decoder), 61 testes harness; 20 testes focais SP na captura offline, golden 2663 bytes intacto. Cinco falsificações focais e sete de docs/architecture restauradas com segundo GREEN. Coerção scalar→String encontrada/corrigida por contracaso. Self-review, sem revisor independente.
 
-## CP1
+## CP2 e próximo passo não iniciado
 
-Golden real capturado: 2663 bytes, sha256 7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed, 20 testes focais upstream PASS; [aquisição](../../../evals/fixture-intake.json). Snapshot imutável e DTO/decoder estrito implementados; 211 assertions cumulativas (20 AIR + 191 decoder), 61 testes harness. Fonte/provenance é dado, nunca arquivo a abrir pelo core.
+Porta interna AdmitInput/EntryGobackAdmission e driver FileAdmission implementados; ambos caminhos usam a mesma validação. ADMITTED é somente admissão, sem Publication. 439 assertions cumulativas (238 core + 201 adapters), 61 testes harness; cinco mutações focais e sete desafios docs/architecture restaurados com segundo GREEN. [FREEZE](../../../quality/WORK-LOWER-001/CP2-contract.md), [evidência](../../../quality/WORK-LOWER-001/CP2.json), [self-review](../../../quality/WORK-LOWER-001/CP2-review.md).
 
-[FREEZE e oracles](../../../quality/WORK-LOWER-001/CP1-contract.md) anteriores ao código; [evidência CP1](../../../quality/WORK-LOWER-001/CP1.json); [self-review](../../../quality/WORK-LOWER-001/CP1-review.md). Cinco falsificações focais mais sete documentais/arquiteturais, todas restauradas com segundo GREEN. Finding textual coercion corrigido após RED próprio; golden/contratos/oracles preservados. Nenhuma regra de lowering em CP1.
+Findings resolvidos: fixture IF precisava dos inventários THEN/ELSE conforme writer; negativo original preservado. Gap adicional de inventário indevidamente admitido foi bloqueado após contracaso. Uma execução durante wiring test-jar foi setup inválido, descartada como prova e reexecutada após estabilização. Golden/contratos/oracles não alterados.
 
-## Limitações e próximo passo não iniciado
+Próximo passo: certificar candidato, commit/push e check remoto obrigatório no SHA exato. CP2 ainda não foi publicado; limite remoto será 1200 segundos desde primeiro push. CP3 (tradução) não iniciado. Full/performance são CP4/CP5, não executados neste CP.
 
-CP1 ainda depende de certificação mecânica, commit/push e check remoto obrigatório do novo SHA. Limite remoto CP1: 1200 segundos cumulativos desde primeiro push; nenhum push CP1 ainda. CP2 (validação/admissão) não iniciado. Payloads de famílias não suportadas são verificados fisicamente, com ocorrência/header/variante preservados para rejeição; nenhuma claim de validação semântica integral. Source lock preservado, frontend/AIR/air-java/CFG sem alterações. Não houve merge/auto-merge nem trabalho fora de WORK-LOWER-001.
+Source lock, upstreams, AIR/modelo compartilhado e capabilities fora deste work item preservados. Sem merge/auto-merge. Nenhum backlog subsequente iniciado.

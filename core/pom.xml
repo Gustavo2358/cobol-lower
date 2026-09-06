@@ -9,5 +9,8 @@
     <executions><execution><id>boundary-contract-suite</id><phase>test</phase><goals><goal>java</goal></goals>
       <configuration><mainClass>io.github.gustavo2358.lower.testing.BoundarySuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution></executions>
+  </plugin><plugin>
+    <groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId>
+    <executions><execution><id>independent-test-fixtures</id><goals><goal>test-jar</goal></goals></execution></executions>
   </plugin></plugins></build>
 </project>

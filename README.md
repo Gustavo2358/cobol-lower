@@ -1,6 +1,6 @@
 # cobol-lower
 
-**Primeiro slice em implementação — 6 de setembro de 2026.** O repositório partiu do harness documental v1. WORK-LOWER-001 está autorizado; CP0 certificou build, boundary AIR e gates, incluindo remoto green. CP1 adiciona golden SP real, snapshot imutável e decoder físico. Não há implementação de lowering ainda.
+**Primeiro slice em implementação — 6 de setembro de 2026.** O repositório partiu do harness documental v1. WORK-LOWER-001 está autorizado; CP0/CP1 certificaram build, boundary AIR, gates, golden SP e decoder, incluindo remoto green. CP2 adiciona validação semântica e admissão pela mesma porta em memória/arquivo. Não há implementação de lowering ainda.
 
 O objetivo do produto é transformar fatos públicos do COBOL Semantic Product em uma `Publication` AIR rastreável, determinística e conservadora quando necessário. A aplicação não é outro parser COBOL, não calcula CFG e não implementa dataflow.
 

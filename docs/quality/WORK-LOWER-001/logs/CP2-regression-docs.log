@@ -1,0 +1,5 @@
+Command: python3 scripts/harness/run.py docs
+Environment: Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; isolated LOWER_BUILD_ROOT.
+Exit: 0
+Output (trailing whitespace stripped):
+PASS docs

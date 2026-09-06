@@ -190,6 +190,6 @@ public final class DecoderSuite {
         check(decoded(bytes(reordered(golden))).input().equals(input), "property order is immaterial");
         var renamed = golden.deepCopy(); ((ObjectNode)renamed.path("unit")).put("canonicalProgramName", "OTHER");
         check(!decoded(bytes(renamed)).input().statements().get(0).header().id().equals(goback.header().id()), "same local handle in distinct namespace is distinct");
-        System.out.println("LOWER_TESTS=" + assertions);
+        System.out.println("LOWER_TESTS=" + (assertions + AdmissionAdapterSuite.run(raw)));
     }
 }

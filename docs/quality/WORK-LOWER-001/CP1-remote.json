@@ -1,0 +1,21 @@
+{
+  "certified_commit": "2e4c55afdaee3e31210f0e295a8e95b2d516ca00",
+  "pushed_sha": "2e4c55afdaee3e31210f0e295a8e95b2d516ca00",
+  "queried_at": "2026-09-06T22:20:26.194146+00:00",
+  "pull_request": 2,
+  "first_push_at": "2026-09-06T22:18:35Z",
+  "remote_wait_limit_seconds": 1200,
+  "checks": [{
+    "name": "checkpoint",
+    "workflow": ".github/workflows/checkpoint.yml",
+    "app_slug": "github-actions",
+    "event": "push",
+    "head_sha": "2e4c55afdaee3e31210f0e295a8e95b2d516ca00",
+    "status": "completed",
+    "conclusion": "success",
+    "id": 101568507628,
+    "run_id": 34063640930,
+    "url": "https://github.com/Gustavo2358/cobol-lower/actions/runs/34063640930/job/101568507628"
+  }],
+  "earlier_observations": [{"queried_at": "2026-09-06T22:19:22.601585+00:00", "status": "in_progress", "conclusion": null}]
+}

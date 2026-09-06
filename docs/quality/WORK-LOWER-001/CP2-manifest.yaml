@@ -172,7 +172,7 @@ checkpoints:
   - EVAL-LWR-013
   - EVAL-LWR-014
   - EVAL-LWR-019
-  status: ready_for_review
+  status: active
 - id: CP3
   goal: Construir AIR válida pela regra explícita, preservando identidade por revisão,
     provenance e lacunas.
