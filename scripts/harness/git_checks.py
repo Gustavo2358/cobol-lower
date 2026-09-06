@@ -1,5 +1,6 @@
 """Git-backed verification of FREEZE bytes, candidate identity and recovery commits."""
 import json
+import re
 from pathlib import Path
 import subprocess
 
@@ -7,6 +8,14 @@ from checks import digest, read_data
 
 DIFF_OPTIONS = ["-c", "core.quotePath=true", "-c", "diff.algorithm=myers", "-c", "diff.renames=false",
                 "diff", "--cached", "--binary", "--no-ext-diff", "--no-textconv", "--full-index", "--no-color"]
+
+
+def evidence_path(root, commit):
+    trailers = git(root, "show", "-s", "--format=%(trailers:key=Checkpoint-Evidence,valueonly)", commit).decode().splitlines()
+    paths = [line.strip() for line in trailers if line.strip()]
+    if len(paths) != 1 or not re.fullmatch(r"docs/quality/WORK-[A-Z][A-Z0-9-]*-[0-9]{3}/CP[0-9]+\.json", paths[0]):
+        raise ValueError("exactly one safe Checkpoint-Evidence trailer required")
+    return paths[0]
 
 
 def git(root, *arguments):

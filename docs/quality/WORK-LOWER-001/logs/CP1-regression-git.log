@@ -1,0 +1,5 @@
+Command: python3 scripts/harness/run.py git
+Environment: Git and gh authenticated GitHub API.
+Exit: 0
+PR response: number 2, OPEN, Draft true, base main, head 1cc40112a7f57adb4a71861db8a101e6bec242dc, autoMergeRequest null.
+PASS git

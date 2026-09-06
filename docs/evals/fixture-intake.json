@@ -4,17 +4,44 @@
     {
       "id": "FIXTURE-SP-FIRST-001",
       "kind": "upstream_golden",
-      "status": "NOT_CAPTURED",
+      "status": "CAPTURED",
       "producer_repository": "Gustavo2358/proleap-poc",
       "producer_commit": "c8a891e0827ae1dc1140246f625fd16c2ac9bd97",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "1.1.0",
       "canonical_filename": "cobol-semantic-product.json",
       "source_description": "AIR-FIRST: PROCEDURE DIVISION com GOBACK único e assinatura sem cláusulas",
-      "artifact_path": null,
-      "sha256": null,
-      "generation_command": null,
-      "capture_checkpoint": "WORK-LOWER-001/CP1"
+      "artifact_path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+      "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+      "generation_command": "mvn -B -ntp -Dmaven.repo.local=<isolated-m2> -Dtest=SemanticProductEntryGobackTest test exec:java '-Dexec.args=--source src/test/resources/cobol/semantic/semantic-product-entry-goback.cbl --copybooks src/test/resources/cobol/semantic --output target/lower-golden'",
+      "capture_checkpoint": "WORK-LOWER-001/CP1",
+      "bytes": 2663,
+      "generation_cwd": "isolated clean proleap-poc clone at producer_commit",
+      "source_path": "src/test/resources/cobol/semantic/semantic-product-entry-goback.cbl",
+      "source_sha256": "218b07a63098838ccd00c5aa5139620110045230975a20f1d5c285237e5ba67a",
+      "source_authority": "Public synthetic upstream fixture, pinned GitHub repository; no private corpus.",
+      "jdk": "Temurin 21.0.12.1+1",
+      "maven": "3.9.16",
+      "source_format": "FIXED; explicitly configured by ExplorerMain.java line 61 at pinned commit",
+      "policy": {
+        "policyId": "cobol-explorer/explicit-options",
+        "version": "3.0.0",
+        "qualifyMode": "UNSPECIFIED",
+        "pgmnameMode": "UNSPECIFIED",
+        "dynamMode": "UNSPECIFIED",
+        "dllMode": "UNSPECIFIED"
+      },
+      "captured_at": "2026-09-06T21:57:35Z",
+      "upstream_focal_tests": {
+        "class": "SemanticProductEntryGobackTest",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "exit_code": 0
+      },
+      "copy_validation": "cmp producer target/lower-golden/cobol-semantic-product.json with committed artifact: exit 0; bytes unchanged, no normalization.",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-capture.log"
     }
   ]
 }

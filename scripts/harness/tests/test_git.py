@@ -9,7 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts/harness"))
-from git_checks import candidate_digest, candidate_errors, DIFF_OPTIONS, exclusions
+from git_checks import candidate_digest, candidate_errors, DIFF_OPTIONS, exclusions, evidence_path
 
 
 class GitIdentity(unittest.TestCase):
@@ -76,6 +76,23 @@ class GitIdentity(unittest.TestCase):
         self.git("-c", "user.name=Controlled Oracle", "-c", "user.email=oracle@example.invalid", "commit", "-qm", "uncertified")
         commit = self.git("rev-parse", "HEAD").strip()
         self.assertIn("CHECKPOINT_TRAILER", candidate_errors(self.root, self.record, commit))
+
+    def test_select_current_checkpoint_trailer(self):
+        path = "docs/quality/WORK-LOWER-001/CP1.json"
+        self.git("-c", "user.name=Controlled Oracle", "-c", "user.email=oracle@example.invalid", "commit", "-qm",
+                 "synthetic checkpoint\n\nCheckpoint-Evidence: " + path)
+        self.assertEqual(path, evidence_path(self.root, "HEAD"))
+
+    def test_select_rejects_missing_trailer(self):
+        with self.assertRaises(ValueError):
+            evidence_path(self.root, self.base)
+
+    def test_select_rejects_unsafe_and_duplicate_trailers(self):
+        for trailer in ["../outside.json", "docs/quality/WORK-LOWER-001/CP1.json\nCheckpoint-Evidence: docs/quality/WORK-LOWER-001/CP0.json"]:
+            self.git("-c", "user.name=Controlled Oracle", "-c", "user.email=oracle@example.invalid", "commit", "--allow-empty", "-qm",
+                     "synthetic bad trailer\n\nCheckpoint-Evidence: " + trailer)
+            with self.assertRaises(ValueError):
+                evidence_path(self.root, "HEAD")
 
     def test_commit_missing_evidence(self):
         (self.root / exclusions(self.record)[0]).unlink()

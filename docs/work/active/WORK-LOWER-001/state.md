@@ -2,26 +2,26 @@
 
 ## Onde estamos
 
-Autorização explícita do usuário nesta sessão em 2026-09-06: execution mode `multi-checkpoint`, CP0, CP1, CP2, CP3, CP4, CP5; avanço sequencial certificado, review humano final. Sem merge/auto-merge, mudanças upstream ou expansão de capability. `current_checkpoint: CP0`; CP1..CP5 não iniciados.
+Autorização explícita do usuário em 2026-09-06: `multi-checkpoint`, CP0..CP5, sequencialmente mediante certificação e checks remotos; review humano final. `current_checkpoint: CP1`, implementação e falsificação concluídas, regressão/certificação em curso. CP2..CP5 não iniciados.
 
-Branch `feat/first-entry-goback-slice`, [PR #2 Draft/open](https://github.com/Gustavo2358/cobol-lower/pull/2), base limpa `14aaafc5051eb287af6a8f126e8eaff78e30e365` confirmada em origin/main após merge do PR de preparação #1. Working tree inicial limpa e checkouts upstream preservados.
+Branch `feat/first-entry-goback-slice`, [PR #2 Draft/open](https://github.com/Gustavo2358/cobol-lower/pull/2), base main `14aaafc5051eb287af6a8f126e8eaff78e30e365`. Working tree limpa no início de CP1; alterações atuais pertencem a este checkpoint.
 
-CP0 teve certificação local e commit/push `98dbb60f204f42191fa1ee6f1a5b7caca89355ed`. Run [34062009803](https://github.com/Gustavo2358/cobol-lower/actions/runs/34062009803) terminou failure antes de criar jobs/check `checkpoint`. Portanto último recovery plenamente certificado: **nenhum**; a base main acima continua o ponto anterior confirmado. UNTRUSTED BOOTSTRAP permanece até remoto green. Não reescrever o commit anterior.
+## Último recovery plenamente certificado
 
-Remediação de workflow no próprio CP0: runner.temp não está disponível em jobs.<job>.env; usar diretório em /tmp identificado por github.run_id/run_attempt. Fonte oficial e review em [CP0-review](../../../quality/WORK-LOWER-001/CP0-review.md). Prazo remoto original: primeiro push em **2026-09-06T21:45:08Z**, limite **1200 segundos**, deadline **2026-09-06T22:05:08Z**, sem reiniciar entre SHAs/reruns.
+CP0: `1cc40112a7f57adb4a71861db8a101e6bec242dc`; [certificação](../../../quality/WORK-LOWER-001/CP0.json), [recibo remoto](../../../quality/WORK-LOWER-001/CP0-remote.json). Check `checkpoint`/github-actions/push concluído success no SHA exato, run 34062323376, check 101564913729, consulta 2026-09-06T21:55:31.726660+00:00. Dentro do prazo original até 22:05:08 UTC. CP0 estabeleceu a trusted execution boundary.
+
+Commit inicial CP0 `98dbb60f204f42191fa1ee6f1a5b7caca89355ed` permanece preservado; workflow inválido foi corrigido e recertificado no mesmo checkpoint, sem rewrite.
 
 ## Verde conhecido
 
-172 checks upstream no SHA fixado com Temurin 21.0.12.1+1/Maven 3.9.16 em clone/cache isolados. Core: 20 assertions AIR manual/boundary em memória. Remediação reexecutou docs/architecture/semantic/git/fast, exit 0, e 58 testes do harness, exit 0. Oito falsificações com RED esperado, restauração e segundo GREEN: quatro documentais, três de transporte em source/API/bytecode e Return→Halt por input controlado de processo. Não há mutação no candidato.
+CP0: docs/architecture/semantic/git/fast exit 0; 58 testes do harness e 20 assertions AIR/boundary. Upstream air-java fixado: 172 checks. Oito falsificações com RED esperado, restauração e segundo GREEN. Review: self-review, sem revisor independente.
 
-Evidência atual: [CP0.json](../../../quality/WORK-LOWER-001/CP0.json); logs da remediação adjacentes. Novo candidato será certificado mecanicamente antes de commit/push. Referência Git da certificação resolve pelo trailer `Checkpoint-Evidence: docs/quality/WORK-LOWER-001/CP0.json`; certified_commit null na própria evidência conforme protocolo. Recibo pós-push ficará no PR/handoff e state seguinte.
+## CP1
 
-## Findings e limites
+Golden real capturado: 2663 bytes, sha256 7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed, 20 testes focais upstream PASS; [aquisição](../../../evals/fixture-intake.json). Snapshot imutável e DTO/decoder estrito implementados; 211 assertions cumulativas (20 AIR + 191 decoder), 61 testes harness. Fonte/provenance é dado, nunca arquivo a abrir pelo core.
 
-[Self-review](../../../quality/WORK-LOWER-001/CP0-review.md) registra as correções de stub inválido, teste de obrigações, jdeps, referências FREEZE, vínculo da evidência ao commit e workflow. Não houve revisor independente. Erros de cwd upstream e DNS do sandbox foram setup, não falsificações semânticas. A [nota de obrigação](../../../quality/WORK-LOWER-001/CP0-obligation-oracle.md) preserva o oracle; nenhuma claim AIR-STRUCTURE foi atribuída ao produto.
+[FREEZE e oracles](../../../quality/WORK-LOWER-001/CP1-contract.md) anteriores ao código; [evidência CP1](../../../quality/WORK-LOWER-001/CP1.json); [self-review](../../../quality/WORK-LOWER-001/CP1-review.md). Cinco falsificações focais mais sete documentais/arquiteturais, todas restauradas com segundo GREEN. Finding textual coercion corrigido após RED próprio; golden/contratos/oracles preservados. Nenhuma regra de lowering em CP1.
 
-Source lock preservado. SP/AIR/air-java remotos coincidem com ele; CFG avançou com bootstrap Java, fora da dependência/capability deste trabalho. AIR JSON permanece draft e fora do slice. G-DOCS verifica estrutura de registros, não verdade dos logs; G-ARCH é complementado por review semântico. AirValidator estrutural não certifica lowering. Adapters ainda vazio; EVAL-LWR-004 é somente o smoke CP0 em memória. Nenhum golden SP, decoder ou regra de lowering criado.
+## Limitações e próximo passo não iniciado
 
-## Próximo passo não iniciado
-
-Certificar e publicar a remediação de CP0 no mesmo PR; confirmar SHA e check obrigatório `checkpoint`/github-actions/push dentro do prazo original. Só depois iniciar CP1. Performance/full pertencem a CP4/CP5; transport/integration e demais backlog permanecem fora de escopo. Não houve merge/auto-merge nem trabalho fora de WORK-LOWER-001.
+CP1 ainda depende de certificação mecânica, commit/push e check remoto obrigatório do novo SHA. Limite remoto CP1: 1200 segundos cumulativos desde primeiro push; nenhum push CP1 ainda. CP2 (validação/admissão) não iniciado. Payloads de famílias não suportadas são verificados fisicamente, com ocorrência/header/variante preservados para rejeição; nenhuma claim de validação semântica integral. Source lock preservado, frontend/AIR/air-java/CFG sem alterações. Não houve merge/auto-merge nem trabalho fora de WORK-LOWER-001.

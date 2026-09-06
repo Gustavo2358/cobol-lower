@@ -89,7 +89,7 @@ evals:
 source_scope:
 - .gitignore
 - core/src/main/java
-- adapters/src/main/java
+- planned:adapters/src/main/java
 - pom.xml
 - core/pom.xml
 - adapters/pom.xml
@@ -98,7 +98,7 @@ source_scope:
 test_scope:
 - scripts/harness/tests
 - core/src/test
-- adapters/src/test
+- planned:adapters/src/test
 docs_scope:
 - AGENTS.md
 - ARCHITECTURE.md
@@ -152,7 +152,7 @@ checkpoints:
   - EVAL-LWR-007
   - EVAL-LWR-012
   - EVAL-LWR-016
-  status: ready_for_review
+  status: active
 - id: CP2
   goal: Mesma validação na porta em memória/arquivo distingue shape admitido de lacuna,
     contradição ou capability não suportada.

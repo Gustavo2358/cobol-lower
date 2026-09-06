@@ -10,7 +10,7 @@ import sys
 
 from architecture import architecture_errors
 from checks import certificate_errors, digest, document_errors, read_data, remote_errors
-from git_checks import candidate_errors, git, preflight
+from git_checks import candidate_errors, evidence_path, git, preflight
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -78,7 +78,9 @@ def semantic(extra=()):
     verify_dependency()
     output = run(maven(*extra, "verify"))
     counts = [int(n) for n in re.findall(r"^LOWER_TESTS=([0-9]+)$", output, re.M)]
-    if not counts or min(counts) <= 0:
+    checkpoint = read_data(ROOT / "docs/work/active/WORK-LOWER-001/work-item.yaml")["authorization"]["current_checkpoint"]
+    expected_suites = 1 if checkpoint == "CP0" else 2
+    if len(counts) != expected_suites or min(counts) <= 0:
         raise RuntimeError("semantic tests absent/zero")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
 
@@ -146,9 +148,15 @@ def remote(record, sha):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return"])
-    parser.add_argument("--evidence", default="docs/quality/WORK-LOWER-001/CP0.json")
+    parser.add_argument("--evidence")
     parser.add_argument("--commit")
     args = parser.parse_args()
+    if args.evidence is None:
+        if args.commit:
+            args.evidence = evidence_path(ROOT, args.commit)
+        else:
+            checkpoint = read_data(ROOT / "docs/work/active/WORK-LOWER-001/work-item.yaml")["authorization"]["current_checkpoint"]
+            args.evidence = f"docs/quality/WORK-LOWER-001/{checkpoint}.json"
     if args.gate in ("verify-commit", "remote") and args.commit:
         record = json.loads(git(ROOT, "show", args.commit + ":" + args.evidence))
     else:

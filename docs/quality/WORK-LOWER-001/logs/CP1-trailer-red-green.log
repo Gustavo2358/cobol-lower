@@ -1,0 +1,7 @@
+Summary of actual executions; semantic failure, not setup failure.
+Command: python3 -m unittest discover -s scripts/harness/tests -p test_git.py -v
+RED: temporary stub evidence_path always returned CP0.json.
+Ran 14 tests; exit 1; three failures: expected current CP1 path, missing trailer must raise, unsafe/duplicate trailer must raise.
+Implementation: read exact Git commit trailers; require one canonical checkpoint evidence path.
+GREEN: same command; Ran 14 tests; OK; exit 0.
+No stub remains. Actual committed-record/digest/trailer consistency tests from CP0 preserved.

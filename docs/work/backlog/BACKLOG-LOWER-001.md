@@ -32,4 +32,4 @@ MOVE/IF/CALL/DATA/storage/opaque amplo/CFG/writer AIR e qualquer atualização u
 
 ## Evidência atual
 
-CP0 com certificação local e primeiro commit/push; run remoto falhou antes dos jobs. Remediação no mesmo checkpoint e PR #2; nenhum recovery pleno, benchmark ou aprovação humana ainda. Estado factual no pacote ativo.
+CP0 plenamente certificado em `1cc40112a7f57adb4a71861db8a101e6bec242dc`, incluindo check remoto obrigatório success. CP1 em curso no mesmo PR #2; nenhum benchmark ou aprovação humana ainda. Estado factual no pacote ativo.

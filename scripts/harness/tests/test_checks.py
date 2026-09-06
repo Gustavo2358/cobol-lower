@@ -86,11 +86,13 @@ class Documents(unittest.TestCase):
         self.rejects("AUTHORIZATION")
 
     def test_current_not_authorized(self):
-        self.manifest(lambda d: d["authorization"].update(authorized_checkpoints=["CP1"]))
+        self.manifest(lambda d: d["authorization"].update(current_checkpoint="CP0", authorized_checkpoints=["CP1"]))
         self.rejects("AUTHORIZATION")
 
     def test_advance_without_dependency(self):
         self.manifest(lambda d: d["authorization"].update(current_checkpoint="CP1"))
+        # The negative input must actually lack its dependency even after live CP0 succeeds.
+        (self.root / "docs/quality/WORK-LOWER-001/CP0-remote.json").unlink(missing_ok=True)
         self.rejects("DEPENDENCY")
 
     def test_scope_without_planned(self):
