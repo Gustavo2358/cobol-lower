@@ -81,18 +81,109 @@
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "pattern": "^CP[0-9]+$"
         },
         "authorized_checkpoints": {
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^CP[0-9]+$"
           },
           "uniqueItems": true
+        },
+        "execution_mode": {
+          "enum": [
+            "single-checkpoint",
+            "multi-checkpoint"
+          ],
+          "default": "single-checkpoint"
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "execution_mode": {
+                "const": "multi-checkpoint"
+              }
+            },
+            "required": [
+              "execution_mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "authority"
+            ],
+            "properties": {
+              "state": {
+                "const": "granted"
+              },
+              "authorized_checkpoints": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "authorized_checkpoints": {
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_granted",
+                  "revoked"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "authorized_checkpoints": {
+                "maxItems": 0
+              },
+              "current_checkpoint": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "granted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "authorized_checkpoints": {
+                "minItems": 1
+              },
+              "current_checkpoint": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
     },
     "backlog_ids": {
       "type": "array",
@@ -211,7 +302,8 @@
             "type": "array",
             "items": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "pattern": "^CP[0-9]+$"
             },
             "uniqueItems": true
           },

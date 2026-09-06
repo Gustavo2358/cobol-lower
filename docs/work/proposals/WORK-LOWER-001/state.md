@@ -6,11 +6,11 @@ Proposta preparada; implementação não autorizada. CP0–CP5 não iniciados. B
 
 ## Verde conhecido
 
-Somente integridade documental do pacote conforme relatório em docs/quality/harness-validation.md. Isso não é green de software nem CI do repositório de destino.
+Somente integridade documental do pacote conforme relatório em docs/quality/harness-validation.md. Isso não é green de software nem CI do repositório de destino. A adaptação operacional posterior tem [evidência documental própria](../../../quality/long-running-harness-validation.md), incluindo remediação do review de autorização/CI/recovery no mesmo PR de preparação, sem certificar CP0.
 
 ## Restante
 
-Adotar/revisar harness; autorizar CP0; confirmar snapshots e resolver SNAPSHOT; seguir um checkpoint por vez. Não iniciar CP1–CP5 por inferência.
+Revisar/mergear humanamente a adaptação documental do harness. Depois, em sessão futura, autorizar CP0 no modo padrão ou lista explícita CP0..CP5 em modo multi-checkpoint conforme protocolo; confirmar snapshots e resolver SNAPSHOT na execução autorizada. Esta preparação não concede autorização, não promove para active e não inicia CP0–CP5. Nenhum checkpoint certificado ou SHA de implementação existe.
 
 ## Descobertas que afetam o plano
 
