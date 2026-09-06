@@ -1,0 +1,17 @@
+Command: env JAVA_HOME=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1 PATH=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin:/home/gustavo/.sdkman/candidates/maven/current/bin:/usr/bin:/bin LOWER_BUILD_ROOT=/tmp/work-lower-001.nucAJ2 python3 scripts/harness/challenge.py
+Exit: 0
+{"id": "DOC-LINK", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LINK README.md: missing.md"], "baseline_digest": "b8d11c1e5b3eaa7e88c02dcc327d5422edcae24b4f4ed9ce3582809175c53cca"}
+{"id": "DOC-LINK", "restoration_status": "RESTORED", "restored_digest": "b8d11c1e5b3eaa7e88c02dcc327d5422edcae24b4f4ed9ce3582809175c53cca", "green_exit_code": 0}
+{"id": "DOC-INVARIANT", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["INVARIANT EVAL-LWR-001: INV-LWR-999"], "baseline_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796"}
+{"id": "DOC-INVARIANT", "restoration_status": "RESTORED", "restored_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796", "green_exit_code": 0}
+{"id": "DOC-ACTIVE-COMPLETED", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LIFECYCLE active WORK-LOWER-001: completed", "REGISTRY WORK-LOWER-001"], "baseline_digest": "90f14ebfd3fc7796debfdeb9ff0d5a288c353513891b40ae0445aed206b389f9"}
+{"id": "DOC-ACTIVE-COMPLETED", "restoration_status": "RESTORED", "restored_digest": "90f14ebfd3fc7796debfdeb9ff0d5a288c353513891b40ae0445aed206b389f9", "green_exit_code": 0}
+{"id": "DOC-MUST-READ", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["MUST_READ WORK-LOWER-001: docs/missing.md"], "baseline_digest": "90f14ebfd3fc7796debfdeb9ff0d5a288c353513891b40ae0445aed206b389f9"}
+{"id": "DOC-MUST-READ", "restoration_status": "RESTORED", "restored_digest": "90f14ebfd3fc7796debfdeb9ff0d5a288c353513891b40ae0445aed206b389f9", "green_exit_code": 0}
+{"id": "ARCH-PATH-API-BYTECODE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation", "ARCH_API forbidden signature"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-API-BYTECODE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-INTERNAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-INTERNAL", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-SOURCE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_SOURCE forbidden dependency"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-SOURCE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+PASS CHALLENGE: 7 restored falsifications and second GREEN

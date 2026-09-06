@@ -1,0 +1,5 @@
+Command: env JAVA_HOME=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1 PATH=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin:/home/gustavo/.sdkman/candidates/maven/current/bin:/usr/bin:/bin LOWER_BUILD_ROOT=/tmp/work-lower-001.nucAJ2 python3 scripts/harness/run.py docs
+Exit: 0
+Output (trailing whitespace stripped):
+PASS docs
+Repeated after work index correction and completed evidence: exit 0, PASS docs.

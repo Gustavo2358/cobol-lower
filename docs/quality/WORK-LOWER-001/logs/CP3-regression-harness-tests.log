@@ -1,0 +1,72 @@
+Command: env JAVA_HOME=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1 PATH=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin:/home/gustavo/.sdkman/candidates/maven/current/bin:/usr/bin:/bin LOWER_BUILD_ROOT=/tmp/work-lower-001.nucAJ2 python3 scripts/harness/run.py harness-tests
+Exit: 0
+Output (trailing whitespace stripped):
+test_class_retention_annotation (test_architecture.Architecture.test_class_retention_annotation) ... ok
+test_compiled_api_and_internal_use (test_architecture.Architecture.test_compiled_api_and_internal_use) ... ok
+test_dependency_tree (test_architecture.Architecture.test_dependency_tree) ... ok
+test_shared_vocabulary (test_architecture.Architecture.test_shared_vocabulary) ... ok
+test_source_counterexamples (test_architecture.Architecture.test_source_counterexamples) ... ok
+test_baseline_not_green (test_certificate.Certification.test_baseline_not_green) ... ok
+test_controlled_complete_record (test_certificate.Certification.test_controlled_complete_record) ... ok
+test_duplicate_review_identity (test_certificate.Certification.test_duplicate_review_identity) ... ok
+test_false_independent_review (test_certificate.Certification.test_false_independent_review) ... ok
+test_freeze_incomplete (test_certificate.Certification.test_freeze_incomplete) ... ok
+test_freeze_normative_reference_removed (test_certificate.Certification.test_freeze_normative_reference_removed) ... ok
+test_gate_absent (test_certificate.Certification.test_gate_absent) ... ok
+test_gate_set_cannot_shrink (test_certificate.Certification.test_gate_set_cannot_shrink) ... ok
+test_missing_log (test_certificate.Certification.test_missing_log) ... ok
+test_regression_absent (test_certificate.Certification.test_regression_absent) ... ok
+test_regression_missing_semantic (test_certificate.Certification.test_regression_missing_semantic) ... ok
+test_required_null_field_missing (test_certificate.Certification.test_required_null_field_missing) ... ok
+test_required_result_not_success (test_certificate.Certification.test_required_result_not_success) ... ok
+test_restoration_digest (test_certificate.Certification.test_restoration_digest) ... ok
+test_second_green_missing (test_certificate.Certification.test_second_green_missing) ... ok
+test_specified_gate_is_not_pass (test_certificate.Certification.test_specified_gate_is_not_pass) ... ok
+test_unrestored (test_certificate.Certification.test_unrestored) ... ok
+test_wrong_review_reference (test_certificate.Certification.test_wrong_review_reference) ... ok
+test_zero_tests (test_certificate.Certification.test_zero_tests) ... ok
+test_active_completed (test_checks.Documents.test_active_completed) ... ok
+test_advance_without_dependency (test_checks.Documents.test_advance_without_dependency) ... ok
+test_baseline (test_checks.Documents.test_baseline) ... ok
+test_broken_anchor (test_checks.Documents.test_broken_anchor) ... ok
+test_broken_link (test_checks.Documents.test_broken_link) ... ok
+test_current_not_authorized (test_checks.Documents.test_current_not_authorized) ... ok
+test_default_mode_multiple (test_checks.Documents.test_default_mode_multiple) ... ok
+test_duplicate_work (test_checks.Documents.test_duplicate_work) ... ok
+test_empty_authorization (test_checks.Documents.test_empty_authorization) ... ok
+test_external_scope (test_checks.Documents.test_external_scope) ... ok
+test_invariant_missing (test_checks.Documents.test_invariant_missing) ... ok
+test_missing_authority (test_checks.Documents.test_missing_authority) ... ok
+test_nonexistent_checkpoint (test_checks.Documents.test_nonexistent_checkpoint) ... ok
+test_required_read_missing (test_checks.Documents.test_required_read_missing) ... ok
+test_scope_without_planned (test_checks.Documents.test_scope_without_planned) ... ok
+test_source_hash (test_checks.Documents.test_source_hash) ... ok
+test_source_revision (test_checks.Documents.test_source_revision) ... ok
+test_correct_sha_success (test_checks.Remote.test_correct_sha_success) ... ok
+test_missing (test_checks.Remote.test_missing) ... ok
+test_no_push (test_checks.Remote.test_no_push) ... ok
+test_non_success_states (test_checks.Remote.test_non_success_states) ... ok
+test_old_sha (test_checks.Remote.test_old_sha) ... ok
+test_wrong_producer (test_checks.Remote.test_wrong_producer) ... ok
+test_commit_missing_evidence (test_git.GitIdentity.test_commit_missing_evidence) ... fatal: path 'docs/quality/WORK-LOWER-001/CP0.json' does not exist in '90143ed6e09e2c838ad8eb0603047058ce5b0f46'
+ok
+test_complete_candidate (test_git.GitIdentity.test_complete_candidate) ... ok
+test_evidence_not_the_committed_record (test_git.GitIdentity.test_evidence_not_the_committed_record) ... ok
+test_extra_exclusion (test_git.GitIdentity.test_extra_exclusion) ... ok
+test_frozen_bytes (test_git.GitIdentity.test_frozen_bytes) ... ok
+test_missing_revision (test_git.GitIdentity.test_missing_revision) ... fatal: path 'contract.md' exists on disk, but not in 'ffffffffffffffffffffffffffffffffffffffff'
+ok
+test_missing_trailer (test_git.GitIdentity.test_missing_trailer) ... ok
+test_published_commit (test_git.GitIdentity.test_published_commit) ... ok
+test_select_current_checkpoint_trailer (test_git.GitIdentity.test_select_current_checkpoint_trailer) ... ok
+test_select_rejects_missing_trailer (test_git.GitIdentity.test_select_rejects_missing_trailer) ... ok
+test_select_rejects_unsafe_and_duplicate_trailers (test_git.GitIdentity.test_select_rejects_unsafe_and_duplicate_trailers) ... ok
+test_unstaged (test_git.GitIdentity.test_unstaged) ... ok
+test_untracked (test_git.GitIdentity.test_untracked) ... ok
+test_wrong_digest (test_git.GitIdentity.test_wrong_digest) ... ok
+
+----------------------------------------------------------------------
+Ran 61 tests in 5.416s
+
+OK
+PASS harness-tests

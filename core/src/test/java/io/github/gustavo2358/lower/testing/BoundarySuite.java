@@ -63,6 +63,6 @@ public final class BoundarySuite {
         }
         require(ManualAir.create(false, false).equals(baseline), "independent construction deterministic");
         require(count > 0, "nonzero executed assertions");
-        System.out.println("LOWER_TESTS=" + (count + InputSuite.run()));
+        System.out.println("LOWER_TESTS=" + (count + InputSuite.run() + LoweringSuite.run()));
     }
 }
