@@ -27,15 +27,14 @@
   ],
   "review": {
     "status": "not_performed",
-    "reviewed_commit": null,
     "evidence": [],
     "kind": null,
     "reviewer_context": null,
-    "candidate_diff_sha256": null
+    "candidate_reference": "#/candidate_diff_sha256"
   },
   "merge_status": "not_verified",
   "limitations": [],
-  "note": "Modelo vazio, não certificado. Campos/requisitos e vínculo do commit são governados pelo protocolo de sessão. certified_commit null na própria evidência é resolvido pelo trailer Checkpoint-Evidence; SHA literal no PR/handoff e state seguinte. Itens obrigatórios ausentes/FAIL/NOT_RUN/UNKNOWN/BLOCKED/UNRESTORED impedem certificação.",
+  "note": "Modelo vazio, não certificado. Campos/requisitos e vínculo do commit são governados pelo protocolo de sessão. certified_commit null na própria evidência é resolvido pelo trailer Checkpoint-Evidence; SHA literal no PR/handoff e state seguinte. Itens obrigatórios ausentes/FAIL/NOT_RUN/UNKNOWN/BLOCKED/UNRESTORED impedem certificação. certification cobre pre_commit; checks remotos obrigatórios só são confirmados pelo recibo pós-push vinculado ao SHA antes de ADVANCE/recovery completo.",
   "execution_mode": null,
   "authorization_reference": null,
   "previous_certified_checkpoint": null,
@@ -44,8 +43,14 @@
   "candidate_exclusions": [],
   "frozen_contract": {
     "references": [],
-    "digest": null,
-    "required_gates": []
+    "required_gates": [],
+    "reference_fields": [
+      "path",
+      "sha256",
+      "git_revision"
+    ],
+    "required_remote_checks": [],
+    "remote_wait_limit_seconds": null
   },
   "execution_fields": [
     "gate",
@@ -69,6 +74,7 @@
     "status": "NOT_RUN",
     "unresolved_findings": [],
     "all_mutations_restored": null,
-    "required_results_pass": null
+    "required_results_pass": null,
+    "scope": "pre_commit"
   }
 }

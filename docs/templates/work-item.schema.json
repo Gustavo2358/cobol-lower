@@ -81,13 +81,15 @@
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "pattern": "^CP[0-9]+$"
         },
         "authorized_checkpoints": {
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^CP[0-9]+$"
           },
           "uniqueItems": true
         },
@@ -155,6 +157,28 @@
               },
               "current_checkpoint": {
                 "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "granted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "authorized_checkpoints": {
+                "minItems": 1
+              },
+              "current_checkpoint": {
+                "type": "string"
               }
             }
           }
@@ -278,7 +302,8 @@
             "type": "array",
             "items": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "pattern": "^CP[0-9]+$"
             },
             "uniqueItems": true
           },

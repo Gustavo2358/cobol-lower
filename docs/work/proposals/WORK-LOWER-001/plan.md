@@ -75,7 +75,7 @@ Seis checkpoints preparados, não autorizados. Todos seguem a [transação de se
 
 **Fora de escopo:** Reader/writer AIR, build de CFG ou aumentar perfil para fazer E2E parecer maior.
 
-**Revisão focal:** Primeiro proof point e limites reais, com full/challenge.
+**Revisão focal:** Primeiro proof point e limites reais, com full/challenge. O CI obrigatório deve terminar PASS no SHA publicado de CP4 antes de CP5; push confirmado sozinho não libera avanço.
 
 ## CP5 — Challenge final e handoff de fechamento
 

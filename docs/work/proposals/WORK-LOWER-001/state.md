@@ -6,7 +6,7 @@ Proposta preparada; implementação não autorizada. CP0–CP5 não iniciados. B
 
 ## Verde conhecido
 
-Somente integridade documental do pacote conforme relatório em docs/quality/harness-validation.md. Isso não é green de software nem CI do repositório de destino. A adaptação operacional posterior tem [evidência documental própria](../../../quality/long-running-harness-validation.md), sem certificar CP0.
+Somente integridade documental do pacote conforme relatório em docs/quality/harness-validation.md. Isso não é green de software nem CI do repositório de destino. A adaptação operacional posterior tem [evidência documental própria](../../../quality/long-running-harness-validation.md), incluindo remediação do review de autorização/CI/recovery no mesmo PR de preparação, sem certificar CP0.
 
 ## Restante
 
