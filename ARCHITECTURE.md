@@ -15,7 +15,7 @@ arquivo Semantic Product → adapter de entrada → SemanticProductInput
                                                    ↓
                                  AirValidator + relatório de lowering
                                                    ↓
-                         caller / adapter AIR JSON de saída (futuro)
+                         caller / AirFileOutput → shared AirJson → arquivo AIR JSON (2A)
 ```
 
 A seta de dados pode apontar para fora; a dependência de código continua apontando para dentro. `LowerCobol` é a porta de entrada definida pela aplicação. Um port de saída só é necessário quando o caso de uso precisar acionar um efeito externo; retornar um resultado não exige um repository fictício.
@@ -23,19 +23,20 @@ A seta de dados pode apontar para fora; a dependência de código continua apont
 ## Dependências permitidas
 
 ```text
-composition root → adapters → application/domain → air-java → java.base
+composition root (CLI em adapters) → adapters → application/domain → air-java → java.base
+adapters → air-json → air-java
                           application → domain
 ```
 
 O projeto `analysis-ir` é fonte normativa, não dependência de runtime. O modelo AIR compartilhado é um vocabulário semântico neutro, não infraestrutura. Jackson/Gson, arquivos e CLI não são vocabulário de domínio.
 
-Estrutura inicial recomendada: um módulo core, com packages de domain/application/ports, e um módulo de adapters. O módulo de adapters pode conter inicialmente apenas entrada JSON. O bootstrap fixa nomes/pacotes e registra as escolhas; não há Java ou POM nesta entrega. Separar dois módulos serve para provar dependências, não para introduzir dezenas de abstrações.
+Estrutura inicial recomendada: um módulo core, com packages de domain/application/ports, e um módulo de adapters. O módulo de adapters contém entrada SP JSON, writer AIR e CLI mínima. O bootstrap fixou nomes/pacotes; core permanece sem transporte. Separar dois módulos serve para provar dependências, não para introduzir dezenas de abstrações.
 
 ## Hoje e depois
 
 Hoje, a aplicação recebe dados normalizados de um arquivo. Depois, um adapter de integração recebe o contrato público materializado do frontend e entrega os mesmos dados à porta. A entrada não será trocada por classes internas do ProLeap.
 
-Na saída, hoje/futuro arquivo: `Publication → writer externo → AIR JSON → reader externo → Publication`. Na integração direta: o integrador entrega a mesma `Publication` ao CFG. Nenhum codec entra em `air-java` ou no core. O contrato das portas e o comportamento semântico devem permanecer equivalentes, ainda que o wiring/build mude.
+Na saída, implementado em 2A: `Publication → AirFileOutput → shared AirJson → arquivo AIR JSON`. O reader do analysis-cfg e CFG JSON são futuros. Na integração direta: o integrador entrega a mesma `Publication` ao CFG. O módulo `air-json` upstream depende do modelo `air-java`; somente adapters consome o codec. Nenhum codec entra no core do lower. O contrato das portas e o comportamento semântico devem permanecer equivalentes, ainda que o wiring/build mude.
 
 ## Extensão
 

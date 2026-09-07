@@ -57,6 +57,28 @@ def anchors(text):
     return found
 
 
+def historical_link(root, path, resolved, fragment):
+    """Resolve unchanged archived evidence at its recorded Git head, never current routing."""
+    from git_checks import git
+    import subprocess
+    if not resolved.is_relative_to(root.resolve()):
+        return False
+    try:
+        for item in read_data(root / "docs/work/registry.json")["history"]:
+            if not path.is_relative_to(root / "docs/quality" / item["id"]):
+                continue
+            sha = item.get("remote_observation", {}).get("head_sha", "")
+            if not re.fullmatch(r"[0-9a-f]{40}", sha):
+                continue
+            if git(root, "show", sha + ":" + str(path.relative_to(root))) != path.read_bytes():
+                continue
+            original = git(root, "show", sha + ":" + str(resolved.relative_to(root.resolve())))
+            return not fragment or unquote(fragment) in anchors(original.decode("utf-8"))
+    except (OSError, KeyError, ValueError, subprocess.CalledProcessError):
+        pass
+    return False
+
+
 def markdown_errors(root):
     errors = []
     paths = list((root / "docs").rglob("*.md")) + list(root.glob("*.md"))
@@ -71,7 +93,8 @@ def markdown_errors(root):
                 continue
             resolved = (path.parent / unquote(target.path)).resolve() if target.path else path.resolve()
             if not resolved.is_relative_to(root.resolve()) or not resolved.exists():
-                errors.append(f"LINK {path.relative_to(root)}: {link}")
+                if not historical_link(root, path, resolved, target.fragment):
+                    errors.append(f"LINK {path.relative_to(root)}: {link}")
             elif target.fragment and resolved.is_file() and resolved.suffix == ".md":
                 if unquote(target.fragment) not in anchors(resolved.read_text(encoding="utf-8")):
                     errors.append(f"ANCHOR {path.relative_to(root)}: {link}")
@@ -112,18 +135,22 @@ def history_errors(root, registry):
                 raise ValueError("duplicate registration")
             pair = (item["review_status"], item["merge_status"])
             allowed = {(r, "open_not_merged") for r in ("pending_human", "changes_requested", "reviewed", "approved")}
-            allowed |= {(r, "merged") for r in ("reviewed", "approved")}
+            allowed |= {(r, "merged") for r in ("reviewed", "approved", "not_recorded")}
             if item["status"] != "completed" or pair not in allowed:
                 raise ValueError("invalid historical review/merge state")
-            if item["review_status"] in ("reviewed", "approved"):
+            if item["review_status"] in ("reviewed", "approved", "not_recorded"):
                 observation = item["remote_observation"]
                 if (observation["pull_request"] != item["pull_request"] or observation["branch"] != item["git_branch"]
                         or observation["base"] != "main" or observation["review_status"] != item["review_status"]
                         or observation["state"] != ("MERGED" if item["merge_status"] == "merged" else "OPEN")
                         or not observation["repository"] or not observation["observed_at"]
-                        or not observation["review_url"].startswith("https://")
                         or not re.fullmatch(r"[0-9a-f]{40}", observation["head_sha"])
-                        or observation["review_commit"] != observation["head_sha"]
+                        or (item["review_status"] == "not_recorded" and
+                            (observation.get("reviews") != [] or observation.get("review_url") is not None
+                             or observation.get("review_commit") is not None))
+                        or (item["review_status"] != "not_recorded" and
+                            (not observation["review_url"].startswith("https://")
+                             or observation["review_commit"] != observation["head_sha"]))
                         or (item["merge_status"] == "merged" and not re.fullmatch(r"[0-9a-f]{40}", observation["merge_commit"] or ""))):
                     raise ValueError("historical remote observation incoherent")
             for key in ("path", "manifest", "evidence"):
@@ -144,7 +171,7 @@ def history_errors(root, registry):
                 raise ValueError("final checkpoint authorization")
             if item["manifest"] != f"docs/quality/{ident}/{final}-manifest.yaml" or item["evidence"] != f"docs/quality/{ident}/{final}.json":
                 raise ValueError("final evidence path")
-            if (item["git_branch"] != manifest["git"]["branch"] or item["pull_request"] != manifest["git"]["pull_request"]
+            if (item["git_branch"] != manifest["git"]["branch"] or manifest["git"]["pull_request"] not in (None, item["pull_request"])
                     or item["backlog_ids"] != manifest["backlog_ids"]):
                 raise ValueError("Git/backlog identity")
             record = read_data(root / item["evidence"])

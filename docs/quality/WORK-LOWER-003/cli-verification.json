@@ -1,0 +1,53 @@
+{
+  "executions": [
+    {
+      "command": [
+        "/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin/java",
+        "-cp",
+        "adapters/target/classes:/tmp/lower-2a/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+        "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "/tmp/goback.air.json"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin/java",
+        "-cp",
+        "adapters/target/classes:/tmp/lower-2a/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower"
+      ],
+      "exit_code": 2,
+      "stderr": "Usage: cobol-lower <semantic-product.json> <air.json>\n"
+    },
+    {
+      "command": [
+        "/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin/java",
+        "-cp",
+        "adapters/target/classes:/tmp/lower-2a/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+        "/tmp/lower-2a/no-input.json",
+        "/tmp/lower-2a/no-output.air.json"
+      ],
+      "exit_code": 3,
+      "stderr": "SP INPUT_ERROR physical $ file I/O\n"
+    },
+    {
+      "command": [
+        "/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin/java",
+        "-cp",
+        "adapters/target/classes:/tmp/lower-2a/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-2a/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+        "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "/tmp/lower-2a/missing-parent/air.json"
+      ],
+      "exit_code": 6,
+      "stderr": "AIR output /tmp/lower-2a/missing-parent/air.json: /tmp/lower-2a/missing-parent/.cobol-lower-air-18406491187938436476.tmp\n"
+    }
+  ],
+  "probe": "LOWERING=SUCCESS\nAIR_BYTES=398532 EQUAL=true\nCLI_BYTES_EQUAL=true CLI_DECODE_EQUAL=true\n",
+  "output_bytes": 398532,
+  "sha256": "79270eabe0d2d836594c6d58fc3b2abb462c6d736d698477b680a656153bab44"
+}

@@ -143,7 +143,12 @@
         "codec": {
           "path": "air-json/pom.xml",
           "artifact_id": "air-json",
-          "role": "shared_codec_1A_not_a_lower_dependency"
+          "role": "shared_codec_1A_runtime_dependency_of_adapters",
+          "maven": {
+            "group_id": "io.github.gustavo2358",
+            "artifact_id": "air-json",
+            "version": "0.1.0-SNAPSHOT"
+          }
         }
       }
     },

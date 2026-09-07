@@ -1,0 +1,37 @@
+lifecycle-red.log sha256=972c64faa98e71f310e4c317147e25bfcdcebebccafa3f9bc17c852957182c39
+FAIL: test_actual_merge_without_recorded_review (test_output_lifecycle.OutputLifecycle.test_actual_merge_without_recorded_review)
+AssertionError: Lists differ: [] != ['HISTORY DEPENDENCY/REGISTRATION WORK-LOW[42 chars]ate']
+'HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-002: invalid historical review/merge state'
++ ['HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-002: invalid historical '
+FAIL: test_remote_observation_is_checked_against_actual_metadata (test_output_lifecycle.OutputLifecycle.test_remote_observation_is_checked_against_actual_metadata)
+AssertionError: [] is not true
+Ran 3 tests in 2.829s
+FAILED (failures=2)
+
+lifecycle-green.log sha256=5fef6c9447b8b96fdb4cf31283eb3ceb2128bac4d95cba995a81b6a87f6b3ea8
+Ran 3 tests in 2.781s
+OK
+
+gate-red.log sha256=62137bb4e93f285169120c850230882cd1f362b658ac7e3decc671c17b46325b
+FAIL: test_core_codec_source_is_forbidden (test_air_output_gate.AirOutputGate.test_core_codec_source_is_forbidden)
+AssertionError: [] is not true
+FAIL: test_missing_zero_or_duplicate_suite_rejected (test_air_output_gate.AirOutputGate.test_missing_zero_or_duplicate_suite_rejected)
+AssertionError: RuntimeError not raised
+Ran 4 tests in 0.002s
+FAILED (failures=2)
+
+output-red.log sha256=24c299bcba89241b33e5b568536a59ee5c1c6f1ba755fba3d1bba51d88852a32
+ok 10 - expected Return, never Halt
+java.lang.AssertionError: AIR_OUTPUT success creates AIR file
+[INFO] cobol-lower-adapters ............................... FAILURE [  1.548 s]
+[INFO] BUILD FAILURE
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.0:java (air-output-suite) on project cobol-lower-adapters: An exception occurred while executing the Java class. AIR_OUTPUT success creates AIR file -> [Help 1]
+FAIL command exit 1: ['mvn', '-B', '-ntp', '-Dmaven.repo.local=/tmp/lower-2a/m2', 'verify']
+
+lifecycle-final.log sha256=0c61e8964856fc8dd9673b8a055a789631f7f21fff121e8ec3d9f7ce33f23292
+Ran 4 tests in 3.231s
+OK
+
+reconcile.log sha256=d20da564cea709c7d237cf373e4a1a65293a2aea688143dee4d4ecb649999a9d
+{"autoMergeRequest": null, "baseRefName": "main", "headRefName": "chore/pin-air-java-1a", "headRefOid": "2d1db6ae7cf8eed812df29a2d990e9954f437928", "isDraft": false, "mergeCommit": {"oid": "77762ff2705974ecb874bc4824119c031f6d99bc"}, "number": 3, "reviewDecision": "", "state": "MERGED", "url": "https://github.com/Gustavo2358/cobol-lower/pull/3"}
+PASS reconcile

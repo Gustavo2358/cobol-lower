@@ -32,7 +32,7 @@ O mesmo PR acumula os commits de checkpoints e remediações. Review deve conseg
 
 Request changes após fechamento local e antes do merge não recria `active/`. O item permanece `completed` em history; `remediations` registra ID `R1`, `R2` etc., estado `active`/`ready_for_review`/`reviewed`, caminhos explícitos de autorização, evidence e state em `docs/quality/<WORK>/`. Essa fase de remediação não é status active do work item nem checkpoint novo. Cada autorização humana é separada, restrita ao review e vinculada à base certificada, branch e PR originais. Os certificados anteriores não são reescritos. Após validação, o delta recebe commit focalizado e novo review no mesmo PR. A remediação não sobrevive ao merge como autorização de código.
 
-O registro histórico separa `review_status` (`pending_human`, `changes_requested`, `reviewed`, `approved`) e `merge_status` (`open_not_merged`, `merged`). Aberto permite os quatro estados de review; mergeado exige reviewed/approved com `remote_observation`: repository, PR, branch/base, head, review commit/URL, merge commit, estado e instante observado. G-DOCS valida sua coerência, não atesta GitHub. G-GIT `reconcile --commit <SHA> --mode historical` compara metadata remota e reviews do head, detectando registro aberto obsoleto após merge. Reconciliação documental autorizada permanece read-only quanto ao produto e não reabre trabalho. Um certificado histórico válido nunca substitui autorização vigente.
+O registro histórico separa `review_status` (`pending_human`, `changes_requested`, `reviewed`, `approved`) e `merge_status` (`open_not_merged`, `merged`). Aberto permite os quatro estados de review; mergeado exige reviewed/approved, ou `not_recorded` quando a API retorna reviews vazios, com `remote_observation`: repository, PR, branch/base, head, review commit/URL, merge commit, estado e instante observado. G-DOCS valida sua coerência, não atesta GitHub. G-GIT `reconcile --commit <SHA> --mode historical` compara metadata remota e reviews do head, detectando registro aberto obsoleto após merge. Reconciliação documental autorizada permanece read-only quanto ao produto e não reabre trabalho. Um certificado histórico válido nunca substitui autorização vigente.
 
 Após checkpoints e review técnico, preparar commit de fechamento no mesmo PR: promover conhecimento durável, preservar testes/oracles, registrar histórico factual, remover active e atualizar registry/index/backlog. Rodar gates de fechamento. O PR final precisa ser revisto se o fechamento introduzir mudanças materiais.
 
@@ -49,3 +49,10 @@ Spec: problema, objetivo, domínio suportado, classes, premissas, comportamento 
 ## Mudar o próprio harness
 
 Exigir work item ou escopo documental autorizado; demonstrar a lacuna com um contracaso do checker ou revisão. Atualização de status nunca substitui implementação do gate. Preservar rastreabilidade de decisões antigas sem duplicar tasklists em contexto padrão.
+
+Para `not_recorded`, review_commit/review_url são null e reviews é uma lista vazia observada;
+G-GIT reconsulta essa ausência e o head/merge. Isso não concede aprovação nem execução.
+O manifesto congelado anterior à criação do PR pode ter PR null: o certificado final e o
+registro histórico precisam concordar no PR real. Evidência histórica não é reescrita para
+mover links: G-DOCS resolve links locais ausentes de documentos quality byte-idênticos ao
+head histórico na mesma revisão Git, inclusive anchors. Links correntes continuam estritos.

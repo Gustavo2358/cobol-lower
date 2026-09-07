@@ -1,3 +1,3 @@
 # Trabalho autorizado
 
-[WORK-LOWER-002](WORK-LOWER-002/work-item.yaml): CP0 de proveniência/pinning, [estado](WORK-LOWER-002/state.md). Os itens anteriores permanecem em histórico. Este README não é work item.
+[WORK-LOWER-003](WORK-LOWER-003/work-item.yaml): CP0 2A, [estado](WORK-LOWER-003/state.md).

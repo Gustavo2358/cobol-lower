@@ -59,7 +59,9 @@ def bootstrap():
     if not re.search(r"PASS: [1-9][0-9]* deterministic contract checks", log):
         raise RuntimeError("upstream contract tests absent")
     jar = build_root() / "m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar"
+    codec = jar.parents[2] / "air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar"
     provenance = dict(repository=src["repository"], commit=src["commit"], jar_sha256=digest(jar.read_bytes()),
+                      codec_sha256=digest(codec.read_bytes()),
                       source_lock_sha256=digest((ROOT / "docs/sources/sources.lock.json").read_bytes()),
                       java=version.strip())
     (build_root() / "air-provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
@@ -72,6 +74,9 @@ def verify_dependency():
     jar = build_root() / "m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar"
     if provenance["commit"] != source()["commit"] or provenance["jar_sha256"] != digest(jar.read_bytes()) or provenance["source_lock_sha256"] != digest((ROOT / "docs/sources/sources.lock.json").read_bytes()):
         raise RuntimeError("unproven or changed air-java artifact")
+    codec = jar.parents[2] / "air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar"
+    if provenance.get("codec_sha256") != digest(codec.read_bytes()):
+        raise RuntimeError("unproven or changed air-json artifact")
     return jar
 
 
@@ -82,6 +87,9 @@ def semantic(extra=()):
     expected_suites = 2  # Current first-slice core + adapters, independent of work-item identity.
     if len(counts) != expected_suites or min(counts) <= 0:
         raise RuntimeError("semantic tests absent/zero")
+    output_counts = [int(n) for n in re.findall(r"^LOWER_AIR_OUTPUT_TESTS=([0-9]+)$", output, re.M)]
+    if len(output_counts) != 1 or output_counts[0] <= 0:
+        raise RuntimeError("AIR output tests absent/zero/duplicate")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
     return output
 
@@ -112,6 +120,7 @@ def challenge():
     run([sys.executable, "scripts/harness/challenge.py"])
     run([sys.executable, "scripts/harness/semantic_challenge.py"])
     run([sys.executable, "scripts/harness/review_challenge.py"])
+    run([sys.executable, "scripts/harness/output_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):
@@ -199,6 +208,11 @@ def reconcile_errors(registration, pr, reviews):
     observed_merge = "merged" if pr["state"] == "MERGED" else "open_not_merged" if pr["state"] == "OPEN" else "closed_unmerged"
     if registration["merge_status"] != observed_merge:
         errors.append("PR_RECONCILIATION merge status")
+    if registration["review_status"] == "not_recorded":
+        observation = registration.get("remote_observation", {})
+        if (reviews or observation.get("head_sha") != pr["headRefOid"]
+                or observation.get("merge_commit") != (pr.get("mergeCommit") or {}).get("oid")):
+            errors.append("PR_RECONCILIATION absent review/head/merge not confirmed")
     if registration["review_status"] in ("reviewed", "approved"):
         relevant = [r for r in reviews if r.get("commit_id") == pr["headRefOid"] and r.get("state") in ("APPROVED", "COMMENTED", "CHANGES_REQUESTED")]
         if not relevant or (registration["review_status"] == "approved" and relevant[-1]["state"] != "APPROVED"):

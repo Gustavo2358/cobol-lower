@@ -1,6 +1,6 @@
 # BACKLOG-LOWER-003 — Adapter AIR JSON de saída e prova interoperável
 
-**Estado:** `candidate`. **Fase:** `transport`. **Autorização:** não concedida.
+**Estado:** `in_progress`. **Fase:** `transport`. **Autorização:** WORK-LOWER-003 CP0, somente 2A; mesmo codec compartilhado, sem prova cross-codec.
 
 ## Problema e objetivo observável
 
@@ -28,8 +28,8 @@ JSON em air-java, annotations no domínio, alterar norma AIR ou exigir accepted 
 
 ## Checkpoints e handoff
 
-Nenhum work item promovido. Ao promover, delimitar um resultado por checkpoint, escopo e testes. Não iniciar itens dependentes por terminar este. Documentar descoberta upstream na primeira fronteira afetada; não editar outro repo.
+[WORK-LOWER-003](../active/WORK-LOWER-003/work-item.yaml) promovido para 2A. Ao promover, delimitar um resultado por checkpoint, escopo e testes. Não iniciar itens dependentes por terminar este. Documentar descoberta upstream na primeira fronteira afetada; não editar outro repo.
 
 ## Evidência atual
 
-Planejamento documental somente. Sem commit de implementação, CI, benchmark ou aprovação remota atribuídos a este item.
+2A implementado localmente em WORK-LOWER-003 CP0; evidência, certificação e PR/CI no state do item. Reader independente e integração CFG continuam futuros.

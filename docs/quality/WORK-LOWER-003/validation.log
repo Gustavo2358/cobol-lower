@@ -1,0 +1,37 @@
+Full source log: full.log
+SHA256: 05fb237aea62266c98aa453e6e82c24ef3b83d2aa5e85c6ba5964dfffd041071
+FULL_COMPONENT_PASS=docs
+LOWER_AIR_OUTPUT_TESTS=143
+SEMANTIC_TEST_COUNT=779
+FULL_COMPONENT_PASS=semantic
+LOWER_AIR_OUTPUT_TESTS=143
+SEMANTIC_TEST_COUNT=874
+PERFORMANCE_TEST_COUNT=95
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+PR_INITIAL_CREATION_PENDING: only before the first certified commit
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+Ran 136 tests in 20.464s
+FULL_COMPONENT_PASS=harness-tests
+PASS CHALLENGE: 10 restored falsifications and second GREEN
+PASS SEMANTIC CHALLENGE: 3 restored falsifications and second GREEN
+PASS REVIEW CHALLENGE: 5 restored falsifications and second GREEN
+PASS AIR OUTPUT CHALLENGE: 9 restored falsifications and second GREEN
+FULL_COMPONENT_PASS=challenge
+PASS full
+
+compiled module air-json; effective POM + resolved graph + 17 classfiles + JAR verified
