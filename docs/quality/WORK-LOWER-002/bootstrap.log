@@ -1,0 +1,11 @@
+Verified command exit: 0
+Selected result lines; full local log SHA-256: 6f156c46fd77a66ba0bd389d9fc540be3f2b59b2ef370b1ff2b91d732c985b90
+PASS: reactor topology 0.1.0-SNAPSHOT; parent, air-model, air-json (1A codec)
+PASS: 172 deterministic contract checks
+PASS: compiled module air-model; effective POM + resolved graph + 308 classfiles + JAR verified
+PASS: 57 deterministic transport checks
+PASS: compiled module air-json; effective POM + resolved graph + 17 classfiles + JAR verified
+[INFO] Reactor Summary for Analysis IR Java Parent 0.1.0-SNAPSHOT:
+[INFO] BUILD SUCCESS
+[INFO] Total time:  30.915 s
+PASS bootstrap

@@ -1,3 +1,3 @@
 # Trabalho autorizado
 
-Nenhum pacote ativo. WORK-LOWER-001 tem [fechamento local](../history/WORK-LOWER-001.md) e review humano final pendente. Este README não é work item; não recriar um item concluído nem iniciar candidatos sem autorização.
+[WORK-LOWER-002](WORK-LOWER-002/work-item.yaml): CP0 de proveniência/pinning, [estado](WORK-LOWER-002/state.md). Os itens anteriores permanecem em histórico. Este README não é work item.

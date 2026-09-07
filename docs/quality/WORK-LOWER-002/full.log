@@ -1,0 +1,53 @@
+Verified command exit: 0
+Selected result lines; full local log SHA-256: b2641395833f246635b785d21967d6d360823ae431aa437dc691c6fbe0bfc4df
+FULL_COMPONENT_PASS=docs
+LOWER_TESTS=540
+LOWER_TESTS=239
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO] BUILD SUCCESS
+[INFO] Total time:  1.258 s
+SEMANTIC_TEST_COUNT=779
+FULL_COMPONENT_PASS=semantic
+LOWER_TESTS=585
+LOWER_PERFORMANCE_TESTS=45
+LOWER_TESTS=289
+LOWER_PERFORMANCE_TESTS=50
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO] BUILD SUCCESS
+[INFO] Total time:  2.145 s
+SEMANTIC_TEST_COUNT=874
+PERFORMANCE_TEST_COUNT=95
+FULL_COMPONENT_PASS=performance
+[INFO] BUILD SUCCESS
+[INFO] Total time:  0.586 s
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+test_all_required_components_once (test_full.Full.test_all_required_components_once) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+test_full_wiring_does_not_substitute_a_leaf (test_full.Full.test_full_wiring_does_not_substitute_a_leaf) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+Ran 126 tests in 16.328s
+OK
+FULL_COMPONENT_PASS=harness-tests
+{"id": "DOC-HISTORY-TRUST", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-999: 'review_status'", "UNAUTHORIZED_IMPLEMENTATION docs-only"], "baseline_digest": "0f468a790774f06f2466e7a72ecea56716f672c76a0d5c8e446349a94c6f1b0b"}
+{"id": "DOC-HISTORY-TRUST", "restoration_status": "RESTORED", "restored_digest": "0f468a790774f06f2466e7a72ecea56716f672c76a0d5c8e446349a94c6f1b0b", "green_exit_code": 0}
+PASS CHALLENGE: 10 restored falsifications and second GREEN
+{"id": "RETURN-HALT", "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)", "expected_oracle": "typed GOBACK must be Return, never Halt", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt", "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "8cecb632d943afbd07bcd6fc14b8ce28c58385fc7ed481e5f64dedf85f75db6f", "red_output_sha256": "a7c217199239b9f06f9fff5c2990f87689320ec5d5148c80e463b43dc208cc65", "restored_output_sha256": "a7e5c41a540857aa279ba9950d3847317bbe31e2449b4dbea72de908946a912a", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+{"id": "OPEN-COMPLETE", "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE", "expected_oracle": "alternative entry inventory stays PARTIAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL", "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "bdfe18f9de6242f4e9261cea93a22a5d0158cd3156738225dd564ef0d01a45c3", "red_output_sha256": "b635636748f915ac7ae863eded2714f707ad65f1c031f33fdd7d4e7b583d5de0", "restored_output_sha256": "9b87c75046cd6ab1970a0be6d9cfdc25c5450eb77ab3fbab3c5ab697f10c619b", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+{"id": "INDEX-SCAN", "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }", "expected_oracle": "reference ledger N+1, no repeated scan", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan", "baseline_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff", "restored_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "01d187351779ae5f18e4a6eec7c089f1c5c850473e5cbdefe07d20577eb46e07", "red_output_sha256": "44cd5628db4fdae7b4f304144370ce71adb8a319f33bf6fb72e83e07f071a0de", "restored_output_sha256": "0d2456c9d1df77fbe52e31fff5f7218713f82d0a8bd07c347627f5726eba937a", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+PASS SEMANTIC CHALLENGE: 3 restored falsifications and second GREEN
+PASS REVIEW CHALLENGE: 5 restored falsifications and second GREEN
+FULL_COMPONENT_PASS=challenge
+PASS full

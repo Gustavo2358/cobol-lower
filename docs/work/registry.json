@@ -1,6 +1,18 @@
 {
   "schema_version": 1,
-  "active": [],
+  "active": [
+    {
+      "id": "WORK-LOWER-002",
+      "status": "active",
+      "path": "docs/work/active/WORK-LOWER-002",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "chore/pin-air-java-1a",
+      "pull_request": null,
+      "backlog_ids": []
+    }
+  ],
   "proposals": [],
   "history": [
     {

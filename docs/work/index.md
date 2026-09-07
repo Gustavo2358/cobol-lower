@@ -1,6 +1,10 @@
 # Trabalho atual
 
-## Nenhum item ativo
+## Item ativo
+
+[WORK-LOWER-002](active/WORK-LOWER-002/work-item.yaml), CP0 de proveniência autorizado em 2026-09-07. [Estado](active/WORK-LOWER-002/state.md). Sem execução de 2A/2B; review humano após CI do head.
+
+## Handoff histórico anterior
 
 Remediação de review humano do mesmo PR2: [R1 state](../quality/WORK-LOWER-001/R1-state.md), [autorização restrita](../quality/WORK-LOWER-001/R1-authorization.json). Não reabre o item nem inicia CP6/backlog. CP5 original `5a00a152d3c05793dad825c16226867c493ee31b` reconfirmado por [receipt remoto](../quality/WORK-LOWER-001/CP5-remote.json). A narrativa abaixo é o handoff original de fechamento; o delta pós-review fica em R1.
 
