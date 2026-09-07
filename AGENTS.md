@@ -2,7 +2,7 @@
 
 ## Missão e estado
 
-Produzir AIR a partir do contrato público do COBOL Semantic Product, sem reanalisar COBOL. O núcleo usa `air-java::Publication`; `analysis-ir` governa seu significado. Este checkout começa **docs-only**: código, build, scripts e adapters só podem ser criados após autorização explícita de um checkpoint.
+Produzir AIR a partir do contrato público do COBOL Semantic Product, sem reanalisar COBOL. O núcleo usa `air-java::Publication`; `analysis-ir` governa seu significado. O repositório contém o slice `minimal-entry-goback@1`, build, adapters e harness executável. Mudanças de implementação continuam exigindo autorização explícita no work item; remediações de review seguem o lifecycle e não ampliam capacidades por si mesmas.
 
 ## Regras universais
 
@@ -37,4 +37,4 @@ Carregue apenas o `must_read` do checkpoint e amplie por dependência real. Não
 
 Informe checkpoint, diff, regras preservadas, comandos/exit codes, testes executados e não executados, findings, limitações e próximo passo **não iniciado**. Atualize `state.md` sem transcript de raciocínio. Antes de encerrar, revise consistência entre manifesto, active/proposals/history, registry, backlog e índice.
 
-[Gates especificados](docs/engineering/gates.md) não são comandos já disponíveis. O próximo trabalho deverá implementar e provar seus executores antes de anunciar proteção automatizada.
+Os [gates](docs/engineering/gates.md) possuem executores e contracasos no harness. Confira o catálogo e execute os gates exigidos pelo trabalho: gate ausente, apenas especificado ou não executado nunca é PASS. Novos gates exigem implementação e prova antes de anunciar proteção automatizada.

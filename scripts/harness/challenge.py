@@ -12,7 +12,7 @@ from architecture import source_errors, class_errors
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts/harness/tests"))
-from lifecycle_fixture import activate_fixture
+from lifecycle_fixture import activate_fixture, attach_git
 
 
 def sha(data):
@@ -45,6 +45,7 @@ def main():
             shutil.copytree(ROOT / item, root / item, ignore=shutil.ignore_patterns("target", "__pycache__"))
         for item in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "pom.xml", ".gitignore"):
             shutil.copy2(ROOT / item, root / item)
+        attach_git(root)
         mutate(root, "README.md", lambda b: b + b"\n[broken](missing.md)\n",
                lambda: document_errors(root), "LINK", "DOC-LINK")
         def unknown_invariant(data):

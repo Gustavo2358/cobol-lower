@@ -22,8 +22,17 @@
       ],
       "manifest": "docs/quality/WORK-LOWER-001/CP5-manifest.yaml",
       "evidence": "docs/quality/WORK-LOWER-001/CP5.json",
-      "review_status": "pending_human",
-      "merge_status": "open_not_merged"
+      "review_status": "changes_requested",
+      "merge_status": "open_not_merged",
+      "remediations": [
+        {
+          "id": "R1",
+          "status": "ready_for_review",
+          "authorization": "docs/quality/WORK-LOWER-001/R1-authorization.json",
+          "evidence": "docs/quality/WORK-LOWER-001/R1.json",
+          "state": "docs/quality/WORK-LOWER-001/R1-state.md"
+        }
+      ]
     }
   ],
   "backlog": [

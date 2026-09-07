@@ -1,0 +1,39 @@
+Command: python3 scripts/harness/tests/test_human_review.py -v
+Exit code: 0
+Capture: stdout/stderr; trailing whitespace removed per line for diff hygiene. GitHub fixtures in focal tests are synthetic.
+test_immutable_oracle_candidate_and_committed_bytes (__main__.FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes) ... ok
+test_reference_only_may_change (__main__.FreezeCandidate.test_reference_only_may_change) ... ok
+test_usage_missing_or_unknown_rejected_v2 (__main__.FreezeCandidate.test_usage_missing_or_unknown_rejected_v2) ... ok
+test_execution_merged_rejected (__main__.RemoteLifecycle.test_execution_merged_rejected) ... ok
+test_execution_open_positive (__main__.RemoteLifecycle.test_execution_open_positive) ... ok
+test_historical_gate_is_read_only_and_requires_certificate (__main__.RemoteLifecycle.test_historical_gate_is_read_only_and_requires_certificate) ... ok
+test_historical_merged_positive (__main__.RemoteLifecycle.test_historical_merged_positive) ... ok
+test_reconciliation_pending_open_and_stale_open_after_merge (__main__.RemoteLifecycle.test_reconciliation_pending_open_and_stale_open_after_merge) ... ok
+test_reconciliation_reviewed_open_and_merged (__main__.RemoteLifecycle.test_reconciliation_reviewed_open_and_merged) ... ok
+test_review_of_other_sha_not_current_approval (__main__.RemoteLifecycle.test_review_of_other_sha_not_current_approval) ... ok
+test_wrong_sha_success_still_rejected (__main__.RemoteLifecycle.test_wrong_sha_success_still_rejected) ... ok
+test_active_rejects_self_consistent_wrong_receipt (__main__.ReviewDocuments.test_active_rejects_self_consistent_wrong_receipt) ... ok
+test_dependency_wrong_checkpoint_identity (__main__.ReviewDocuments.test_dependency_wrong_checkpoint_identity) ... ok
+test_history_never_authorizes_execution (__main__.ReviewDocuments.test_history_never_authorizes_execution) ... ok
+test_history_rejects_self_consistent_wrong_receipt (__main__.ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt) ... ok
+test_legacy_schema_is_auditable_but_not_new_execution_authority (__main__.ReviewDocuments.test_legacy_schema_is_auditable_but_not_new_execution_authority) ... ok
+test_merged_history_cannot_authorize_even_remediation (__main__.ReviewDocuments.test_merged_history_cannot_authorize_even_remediation) ... ok
+test_no_git_or_invalid_candidate_is_not_success (__main__.ReviewDocuments.test_no_git_or_invalid_candidate_is_not_success) ... ok
+test_receipt_matching_certified_commit_positive (__main__.ReviewDocuments.test_receipt_matching_certified_commit_positive) ... ok
+test_receipt_wrong_pr_rejected (__main__.ReviewDocuments.test_receipt_wrong_pr_rejected) ... ok
+test_resolver_positive_and_wrong_identity (__main__.ReviewDocuments.test_resolver_positive_and_wrong_identity) ... ok
+test_reviewed_merged_history_valid_read_only (__main__.ReviewDocuments.test_reviewed_merged_history_valid_read_only) ... ok
+test_reviewed_open_history_valid (__main__.ReviewDocuments.test_reviewed_open_history_valid) ... ok
+test_ci_wrong_event_sha_rejected (__main__.WorkflowPolicy.test_ci_wrong_event_sha_rejected) ... ok
+test_main_missing_ambiguous_or_wrong_merge_sha_rejected (__main__.WorkflowPolicy.test_main_missing_ambiguous_or_wrong_merge_sha_rejected) ... ok
+test_main_uses_proven_pr_head_as_read_only (__main__.WorkflowPolicy.test_main_uses_proven_pr_head_as_read_only) ... ok
+test_new_work_branch_uses_own_evidence_without_first_branch_name (__main__.WorkflowPolicy.test_new_work_branch_uses_own_evidence_without_first_branch_name) ... ok
+test_push_policy_covers_new_work_branch_and_main (__main__.WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main) ... ok
+test_required_check_identity_remains_explicit (__main__.WorkflowPolicy.test_required_check_identity_remains_explicit) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 5.653s
+
+OK
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "OPEN", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": null}
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "MERGED", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": {"oid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}

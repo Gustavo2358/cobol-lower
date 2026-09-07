@@ -1,7 +1,7 @@
 name: Checkpoint verification
-on:
+"on":
   push:
-    branches: ['feat/first-entry-goback-slice']
+    branches: ['**']
 permissions:
   contents: read
   pull-requests: read
@@ -28,6 +28,4 @@ jobs:
       - name: Fixed AIR snapshot and upstream tests
         run: python3 scripts/harness/run.py bootstrap
       - name: Full first-slice gates and restored challenge
-        run: python3 scripts/harness/run.py full --commit "$GITHUB_SHA"
-      - name: Published candidate and certificate
-        run: python3 scripts/harness/run.py verify-commit --commit "$GITHUB_SHA"
+        run: python3 scripts/harness/run.py ci --commit "$GITHUB_SHA"

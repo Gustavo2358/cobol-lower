@@ -78,6 +78,21 @@ def markdown_errors(root):
     return errors
 
 
+def dependency_errors(root, ident, checkpoint, branch, pull_request):
+    # Local Git is offline evidence; the remote receipt never selects its own expected SHA.
+    from git_checks import resolve_checkpoint_commit
+    import subprocess
+    try:
+        expected = resolve_checkpoint_commit(root, ident, checkpoint, branch, pull_request)
+        certificate = read_data(root / f"docs/quality/{ident}/{checkpoint}.json")
+        receipt = read_data(root / f"docs/quality/{ident}/{checkpoint}-remote.json")
+        if receipt.get("pull_request") != pull_request:
+            return ["DEPENDENCY receipt PR identity"]
+        return ["DEPENDENCY " + e for e in remote_errors(certificate["frozen_contract"]["required_remote_checks"], expected, receipt)]
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as ex:
+        return [f"DEPENDENCY {ident}/{checkpoint}: {ex}"]
+
+
 def history_errors(root, registry):
     """Validate local closure metadata, not final certification or live remote state."""
     errors, valid = [], set()
@@ -95,8 +110,22 @@ def history_errors(root, registry):
                 raise ValueError("identity")
             if all_ids[ident] != 1:
                 raise ValueError("duplicate registration")
-            if item["status"] != "completed" or item["review_status"] != "pending_human" or item["merge_status"] != "open_not_merged":
-                raise ValueError("closure state is not the authorized pre-merge closure")
+            pair = (item["review_status"], item["merge_status"])
+            allowed = {(r, "open_not_merged") for r in ("pending_human", "changes_requested", "reviewed", "approved")}
+            allowed |= {(r, "merged") for r in ("reviewed", "approved")}
+            if item["status"] != "completed" or pair not in allowed:
+                raise ValueError("invalid historical review/merge state")
+            if item["review_status"] in ("reviewed", "approved"):
+                observation = item["remote_observation"]
+                if (observation["pull_request"] != item["pull_request"] or observation["branch"] != item["git_branch"]
+                        or observation["base"] != "main" or observation["review_status"] != item["review_status"]
+                        or observation["state"] != ("MERGED" if item["merge_status"] == "merged" else "OPEN")
+                        or not observation["repository"] or not observation["observed_at"]
+                        or not observation["review_url"].startswith("https://")
+                        or not re.fullmatch(r"[0-9a-f]{40}", observation["head_sha"])
+                        or observation["review_commit"] != observation["head_sha"]
+                        or (item["merge_status"] == "merged" and not re.fullmatch(r"[0-9a-f]{40}", observation["merge_commit"] or ""))):
+                    raise ValueError("historical remote observation incoherent")
             for key in ("path", "manifest", "evidence"):
                 if not relative(item[key]) or not (root / item[key]).is_file():
                     raise ValueError("missing/unsafe " + key)
@@ -127,10 +156,22 @@ def history_errors(root, registry):
                 raise ValueError("frozen manifest binding")
             for checkpoint in manifest["checkpoints"][:-1]:
                 cp = checkpoint["id"]
-                previous = read_data(root / f"docs/quality/{ident}/{cp}.json")
-                receipt = read_data(root / f"docs/quality/{ident}/{cp}-remote.json")
-                if certificate_errors(root, previous) or remote_errors(previous["frozen_contract"]["required_remote_checks"], receipt.get("pushed_sha"), receipt):
-                    errors.append(f"HISTORY DEPENDENCY {ident}: {cp}")
+                errors.extend("HISTORY " + e for e in dependency_errors(root, ident, cp, item["git_branch"], item["pull_request"]))
+            remediation_ids = set()
+            for remediation in item.get("remediations", []):
+                rid = remediation["id"]
+                if not re.fullmatch(r"R[1-9][0-9]*", rid) or rid in remediation_ids or remediation["status"] not in ("active", "ready_for_review", "reviewed"):
+                    raise ValueError("remediation registration")
+                remediation_ids.add(rid)
+                for key, suffix in (("authorization", "-authorization.json"), ("evidence", ".json"), ("state", "-state.md")):
+                    if remediation[key] != f"docs/quality/{ident}/{rid}{suffix}" or not (root / remediation[key]).is_file():
+                        raise ValueError("remediation path " + key)
+                authority = read_data(root / remediation["authorization"])
+                if (authority["work_item"] != ident or authority["id"] != rid or authority["branch"] != item["git_branch"]
+                        or authority["pull_request"] != item["pull_request"] or authority["kind"] != "human-review-remediation"
+                        or authority["state"] != "granted" or not authority["authority"]):
+                    raise ValueError("remediation authority identity")
+                errors.extend("HISTORY " + e for e in dependency_errors(root, ident, final, item["git_branch"], item["pull_request"]))
             for backlink in item["backlog_ids"]:
                 matches = backlogs[backlink]
                 if len(matches) != 1 or matches[0]["status"] != "completed" or matches[0].get("work_item") != ident:
@@ -144,7 +185,7 @@ def history_errors(root, registry):
     return errors, valid
 
 
-def work_manifest(root, ident):
+def work_manifest(root, ident, for_execution=False):
     """Resolve an explicitly registered work; absence/ambiguity never falls back."""
     root = Path(root)
     registry = read_data(root / "docs/work/registry.json")
@@ -154,6 +195,8 @@ def work_manifest(root, ident):
         raise ValueError("WORK_REGISTRATION missing/ambiguous " + ident)
     kind, item = matches[0]
     if kind == "history":
+        if for_execution:
+            raise ValueError("AUTHORIZATION historical work is read-only")
         errors, valid = history_errors(root, registry)
         if errors or ident not in valid:
             raise ValueError("WORK_REGISTRATION invalid closure: " + "; ".join(errors))
@@ -166,6 +209,31 @@ def work_manifest(root, ident):
     if manifest["id"] != ident or manifest["authorization"]["state"] != "granted":
         raise ValueError("WORK_REGISTRATION unauthorized " + ident)
     return manifest
+
+
+def execution_authority(root, record):
+    """A closed artifact is not authority; remediation needs its separate explicit grant."""
+    if record.get("schema_version") != 2:
+        raise ValueError("AUTHORIZATION new execution requires evidence v2; legacy is audit-only")
+    if record.get("kind") != "human-review-remediation":
+        return work_manifest(root, record["work_item"], for_execution=True)
+    path = record["authorization_reference"]
+    if not relative(path):
+        raise ValueError("AUTHORIZATION unsafe path")
+    authority = read_data(Path(root) / path)
+    registry = read_data(Path(root) / "docs/work/registry.json")
+    items = [r for r in registry["history"] if r["id"] == record["work_item"]]
+    if len(items) != 1 or items[0]["merge_status"] != "open_not_merged":
+        raise ValueError("AUTHORIZATION remediation requires unmerged historical work")
+    remediations = [r for r in items[0].get("remediations", []) if r["id"] == record.get("remediation")]
+    if (len(remediations) != 1 or remediations[0]["authorization"] != path
+            or remediations[0]["status"] not in ("active", "ready_for_review")
+            or authority["kind"] != record["kind"] or authority["state"] != "granted"
+            or authority["id"] != record["remediation"] or authority["work_item"] != record["work_item"]
+            or authority["branch"] != record["branch"] or authority["pull_request"] != record["pull_request"]
+            or authority["base_commit"] != record["base_commit"] or not authority["authority"]):
+        raise ValueError("AUTHORIZATION remediation mismatch")
+    return authority
 
 
 def document_errors(root):
@@ -252,17 +320,7 @@ def document_errors(root):
                     errors.append(f"STATE_AUTHORIZATION {ident}")
                 current = cps.get(auth["current_checkpoint"], {})
                 for previous in current.get("depends_on", []):
-                    evidence = root / f"docs/quality/{ident}/{previous}.json"
-                    if not evidence.is_file():
-                        errors.append(f"DEPENDENCY {ident}: {previous} has no certificate")
-                        continue
-                    certificate = read_data(evidence)
-                    receipt = root / f"docs/quality/{ident}/{previous}-remote.json"
-                    if certificate_errors(root, certificate) or not receipt.is_file():
-                        errors.append(f"DEPENDENCY {ident}: {previous} incomplete")
-                    elif remote_errors(certificate["frozen_contract"]["required_remote_checks"],
-                                       read_data(receipt).get("pushed_sha"), read_data(receipt)):
-                        errors.append(f"DEPENDENCY {ident}: {previous} remote incomplete")
+                    errors.extend(dependency_errors(root, ident, previous, work["git"]["branch"], work["git"]["pull_request"]))
             for key in ("must_read", "related_domain_rules"):
                 for item in work[key]:
                     if not relative(item) or not (root / item).is_file():
@@ -347,15 +405,54 @@ def certificate_errors(root, record):
         require(paths == sorted(set(paths)), "FREEZE ordered unique paths")
     require("docs/sources/sources.lock.json" in paths, "FREEZE source lock")
     for reference in references:
-        require(set(reference) == {"path", "sha256", "git_revision"}, "FREEZE reference fields")
+        fields = {"path", "sha256", "git_revision"}
+        if record.get("schema_version", 1) >= 2:
+            fields.add("usage")
+            require(reference.get("usage") in ("reference_only", "candidate_immutable"), "FREEZE usage")
+            if reference.get("path") == "docs/sources/sources.lock.json":
+                require(reference.get("usage") == "candidate_immutable", "FREEZE source lock immutable")
+        require(set(reference) == fields, "FREEZE reference fields")
         require(relative(reference.get("path")), "FREEZE relative path")
         require(bool(re.fullmatch(r"[0-9a-f]{64}", reference.get("sha256") or "")), "FREEZE hash")
         require(reference.get("git_revision") is None or bool(re.fullmatch(r"[0-9a-f]{40}", reference.get("git_revision") or "")), "FREEZE revision")
     require(bool(frozen.get("required_gates")), "required gates")
     required = frozen.get("required_gates", [])
+    remediation = record.get("kind") == "human-review-remediation"
     manifests = [p for p in paths if isinstance(p, str) and p.endswith("-manifest.yaml")]
-    require(len(manifests) == 1, "FREEZE manifest")
-    if len(manifests) == 1 and (root / manifests[0]).is_file():
+    if remediation:
+        require(record.get("schema_version") == 2 and record.get("checkpoint") is None, "remediation is not a checkpoint")
+        authority_path = record.get("authorization_reference")
+        if relative(authority_path) and (root / authority_path).is_file():
+            authority = read_data(root / authority_path)
+            require(authority.get("kind") == record["kind"] and authority.get("state") == "granted" and bool(authority.get("authority")), "remediation authority")
+            require(bool(re.fullmatch(r"R[1-9][0-9]*", record.get("remediation") or "")), "remediation id")
+            for key in ("work_item", "branch", "pull_request", "base_commit"):
+                require(record.get(key) == authority.get(key), "remediation " + key)
+            require(record.get("remediation") == authority.get("id") and required == authority.get("gates"), "remediation frozen gates/id")
+            require(any(r.get("path") == authority_path and r.get("usage") == "candidate_immutable" for r in references), "remediation immutable grant")
+            require(record.get("execution_mode") == "human-review-remediation", "remediation mode")
+            normative = {"AGENTS.md", "docs/engineering/agent-session-protocol.md", "docs/engineering/work-item-protocol.md",
+                         "docs/engineering/git-and-review.md", "docs/engineering/falsification.md", "docs/engineering/gates.md",
+                         "docs/engineering/gates.json", "docs/architecture/invariants.md", "docs/evals/catalog.md"}
+            require(normative <= set(paths), "FREEZE normative references incomplete")
+            contract = f"docs/quality/{record.get('work_item')}/{record.get('remediation')}-contract.md"
+            require(any(r.get("path") == contract and r.get("usage") == "candidate_immutable" for r in references), "remediation immutable contract")
+            previous = record.get("previous_certified_checkpoint") or {}
+            try:
+                from git_checks import resolve_checkpoint_commit
+                import subprocess
+                expected = resolve_checkpoint_commit(root, record["work_item"], previous["checkpoint"], record["branch"], record["pull_request"])
+                require(previous.get("commit") == record["base_commit"] == expected, "remediation recovery commit")
+                prefix = f"docs/quality/{record['work_item']}/{previous['checkpoint']}"
+                require(previous.get("evidence") == prefix + ".json" and previous.get("remote_receipt") == prefix + "-remote.json", "remediation recovery paths")
+                require(not dependency_errors(root, record["work_item"], previous["checkpoint"], record["branch"], record["pull_request"]), "remediation recovery remote")
+            except (KeyError, ValueError, OSError, subprocess.CalledProcessError):
+                require(False, "remediation recovery missing/invalid")
+        else:
+            require(False, "remediation authority missing")
+    else:
+        require(len(manifests) == 1, "FREEZE manifest")
+    if not remediation and len(manifests) == 1 and (root / manifests[0]).is_file():
         manifest = read_data(root / manifests[0])
         checkpoints = {c["id"]: c for c in manifest["checkpoints"]}
         current = checkpoints.get(record.get("checkpoint"), {})
@@ -369,7 +466,7 @@ def certificate_errors(root, record):
         require(required == current.get("gates"), "frozen required gates cannot shrink")
         require(record.get("checkpoint") in manifest["authorization"]["authorized_checkpoints"], "frozen authorization")
         require(record.get("execution_mode") == manifest["authorization"].get("execution_mode", "single-checkpoint"), "frozen execution mode")
-    else:
+    elif not remediation:
         require(False, "FREEZE manifest unavailable")
     entries = record.get("executions", [])
     gate_records = {g["name"]: g for g in read_data(root / "docs/engineering/gates.json")["gates"]}

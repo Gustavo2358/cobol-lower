@@ -1,5 +1,11 @@
 # WORK-LOWER-001 — Primeiro slice Entry/GOBACK
 
+## Human review remediation
+
+Após o head CP5 `5a00a152d3c05793dad825c16226867c493ee31b`, review humano solicitou correções de receipts, FREEZE, lifecycle/CI e estado obsoleto de AGENTS. [R1](../../quality/WORK-LOWER-001/R1-state.md) registra autorização restrita, novos contracasos e revalidação no mesmo PR2, sem recriar active, CP6 ou ampliar `minimal-entry-goback@1`. Certificados e narrativa CP0..CP5 abaixo são preservados como evidência histórica, com os defeitos do harness explicitados pelo delta posterior. [CP5 remoto](../../quality/WORK-LOWER-001/CP5-remote.json) foi reconfirmado antes da remediação.
+
+## Fechamento original em CP5
+
 Estado local de fechamento: `completed`; review técnico self-review, review humano final pendente; merge_status `open_not_merged`. Fechamento preparado em CP5 conforme autorização explícita do usuário em2026-09-06, multi-checkpoint CP0..CP5. Não inferir certificação/CI de CP5 apenas deste estado: [evidência](../../quality/WORK-LOWER-001/CP5.json) e [estado](../../quality/WORK-LOWER-001/CP5-state.md) são factuais; head/recibo final no PR.
 
 Branch `feat/first-entry-goback-slice`, [PR2](https://github.com/Gustavo2358/cobol-lower/pull/2), base main `14aaafc5051eb287af6a8f126e8eaff78e30e365`. Uma branch/PR, sem rewrite/merge/auto-merge. [Snapshot de autorização/scopes](../../quality/WORK-LOWER-001/CP5-manifest.yaml) é o manifesto congelado antes do fechamento, não novo item ativo. Spec/plan/eval anteriores permanecem reproduzíveis no Git pelas referências do FREEZE; o pacote ativo foi removido, sem copiar tasklist inteira para conhecimento canônico.

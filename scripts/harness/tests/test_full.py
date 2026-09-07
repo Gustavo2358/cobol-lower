@@ -13,6 +13,9 @@ class Full(unittest.TestCase):
         certificate = patch.object(harness, "certificate_errors", return_value=[])
         certificate.start()
         self.addCleanup(certificate.stop)
+        authority = patch.object(harness, "execution_authority", return_value={})
+        authority.start()
+        self.addCleanup(authority.stop)
 
     def test_all_required_components_once(self):
         observed = []

@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 from architecture import architecture_errors
-from checks import certificate_errors, digest, document_errors, read_data, remote_errors, work_manifest
+from checks import certificate_errors, digest, document_errors, read_data, remote_errors, execution_authority
 from git_checks import candidate_errors, evidence_path, git, preflight
 from full_checks import execute_full, performance_counts
 
@@ -79,8 +79,7 @@ def semantic(extra=()):
     verify_dependency()
     output = run(maven(*extra, "verify"))
     counts = [int(n) for n in re.findall(r"^LOWER_TESTS=([0-9]+)$", output, re.M)]
-    checkpoint = work_manifest(ROOT, "WORK-LOWER-001")["authorization"]["current_checkpoint"]
-    expected_suites = 1 if checkpoint == "CP0" else 2
+    expected_suites = 2  # Current first-slice core + adapters, independent of work-item identity.
     if len(counts) != expected_suites or min(counts) <= 0:
         raise RuntimeError("semantic tests absent/zero")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
@@ -92,28 +91,36 @@ def performance():
     print("PERFORMANCE_TEST_COUNT=" + str(performance_counts(output)))
 
 
-def git_gate(record, commit=None):
+def git_gate(record, commit=None, mode="execution"):
+    if mode == "historical":
+        if commit is None:
+            raise RuntimeError("historical audit requires a certified commit")
+        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, commit))
+        check_pr(record, commit, mode="historical")
+        return
     if commit is None:
         fail_on(preflight(ROOT, record))
     else:
         fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, commit))
         if git(ROOT, "rev-parse", "HEAD").decode().strip() != commit or git(ROOT, "status", "--porcelain"):
             raise RuntimeError("GIT_PUBLISHED_HEAD_OR_WORKTREE")
+        execution_authority(ROOT, record)
     check_pr(record, commit)
 
 
 def challenge():
     run([sys.executable, "scripts/harness/challenge.py"])
     run([sys.executable, "scripts/harness/semantic_challenge.py"])
+    run([sys.executable, "scripts/harness/review_challenge.py"])
 
 
-def full(record, commit=None):
+def full(record, commit=None, mode="execution"):
     execute_full(record["frozen_contract"]["required_gates"], {
         "docs": lambda: fail_on(document_errors(ROOT)),
         "semantic": semantic,
         "performance": performance,
         "architecture": architecture,
-        "git": lambda: git_gate(record, commit),
+        "git": lambda: git_gate(record, commit) if mode == "execution" else git_gate(record, commit, mode=mode),
         "harness-tests": lambda: run([sys.executable, "-m", "unittest", "discover", "-s", "scripts/harness/tests", "-v"]),
         "challenge": challenge,
     })
@@ -137,26 +144,33 @@ def gh(*args):
     return json.loads(subprocess.check_output(["gh", *args], cwd=ROOT))
 
 
-def check_pr(record, sha=None):
+def check_pr(record, sha=None, mode="execution"):
+    if mode not in ("execution", "historical"):
+        raise RuntimeError("unknown PR verification mode")
     prs = gh("pr", "list", "--repo", record["repository"], "--head", record["branch"], "--state", "all",
-             "--json", "number,url,state,isDraft,headRefOid,baseRefName,autoMergeRequest")
+             "--json", "number,url,state,isDraft,headRefOid,headRefName,baseRefName,autoMergeRequest,reviewDecision,mergeCommit")
     if len(prs) != 1:
         if not prs and record["checkpoint"] == "CP0" and record["pull_request"] is None and sha is None:
             print("PR_INITIAL_CREATION_PENDING: only before the first certified commit")
             return None
         raise RuntimeError("exactly one PR required")
     pr = prs[0]
-    if (pr["state"] != "OPEN" or pr["baseRefName"] != "main" or pr.get("autoMergeRequest") is not None
+    allowed_states = ("OPEN",) if mode == "execution" else ("OPEN", "MERGED")
+    if (pr["state"] not in allowed_states or pr["baseRefName"] != "main"
+            or pr.get("headRefName") != record["branch"]
+            or (mode == "execution" and pr.get("autoMergeRequest") is not None)
             or (record["pull_request"] is not None and pr["number"] != record["pull_request"])
-            or (sha is not None and pr["headRefOid"] != sha)):
+            or (mode == "execution" and sha is not None and pr["headRefOid"] != sha)):
         raise RuntimeError("PR identity/state/head mismatch")
+    if mode == "historical" and sha is not None and pr["headRefOid"] != sha:
+        git(ROOT, "merge-base", "--is-ancestor", sha, pr["headRefOid"])
     print(json.dumps(pr))
     return pr
 
 
-def remote(record, sha):
-    pr = check_pr(record, sha)
-    remote_sha = git(ROOT, "ls-remote", "origin", "refs/heads/" + record["branch"]).decode().split()[0]
+def remote(record, sha, mode="execution"):
+    pr = check_pr(record, sha, mode=mode)
+    remote_sha = sha if mode == "historical" else git(ROOT, "ls-remote", "origin", "refs/heads/" + record["branch"]).decode().split()[0]
     repo = record["repository"]
     checks = gh("api", f"repos/{repo}/commits/{sha}/check-runs?per_page=100")["check_runs"]
     normalized = []
@@ -179,21 +193,92 @@ def remote(record, sha):
     fail_on(remote_errors(record["frozen_contract"]["required_remote_checks"], sha, receipt))
 
 
+def reconcile_errors(registration, pr, reviews):
+    """Compare a recorded observation to trusted adapter metadata, without granting authority."""
+    errors = []
+    observed_merge = "merged" if pr["state"] == "MERGED" else "open_not_merged" if pr["state"] == "OPEN" else "closed_unmerged"
+    if registration["merge_status"] != observed_merge:
+        errors.append("PR_RECONCILIATION merge status")
+    if registration["review_status"] in ("reviewed", "approved"):
+        relevant = [r for r in reviews if r.get("commit_id") == pr["headRefOid"] and r.get("state") in ("APPROVED", "COMMENTED", "CHANGES_REQUESTED")]
+        if not relevant or (registration["review_status"] == "approved" and relevant[-1]["state"] != "APPROVED"):
+            errors.append("PR_RECONCILIATION review not confirmed on head")
+        observation = registration.get("remote_observation", {})
+        if observation.get("head_sha") != pr["headRefOid"] or (observed_merge == "merged" and observation.get("merge_commit") != (pr.get("mergeCommit") or {}).get("oid")):
+            errors.append("PR_RECONCILIATION recorded head/merge commit")
+    return errors
+
+
+def ci_target(sha, event):
+    """Push-head execution or independently proven merge-head audit; no branch-name fallback."""
+    if not re.fullmatch(r"[0-9a-f]{40}", sha) or event.get("after") != sha or not event.get("ref", "").startswith("refs/heads/"):
+        raise RuntimeError("CI push SHA/ref mismatch")
+    branch = event["ref"].removeprefix("refs/heads/")
+    certified = sha
+    mode = "execution"
+    if branch == "main":
+        repository = event["repository"]["full_name"]
+        pulls = gh("api", f"repos/{repository}/commits/{sha}/pulls")
+        matches = [p for p in pulls if p.get("merged_at") and p.get("merge_commit_sha") == sha
+                   and p["base"]["ref"] == "main" and p["base"]["repo"]["full_name"] == repository]
+        if len(matches) != 1:
+            raise RuntimeError("CI main requires unique proven merged PR")
+        pr = matches[0]
+        certified = pr["head"]["sha"]
+        git(ROOT, "merge-base", "--is-ancestor", certified, sha)
+        mode = "historical"
+    path = evidence_path(ROOT, certified)
+    record = json.loads(git(ROOT, "show", certified + ":" + path))
+    if record["repository"] != event["repository"]["full_name"]:
+        raise RuntimeError("CI repository mismatch")
+    if mode == "execution" and record["branch"] != branch:
+        raise RuntimeError("CI branch/evidence mismatch")
+    if mode == "historical":
+        if record["pull_request"] != pr["number"] or record["branch"] != pr["head"]["ref"] or json.loads(git(ROOT, "show", sha + ":" + path)) != record:
+            raise RuntimeError("CI merge/evidence identity mismatch")
+    return record, certified, mode
+
+
+def current_evidence():
+    registry = read_data(ROOT / "docs/work/registry.json")
+    paths = []
+    for item in registry["active"]:
+        work = read_data(ROOT / item["path"] / "work-item.yaml")
+        paths.append(f"docs/quality/{item['id']}/{work['authorization']['current_checkpoint']}.json")
+    for item in registry["history"]:
+        paths.extend(r["evidence"] for r in item.get("remediations", []) if r["status"] in ("active", "ready_for_review"))
+    if len(paths) > 1:
+        raise RuntimeError("explicit --evidence required for multiple transactions")
+    return paths[0] if paths else evidence_path(ROOT, "HEAD")
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "performance", "full", "challenge", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return"])
+    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "performance", "full", "challenge", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return", "ci", "reconcile"])
     parser.add_argument("--evidence")
     parser.add_argument("--commit")
+    parser.add_argument("--mode", choices=["execution", "historical"], default="execution")
     args = parser.parse_args()
-    if args.evidence is None:
+    if args.gate == "ci":
+        if os.environ.get("GITHUB_EVENT_NAME") != "push" or not args.commit:
+            raise RuntimeError("CI requires explicit push context")
+        event = read_data(Path(os.environ["GITHUB_EVENT_PATH"]))
+        if git(ROOT, "rev-parse", "HEAD").decode().strip() != args.commit or git(ROOT, "status", "--porcelain"):
+            raise RuntimeError("CI checkout/head mismatch")
+        record, certified, mode = ci_target(args.commit, event)
+        full(record, certified, mode=mode)
+        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, certified))
+        print("PASS ci " + mode + " certified=" + certified + " checkout=" + args.commit)
+        return
+    needs_record = args.gate in ("full", "git", "certify", "verify-commit", "remote", "reconcile")
+    if needs_record and args.evidence is None:
         if args.commit:
             args.evidence = evidence_path(ROOT, args.commit)
         else:
-            checkpoint = work_manifest(ROOT, "WORK-LOWER-001")["authorization"]["current_checkpoint"]
-            args.evidence = f"docs/quality/WORK-LOWER-001/{checkpoint}.json"
-    if args.commit:
+            args.evidence = current_evidence()
+    if needs_record and args.commit:
         record = json.loads(git(ROOT, "show", args.commit + ":" + args.evidence))
-    else:
+    elif needs_record:
         record = read_data(ROOT / args.evidence)
     if args.gate == "bootstrap":
         bootstrap()
@@ -209,7 +294,7 @@ def main():
     elif args.gate == "performance":
         performance()
     elif args.gate == "full":
-        full(record, args.commit)
+        full(record, args.commit, mode=args.mode)
     elif args.gate == "challenge":
         challenge()
     elif args.gate == "challenge-return":
@@ -217,8 +302,12 @@ def main():
     elif args.gate == "harness-tests":
         run([sys.executable, "-m", "unittest", "discover", "-s", "scripts/harness/tests", "-v"])
     elif args.gate == "git":
-        git_gate(record, args.commit)
+        git_gate(record, args.commit, mode=args.mode)
     elif args.gate in ("certify", "verify-commit"):
+        if args.gate == "certify":
+            if args.mode != "execution":
+                raise RuntimeError("HISTORICAL_READ_ONLY cannot certify new work")
+            execution_authority(ROOT, record)
         if args.gate == "verify-commit" and not args.commit:
             raise RuntimeError("--commit required")
         fail_on(document_errors(ROOT) + certificate_errors(ROOT, record)
@@ -227,7 +316,13 @@ def main():
         if not args.commit:
             raise RuntimeError("--commit required")
         fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, args.commit))
-        remote(record, args.commit)
+        remote(record, args.commit, mode=args.mode)
+    elif args.gate == "reconcile":
+        pr = check_pr(record, args.commit, mode="historical")
+        registry = read_data(ROOT / "docs/work/registry.json")
+        item = next(r for r in registry["history"] if r["id"] == record["work_item"])
+        reviews = gh("api", f"repos/{record['repository']}/pulls/{record['pull_request']}/reviews")
+        fail_on(reconcile_errors(item, pr, reviews))
     print("PASS " + args.gate)
 
 

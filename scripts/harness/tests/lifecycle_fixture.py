@@ -17,6 +17,13 @@ def copy_checkout(root):
         shutil.copytree(ROOT / name, root / name, ignore=shutil.ignore_patterns("target", "__pycache__"))
     for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "pom.xml", ".gitignore"):
         shutil.copy2(ROOT / name, root / name)
+    attach_git(root)
+
+
+def attach_git(root):
+    """Isolated local object/ref snapshot for real offline dependency verification."""
+    if not (root / ".git").exists():
+        shutil.copytree(ROOT / ".git", root / ".git")
 
 
 def registration(manifest):
