@@ -18,7 +18,7 @@ O envelope contém `unit`, `policy`, `dataDeclarations`, `statements`, `structur
 
 ## Camada física versus semântica
 
-O decoder rejeita JSON malformado, propriedades duplicadas, tipos físicos incompatíveis e campos obrigatórios ausentes. Política de campos desconhecidos deve ser explícita e testada para a versão fixada; a proposta inicial é rejeição estrita. Essa política não autoriza rejeitar campos válidos apenas porque não participam do primeiro slice.
+O decoder rejeita JSON malformado, propriedades duplicadas, tipos físicos incompatíveis e campos obrigatórios ausentes. Política de campos desconhecidos deve ser explícita e testada para a versão fixada; a implementação de SP1.1.0 usa rejeição estrita. Essa política não autoriza rejeitar campos válidos apenas porque não participam do primeiro slice.
 
 O domínio valida identidade/referências, consistência de disponibilidade, contagens e fatos necessários ao perfil. A mesma validação vale para um input construído diretamente em memória. DTOs de Jackson ficam no adapter; o core não depende deles nem lê `JsonNode`.
 

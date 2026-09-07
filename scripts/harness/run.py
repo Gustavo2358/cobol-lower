@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 from architecture import architecture_errors
-from checks import certificate_errors, digest, document_errors, read_data, remote_errors
+from checks import certificate_errors, digest, document_errors, read_data, remote_errors, work_manifest
 from git_checks import candidate_errors, evidence_path, git, preflight
 from full_checks import execute_full, performance_counts
 
@@ -79,7 +79,7 @@ def semantic(extra=()):
     verify_dependency()
     output = run(maven(*extra, "verify"))
     counts = [int(n) for n in re.findall(r"^LOWER_TESTS=([0-9]+)$", output, re.M)]
-    checkpoint = read_data(ROOT / "docs/work/active/WORK-LOWER-001/work-item.yaml")["authorization"]["current_checkpoint"]
+    checkpoint = work_manifest(ROOT, "WORK-LOWER-001")["authorization"]["current_checkpoint"]
     expected_suites = 1 if checkpoint == "CP0" else 2
     if len(counts) != expected_suites or min(counts) <= 0:
         raise RuntimeError("semantic tests absent/zero")
@@ -189,7 +189,7 @@ def main():
         if args.commit:
             args.evidence = evidence_path(ROOT, args.commit)
         else:
-            checkpoint = read_data(ROOT / "docs/work/active/WORK-LOWER-001/work-item.yaml")["authorization"]["current_checkpoint"]
+            checkpoint = work_manifest(ROOT, "WORK-LOWER-001")["authorization"]["current_checkpoint"]
             args.evidence = f"docs/quality/WORK-LOWER-001/{checkpoint}.json"
     if args.commit:
         record = json.loads(git(ROOT, "show", args.commit + ":" + args.evidence))

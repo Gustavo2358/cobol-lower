@@ -11,7 +11,7 @@ Construir uma cadeia pequena fim a fim antes de enriquecer horizontalmente toda 
 | Marco | Evidência observável | O que não promete |
 | --- | --- | --- |
 | Harness | Regras, fontes, lifecycle, backlog, evals e gates especificados | Software ou CI já implementados |
-| FIRST-LOWER | JSON SP real 1.1.0 → AIR válida com Return | Outras famílias, AIR JSON ou CFG pronto |
+| FIRST-LOWER (implementado; review final pendente) | JSON SP real 1.1.0 → AIR válida com Return | Outras famílias, AIR JSON ou CFG pronto |
 | FIRST-PIPELINE | Mesma Publication aceita pelo CFG e saída da invocação representada | Perfil integral da linguagem |
 | FILE-PIPELINE | Writer/reader externos interoperáveis no binding fixado | JSON como domínio ou substituição da AIR normativa |
 | Enriquecimentos | Uma capability por slice com provas positivas/negativas | Promoção automática pelo nome MOVE/IF/CALL |

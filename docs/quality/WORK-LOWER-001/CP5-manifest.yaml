@@ -10,7 +10,7 @@ authorization:
   scope: WORK-LOWER-001 CP0..CP5, sequencialmente mediante certificação e checks remotos; sem merge/auto-merge ou expansão de capability.
   execution_mode: multi-checkpoint
   authority: Pedido explícito do usuário nesta sessão em 2026-09-06, seção Autorização, WORK-LOWER-001, CP0/CP1/CP2/CP3/CP4/CP5; review humano final do PR.
-  current_checkpoint: CP4
+  current_checkpoint: CP5
   authorized_checkpoints: [CP0, CP1, CP2, CP3, CP4, CP5]
 backlog_ids:
 - BACKLOG-LOWER-001
@@ -220,7 +220,7 @@ checkpoints:
   - EVAL-LWR-021
   - EVAL-LWR-022
   - EVAL-LWR-024
-  status: ready_for_review
+  status: completed
 - id: CP5
   goal: Revisar todas as claims e fechar documentação do primeiro slice com evidência
     ligada ao head final.
@@ -237,7 +237,7 @@ checkpoints:
   - EVAL-LWR-001
   - EVAL-LWR-020
   - EVAL-LWR-024
-  status: not_started
+  status: active
 git:
   branch: feat/first-entry-goback-slice
   pull_request: 2

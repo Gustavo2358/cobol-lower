@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 import subprocess
 
-from checks import digest, read_data
+from checks import digest, read_data, work_manifest
 
 DIFF_OPTIONS = ["-c", "core.quotePath=true", "-c", "diff.algorithm=myers", "-c", "diff.renames=false",
                 "diff", "--cached", "--binary", "--no-ext-diff", "--no-textconv", "--full-index", "--no-color"]
@@ -93,7 +93,7 @@ def preflight(root, record):
         errors.append("GIT_WHITESPACE")
     if subprocess.run(["git", "diff", "--cached", "--check"], cwd=root).returncode:
         errors.append("GIT_STAGED_WHITESPACE")
-    manifest = read_data(Path(root) / f"docs/work/active/{record['work_item']}/work-item.yaml")
+    manifest = work_manifest(root, record["work_item"])
     scopes = [p.removeprefix("planned:") for key in ("source_scope", "test_scope", "docs_scope") for p in manifest[key]]
     changed = set(git(root, "diff", "--name-only", record["base_commit"]).decode().splitlines())
     changed.update(git(root, "ls-files", "--others", "--exclude-standard").decode().splitlines())

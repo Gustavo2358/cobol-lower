@@ -1,19 +1,15 @@
 # Trabalho atual
 
-## Item ativo
+## Nenhum item ativo
 
-[WORK-LOWER-001](active/WORK-LOWER-001/spec.md): CP4 em regressão/review após CP0..CP3 plenamente certificados. Autorização explícita de 2026-09-06 para CP0..CP5 em modo multi-checkpoint; manifesto e [state](active/WORK-LOWER-001/state.md) registram o limite. Certificação local e confirmação remota permanecem distintas.
+WORK-LOWER-001 tem [fechamento local em histórico](history/WORK-LOWER-001.md), com review humano final do [PR2](https://github.com/Gustavo2358/cobol-lower/pull/2) pendente. Autorização concedida: multi-checkpoint CP0..CP5 em2026-09-06; [snapshot](../quality/WORK-LOWER-001/CP5-manifest.yaml). Conclusão local, certificação, check remoto e merge são estados distintos; [estado CP5](../quality/WORK-LOWER-001/CP5-state.md).
 
-## Próximo candidato
+Último recovery anterior ao fechamento: CP4 a487c52faded88d773c22333481f3a54a3327d47, [recibo success](../quality/WORK-LOWER-001/CP4-remote.json). SHA/check final de CP5 devem ser confirmados no PR pelo procedimento do harness.
 
-[BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) está in_progress, vinculado ao único work item ativo. Demais candidatos permanecem sem autorização.
+## Backlog
 
-Promoção registrada conforme o [protocolo](../engineering/work-item-protocol.md), sem duplicata em proposals.
+[BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) completed localmente. Nenhum outro candidato foi iniciado ou autorizado. Não avançar automaticamente após CP5.
 
 ## Mapas
 
-[Registry](registry.json), [backlog](backlog.md), [templates](../templates/README.md), [Git/review](../engineering/git-and-review.md), [gates](../engineering/gates.md).
-
-## Estado remoto
-
-Base confirmada: origin/main em `14aaafc5051eb287af6a8f126e8eaff78e30e365`, merge do PR de preparação #1. Branch `feat/first-entry-goback-slice`, [PR #2 Draft](https://github.com/Gustavo2358/cobol-lower/pull/2). Último recovery CP3 `d3867118e51a0654dcd995ae04e26ed68d124e99`, check obrigatório success, [recibo](../quality/WORK-LOWER-001/CP3-remote.json). Falha inicial/remediação de CP0 preservadas.
+[Registry](registry.json), [backlog](backlog.md), [histórico](history/README.md), [templates](../templates/README.md), [Git/review](../engineering/git-and-review.md), [gates](../engineering/gates.md).

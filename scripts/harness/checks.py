@@ -1,6 +1,7 @@
 """Offline documentary and certification predicates. Never infer execution from prose."""
 import hashlib
 import json
+from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 import re
 from urllib.parse import unquote, urlsplit
@@ -75,6 +76,96 @@ def markdown_errors(root):
                 if unquote(target.fragment) not in anchors(resolved.read_text(encoding="utf-8")):
                     errors.append(f"ANCHOR {path.relative_to(root)}: {link}")
     return errors
+
+
+def history_errors(root, registry):
+    """Validate local closure metadata, not final certification or live remote state."""
+    errors, valid = [], set()
+    all_ids = Counter(r.get("id") for kind in ("active", "proposals", "history") for r in registry[kind])
+    backlogs = defaultdict(list)
+    for backlog in registry["backlog"]:
+        backlogs[backlog["id"]].append(backlog)
+    schema = read_data(root / "docs/templates/work-item.schema.json")
+    index = (root / "docs/work/index.md").read_text()
+    for item in registry["history"]:
+        ident = item.get("id")
+        start = len(errors)
+        try:
+            if not isinstance(ident, str) or not re.fullmatch(r"WORK-[A-Z][A-Z0-9-]*-[0-9]{3}", ident):
+                raise ValueError("identity")
+            if all_ids[ident] != 1:
+                raise ValueError("duplicate registration")
+            if item["status"] != "completed" or item["review_status"] != "pending_human" or item["merge_status"] != "open_not_merged":
+                raise ValueError("closure state is not the authorized pre-merge closure")
+            for key in ("path", "manifest", "evidence"):
+                if not relative(item[key]) or not (root / item[key]).is_file():
+                    raise ValueError("missing/unsafe " + key)
+            if item["path"] != f"docs/work/history/{ident}.md":
+                raise ValueError("history path")
+            if any((root / f"docs/work/{kind}/{ident}").exists() for kind in ("active", "proposals")):
+                raise ValueError("active/proposal residue")
+            manifest = read_data(root / item["manifest"])
+            if list(jsonschema.Draft202012Validator(schema).iter_errors(manifest)):
+                raise ValueError("manifest schema/authority")
+            auth = manifest["authorization"]
+            final = manifest["checkpoints"][-1]["id"]
+            if (manifest["id"] != ident or auth["state"] != "granted" or auth["current_checkpoint"] != final
+                    or final not in auth["authorized_checkpoints"]
+                    or item["authorized_checkpoints"] != auth["authorized_checkpoints"]):
+                raise ValueError("final checkpoint authorization")
+            if item["manifest"] != f"docs/quality/{ident}/{final}-manifest.yaml" or item["evidence"] != f"docs/quality/{ident}/{final}.json":
+                raise ValueError("final evidence path")
+            if (item["git_branch"] != manifest["git"]["branch"] or item["pull_request"] != manifest["git"]["pull_request"]
+                    or item["backlog_ids"] != manifest["backlog_ids"]):
+                raise ValueError("Git/backlog identity")
+            record = read_data(root / item["evidence"])
+            if (record["work_item"] != ident or record["checkpoint"] != final
+                    or record["branch"] != item["git_branch"] or record["pull_request"] != item["pull_request"]):
+                raise ValueError("evidence identity")
+            refs = [r for r in record["frozen_contract"]["references"] if r["path"] == item["manifest"]]
+            if len(refs) != 1 or refs[0]["sha256"] != digest((root / item["manifest"]).read_bytes()):
+                raise ValueError("frozen manifest binding")
+            for checkpoint in manifest["checkpoints"][:-1]:
+                cp = checkpoint["id"]
+                previous = read_data(root / f"docs/quality/{ident}/{cp}.json")
+                receipt = read_data(root / f"docs/quality/{ident}/{cp}-remote.json")
+                if certificate_errors(root, previous) or remote_errors(previous["frozen_contract"]["required_remote_checks"], receipt.get("pushed_sha"), receipt):
+                    errors.append(f"HISTORY DEPENDENCY {ident}: {cp}")
+            for backlink in item["backlog_ids"]:
+                matches = backlogs[backlink]
+                if len(matches) != 1 or matches[0]["status"] != "completed" or matches[0].get("work_item") != ident:
+                    raise ValueError("backlog not closed")
+            if ident not in index or item["path"].removeprefix("docs/work/") not in index:
+                errors.append(f"HISTORY INDEX {ident}")
+        except (KeyError, IndexError, TypeError, ValueError, OSError) as ex:
+            errors.append(f"HISTORY DEPENDENCY/REGISTRATION {ident}: {ex}")
+        if len(errors) == start:
+            valid.add(ident)
+    return errors, valid
+
+
+def work_manifest(root, ident):
+    """Resolve an explicitly registered work; absence/ambiguity never falls back."""
+    root = Path(root)
+    registry = read_data(root / "docs/work/registry.json")
+    matches = [(kind, r) for kind in ("active", "proposals", "history")
+               for r in registry[kind] if r.get("id") == ident]
+    if len(matches) != 1:
+        raise ValueError("WORK_REGISTRATION missing/ambiguous " + ident)
+    kind, item = matches[0]
+    if kind == "history":
+        errors, valid = history_errors(root, registry)
+        if errors or ident not in valid:
+            raise ValueError("WORK_REGISTRATION invalid closure: " + "; ".join(errors))
+        path = item["manifest"]
+    elif kind == "active" and item.get("path") == f"docs/work/active/{ident}":
+        path = item["path"] + "/work-item.yaml"
+    else:
+        raise ValueError("WORK_REGISTRATION not active/closed " + ident)
+    manifest = read_data(root / path)
+    if manifest["id"] != ident or manifest["authorization"]["state"] != "granted":
+        raise ValueError("WORK_REGISTRATION unauthorized " + ident)
+    return manifest
 
 
 def document_errors(root):
@@ -216,7 +307,9 @@ def document_errors(root):
     for source in sources["local_sources"]:
         if not relative(source["path"]) or not (root / source["path"]).is_file() or digest((root / source["path"]).read_bytes()) != source["sha256"]:
             errors.append(f"SOURCE_HASH {source['id']}")
-    if not any(w["authorization"]["state"] == "granted" for w in discovered.values()) and not registry["history"]:
+    closure_errors, valid_history = history_errors(root, registry)
+    errors.extend(closure_errors)
+    if not any(w["authorization"]["state"] == "granted" for w in discovered.values()) and not valid_history:
         if (root / "pom.xml").exists() or (root / "scripts").exists() or list(root.glob("**/*.java")):
             errors.append("UNAUTHORIZED_IMPLEMENTATION docs-only")
     return errors

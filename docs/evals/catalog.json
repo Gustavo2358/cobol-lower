@@ -16,9 +16,14 @@
         "INV-LWR-001",
         "INV-LWR-024"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "scripts/harness/tests/test_checks.py",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "Active lifecycle counterexamples and offline structural checks; authority semantics remain self-review/human review. CP5 adds closure counterexamples."
     },
     {
       "id": "EVAL-LWR-002",
@@ -36,9 +41,14 @@
         "INV-LWR-004",
         "INV-LWR-019"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/BoundarySuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-003",
@@ -57,9 +67,14 @@
         "INV-LWR-004",
         "INV-LWR-025"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "scripts/harness/tests/test_architecture.py",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-004",
@@ -77,9 +92,14 @@
         "INV-LWR-002",
         "INV-LWR-005"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-005",
@@ -95,9 +115,14 @@
       "invariants": [
         "INV-LWR-003"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "VERIFIED_CAPTURE",
+      "test_path": "docs/evals/fixture-intake.json",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "Real fixture captured CP1 using pinned producer, SHA/digest/config recorded; ordinary tests do not run frontend. No assertion that all corpus fixtures are validated."
     },
     {
       "id": "EVAL-LWR-006",
@@ -114,9 +139,14 @@
         "INV-LWR-006",
         "INV-LWR-018"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-007",
@@ -132,9 +162,14 @@
       "invariants": [
         "INV-LWR-007"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/InputSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-008",
@@ -150,9 +185,14 @@
       "invariants": [
         "INV-LWR-008"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-009",
@@ -168,9 +208,14 @@
       "invariants": [
         "INV-LWR-009"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/InputSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-010",
@@ -188,9 +233,14 @@
         "INV-LWR-019",
         "INV-LWR-023"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-011",
@@ -207,9 +257,14 @@
         "INV-LWR-011",
         "INV-LWR-012"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/InputSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-012",
@@ -226,9 +281,14 @@
         "INV-LWR-012",
         "INV-LWR-022"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-013",
@@ -245,9 +305,14 @@
         "INV-LWR-013",
         "INV-LWR-014"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-014",
@@ -264,9 +329,14 @@
         "INV-LWR-013",
         "INV-LWR-014"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-015",
@@ -282,9 +352,14 @@
       "invariants": [
         "INV-LWR-015"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-016",
@@ -301,9 +376,14 @@
       "invariants": [
         "INV-LWR-016"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/VerticalSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-017",
@@ -321,9 +401,14 @@
         "INV-LWR-016",
         "INV-LWR-025"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/VerticalSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-018",
@@ -340,9 +425,14 @@
         "INV-LWR-007",
         "INV-LWR-017"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-019",
@@ -359,9 +449,14 @@
         "INV-LWR-018",
         "INV-LWR-019"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-020",
@@ -379,9 +474,14 @@
         "INV-LWR-020",
         "INV-LWR-023"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
+      "status": "SELF_REVIEWED",
       "test_path": null,
-      "last_execution": null
+      "last_execution": {
+        "checkpoint": "CP5",
+        "kind": "self-review",
+        "evidence": "docs/quality/WORK-LOWER-001/CP5-review.md"
+      },
+      "verification_scope": "Source-locked CP0..CP5 notes, algorithms/complexity and independent oracles reviewed adversarially by implementing context; no independent/human review claimed."
     },
     {
       "id": "EVAL-LWR-021",
@@ -397,9 +497,14 @@
       "invariants": [
         "INV-LWR-021"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "core/src/test/java/io/github/gustavo2358/lower/testing/PerformanceSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "Finite synthetic N/2N ledger, byte/node/depth/entity/identity/diagnostic bounds; no throughput SLA or internal Jackson/JDK allocation instrumentation."
     },
     {
       "id": "EVAL-LWR-022",
@@ -417,9 +522,14 @@
         "INV-LWR-012",
         "INV-LWR-021"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderPerformanceSuite.java",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "Finite synthetic N/2N ledger, byte/node/depth/entity/identity/diagnostic bounds; no throughput SLA or internal Jackson/JDK allocation instrumentation."
     },
     {
       "id": "EVAL-LWR-023",
@@ -456,9 +566,14 @@
         "INV-LWR-023",
         "INV-LWR-024"
       ],
-      "status": "SPECIFIED_NOT_IMPLEMENTED",
-      "test_path": null,
-      "last_execution": null
+      "status": "AUTOMATED_VERIFIED",
+      "test_path": "scripts/harness/tests/test_certificate.py",
+      "last_execution": {
+        "evidence": "docs/quality/WORK-LOWER-001/CP4.json",
+        "checkpoint": "CP4",
+        "commit": "a487c52faded88d773c22333481f3a54a3327d47"
+      },
+      "verification_scope": "minimal-entry-goback@1 only; executable assertions/challenges plus explicit self-review limits; no full SP/AIR-profile certification."
     },
     {
       "id": "EVAL-LWR-025",

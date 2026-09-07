@@ -15,7 +15,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `docs` / docs.
 **Invariantes:** INV-LWR-001, INV-LWR-024.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-002"></a>
 ## EVAL-LWR-002 — Destino AIR manual
@@ -30,7 +30,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-001, INV-LWR-004, INV-LWR-019.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-003"></a>
 ## EVAL-LWR-003 — Fronteiras arquiteturais
@@ -45,7 +45,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `bootstrap` / architecture.
 **Invariantes:** INV-LWR-002, INV-LWR-003, INV-LWR-004, INV-LWR-025.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-004"></a>
 ## EVAL-LWR-004 — Porta em memória
@@ -60,7 +60,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / architecture, semantic.
 **Invariantes:** INV-LWR-002, INV-LWR-005.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-005"></a>
 ## EVAL-LWR-005 — Fixture upstream genuína
@@ -75,7 +75,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-003.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** VERIFIED_CAPTURE. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-006"></a>
 ## EVAL-LWR-006 — Negociação e forma física
@@ -90,7 +90,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-006, INV-LWR-018.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-007"></a>
 ## EVAL-LWR-007 — Namespaces e unicidade
@@ -105,7 +105,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-007.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-008"></a>
 ## EVAL-LWR-008 — Entry→start
@@ -120,7 +120,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-008.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-009"></a>
 ## EVAL-LWR-009 — Assinatura zero versus desconhecida
@@ -135,7 +135,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-009.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-010"></a>
 ## EVAL-LWR-010 — Tradução GOBACK→Return
@@ -150,7 +150,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-010, INV-LWR-019, INV-LWR-023.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-011"></a>
 ## EVAL-LWR-011 — Statement posterior e cardinalidade
@@ -165,7 +165,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-011, INV-LWR-012.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-012"></a>
 ## EVAL-LWR-012 — Variante conhecida não suportada
@@ -180,7 +180,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-012, INV-LWR-022.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-013"></a>
 ## EVAL-LWR-013 — Entries alternativas abertas
@@ -195,7 +195,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-013, INV-LWR-014.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-014"></a>
 ## EVAL-LWR-014 — Readiness e precisão por dimensão
@@ -210,7 +210,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-013, INV-LWR-014.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-015"></a>
 ## EVAL-LWR-015 — Provenance e convenções
@@ -225,7 +225,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-015.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-016"></a>
 ## EVAL-LWR-016 — Imutabilidade e lifetime
@@ -240,7 +240,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / architecture, semantic.
 **Invariantes:** INV-LWR-016.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-017"></a>
 ## EVAL-LWR-017 — Substituição de adapter
@@ -255,7 +255,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-005, INV-LWR-016, INV-LWR-025.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-018"></a>
 ## EVAL-LWR-018 — Determinismo e revisão
@@ -270,7 +270,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-007, INV-LWR-017.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-019"></a>
 ## EVAL-LWR-019 — Classes de falha e checker
@@ -285,7 +285,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / semantic.
 **Invariantes:** INV-LWR-018, INV-LWR-019.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-020"></a>
 ## EVAL-LWR-020 — Regra geral e literatura
@@ -300,7 +300,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `all_semantic` / docs, semantic.
 **Invariantes:** INV-LWR-020, INV-LWR-023.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** SELF_REVIEWED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-021"></a>
 ## EVAL-LWR-021 — Custo proporcional
@@ -315,7 +315,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / performance.
 **Invariantes:** INV-LWR-021.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-022"></a>
 ## EVAL-LWR-022 — Limites sem truncamento
@@ -330,7 +330,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / performance, semantic.
 **Invariantes:** INV-LWR-012, INV-LWR-021.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-023"></a>
 ## EVAL-LWR-023 — Extensão localizada
@@ -345,7 +345,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `expansion` / architecture, semantic.
 **Invariantes:** INV-LWR-022.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** SPECIFIED_NOT_IMPLEMENTED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-024"></a>
 ## EVAL-LWR-024 — Falsificação e honestidade de evidência
@@ -360,7 +360,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `first_slice` / docs, semantic.
 **Invariantes:** INV-LWR-023, INV-LWR-024.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-025"></a>
 ## EVAL-LWR-025 — AIR JSON futuro
@@ -375,7 +375,7 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `transport_followup` / transport, architecture.
 **Invariantes:** INV-LWR-025.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** SPECIFIED_NOT_IMPLEMENTED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-026"></a>
 ## EVAL-LWR-026 — Composição com CFG
@@ -390,4 +390,4 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 
 **Etapa/gates:** `integration_followup` / integration.
 **Invariantes:** INV-LWR-026.
-**Estado:** SPECIFIED_NOT_IMPLEMENTED; sem evidência de execução runtime.
+**Estado:** SPECIFIED_NOT_IMPLEMENTED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.

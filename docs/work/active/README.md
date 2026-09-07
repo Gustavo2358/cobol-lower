@@ -1,3 +1,3 @@
 # Trabalho autorizado
 
-[WORK-LOWER-001](WORK-LOWER-001/spec.md) é o único item autorizado, atualmente em CP2 após CP0/CP1 certificados e remoto green. Registry/index/backlog refletem a promoção. Este README não conta como work item. Não criar cópia active de um item já concluído ou apenas candidato.
+Nenhum pacote ativo. WORK-LOWER-001 tem [fechamento local](../history/WORK-LOWER-001.md) e review humano final pendente. Este README não é work item; não recriar um item concluído nem iniciar candidatos sem autorização.

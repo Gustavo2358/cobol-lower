@@ -12,6 +12,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts/harness"))
 from checks import document_errors, remote_errors
+from lifecycle_fixture import activate_fixture
 
 
 class Documents(unittest.TestCase):
@@ -30,6 +31,7 @@ class Documents(unittest.TestCase):
         for name in ("pom.xml", ".gitignore"):
             if (ROOT / name).exists():
                 shutil.copy2(ROOT / name, self.root / name)
+        activate_fixture(self.root)
 
     def manifest(self, change):
         path = self.root / "docs/work/active/WORK-LOWER-001/work-item.yaml"

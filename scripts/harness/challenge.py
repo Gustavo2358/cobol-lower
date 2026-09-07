@@ -11,6 +11,8 @@ from checks import document_errors
 from architecture import source_errors, class_errors
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts/harness/tests"))
+from lifecycle_fixture import activate_fixture
 
 
 def sha(data):
@@ -36,6 +38,7 @@ def mutate(root, path, replacement, predicate, expected, ident):
 
 
 def main():
+    count = 7
     with tempfile.TemporaryDirectory(prefix="lower-challenge-") as name:
         root = Path(name)
         for item in ("docs", "scripts", "core", "adapters", ".github"):
@@ -50,12 +53,28 @@ def main():
             return json.dumps(record).encode()
         mutate(root, "docs/evals/catalog.json", unknown_invariant,
                lambda: document_errors(root), "INVARIANT", "DOC-INVARIANT")
+        if json.loads((root / "docs/work/registry.json").read_text())["history"]:
+            def history_change(data, change):
+                record = json.loads(data)
+                change(record)
+                return json.dumps(record).encode()
+            registry = "docs/work/registry.json"
+            mutate(root, registry, lambda b: history_change(b, lambda r: r["history"][0]["authorized_checkpoints"].remove("CP5")),
+                   lambda: document_errors(root), "HISTORY", "DOC-HISTORY-AUTH")
+            mutate(root, registry, lambda b: history_change(b, lambda r: r["history"][0].update(pull_request=999)),
+                   lambda: document_errors(root), "HISTORY", "DOC-HISTORY-GIT")
+            mutate(root, registry, lambda b: history_change(b, lambda r: r.update(history=[dict(id="WORK-LOWER-999")])),
+                   lambda: document_errors(root), "UNAUTHORIZED_IMPLEMENTATION", "DOC-HISTORY-TRUST")
+            count += 3
         import yaml
         def change_manifest(data, action):
             record = yaml.safe_load(data)
             action(record)
             return yaml.safe_dump(record).encode()
         path = "docs/work/active/WORK-LOWER-001/work-item.yaml"
+        # Only these old active-lifecycle counterexamples use a synthetic active fixture.
+        # Earlier documentary mutations run against the actual copied checkout state.
+        activate_fixture(root)
         mutate(root, path, lambda b: change_manifest(b, lambda r: r.update(status="completed")),
                lambda: document_errors(root), "LIFECYCLE", "DOC-ACTIVE-COMPLETED")
         mutate(root, path, lambda b: change_manifest(b, lambda r: r["must_read"].append("docs/missing.md")),
@@ -71,7 +90,7 @@ def main():
                compile_check, "ARCH_BYTECODE", "ARCH-PATH-INTERNAL")
         mutate(root, "Probe.java", lambda b: b.replace(b"String", b"java.nio.file.Path"),
                lambda: source_errors(probe.read_text()), "ARCH_SOURCE", "ARCH-PATH-SOURCE")
-    print("PASS CHALLENGE: 7 restored falsifications and second GREEN")
+    print(f"PASS CHALLENGE: {count} restored falsifications and second GREEN")
 
 
 if __name__ == "__main__":

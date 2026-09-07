@@ -1,3 +1,3 @@
 # Histórico de trabalhos
 
-Não há implementação encerrada neste repositório pelo presente pacote. Após conclusão/review, registrar resumo curto, evidência/limites, referências ao conhecimento promovido e estado remoto comprovado ou não verificado. Remover o pacote ativo; não manter a tasklist inteira como documentação canônica.
+[WORK-LOWER-001](WORK-LOWER-001.md): primeiro slice Entry/GOBACK, fechamento local e review humano final do PR2 pendente. Histórico não implica merge nem substitui certificado/check remoto do SHA exato. Conhecimento durável promovido; oracles e evidências preservados, sem tasklist ativa duplicada.
