@@ -1,0 +1,17 @@
+Exit: 0
+Output (trailing whitespace stripped):
+{"id": "DOC-LINK", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LINK README.md: missing.md"], "baseline_digest": "5ff493fc3ff05f039e300d99c1195f6dfe4b015c5a1a99c2a59369c562c022aa"}
+{"id": "DOC-LINK", "restoration_status": "RESTORED", "restored_digest": "5ff493fc3ff05f039e300d99c1195f6dfe4b015c5a1a99c2a59369c562c022aa", "green_exit_code": 0}
+{"id": "DOC-INVARIANT", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["INVARIANT EVAL-LWR-001: INV-LWR-999"], "baseline_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796"}
+{"id": "DOC-INVARIANT", "restoration_status": "RESTORED", "restored_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796", "green_exit_code": 0}
+{"id": "DOC-ACTIVE-COMPLETED", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LIFECYCLE active WORK-LOWER-001: completed", "REGISTRY WORK-LOWER-001"], "baseline_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900"}
+{"id": "DOC-ACTIVE-COMPLETED", "restoration_status": "RESTORED", "restored_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900", "green_exit_code": 0}
+{"id": "DOC-MUST-READ", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["MUST_READ WORK-LOWER-001: docs/missing.md"], "baseline_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900"}
+{"id": "DOC-MUST-READ", "restoration_status": "RESTORED", "restored_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900", "green_exit_code": 0}
+{"id": "ARCH-PATH-API-BYTECODE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation", "ARCH_API forbidden signature"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-API-BYTECODE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-INTERNAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-INTERNAL", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-SOURCE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_SOURCE forbidden dependency"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-SOURCE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+PASS CHALLENGE: 7 restored falsifications and second GREEN

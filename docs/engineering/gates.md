@@ -1,6 +1,10 @@
 # Gates: contratos e estado real
 
-**Esta entrega não contém executores.** Todos os gates abaixo estão `SPECIFIED_NOT_IMPLEMENTED`, com entrypoint null em [gates.json](gates.json). Nomes sugeridos de scripts/classes só serão definidos quando houver bootstrap autorizado. Não rodar comandos inexistentes nem declarar proteção automatizada por haver este documento.
+**CP0 implementa executores de docs, architecture, fast, semantic e git**, com positivos e contracasos; estado por gate em [gates.json](gates.json) e evidência em [CP0](../quality/WORK-LOWER-001/CP0.json). [CP4](../quality/WORK-LOWER-001/CP4.json) acrescenta performance (ledger estrutural e mutação de scan restaurada) e full (agregação executada, contracasos e challenge restaurado). Transport/integration continuam `SPECIFIED_NOT_IMPLEMENTED`. Enforcement não certifica antecipadamente checkpoint/slice; execução, certificação local e resultado remoto são estados distintos.
+
+Entrypoints: `python3 scripts/harness/run.py <gate>`. Java 21, Maven e dependências Python fixadas em `scripts/harness/requirements.txt` são necessários. Configurar `LOWER_BUILD_ROOT` para diretório temporário isolado e executar `bootstrap` para resolver/construir/testar air-java pelo SHA do lock. `semantic` executa o build e exige contagem de assertions não zero; `architecture` examina sources, API, bytecode/jdeps e árvore Maven. `harness-tests` exercita os contracasos; `python3 scripts/harness/challenge.py` demonstra restaurações. `certify` exige evidência pre_commit completa mais digest/index/FREEZE; `verify-commit --commit <SHA>` resolve trailer e diff publicado; `remote --commit <SHA>` confirma o único PR, push e checks do SHA.
+
+G-DOCS verifica o grafo documental corrente; os handoffs em `docs/sources/history` são arquivo, com integridade de bytes assegurada pelo source lock, sem transformar seus links históricos em roteamento atual. G-ARCH automatiza dependências e nomes concorrentes explícitos; review continua necessário para identificar duplicação semântica sob outro nome. EVAL-LWR-004 em CP0 é somente o smoke em memória da validação AIR; decoder e porta de lowering permanecem nos CPs seguintes.
 
 | Gate | Contrato | Ativação |
 | --- | --- | --- |
@@ -13,6 +17,12 @@
 | `integration` / G-INTEGRATION | Composição explicitamente autorizada preserva Publication/controle/diagnósticos. | `integration_followup` |
 | `full` / G-FULL | Agrega todos os gates obrigatórios do perfil/work item e challenge final; especificar manifestamente o conjunto. | `first_slice` |
 | `git` / G-GIT | Branch/base/head/working tree/PR e evidências de review/merge com fontes confiáveis; não consulta remota no G-DOCS. | `all` |
+
+`performance` executa as suítes core/adapter de N/2N com contagem própria não-zero, além da regressão semântica. `full` exige o conjunto first-slice congelado e agrega docs, semantic, performance, architecture, git, harness-tests e challenge, sem recursão. `challenge` inclui dez desafios documentais/arquiteturais, três mutações Return/Halt, cobertura e custo de lookup e cinco bypasses de receipt/FREEZE/autoridade/workflow/SHA em `review_challenge.py`; exige restauração e segundo GREEN em cópias isoladas. Essas cópias não alteram o checkout certificado.
+
+No checkout publicado, `full --commit <SHA completo>` verifica também HEAD exato, worktree limpa, certificado/trailer/digest/FREEZE, autoridade e PR/head. O modo local conserva preflight de branch/escopo/PR; não aceita detached como fallback. `--mode historical` audita certificado e identidade PR/Git sem autorizar código nem exigir PR aberto. `reconcile` compara registro histórico com metadata remota e detecta reconciliação pendente; auditoria de um certificado antigo não afirma que o registro atual já foi reconciliado.
+
+O workflow `checkpoint` recebe push em todas as branches (`**`), incluindo main. Após bootstrap, `ci --commit "$GITHUB_SHA"` exige evento push e checkout limpo no SHA exato. Branch de trabalho usa o trailer/evidence do próprio head e execução com PR aberto; main exige PR mergeado associado ao merge SHA por API, ancestralidade do head certificado e evidence idêntica no merge. Executa full sobre o checkout main com auditoria histórica do head do PR. Merge sem associação única/prova preservada falha: não há fallback para outro work item. O perfil full atual conserva os seis gates e os dois módulos semânticos existentes; novos trabalhos precisam de autorização/evidence própria, sem branch especial. O check obrigatório segue identificável por nome `checkpoint`, workflow `.github/workflows/checkpoint.yml`, app `github-actions`, evento `push` e head SHA exato. Sua própria conclusão só é consultada depois por remote, nunca presumida pelo job em andamento. Não há pipeline de release nem merge automático.
 
 ## Estado de execução e enforcement
 
@@ -28,7 +38,7 @@ A certificação segue a [transação](agent-session-protocol.md). O bootstrap d
 
 Para evitar circularidade, distinguir validação de registro em elaboração de certificação final: G-DOCS pode validar forma/referências do candidato ainda pendente, mas não rotulá-lo certificado. Depois dos gates locais, a checagem de certificação pré-commit exige todos os resultados obrigatórios locais e rejeita pendências; a finalização apenas de evidência/state exige revisão documental final. G-GIT verifica branch/base/worktree/PR antes do commit; confirmação do SHA publicado e dos checks remotos obrigatórios em terminal PASS é pós-commit e bloqueia ADVANCE, sem exigir conhecer o SHA futuro antes de criá-lo. O bootstrap deve provar ambas as fases, inclusive rejeição de tentativa de avanço com push não confirmado ou CI obrigatório pending/missing/fail. Certificado pré-commit é local; só vira recovery point completo após essas obrigações remotas. G-DOCS rejeita identidade duplicada no review e referências FREEZE incompletas; G-GIT verifica bytes/hashes e o único digest canônico conforme protocolo de sessão.
 
-Nesta adaptação somente o schema fornece restrições estruturais reutilizáveis, sem executor instalado. Contracasos adicionais para CP0: multi-checkpoint sem lista/autoridade, múltiplos CPs no modo padrão, certificação com gate ausente/falho, regressão omitida, digest divergente e self-review apresentado como independente. Revisão da prosa deve preservar default, stop conditions e ausência de autorização nas propostas; schema sozinho não compreende essas claims.
+No bootstrap autorizado, schema e executores verificam restrições estruturais e relacionais. Contracasos de CP0 incluem multi-checkpoint sem lista/autoridade, múltiplos CPs no modo padrão, certificação com gate ausente/falho, regressão omitida, digest divergente e self-review apresentado como independente. Revisão da prosa deve preservar default, stop conditions e ausência de autorização nas propostas; schema sozinho não compreende essas claims.
 
 Falsificações mínimas: link quebrado; invariant inexistente em eval; active completed; required must_read inexistente. Checker precisa aceitar a baseline para ser considerado válido.
 
@@ -38,9 +48,9 @@ Falsificações mínimas: link quebrado; invariant inexistente em eval; active c
 
 `air-transport` acrescenta G-TRANSPORT. `pipeline-integration` acrescenta G-INTEGRATION. O manifesto fixa perfil e conjunto antes de executar; não remover subgate depois de falha para anunciar green. Um gate novo ainda não implementado bloqueia a conclusão do checkpoint que o exige.
 
-## CI futuro
+## CI e espera remota
 
-Implementar workflow no bootstrap, após autorização para criar código/config executável. CI parte de checkout limpo, resolve air-java no SHA, verifica número real de testes, executa os gates obrigatórios e publica logs/exit codes. Cache não substitui source lock. Não requerer Node ou gates de parser herdados do ProLeap sem necessidade local.
+O workflow do bootstrap parte de checkout limpo, resolve air-java no SHA, verifica número real de testes, executa gates e contracasos e confere o commit com a evidência. Logs/exit codes ficam no run remoto. Cache não substitui source lock. Node não é dependência de aplicação/build; ações do provedor podem usá-lo internamente. Gates de parser do ProLeap não pertencem ao lowerer.
 
 Checks remotos obrigatórios devem ser enumerados no FREEZE com identidade verificável (workflow/job/contexto e produtor esperado) e `remote_wait_limit_seconds` positivo, medido desde o primeiro push do CP, sem reiniciar a espera por reruns; incluir os exigidos pelo plano/perfil e pelo PR. Não descobrir obrigatoriedade apenas pela lista de runs existentes, que pode estar vazia por workflow defeituoso. CP4 prova CI e exige essa espera antes de CP5; CP5 também espera os checks finais do seu SHA.
 

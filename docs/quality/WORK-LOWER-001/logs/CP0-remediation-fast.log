@@ -1,0 +1,20 @@
+Log transcription: trailing whitespace removed; all result lines retained.
+Command: env JAVA_HOME=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1 PATH=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin:/home/gustavo/.sdkman/candidates/maven/current/bin:/usr/bin:/bin LOWER_BUILD_ROOT=/tmp/work-lower-001.nucAJ2 python3 scripts/harness/run.py fast
+Cwd: cobol-lower
+Exit: 0
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- dependency:3.8.1:tree (default-cli) @ cobol-lower-core ---
+[INFO] Wrote dependency tree to: /home/gustavo/workspace/cobol-lower/core/target/dependency-tree.json
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.604 s
+[INFO] Finished at: 2026-09-06T18:49:37-03:00
+[INFO] ------------------------------------------------------------------------
+PASS fast

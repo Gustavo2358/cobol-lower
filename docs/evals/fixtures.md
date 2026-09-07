@@ -4,7 +4,7 @@
 
 `upstream_golden`: arquivo realmente produzido pelo frontend fixado. `synthetic_adversarial`: documento alterado para quebrar regra nomeada. `in_memory`: input tipado construído sem transporte. `air_oracle`: AIR manual, independente do lowerer.
 
-Não há golden SP nem AIR JSON neste pacote. Exemplos textuais são specs de teste, não prova de que um arquivo foi produzido. O [registro de aquisição](fixture-intake.json) está explicitamente NOT_CAPTURED.
+O golden SP real foi capturado em CP1, conforme o [registro de aquisição](fixture-intake.json). AIR JSON permanece fora deste trabalho. Exemplos textuais não substituem prova de que um arquivo foi produzido.
 
 ## Capturar o positivo
 

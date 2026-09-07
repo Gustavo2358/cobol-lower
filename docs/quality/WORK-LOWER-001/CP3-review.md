@@ -1,0 +1,15 @@
+# CP3 — Self-review focal
+
+Contexto: codex-root-WORK-LOWER-001-CP3, segunda passagem do mesmo agente; não independent review. Diff integral desde c5546c9f4a318f31bcfb3c79a91a4b7d7d71149f; identidade do candidato vinculada exclusivamente por CP3.json#/candidate_diff_sha256, sem duplicar hash de review.
+
+Foram examinados os seis novos arquivos de aplicação, suíte LoweringSuite e agregação de BoundarySuite, evidência/FREEZE/logs/recibo CP2 e alterações de manifesto/state. Produção anterior, decoder/admissão/ManualAir/SpFixtures, golden, source lock, oracles prévios, gates e workflow não alterados. Todo diff pertence ao scope de WORK-LOWER-001/CP3. Proposals/active/history/registry/backlog/índice continuam com um único item active, mesmo branch/PR; fechamento não antecipado.
+
+Regra usa admissão obrigatória e join namespaced start→label, não ordem, parsing, resolver, display ou contexto runtime. Modelos AIR exclusivamente air-java; saída passa por AirValidator e preserva status/issues/obrigações. Nenhum gap necessário oculto só no relatório, nenhuma assinatura unknown esvaziada, nenhum output filtrado, nenhum profile AIR inteiro anunciado. Dimensões não-control permanecem UNAVAILABLE, não NOT_APPLICABLE oportunista.
+
+Identidade revisada campo a campo contra SpInput: todos os componentes admitidos entram em encoding canônico injetivo, com regra/versionamento e limite explícito; sem hash/colisão probabilística, JSON, relógio ou object identity. Custo e tamanho O(B), IDs deliberadamente longos; não estabilidade longitudinal. Provenance original/expanded tem papéis distintos e correlação derivada; includeLine sem coluna e coordenadas não representáveis são limitações explícitas, sem origem inventada ou abertura de arquivo.
+
+O RED inicial compilou e falhou por ausência de tradução (ADMITTED → BLOCKED_LOWERING), não setup. Primeira implementação passou sem ajustar expected. Contracasos posteriores de revisão/provenance/inputs maiores e limites reais do checker também passaram. Cinco falsificações: Return→Halt, PARTIAL→COMPLETE, INVALID_IR→SUCCESS, policy version omitida da revisão, original substituída por expanded; todas RED pelo oracle esperado, bytes restaurados e segundo GREEN. Sete desafios documentais/arquiteturais cumulativos também restaurados. Sem resíduo de mutação.
+
+Regressão focal/cumulativa requerida antes de certificar: 741 assertions (540 core =20 AIR+218 admissão+302 lowering; 201 adapters), 61 testes harness, docs/architecture/git/fast. Logs finais em CP3.json. Full/performance e vertical arquivo→AIR não iniciados: pertencem a CP4. Nenhum finding bloqueante nesta revisão; limitações semânticas/operacionais explícitas permanecem.
+
+Finding documental resolvido antes da certificação: índice de trabalho ainda citava CP2 em execução/CP1 recovery; atualizado para CP3/CP2 e recibo factual. Gate docs reexecutado após a correção. Review local não substitui checks remotos do novo SHA nem review humano final. Não houve merge/auto-merge, rewrite de recovery ou alteração upstream.

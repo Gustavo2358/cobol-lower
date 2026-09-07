@@ -1,0 +1,39 @@
+# CP2 — FREEZE de validação e admissão
+
+Autoridade explícita: usuário, 2026-09-06, multi-checkpoint WORK-LOWER-001 CP0..CP5. Recovery CP1: 2e4c55afdaee3e31210f0e295a8e95b2d516ca00, certificação e recibo remoto adjacentes; check obrigatório success no SHA em 2026-09-06T22:20:26.194146+00:00. Aplica a transação canônica. Objetivo/evals/invariants/scopes/must_not_change/gates constam do manifesto congelado; apenas CP2 está em execução.
+
+Evals focais: EVAL-LWR-007/008/009/011/012/013/014/019; gates docs/architecture/semantic/git, mais regressão barata/cumulativa. Sem AIR produzido pelo lowerer neste CP, sem full/performance antecipado. A porta de admissão pertence à aplicação e recebe SpInput/limites operacionais; driver de arquivo decodifica e chama essa mesma porta. CP3 introduzirá tradução e usará a mesma validação, sem bypass.
+
+Fontes primárias verificadas: SRC-SP c8a891e0827ae1dc1140246f625fd16c2ac9bd97, CobolSemanticProduct.java records UnitId/EntryId/StatementId/DataItemId/EntrySignature/ExecutableStart/EntryFact/EntryInventory/Containment/GobackFact/ObservedStatement/CoverageSummary, validateEntries/validateState/validateStructure/validateLocalizedIncompleteness/validateCoverage/validateSummaryClaim; SemanticProductJsonWriter.java roots/branches/handles; docs/domain/cobol-semantic-product.md. Contratos locais first-slice-entry-goback, semantic-input-contract, validation-and-results, coverage-readiness-uncertainty e identidade/provenance lidos integralmente. Nenhum fato virá do AST/source/ordem incidental.
+
+Algoritmo geral: percorrer inventários finitos uma vez para índices namespaced e contagens; percorrer referências/roots/branches/gaps/entries para verificar superfície consumida; acumular diagnósticos tipados estáveis; só depois aplicar predicado do perfil. Prioridade: limite operacional → contradições INVALID_INPUT → falta de conhecimento BLOCKED_LOWERING → capacidade/shape UNSUPPORTED_SLICE → ADMITTED. ADMITTED significa somente precondições satisfeitas, nunca SUCCESS AIR. Nenhum resultado deste CP contém Publication. Resultado retém snapshot e todos os IDs observados; limite não retorna prefixo admitido.
+
+Invariantes de entrada verificados antes da admissão: namespace de unit/IDs/referências completo; textos obrigatórios não vazios e coordenadas/contagens/ordinais não negativos; handles na gramática pública entry:n/statement:n/data:n com n decimal canônico não negativo no domínio int do writer (isso é forma de identidade, não análise COBOL); IDs/roles/ordinais únicos e ordinais estruturais crescentes; start existente e da mesma unit; KNOWN start iff referência presente; entry não KNOWN sem start conhecido; assinatura KNOWN somente count0/ABSENT, UNAVAILABLE/INPUT_MISSING somente count ausente/UNKNOWN; demais counts não negativos.
+
+Incomplete entry exige coverage não MODELED/gaps/lowering não SUFFICIENT; start/signature desconhecidos exigem gaps ENTRY_START/ENTRY_SIGNATURE e CFG não SUFFICIENT quando start desconhecido. Entry/GOBACK effects não podem ser SUFFICIENT. Inventory PRIMARY_ONLY não pode COMPLETE ou perder gaps; perda de ALTERNATE_ENTRIES_NOT_PROJECTED impede admissão, nunca fecha inventário. Containment THEN/ELSE exige parent IF anterior, ROOT/UNKNOWN omite parent; roots e membership dos branches devem reproduzir o containment, sem escolher controle por essas listas. Cada gap referencia statement publicado; não-modeled exige gap; UNKNOWN containment exige gap STRUCTURE e coverage não MODELED. OBSERVED não pode MODELED. Demais payloads de famílias rejeitadas não têm claim de validação semântica completa.
+
+Coverage total reconcilia com inventário e cada classe, soma em long sem overflow; readiness agregado em cada dimensão não pode superar o membro mais fraco (ordem explícita BLOCKED=0, PARTIAL=1, SUFFICIENT=2, NOT_APPLICABLE=-1 conforme produtor). Inventory de statements não COMPLETE não pode ter aggregate SUFFICIENT. A ordenação é estrutural, nunca edge. Parent anterior garante terminação sem traversal de CFG ou enumeração de caminhos. Índices locais evitam lookup por scans repetidos.
+
+Predicado admitido: zero DATA, uma entry PRIMARY KNOWN com start KNOWN e signature KNOWN/0/ABSENT; inventory entries PRIMARY_ONLY/PARTIAL e gap alternativo; inventory statements COMPLETE sem INPUT_MISSING; exatamente um GOBACK de saída CURRENT_PROGRAM_INVOCATION/NONE, ROOT, sem outras ocorrências; coverage MODELED, lowering/cfg locais SUFFICIENT; start é esse statement por referência/index. Gaps adicionais cuja compatibilidade com este perfil não foi provada bloqueiam com requisito explícito, não são descartados; efeitos permanecem não certificados mesmo quando o controle é admitido. Não restringir nomes, paths, ordinais ou handles ao golden.
+
+| Oracle independente / classe | Resultado e motivo esperado |
+| --- | --- |
+| Golden e input manual independente com fatos equivalentes | ADMITTED; entry/start IDs exatos preservados, snapshot integral; nenhuma Publication |
+| Mesmo handle em units separadas | Identidades distintas; cada input admite sozinho quando coerente |
+| ID duplicado, namespace cruzado, dangling start, count incoerente, root divergente, gap removido, aggregate mais forte, assinatura KNOWN/null ou count1 | INVALID_INPUT com regra/ID/escopo tipados; jamais ADMITTED |
+| UNAVAILABLE/null/UNKNOWN com gaps/readiness coerentes | BLOCKED_LOWERING, nunca assinatura zero |
+| PARTIAL/count1/PRESENT ou INPUT_MISSING coerente | BLOCKED_LOWERING; interface/fato indispensável indisponível |
+| Start ausente coerente, inventory PARTIAL/INPUT_MISSING coerente | BLOCKED_LOWERING; sem root/array[0]/menor handle como fallback |
+| GOBACK;CONTINUE com coverage/gaps reconciliados | UNSUPPORTED_SLICE; ambos IDs preservados, sem fallthrough ou poda |
+| Vários GOBACKs com start no maior handle, DATA existente, MOVE/CALL/IF/OBSERVED legal na superfície consumida | UNSUPPORTED_SLICE, nunca publicação filtrada; variante conhecida não é versão desconhecida |
+| PRIMARY_ONLY convertido a COMPLETE ou sem gap alternativo | INVALID_INPUT, não conhecimento novo |
+| Perder lowering/cfg SUFFICIENT sem contradição agregada | BLOCKED_LOWERING, não fortalecer conhecimento |
+| GOBACK effects BLOCKED | Pode admitir controle; estado não é convertido a NOT_APPLICABLE |
+| Limite de entidades/diagnósticos | IMPLEMENTATION_LIMIT explícito, snapshot integral, sem prefixo admitido; truncamento de diagnósticos identificado |
+| Arquivo e memória semanticamente contraditórios | Mesma porta e mesmo diagnóstico semântico, não reparo no decoder |
+
+Expected/tabela antecedem implementação. Testes em memória são escritos manualmente sem JSON/front-end e sem builders do código de produção. Adversariais ajustam os fatos não alvos para isolar a regra (coverage/gaps/readiness coerentes). Mutantes após GREEN: ignorar dangling start, ignorar cardinalidade extra, aceitar inventory COMPLETE/remover guarda de gap, rebaixar null count a zero, vazamento de transporte via gate cumulativo. Cada mutação precisa RED esperado, restauração por digest, segundo GREEN e regressão anterior.
+
+Complexidade/terminação: N statements, D DATA, E entries, R referências, G gaps, P componentes de provenance. Traversal finito, índices locais, tempo/espaço esperado O(N+D+E+R+G+P), acrescido dos caracteres inspecionados em texto/identidades; nenhuma recursão de CFG. Limites explícitos por execução, contadores de visitas/consultas publicados como telemetria operacional, não identidade semântica. Prova de escala N/2N é CP4; sem SLA inventado.
+
+Review: self-review integral desde CP1. Check remoto obrigatório: checkpoint, .github/workflows/checkpoint.yml, github-actions, evento push no SHA publicado. Limite: 1200 segundos cumulativos desde primeiro push deste CP. Source lock e must_not_change preservados. Sem heurística, modelo AIR paralelo, validator AIR concorrente, alteração upstream ou execução CP3 antes de remoto green.

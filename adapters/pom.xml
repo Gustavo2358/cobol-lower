@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent><groupId>io.github.gustavo2358</groupId><artifactId>cobol-lower</artifactId><version>0.1.0-SNAPSHOT</version></parent>
+  <artifactId>cobol-lower-adapters</artifactId>
+  <dependencies>
+    <dependency><groupId>io.github.gustavo2358</groupId><artifactId>cobol-lower-core</artifactId><version>${project.version}</version></dependency>
+    <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.22.2</version></dependency>
+    <dependency><groupId>io.github.gustavo2358</groupId><artifactId>cobol-lower-core</artifactId><version>${project.version}</version><type>test-jar</type><classifier>tests</classifier><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins><plugin>
+    <groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId>
+    <executions><execution><id>decoder-contract-suite</id><phase>test</phase><goals><goal>java</goal></goals>
+      <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.DecoderSuite</mainClass><classpathScope>test</classpathScope></configuration>
+    </execution></executions>
+  </plugin></plugins></build>
+</project>

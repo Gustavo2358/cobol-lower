@@ -1,10 +1,10 @@
 # Matriz bilateral e rota de evolução
 
-**Status:** plano de capacidades; nenhum mapeamento está implementado neste pacote. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
+**Status:** somente Entry/GOBACK mínimo implementado em WORK-LOWER-001; demais linhas são plano, não autorização. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
 
 | Capability | Entrada indispensável | Target/objetivo | Limite atual / próximo pré-requisito |
 | --- | --- | --- | --- |
-| Entry/GOBACK mínimo | Primary/start/assinatura zero conhecidos e saída da invocação | Entry + Sequence + Return | Primeiro slice preparado; inventário alternativo aberto |
+| Entry/GOBACK mínimo | Primary/start/assinatura zero conhecidos e saída da invocação | Entry + Sequence + Return | Implementado/testado, review humano final pendente; inventário alternativo aberto |
 | Sequenciamento explícito | Fatos executáveis, containment/continuation suficientes | Labels e terminadores coerentes | Não inferir por ProgramPoint ou ordem de arrays |
 | DATA nominal | Identidade/visibilidade/provenance e desconhecimentos explícitos | Object com TypeRef/storage compatíveis | Não inventar célula independente por DataItemId |
 | MOVE preciso | Valor/domínio, endereço/destino, conversão e cópia provados | assign/normalização explícita | LiteralKind sozinho não resolve padding, alias ou conversão |

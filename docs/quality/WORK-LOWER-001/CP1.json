@@ -1,0 +1,511 @@
+{
+  "schema_version": 1,
+  "template": false,
+  "work_item": "WORK-LOWER-001",
+  "checkpoint": "CP1",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "feat/first-entry-goback-slice",
+  "pull_request": 2,
+  "base_commit": "1cc40112a7f57adb4a71861db8a101e6bec242dc",
+  "reviewed_head": "1cc40112a7f57adb4a71861db8a101e6bec242dc",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "multi-checkpoint",
+  "authorization_reference": "docs/quality/WORK-LOWER-001/CP1-contract.md",
+  "previous_certified_checkpoint": {
+    "checkpoint": "CP0",
+    "commit": "1cc40112a7f57adb4a71861db8a101e6bec242dc",
+    "evidence": "docs/quality/WORK-LOWER-001/CP0.json",
+    "remote_receipt": "docs/quality/WORK-LOWER-001/CP0-remote.json"
+  },
+  "certified_commit": null,
+  "candidate_diff_sha256": "06605209ba71ef171d17f29fc7cf93a0c0fe0a51aaff795be3f5f6712476f16e",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-001/CP1.json",
+    "docs/work/active/WORK-LOWER-001/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "6b7659aa53f1868a943d379abbd1e81b04c49f0b23264d750de865a27a903408",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "6cacef74b24f9299b601ce162bf5866cb960d4bfafb7a163ba37482d8e59b7df",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+        "git_revision": null
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "8df795bafb43f4878a8ae21286ab0742d893e564679d079b3461066c73d6d7e7",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "7d499d00b48e5f319bdb0818cf7dbdc3a1cd5f25d08582fc2e0bbf2dd38fa6e7",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/domain/air-target-contract.md",
+        "sha256": "3b35272c5460c632e30971227d4928d8317e8cdaaaf3ecbe00e918eed1b369ea",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "05edf47174a37c6fc59d057b83f549584915df59ade0ae485adde0ef1c239e1a",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/domain/semantic-input-contract.md",
+        "sha256": "2551665877212401a07759fae658a3ad73e07fb07414200f6198c7c4597d2fee",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "962a8f5d985ecc7855dd076168d404aac6d520025484984cccd0f63cddb4b360",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "00fc5133eb837f37c671a530778bb7317ab7dedfd37034f5aa8dbea1f3306194",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "d1d7e1656436af0efa1ac4dca9a642a265147eb8f28305af0b7cbbab0211e8b3",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "f80bce4c329d3a9884d72e5201365e7d97fe06924d3fc937d08ae0c3e7c0303e",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/observability-and-input-safety.md",
+        "sha256": "079f25456ceea70a9f636ba70d15c784ea2a69cd5630c4f63e9d0211bc666cf9",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "4d5c27526affc7c62327d85cd87b902b1e227fd06d269349eab6e730d027dec0",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "b1bafc29e64f3e100f3459be9ed8a46fd7df4d93e169ccf0c0a3bd2bf749ec6d",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/evals/first-slice-oracle.md",
+        "sha256": "e2908eccb6f32d57b81156f270f278d107f970ffe88fb3b10a3fe9a13f88af2f",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/evals/fixtures.md",
+        "sha256": "8ba2e1ee2ba7e571a4e9875085bd21d2045b253de88009edfa5d60b21d0a7d79",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-001/CP1-contract.md",
+        "sha256": "a4ecc08eefc4d7af68348e2d91ddc59ba3f8a1660ccc8b2343c6d286c34f2cfa",
+        "git_revision": null
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-001/CP1-manifest.yaml",
+        "sha256": "6a5120f77a11d8d0e25b50ddb1b90025e21be9bc68ae0bf28556d5be51e1fa7d",
+        "git_revision": null
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "5b4f5dba5d23ae2245b634c355839aec4746526311c2f16558f593f26486f651",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/templates/work-item.schema.json",
+        "sha256": "83e131bc11f1b145f2c9b2b2bca0fed053e120fc369dff88858d730e3e693fae",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/eval.md",
+        "sha256": "c1bc6aa36ebce7fae9c876cd72663406377969ea5616806d4b6fd0fc8169ccfd",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/plan.md",
+        "sha256": "531cad9e7e44e2b1e4e0285e8060fdf95f0d6af1a810113b01122a14737699cd",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-001/spec.md",
+        "sha256": "6cb873d705cac1ea8fa4ddb0759f7eae3b4be32aae520d9f8dda30e2dab16283",
+        "git_revision": "1cc40112a7f57adb4a71861db8a101e6bec242dc"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1200
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; isolated LOWER_BUILD_ROOT with pinned air-java",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-docs.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py architecture",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; isolated LOWER_BUILD_ROOT with pinned air-java",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-architecture.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py semantic",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; isolated LOWER_BUILD_ROOT with pinned air-java",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 211,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-semantic.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git",
+      "cwd": "cobol-lower",
+      "environment": "Git and gh authenticated GitHub API",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-git.log"
+    },
+    {
+      "gate": "harness-tests",
+      "required": true,
+      "command": "python3 scripts/harness/run.py harness-tests",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; isolated LOWER_BUILD_ROOT with pinned air-java",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 61,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-harness-tests.log"
+    },
+    {
+      "gate": "fast",
+      "required": false,
+      "command": "python3 scripts/harness/run.py fast",
+      "cwd": "cobol-lower",
+      "environment": "Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; Python 3.14; PyYAML 6.0.3; jsonschema 4.19.2; isolated LOWER_BUILD_ROOT with pinned air-java",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 0,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-regression-fast.log"
+    },
+    {
+      "gate": "upstream-golden-capture",
+      "required": true,
+      "command": "mvn -B -ntp -Dmaven.repo.local=<isolated-m2> -Dtest=SemanticProductEntryGobackTest test exec:java (exact args in fixture-intake.json)",
+      "cwd": "isolated proleap-poc c8a891e0827ae1dc1140246f625fd16c2ac9bd97",
+      "environment": "Temurin 21.0.12.1+1; Maven 3.9.16; clean pinned clone, isolated Maven cache",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 20,
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-capture.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "CP1-DUPLICATES",
+      "mutation": ".enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION) -> .disable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)",
+      "expected_oracle": "must reject INPUT_ERROR",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "must reject INPUT_ERROR",
+      "baseline_digest": "a856f7f94def0796c01be9c27794731bd0badfaca7d448c6b96a89c88842c1fc",
+      "restored_digest": "a856f7f94def0796c01be9c27794731bd0badfaca7d448c6b96a89c88842c1fc",
+      "digest_scope": "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP1-DUPLICATES-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-DUPLICATES-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-DUPLICATES-restored.log"
+      ]
+    },
+    {
+      "id": "CP1-NULL-ZERO",
+      "mutation": "Optional.ofNullable(d.parameterCount()) -> Optional.of(d.parameterCount() == null ? 0 : d.parameterCount())",
+      "expected_oracle": "null count must remain absent, never zero",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "null count must remain absent, never zero",
+      "baseline_digest": "8e7d3f0266f0e6a72ecc2532b9617ef0da1cda313888664e7cb78f1f2080fe98",
+      "restored_digest": "8e7d3f0266f0e6a72ecc2532b9617ef0da1cda313888664e7cb78f1f2080fe98",
+      "digest_scope": "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP1-NULL-ZERO-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-NULL-ZERO-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-NULL-ZERO-restored.log"
+      ]
+    },
+    {
+      "id": "CP1-OBSERVED-GOBACK",
+      "mutation": "case Wire.ObservedDocument v -> new OtherStatement(statementHeader(v.header(), unit), Variant.OBSERVED); -> case Wire.ObservedDocument v -> new GobackFact(statementHeader(v.header(), unit), GobackExit.CURRENT_PROGRAM_INVOCATION, LocalContinuation.NONE);",
+      "expected_oracle": "known unsupported variant never becomes GOBACK",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "known unsupported variant never becomes GOBACK",
+      "baseline_digest": "8e7d3f0266f0e6a72ecc2532b9617ef0da1cda313888664e7cb78f1f2080fe98",
+      "restored_digest": "8e7d3f0266f0e6a72ecc2532b9617ef0da1cda313888664e7cb78f1f2080fe98",
+      "digest_scope": "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP1-OBSERVED-GOBACK-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-OBSERVED-GOBACK-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-OBSERVED-GOBACK-restored.log"
+      ]
+    },
+    {
+      "id": "CP1-MISSING-SUITE",
+      "mutation": "Skip adapter test execution only; Maven itself still succeeds.",
+      "expected_oracle": "semantic tests absent/zero",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "semantic tests absent/zero",
+      "baseline_digest": "4dacabb5f901081c2d80455062cc5407f441e05125c150e3879dbe6c02e056dc",
+      "restored_digest": "4dacabb5f901081c2d80455062cc5407f441e05125c150e3879dbe6c02e056dc",
+      "digest_scope": "adapters/pom.xml",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP1-MISSING-SUITE-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-MISSING-SUITE-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-MISSING-SUITE-restored.log"
+      ]
+    },
+    {
+      "id": "CP1-TEXT-COERCION",
+      "mutation": ".setCoercion(shape, CoercionAction.Fail) -> .setCoercion(shape, CoercionAction.TryConvert)",
+      "expected_oracle": "must reject INPUT_ERROR",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "must reject INPUT_ERROR",
+      "baseline_digest": "d41b9dac117b617b3ae2e06146bec27299f2777bd85e648c94e28d9809349f6f",
+      "restored_digest": "d41b9dac117b617b3ae2e06146bec27299f2777bd85e648c94e28d9809349f6f",
+      "digest_scope": "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic",
+      "green_exit_code": 0,
+      "log_references": [
+        "docs/quality/WORK-LOWER-001/logs/CP1-TEXT-COERCION-baseline.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-TEXT-COERCION-mutant.log",
+        "docs/quality/WORK-LOWER-001/logs/CP1-TEXT-COERCION-restored.log"
+      ]
+    },
+    {
+      "id": "DOC-LINK",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "LINK README.md: missing.md",
+      "baseline_digest": "5ff493fc3ff05f039e300d99c1195f6dfe4b015c5a1a99c2a59369c562c022aa",
+      "restoration_status": "RESTORED",
+      "restored_digest": "5ff493fc3ff05f039e300d99c1195f6dfe4b015c5a1a99c2a59369c562c022aa",
+      "green_exit_code": 0,
+      "mutation": "DOC-LINK controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "LINK",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "DOC-INVARIANT",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "INVARIANT EVAL-LWR-001: INV-LWR-999",
+      "baseline_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796",
+      "restoration_status": "RESTORED",
+      "restored_digest": "5239c227c41d423d7ed7861f41645e96719bdb89f0426c4ce3973f3aaa883796",
+      "green_exit_code": 0,
+      "mutation": "DOC-INVARIANT controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "INVARIANT",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "DOC-ACTIVE-COMPLETED",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "LIFECYCLE active WORK-LOWER-001: completed; REGISTRY WORK-LOWER-001",
+      "baseline_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900",
+      "restoration_status": "RESTORED",
+      "restored_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900",
+      "green_exit_code": 0,
+      "mutation": "DOC-ACTIVE-COMPLETED controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "LIFECYCLE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "DOC-MUST-READ",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "MUST_READ WORK-LOWER-001: docs/missing.md",
+      "baseline_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900",
+      "restoration_status": "RESTORED",
+      "restored_digest": "72eb586048dabd9978325935d996047fac6a6dc3700307ad217874887bf60900",
+      "green_exit_code": 0,
+      "mutation": "DOC-MUST-READ controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "MUST_READ",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "ARCH-PATH-API-BYTECODE",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_BYTECODE forbidden type/member/annotation; ARCH_API forbidden signature",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-API-BYTECODE controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_BYTECODE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "ARCH-PATH-INTERNAL",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_BYTECODE forbidden type/member/annotation",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-INTERNAL controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_BYTECODE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    },
+    {
+      "id": "ARCH-PATH-SOURCE",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_SOURCE forbidden dependency",
+      "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "restoration_status": "RESTORED",
+      "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1",
+      "green_exit_code": 0,
+      "mutation": "ARCH-PATH-SOURCE controlled mutation in isolated copy; scripts/harness/challenge.py",
+      "expected_oracle": "ARCH_SOURCE",
+      "green_command": "python3 scripts/harness/challenge.py",
+      "log_reference": "docs/quality/WORK-LOWER-001/logs/CP1-review-challenge.log"
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": "CP0",
+      "guarantees": [
+        "All CP0 cheap gates and semantic suite rerun",
+        "20 AIR manual/boundary assertions preserved",
+        "191 decoder assertions; nonzero suites independently enforced",
+        "61 harness tests; prior negative expectations unchanged",
+        "Seven documentary/architecture challenges and five focal mutations restored"
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "kind": "self-review",
+    "reviewer_context": "codex-root-WORK-LOWER-001-CP1",
+    "evidence": [
+      "docs/quality/WORK-LOWER-001/CP1-review.md"
+    ],
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "CP1 materializes physically validated input; CP2 semantic validation/admission and CP3 lowering have not started.",
+    "Known non-GOBACK payloads physically validated; only occurrence/header/variant enters consumed inner surface with explicit unsupported-variant diagnostics. No semantic validity claim for rejected payloads.",
+    "performance/full not required by CP1 and not yet implemented; required at CP4/CP5.",
+    "Local pre-commit certification does not presume commit/push/remote success; next checkpoint requires actual remote check success.",
+    "Self-review only; final human review pending."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true,
+    "verification_command": "python3 scripts/harness/run.py certify --evidence docs/quality/WORK-LOWER-001/CP1.json"
+  }
+}

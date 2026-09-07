@@ -1,0 +1,4 @@
+Command: python3 scripts/harness/run.py git
+Exit: 0
+{"autoMergeRequest": null, "baseRefName": "main", "headRefOid": "c5546c9f4a318f31bcfb3c79a91a4b7d7d71149f", "isDraft": true, "number": 2, "state": "OPEN", "url": "https://github.com/Gustavo2358/cobol-lower/pull/2"}
+PASS git

@@ -1,0 +1,44 @@
+Command: python3 -m unittest discover -s scripts/harness/tests -p test_full.py -v
+Exit: 1
+test_absent_zero_and_incomplete_performance_suites (test_full.Full.test_absent_zero_and_incomplete_performance_suites) ... ok
+test_all_required_components_once (test_full.Full.test_all_required_components_once) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+ok
+test_cannot_shrink_or_expand_required_set (test_full.Full.test_cannot_shrink_or_expand_required_set) ... ok
+test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+ok
+test_full_wiring_does_not_substitute_a_leaf (test_full.Full.test_full_wiring_does_not_substitute_a_leaf) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+ok
+test_local_git_keeps_branch_preflight (test_full.Full.test_local_git_keeps_branch_preflight) ... ok
+test_missing_runner (test_full.Full.test_missing_runner) ... ok
+test_published_git_cannot_bypass_certificate (test_full.Full.test_published_git_cannot_bypass_certificate) ... ok
+test_published_git_rejects_uncertified_record (test_full.Full.test_published_git_rejects_uncertified_record) ... FAIL
+test_published_git_rejects_wrong_head_and_dirty (test_full.Full.test_published_git_rejects_wrong_head_and_dirty) ... ok
+test_published_git_requires_exact_clean_head (test_full.Full.test_published_git_requires_exact_clean_head) ... ok
+test_real_nonzero_performance_suites (test_full.Full.test_real_nonzero_performance_suites) ... ok
+
+======================================================================
+FAIL: test_published_git_rejects_uncertified_record (test_full.Full.test_published_git_rejects_uncertified_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_full.py", line 76, in test_published_git_rejects_uncertified_record
+    with self.assertRaisesRegex(RuntimeError, "CERTIFICATION_NOT_PASS"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.004s
+
+FAILED (failures=1)

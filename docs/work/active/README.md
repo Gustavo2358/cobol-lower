@@ -1,3 +1,3 @@
 # Trabalho autorizado
 
-Não há work item ativo. Ao autorizar, mover o pacote de cinco arquivos de proposals para active e atualizar registry/index/backlog. Este README não conta como work item. Não criar cópia active de um item já concluído ou apenas candidato.
+Nenhum pacote ativo. WORK-LOWER-001 tem [fechamento local](../history/WORK-LOWER-001.md) e review humano final pendente. Este README não é work item; não recriar um item concluído nem iniciar candidatos sem autorização.

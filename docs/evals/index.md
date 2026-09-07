@@ -1,5 +1,5 @@
-# Evals e fixtures
+# Evals e oracles
 
-O [catálogo](catalog.md) descreve propriedades observáveis e falsificações; [catalog.json](catalog.json) oferece índice mecanizável. O estado inicial de todos é especificado, não implementado. O work item escolhe quais evals são obrigatórios em cada checkpoint; não tratar todos como autorização de implementação.
+O [catálogo](catalog.md) mantém propriedades/oracles originais e o [índice mecanizável](catalog.json) registra paths e evidências no escopo minimal-entry-goback@1. AUTOMATED_VERIFIED exige testes/contracasos; VERIFIED_CAPTURE é captura upstream auditável, não prova de todas as fixtures. SELF_REVIEW_PENDING/SELF_REVIEWED não afirmam review independente/humano. Evals023/025/026 futuros continuam especificados, sem autorização.
 
-[Fixtures](fixtures.md) separam input real, adversariais sintéticos e expected AIR independente. [Primeiro oracle](first-slice-oracle.md) fixa a observação mínima. [Falsificação](../engineering/falsification.md) rege mutações e restauração. [Testing](../engineering/testing.md) define independência e metamorfismos.
+[Fixtures](fixtures.md), [oracle do primeiro slice](first-slice-oracle.md) e [histórico](../work/history/WORK-LOWER-001.md) preservam o contexto. Contagem de testes não substitui as propriedades nem amplia suporte.

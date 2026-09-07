@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "human-review-remediation",
+  "id": "R1",
+  "work_item": "WORK-LOWER-001",
+  "state": "granted",
+  "authority": "Pedido explícito do usuário nesta sessão: remediação dos findings1..4 e AGENTS após CP5, mesmo PR2; sem CP6/rewrite/merge/capability adicional.",
+  "base_commit": "5a00a152d3c05793dad825c16226867c493ee31b",
+  "branch": "feat/first-entry-goback-slice",
+  "pull_request": 2,
+  "source_scope": ["scripts/harness", ".github/workflows"],
+  "test_scope": ["scripts/harness/tests"],
+  "docs_scope": ["AGENTS.md", "docs/engineering", "docs/templates", "docs/work", "docs/quality/WORK-LOWER-001/R1-contract.md", "docs/quality/WORK-LOWER-001/R1-authorization.json", "docs/quality/WORK-LOWER-001/R1-state.md", "docs/quality/WORK-LOWER-001/R1-review.md", "docs/quality/WORK-LOWER-001/R1.json", "docs/quality/WORK-LOWER-001/R1-logs", "docs/quality/WORK-LOWER-001/CP5-remote.json"],
+  "must_not_change": ["core", "adapters", "pom.xml", "docs/sources/sources.lock.json", "CP0..CP5 evidence and certified commits", "upstream repositories", "SP/AIR semantic contracts", "minimal-entry-goback@1 capability"],
+  "gates": ["docs", "architecture", "semantic", "performance", "full", "git"]
+}

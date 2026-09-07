@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "template": true,
   "work_item": null,
   "checkpoint": null,
@@ -47,7 +47,8 @@
     "reference_fields": [
       "path",
       "sha256",
-      "git_revision"
+      "git_revision",
+      "usage"
     ],
     "required_remote_checks": [],
     "remote_wait_limit_seconds": null

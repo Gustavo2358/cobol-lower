@@ -1,12 +1,12 @@
 # Validação e resultados
 
-O vocabulário abaixo é contrato local proposto. Deve ser materializado em tipos, sem misturar erros de transporte, insuficiência semântica e defeitos do tradutor.
+O vocabulário abaixo foi materializado em tipos de aplicação/adapters no primeiro slice, mantendo separados transporte, insuficiência semântica e defeitos do tradutor. `Admission.Status.ADMITTED` não é sucesso AIR e apenas libera a regra; `LoweringResult.SUCCESS` exige Publication e relatório estrutural válido. O adapter `FileLowering.Lowered` pode carregar falha semântica, não é sinônimo de SUCCESS.
 
 | Resultado | Significado | Publicação de sucesso? |
 | --- | --- | --- |
 | SUCCESS | Perfil admitido, tradução observável correta e checks AIR requeridos aprovados | Sim, com relatório/obrigações |
 | INPUT_ERROR | Falha do adapter: I/O, encoding, JSON ou forma física | Não |
-| UNSUPPORTED_VERSION | Schema/versão fora do conjunto explicitamente negociado | Não |
+| UNSUPPORTED_VERSION (adapter: UNSUPPORTED_CONTRACT) | Schema/versão fora do conjunto explicitamente negociado | Não |
 | INVALID_INPUT | Contradição no contrato semântico lido: duplicatas, dangling start, estados incoerentes | Não |
 | UNSUPPORTED_SLICE | Fatos reconhecidos, mas capacidade/shape fora do perfil implementado | Não |
 | BLOCKED_LOWERING | Fato indispensável desconhecido/input missing; não há tradução admitida | Não |

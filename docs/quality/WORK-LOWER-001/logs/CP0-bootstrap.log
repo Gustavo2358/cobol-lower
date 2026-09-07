@@ -1,0 +1,13 @@
+Execution summary; raw upstream build log retained in the isolated build directory during this session.
+Command: env JAVA_HOME=<Temurin-21.0.12.1+1> PATH=<jdk21>/bin:<maven>/bin:/usr/bin:/bin LOWER_BUILD_ROOT=<isolated-build> python3 scripts/harness/run.py bootstrap
+Cwd: cobol-lower; upstream Maven cwd: isolated-build/air-java
+Environment: Linux amd64; Temurin 21.0.12.1+1; Maven 3.9.16; isolated Maven repository
+Upstream: Gustavo2358/air-java@6a4091e5394fc22b3d2ada9abbdb530eb3572a58
+Observed: javac release 21; 40 production sources; 2 test sources
+Observed: PASS: 172 deterministic contract checks
+Observed: BUILD SUCCESS
+Observed: PASS bootstrap
+Exit: 0
+Installed JAR SHA-256: 0bdf3841bf133a87d08d6c7b31872c1fede3f0ae88a102631b16c590395817e9
+Source lock SHA-256: 5b4f5dba5d23ae2245b634c355839aec4746526311c2f16558f593f26486f651
+Setup failure before this success: Maven -f executed from cobol-lower yielded NoSuchFileException src/main/java in upstream architecture test, exit 1 after 13 passed checks. Repeating from the snapshot directory resolved the documented cwd assumption. This setup failure is not a semantic falsification.

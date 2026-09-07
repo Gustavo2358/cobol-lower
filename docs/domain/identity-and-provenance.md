@@ -6,7 +6,7 @@ Handles locais do Semantic Product são qualificados pela unit/publicação de e
 
 O lowerer mantém correlação explícita e tipada entre identidades de entrada e saída. Uma origem pode produzir vários IDs AIR; vários conceitos auxiliares podem derivar da mesma ocorrência sem duplicar o fato de origem. O consumidor AIR não precisa interpretar handles COBOL.
 
-## Política de IDs a fechar no primeiro checkpoint
+## Política de IDs implementada — canonical-v1
 
 IDs devem ser determinísticos para a mesma publicação semântica, revisão e opções/versionamento do lowering. Não usar relógio, UUID aleatório, object identity, `hashCode()` de objeto ou ordem de HashMap. Determinismo não é estabilidade longitudinal após editar fonte.
 
@@ -16,6 +16,8 @@ Um digest do arquivo JSON bruto não é automaticamente identidade semântica, p
 
 ## Provenance
 
+Implementação congelada em CP3: CanonicalRevision codifica explicitamente todos os campos do SpInput admitido, com prefixo `minimal-entry-goback@1/AIR2/SP1.1/canonical-v1/`, presença opcional, tamanho de listas e tokens de string com comprimento UTF-16 e quatro hexadecimais por unidade. A codificação completa é injetiva, sem digest/hash ou tratamento probabilístico de colisão. Custo/tamanho O(B), IDs potencialmente longos; limite de caracteres resulta IMPLEMENTATION_LIMIT, sem truncar. Opções operacionais/telemetria não integram fatos semânticos. Unit/Entry/Sequence/Return possuem namespaces AIR próprios; joins usam IDs tipados completos.
+
 Entry deriva da origem publicada para a entry/PROCEDURE DIVISION; Return deriva do GOBACK. Labels e estruturas auxiliares possuem origem derivada com regra identificada. Preserve artefato, cadeia de include, original versus expanded, exatidão e lacunas onde o contrato possibilitar.
 
 Não fabricar linha/coluna a partir de offset nem offset a partir de linha. Não confundir o arquivo JSON de transporte com o artefato COBOL original. Campo `file` é informação de origem; não é caminho a abrir em runtime.
@@ -23,6 +25,10 @@ Não fabricar linha/coluna a partir de offset nem offset a partir de linha. Não
 O JSON atual publica números de linha/coluna, mas o uso desses números como um Span AIR exige confirmar base, unidade e convenção de fim no contrato fixado. Se uma convenção não estiver estabelecida, registre a limitação. Preserve a evidência bruta tipada na correlação/relatório e use uma origem AIR permitida sem afirmar precisão de coordenadas inexistente. Não converta silenciosamente “falta de convenção” em coordenadas fabricadas nem afirme suporte total de provenance.
 
 ## Ordenação e escala
+
+Convenções verificadas no produtor fixado em CP3: linhas base1, colunas base0, UNICODE_SCALAR, fim inclusivo. Original e expanded geram artefatos/origens separados combinados por Derived; auxiliares usam regra identificada. Zero/ordem inválida de coordenadas remove apenas a afirmação de localização exata e produz limitação tipada; evidência bruta permanece no input correlacionado. Include frame preserva including/included/requestedName, mas includeLine sozinho não vira span completo: site ausente e limitação explícita, com linha bruta preservada. Nunca abrir esses filenames.
+
+Ledger CP4 para o corpus sintético N GOBACKs: admissão visits=7N+9, references=N+1, provenance=3N+3; JSON nodes=82+37N, physical values=82+35N. Esses contadores verificam o algoritmo/shape de teste, não todos os custos internos de biblioteca nem SLA. N>1 permanece fora do perfil. Oracle de contagem independente e mutação índice→scan detectam custo quadrático; JSON é materializado sob limite de bytes, não streaming.
 
 Ordem de instruções AIR é semântica; ordem entre sequences não cria edges. Coleções de transporte respeitam sua canonicalização, não `sort` por nome como reparo. Construir índices uma vez por execução. Correlacionar inputs/outputs e contar omissões em O(N+R), onde R é o total de referências examinadas, salvo custo adicional explicitamente justificado.
 

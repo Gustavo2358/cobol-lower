@@ -1,0 +1,154 @@
+Captured command output, exit 1; trailing whitespace stripped.
+test_active_resolution_and_old_baseline (test_closure.Closure.test_active_resolution_and_old_baseline) ... ok
+test_arbitrary_history_does_not_authorize_code (test_closure.Closure.test_arbitrary_history_does_not_authorize_code) ... FAIL
+test_backlog_not_closed (test_closure.Closure.test_backlog_not_closed) ... FAIL
+test_closed_baseline (test_closure.Closure.test_closed_baseline) ... ok
+test_closed_resolution (test_closure.Closure.test_closed_resolution) ... ok
+test_dependency_receipt_missing (test_closure.Closure.test_dependency_receipt_missing) ... FAIL
+test_duplicate_registration (test_closure.Closure.test_duplicate_registration) ... FAIL
+test_external_manifest (test_closure.Closure.test_external_manifest) ... FAIL
+test_failed_certificate_is_not_certifiable (test_closure.Closure.test_failed_certificate_is_not_certifiable) ... ok
+test_final_checkpoint_not_authorized (test_closure.Closure.test_final_checkpoint_not_authorized) ... FAIL
+test_git_mismatch (test_closure.Closure.test_git_mismatch) ... FAIL
+test_index_missing (test_closure.Closure.test_index_missing) ... FAIL
+test_missing_authority (test_closure.Closure.test_missing_authority) ... FAIL
+test_missing_evidence (test_closure.Closure.test_missing_evidence) ... FAIL
+test_missing_registration_no_fallback (test_closure.Closure.test_missing_registration_no_fallback) ... ok
+test_unregistered_active_copy (test_closure.Closure.test_unregistered_active_copy) ... FAIL
+
+======================================================================
+FAIL: test_arbitrary_history_does_not_authorize_code (test_closure.Closure.test_arbitrary_history_does_not_authorize_code)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 73, in test_arbitrary_history_does_not_authorize_code
+    self.rejects("UNAUTHORIZED_IMPLEMENTATION")
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('UNAUTHORIZED_IMPLEMENTATION', [])
+
+======================================================================
+FAIL: test_backlog_not_closed (test_closure.Closure.test_backlog_not_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 101, in test_backlog_not_closed
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', ['BACKLOG_STATUS BACKLOG-LOWER-001'])
+
+======================================================================
+FAIL: test_dependency_receipt_missing (test_closure.Closure.test_dependency_receipt_missing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 97, in test_dependency_receipt_missing
+    self.rejects("DEPENDENCY")
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('DEPENDENCY', ['LINK docs/work/index.md: ../quality/WORK-LOWER-001/CP4-remote.json', 'LINK docs/quality/WORK-LOWER-001/CP5-state.md: CP4-remote.json', 'LINK docs/work/history/WORK-LOWER-001.md: ../../quality/WORK-LOWER-001/CP4-remote.json'])
+
+======================================================================
+FAIL: test_duplicate_registration (test_closure.Closure.test_duplicate_registration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 55, in test_duplicate_registration
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_external_manifest (test_closure.Closure.test_external_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 65, in test_external_manifest
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_final_checkpoint_not_authorized (test_closure.Closure.test_final_checkpoint_not_authorized)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 89, in test_final_checkpoint_not_authorized
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_git_mismatch (test_closure.Closure.test_git_mismatch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 93, in test_git_mismatch
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_index_missing (test_closure.Closure.test_index_missing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 105, in test_index_missing
+    self.rejects("INDEX")
+    ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('INDEX', [])
+
+======================================================================
+FAIL: test_missing_authority (test_closure.Closure.test_missing_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 81, in test_missing_authority
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_missing_evidence (test_closure.Closure.test_missing_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 69, in test_missing_evidence
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+======================================================================
+FAIL: test_unregistered_active_copy (test_closure.Closure.test_unregistered_active_copy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 61, in test_unregistered_active_copy
+    self.rejects()
+    ~~~~~~~~~~~~^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_closure.py", line 30, in rejects
+    self.assertTrue(any(code in e for e in errors), (code, errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : ('HISTORY', [])
+
+----------------------------------------------------------------------
+Ran 16 tests in 1.450s
+
+FAILED (failures=11)

@@ -10,7 +10,9 @@
         "EVAL-LWR-001",
         "EVAL-LWR-002"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SELF_REVIEW_WITH_AUTOMATED_CHECKS",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-002",
@@ -21,7 +23,9 @@
         "EVAL-LWR-003",
         "EVAL-LWR-004"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-003",
@@ -32,7 +36,9 @@
         "EVAL-LWR-003",
         "EVAL-LWR-005"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-004",
@@ -43,7 +49,9 @@
         "EVAL-LWR-002",
         "EVAL-LWR-003"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-005",
@@ -54,7 +62,9 @@
         "EVAL-LWR-004",
         "EVAL-LWR-017"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-006",
@@ -64,7 +74,9 @@
       "evals": [
         "EVAL-LWR-006"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-007",
@@ -75,7 +87,9 @@
         "EVAL-LWR-007",
         "EVAL-LWR-018"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-008",
@@ -85,7 +99,9 @@
       "evals": [
         "EVAL-LWR-008"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-009",
@@ -95,7 +111,9 @@
       "evals": [
         "EVAL-LWR-009"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-010",
@@ -105,7 +123,9 @@
       "evals": [
         "EVAL-LWR-010"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-011",
@@ -115,7 +135,9 @@
       "evals": [
         "EVAL-LWR-011"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-012",
@@ -127,7 +149,9 @@
         "EVAL-LWR-012",
         "EVAL-LWR-022"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-013",
@@ -138,7 +162,9 @@
         "EVAL-LWR-013",
         "EVAL-LWR-014"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-014",
@@ -149,7 +175,9 @@
         "EVAL-LWR-013",
         "EVAL-LWR-014"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-015",
@@ -159,7 +187,9 @@
       "evals": [
         "EVAL-LWR-015"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-016",
@@ -170,7 +200,9 @@
         "EVAL-LWR-016",
         "EVAL-LWR-017"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-017",
@@ -180,7 +212,9 @@
       "evals": [
         "EVAL-LWR-018"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-018",
@@ -191,7 +225,9 @@
         "EVAL-LWR-006",
         "EVAL-LWR-019"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-019",
@@ -203,7 +239,9 @@
         "EVAL-LWR-010",
         "EVAL-LWR-019"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SELF_REVIEW_WITH_AUTOMATED_CHECKS",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-020",
@@ -213,7 +251,9 @@
       "evals": [
         "EVAL-LWR-020"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SELF_REVIEW_WITH_AUTOMATED_CHECKS",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-021",
@@ -224,7 +264,9 @@
         "EVAL-LWR-021",
         "EVAL-LWR-022"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "AUTOMATED_VERIFIED",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-022",
@@ -235,7 +277,8 @@
         "EVAL-LWR-012",
         "EVAL-LWR-023"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED",
+      "verification_scope": "Future capability not implemented; architecture guards only the current boundary."
     },
     {
       "id": "INV-LWR-023",
@@ -247,7 +290,9 @@
         "EVAL-LWR-020",
         "EVAL-LWR-024"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SELF_REVIEW_WITH_AUTOMATED_CHECKS",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-024",
@@ -258,7 +303,9 @@
         "EVAL-LWR-001",
         "EVAL-LWR-024"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SELF_REVIEW_WITH_AUTOMATED_CHECKS",
+      "verification_scope": "minimal-entry-goback@1; applicable evals and CP0..CP4 certificates, CP5 closure review; no full-language/whole-AIR certification.",
+      "evidence": "docs/quality/WORK-LOWER-001/CP4.json"
     },
     {
       "id": "INV-LWR-025",
@@ -270,7 +317,8 @@
         "EVAL-LWR-017",
         "EVAL-LWR-025"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED",
+      "verification_scope": "Future capability not implemented; architecture guards only the current boundary."
     },
     {
       "id": "INV-LWR-026",
@@ -280,7 +328,8 @@
       "evals": [
         "EVAL-LWR-026"
       ],
-      "enforcement": "SPECIFIED_NOT_IMPLEMENTED"
+      "enforcement": "SPECIFIED_NOT_IMPLEMENTED",
+      "verification_scope": "Future capability not implemented; architecture guards only the current boundary."
     }
   ]
 }

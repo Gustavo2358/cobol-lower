@@ -1,0 +1,14 @@
+Summary of actual tool output, not a full raw transcript.
+Clone: git clone --no-hardlinks --no-checkout /home/gustavo/workspace/proleap-poc /tmp/work-lower-001.nucAJ2/proleap-poc; checkout --detach c8a891e0827ae1dc1140246f625fd16c2ac9bd97; exit 0.
+Command: mvn -B -ntp -Dmaven.repo.local=/tmp/work-lower-001.nucAJ2/m2 -Dtest=SemanticProductEntryGobackTest test exec:java '-Dexec.args=--source src/test/resources/cobol/semantic/semantic-product-entry-goback.cbl --copybooks src/test/resources/cobol/semantic --output target/lower-golden'
+Cwd: /tmp/work-lower-001.nucAJ2/proleap-poc
+Environment: Temurin 21.0.12.1+1; Maven 3.9.16; isolated cache; upstream source unchanged.
+Exit: 0
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time: 16.542 s
+[INFO] Finished at: 2026-09-06T18:57:35-03:00
+Output canonical: target/lower-golden/cobol-semantic-product.json, 2663 bytes.
+SHA-256: 7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed
+cmp captured file against producer bytes: exit 0.
+git status --porcelain in isolated producer after capture: exit 0, empty.

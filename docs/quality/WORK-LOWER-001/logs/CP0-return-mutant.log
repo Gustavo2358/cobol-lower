@@ -1,0 +1,78 @@
+Log transcription: trailing whitespace removed; all result lines retained.
+Command: env JAVA_HOME=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1 PATH=/tmp/work-lower-001.nucAJ2/jdk-21.0.12.1+1/bin:/home/gustavo/.sdkman/candidates/maven/current/bin:/usr/bin:/bin LOWER_BUILD_ROOT=/tmp/work-lower-001.nucAJ2 python3 scripts/harness/run.py challenge-return
+Cwd: cobol-lower
+Exit: 1
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] cobol-lower                                                        [pom]
+[INFO] cobol-lower-core                                                   [jar]
+[INFO] cobol-lower-adapters                                               [jar]
+[INFO]
+[INFO] -----------------< io.github.gustavo2358:cobol-lower >------------------
+[INFO] Building cobol-lower 0.1.0-SNAPSHOT                                [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT                           [2/3]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/cobol-lower/core/src/main/resources
+[INFO]
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/cobol-lower/core/src/test/resources
+[INFO]
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-core ---
+[INFO]
+[INFO] --- exec:3.5.0:java (boundary-contract-suite) @ cobol-lower-core ---
+ok 1 - manual AIR accepted by real validator
+ok 2 - AIR 2.0.0
+ok 3 - one unit
+ok 4 - available body
+ok 5 - one entry and sequence
+ok 6 - entry label closes
+ok 7 - closed zero parameters
+ok 8 - closed zero results
+ok 9 - no common instructions
+[WARNING]
+java.lang.AssertionError: expected Return, never Halt
+    at io.github.gustavo2358.lower.testing.BoundarySuite.require (BoundarySuite.java:13)
+    at io.github.gustavo2358.lower.testing.BoundarySuite.shape (BoundarySuite.java:34)
+    at io.github.gustavo2358.lower.testing.BoundarySuite.main (BoundarySuite.java:42)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doMain (ExecJavaMojo.java:375)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:364)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:286)
+    at java.lang.Thread.run (Thread.java:1583)
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO]
+[INFO] cobol-lower ........................................ SUCCESS [  0.001 s]
+[INFO] cobol-lower-core ................................... FAILURE [  0.440 s]
+[INFO] cobol-lower-adapters ............................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.518 s
+[INFO] Finished at: 2026-09-06T18:31:57-03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.0:java (boundary-contract-suite) on project cobol-lower-core: An exception occurred while executing the Java class. expected Return, never Halt -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :cobol-lower-core
+FAIL command exit 1: ['mvn', '-B', '-ntp', '-Dmaven.repo.local=/tmp/work-lower-001.nucAJ2/m2', '-Dchallenge.halt=true', 'verify']

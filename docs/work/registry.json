@@ -1,25 +1,45 @@
 {
   "schema_version": 1,
   "active": [],
-  "proposals": [
+  "proposals": [],
+  "history": [
     {
       "id": "WORK-LOWER-001",
-      "status": "ready_for_authorization",
-      "path": "docs/work/proposals/WORK-LOWER-001",
-      "authorized_checkpoints": [],
-      "git_branch": null,
-      "pull_request": null,
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-001.md",
+      "authorized_checkpoints": [
+        "CP0",
+        "CP1",
+        "CP2",
+        "CP3",
+        "CP4",
+        "CP5"
+      ],
+      "git_branch": "feat/first-entry-goback-slice",
+      "pull_request": 2,
       "backlog_ids": [
         "BACKLOG-LOWER-001"
+      ],
+      "manifest": "docs/quality/WORK-LOWER-001/CP5-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-001/CP5.json",
+      "review_status": "changes_requested",
+      "merge_status": "open_not_merged",
+      "remediations": [
+        {
+          "id": "R1",
+          "status": "ready_for_review",
+          "authorization": "docs/quality/WORK-LOWER-001/R1-authorization.json",
+          "evidence": "docs/quality/WORK-LOWER-001/R1.json",
+          "state": "docs/quality/WORK-LOWER-001/R1-state.md"
+        }
       ]
     }
   ],
-  "history": [],
   "backlog": [
     {
       "id": "BACKLOG-LOWER-001",
       "title": "Primeiro slice Entry/GOBACK → AIR Return",
-      "status": "ready_for_authorization",
+      "status": "completed",
       "phase": "foundation",
       "dependencies": [],
       "path": "docs/work/backlog/BACKLOG-LOWER-001.md",

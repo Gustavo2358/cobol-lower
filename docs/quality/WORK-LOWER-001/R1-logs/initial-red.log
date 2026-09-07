@@ -1,0 +1,144 @@
+Command: python3 -m unittest discover -s scripts/harness/tests -p test_human_review.py -v
+Exit code: 1
+Context: first 15 counterexamples, implementation at original CP5 before fixes; synthetic GitHub metadata below, not observations of real PR state.
+test_immutable_oracle_candidate_and_committed_bytes (test_human_review.FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes) ... FAIL
+test_reference_only_may_change (test_human_review.FreezeCandidate.test_reference_only_may_change) ... ok
+test_usage_missing_or_unknown_rejected_v2 (test_human_review.FreezeCandidate.test_usage_missing_or_unknown_rejected_v2) ... FAIL
+test_execution_merged_rejected (test_human_review.RemoteLifecycle.test_execution_merged_rejected) ... ok
+test_execution_open_positive (test_human_review.RemoteLifecycle.test_execution_open_positive) ... ok
+test_historical_merged_positive (test_human_review.RemoteLifecycle.test_historical_merged_positive) ... ERROR
+test_wrong_sha_success_still_rejected (test_human_review.RemoteLifecycle.test_wrong_sha_success_still_rejected) ... ok
+test_active_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_active_rejects_self_consistent_wrong_receipt) ... FAIL
+test_dependency_wrong_checkpoint_identity (test_human_review.ReviewDocuments.test_dependency_wrong_checkpoint_identity) ... FAIL
+test_history_never_authorizes_execution (test_human_review.ReviewDocuments.test_history_never_authorizes_execution) ... FAIL
+test_history_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt) ... FAIL
+test_receipt_matching_certified_commit_positive (test_human_review.ReviewDocuments.test_receipt_matching_certified_commit_positive) ... ok
+test_reviewed_merged_history_valid_read_only (test_human_review.ReviewDocuments.test_reviewed_merged_history_valid_read_only) ... FAIL
+test_reviewed_open_history_valid (test_human_review.ReviewDocuments.test_reviewed_open_history_valid) ... FAIL
+test_push_policy_covers_new_work_branch_and_main (test_human_review.WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main) ... FAIL
+
+======================================================================
+ERROR: test_historical_merged_positive (test_human_review.RemoteLifecycle.test_historical_merged_positive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 154, in test_historical_merged_positive
+    self.assertEqual(2, self.check("historical")["number"])
+                        ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 147, in check
+    return harness.check_pr(self.record, CP5, **options)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/run.py", line 152, in check_pr
+    raise RuntimeError("PR identity/state/head mismatch")
+RuntimeError: PR identity/state/head mismatch
+
+======================================================================
+FAIL: test_immutable_oracle_candidate_and_committed_bytes (test_human_review.FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 117, in test_immutable_oracle_candidate_and_committed_bytes
+    self.assertTrue(any("FREEZE_CANDIDATE" in e for e in git_checks.frozen_errors(self.root, record)))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_usage_missing_or_unknown_rejected_v2 (test_human_review.FreezeCandidate.test_usage_missing_or_unknown_rejected_v2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 133, in test_usage_missing_or_unknown_rejected_v2
+    self.assertTrue(any("FREEZE_USAGE" in e for e in git_checks.frozen_errors(self.root, record)))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_active_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_active_rejects_self_consistent_wrong_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 59, in test_active_rejects_self_consistent_wrong_receipt
+    self.assertTrue(any("DEPENDENCY" in e for e in errors), errors)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_dependency_wrong_checkpoint_identity (test_human_review.ReviewDocuments.test_dependency_wrong_checkpoint_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 64, in test_dependency_wrong_checkpoint_identity
+    self.assertTrue(any("DEPENDENCY" in e for e in checks.document_errors(self.root)))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_history_never_authorizes_execution (test_human_review.ReviewDocuments.test_history_never_authorizes_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 90, in test_history_never_authorizes_execution
+    with self.assertRaisesRegex(ValueError, "AUTHORIZATION"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_history_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 53, in test_history_rejects_self_consistent_wrong_receipt
+    self.assertTrue(any("DEPENDENCY" in e for e in errors), errors)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_reviewed_merged_history_valid_read_only (test_human_review.ReviewDocuments.test_reviewed_merged_history_valid_read_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 84, in test_reviewed_merged_history_valid_read_only
+    self.assertEqual([], checks.document_errors(self.root))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['HISTORY DEPENDENCY/REGISTRATION WORK-LOW[99 chars]nly']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: closure state is not the authorized pre-merge closure'
+
+- []
++ ['HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: closure state is not the '
++  'authorized pre-merge closure',
++  'UNAUTHORIZED_IMPLEMENTATION docs-only']
+
+======================================================================
+FAIL: test_reviewed_open_history_valid (test_human_review.ReviewDocuments.test_reviewed_open_history_valid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 80, in test_reviewed_open_history_valid
+    self.assertEqual([], checks.document_errors(self.root))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['HISTORY DEPENDENCY/REGISTRATION WORK-LOW[99 chars]nly']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: closure state is not the authorized pre-merge closure'
+
+- []
++ ['HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: closure state is not the '
++  'authorized pre-merge closure',
++  'UNAUTHORIZED_IMPLEMENTATION docs-only']
+
+======================================================================
+FAIL: test_push_policy_covers_new_work_branch_and_main (test_human_review.WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/cobol-lower/scripts/harness/tests/test_human_review.py", line 171, in test_push_policy_covers_new_work_branch_and_main
+    self.assertEqual(["**"], trigger["push"]["branches"], "CI must cover a new work branch and main, not WORK-LOWER-001 only")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['**'] != ['feat/first-entry-goback-slice']
+
+First differing element 0:
+'**'
+'feat/first-entry-goback-slice'
+
+- ['**']
++ ['feat/first-entry-goback-slice'] : CI must cover a new work branch and main, not WORK-LOWER-001 only
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.434s
+
+FAILED (failures=9, errors=1)
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "OPEN", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": null}

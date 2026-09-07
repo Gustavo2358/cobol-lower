@@ -1,0 +1,23 @@
+Captured command output, exit 0; trailing whitespace stripped.
+test_active_resolution_and_old_baseline (test_closure.Closure.test_active_resolution_and_old_baseline) ... ok
+test_arbitrary_history_does_not_authorize_code (test_closure.Closure.test_arbitrary_history_does_not_authorize_code) ... ok
+test_backlog_not_closed (test_closure.Closure.test_backlog_not_closed) ... ok
+test_closed_baseline (test_closure.Closure.test_closed_baseline) ... ok
+test_closed_resolution (test_closure.Closure.test_closed_resolution) ... ok
+test_dependency_receipt_missing (test_closure.Closure.test_dependency_receipt_missing) ... ok
+test_duplicate_registration (test_closure.Closure.test_duplicate_registration) ... ok
+test_external_manifest (test_closure.Closure.test_external_manifest) ... ok
+test_failed_certificate_is_not_certifiable (test_closure.Closure.test_failed_certificate_is_not_certifiable) ... ok
+test_final_checkpoint_not_authorized (test_closure.Closure.test_final_checkpoint_not_authorized) ... ok
+test_git_mismatch (test_closure.Closure.test_git_mismatch) ... ok
+test_index_missing (test_closure.Closure.test_index_missing) ... ok
+test_missing_authority (test_closure.Closure.test_missing_authority) ... ok
+test_missing_evidence (test_closure.Closure.test_missing_evidence) ... ok
+test_missing_registration_no_fallback (test_closure.Closure.test_missing_registration_no_fallback) ... ok
+test_unregistered_active_copy (test_closure.Closure.test_unregistered_active_copy) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 1.650s
+
+OK
+e5f96ed81fb565d48e22cce0692d99782fdd61e5779928bbe6e5a7fb375d12b1  scripts/harness/checks.py

@@ -1,6 +1,6 @@
 # Primeiro slice — Entry primária e GOBACK
 
-**Perfil local proposto:** `minimal-entry-goback@1`. **Estado:** especificado, não implementado nem autorizado. Derivação: SRC-HANDOFF §§3–14, 17–20; SRC-SP 1.1.0; SRC-AIR operações/controle. Não é um perfil oficial da AIR.
+**Perfil local implementado:** `minimal-entry-goback@1`, autorizado em WORK-LOWER-001 CP0..CP5. [Evidência e review final](../work/history/WORK-LOWER-001.md). Derivação: SRC-HANDOFF §§3–14, 17–20; SRC-SP 1.1.0; SRC-AIR operações/controle. Não é um perfil oficial da AIR.
 
 ## Hipótese a provar
 
