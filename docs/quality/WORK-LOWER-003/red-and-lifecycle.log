@@ -35,3 +35,18 @@ OK
 reconcile.log sha256=d20da564cea709c7d237cf373e4a1a65293a2aea688143dee4d4ecb649999a9d
 {"autoMergeRequest": null, "baseRefName": "main", "headRefName": "chore/pin-air-java-1a", "headRefOid": "2d1db6ae7cf8eed812df29a2d990e9954f437928", "isDraft": false, "mergeCommit": {"oid": "77762ff2705974ecb874bc4824119c031f6d99bc"}, "number": 3, "reviewDecision": "", "state": "MERGED", "url": "https://github.com/Gustavo2358/cobol-lower/pull/3"}
 PASS reconcile
+
+root-destination-red.log (expected output failure exit 6; observed programming exception)
+exit=1
+Exception in thread "main" java.lang.NullPointerException
+	at java.base/java.util.Objects.requireNonNull(Objects.java:233)
+	at java.base/java.nio.file.Files.createTempFile(Files.java:879)
+	at io.github.gustavo2358.lower.adapters.air.AirFileOutput$FileOperations.temporary(AirFileOutput.java:43)
+	at io.github.gustavo2358.lower.adapters.air.AirFileOutput.write(AirFileOutput.java:26)
+	at io.github.gustavo2358.lower.adapters.cli.CobolLower.run(CobolLower.java:49)
+	at io.github.gustavo2358.lower.adapters.cli.CobolLower.run(CobolLower.java:27)
+	at io.github.gustavo2358.lower.adapters.cli.CobolLower.main(CobolLower.java:25)
+
+root-destination-green-cli.log
+exit=6
+AIR output /: destination must name a file below a directory

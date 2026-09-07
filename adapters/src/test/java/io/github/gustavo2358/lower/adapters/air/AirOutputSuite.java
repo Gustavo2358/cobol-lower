@@ -119,6 +119,7 @@ public final class AirOutputSuite {
         Path impossible = dir.resolve("missing-parent/air.json");
         failure(run(input, impossible), 6, "AIR output");
         check(!Files.exists(impossible), "impossible destination cannot report success");
+        failure(run(input, dir.getRoot()), 6, "AIR output");
         Path occupied = Files.createDirectory(dir.resolve("occupied"));
         Files.writeString(occupied.resolve("keep"), "old");
         failure(run(input, occupied), 6, "AIR output");

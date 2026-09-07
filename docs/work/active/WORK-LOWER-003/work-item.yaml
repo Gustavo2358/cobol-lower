@@ -97,7 +97,7 @@ checkpoints:
   status: ready_for_review
 git:
   branch: feat/air-json-output-cli
-  pull_request: null
+  pull_request: 4
   suggested_branch: feat/air-json-output-cli
   one_pr_per_work_item: true
   merge_authorized: false

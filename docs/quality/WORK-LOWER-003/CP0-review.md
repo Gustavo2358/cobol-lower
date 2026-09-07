@@ -36,6 +36,11 @@ A suite de saída é obrigatória em Maven/semantic/full/CI; removê-la ou skipp
 - Execução full inicial em sandbox sem rede parou no gate Git; registrada como falha de ambiente.
   A execução completa usa a mesma suite com acesso remoto e não reutiliza esse FAIL como PASS.
 
+- Review adicional da CLI detectou destino raiz sem parent: Files.createTempFile recebia null e
+  gerava NPE/exit 1. RED real capturado; o adapter agora emite IOException/exit 6 antes de criar temp.
+  O oracle de destino impossível foi fortalecido com esse caso (FREEZE novo da suite), sem relaxar
+  qualquer expectativa anterior. O delta passou novamente semantic/full/challenges antes da certificação final.
+
 ## Limites e handoff
 
 Cobertura 1A/DRAFT, shape mínimo, limites operacionais documentados. Sem reader analysis-cfg,

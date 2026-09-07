@@ -40,7 +40,10 @@ public final class AirFileOutput {
     }
     /** Package-private physical seam: deterministic failures without mocking AIR or its codec. */
     static class FileOperations {
-        Path temporary(Path directory) throws IOException { return Files.createTempFile(directory, ".cobol-lower-air-", ".tmp"); }
+        Path temporary(Path directory) throws IOException {
+            if (directory == null) throw new IOException("destination must name a file below a directory");
+            return Files.createTempFile(directory, ".cobol-lower-air-", ".tmp");
+        }
         void write(Path path, byte[] bytes) throws IOException { Files.write(path, bytes); }
         void move(Path source, Path target, CopyOption... options) throws IOException { Files.move(source, target, options); }
         void delete(Path path) throws IOException { Files.deleteIfExists(path); }

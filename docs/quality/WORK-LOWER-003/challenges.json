@@ -12,9 +12,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "9dc1c7e98ab51a52634d018f30a6e311d5fa57dbd313a803b295da733d1a27b3",
-    "red_output_sha256": "a81dcd65a468baa7986d1c48cbc53f36a5523d9c48f3456aa2b346641c61fd85",
-    "restored_output_sha256": "085e23ed5219b3c6ab572818877dd371fccdbc99bf60412fdf72409fd8e67e2a",
+    "baseline_output_sha256": "ccdfe1913d44ef360b47783f11e7e82a2c5d70d6073b6ced0f7f23c9d697b5a5",
+    "red_output_sha256": "ae3f392b21e31c2f29c3da51608844ed543f3283c2a14bf7e84a49a308f3aea7",
+    "restored_output_sha256": "659c6ee2b77b45f339ca276636b5ab419aea70b74116c9ad0820b5a1cb63b69b",
     "baseline_counts": [
       "SEMANTIC_TEST_COUNT=874",
       "PERFORMANCE_TEST_COUNT=95"
@@ -37,9 +37,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "4204e1502725da5a0455adcdca80f03f031671129bd84dca8d4c2f7c9ce5295d",
-    "red_output_sha256": "0b6ccef819f88249c74e1e4fc20f470c994ee771370b67356b1fb4a85dd51b0f",
-    "restored_output_sha256": "9ea5b606258a32069a4908425056e43febf094c3894e08c22270788ca351923c",
+    "baseline_output_sha256": "2aa419e098e1270f9cc70906a1759b744b183665c34027377d47de81d86ef496",
+    "red_output_sha256": "231a90c751a45e4d0217950969774ac359a04509ce77c8fc3ff2462044adc2fd",
+    "restored_output_sha256": "f0d9b3d877f63dd0e09326c6cbce380360ea90a9a97198f1ffdae8c74ec19635",
     "baseline_counts": [
       "SEMANTIC_TEST_COUNT=874",
       "PERFORMANCE_TEST_COUNT=95"
@@ -62,9 +62,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "0212e2273cc864dfb6f9750e3e5da07c43fa95bd9b46a19e350a6c5d28bf1f06",
-    "red_output_sha256": "01dd6a0cd2176b89a3755096d35b2cd98b2643a30e4499920ee1bc0fcfaf0caf",
-    "restored_output_sha256": "d23df2879c09d8f786cc535048e677786d640ea74766159e92116f8112d7b71d",
+    "baseline_output_sha256": "306857813f7a29b762890e560f382f57436aa8fb2ea2d8dff2a1a75df1fb0c74",
+    "red_output_sha256": "0375a4ba6606773071fb07fbf70fc406d216fa8650686f3638cbee17b2aad616",
+    "restored_output_sha256": "44480f5758ae82d583232ee090e45284734733668744d728a760d95f91b55df5",
     "baseline_counts": [
       "SEMANTIC_TEST_COUNT=874",
       "PERFORMANCE_TEST_COUNT=95"
@@ -87,9 +87,9 @@
     "restoration_status": "RESTORED",
     "green_exit_code": 0,
     "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt -v (isolated copy)",
-    "baseline_output_sha256": "525597cec00314545dcd4c3bc7081b1e038e5439551ac62cada4135b3f12beb0",
-    "red_output_sha256": "678b04e033dc9b1976900b8c060693bc81cd785b5d71b83ddcc9e65a582bbdad",
-    "restored_output_sha256": "d09eb0cb24aa5b188d3fdda116b6670e0530bcf1f272a71105354b86bdfacc55"
+    "baseline_output_sha256": "f519301d4ea4da49bef9e76b296e01fb58ce4ccc1ba0b3363db267e84cd29fde",
+    "red_output_sha256": "f67063e4b6ff06ced664b552c3e288aacce004fe28db8e3df412668a1314e9ed",
+    "restored_output_sha256": "56b76b6a9e6989ef61029df8b95d2e195099e8b2c4f6fc71cdf2847736d0a5ec"
   },
   {
     "id": "R1-B-ORACLE",
@@ -104,8 +104,8 @@
     "restoration_status": "RESTORED",
     "green_exit_code": 0,
     "green_command": "python3 -B scripts/harness/tests/test_human_review.py FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes -v (isolated copy)",
-    "baseline_output_sha256": "08b24803b9f552e22ce0f9c7a17c91c3b7af4da7e949a27503ec129e4bf8a05b",
-    "red_output_sha256": "0aa32b15ec41eaa06c7784a56f2279eaf3f064851c2b68c14efb48f870e0bae6",
+    "baseline_output_sha256": "db53ea1de49bc97a31bda6fc3f6fbef70af3620850b7245c6bf20eee29cef51a",
+    "red_output_sha256": "4ba1d2ffaaad2f419ae080d80f160a2391a01d3c595b311e47d0a7ab52bdee79",
     "restored_output_sha256": "db53ea1de49bc97a31bda6fc3f6fbef70af3620850b7245c6bf20eee29cef51a"
   },
   {
@@ -121,9 +121,9 @@
     "restoration_status": "RESTORED",
     "green_exit_code": 0,
     "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_never_authorizes_execution -v (isolated copy)",
-    "baseline_output_sha256": "af4b3de3ccd5a985999ba382dbca79131a04f4c20b9bea8e6da709a4ee47d09f",
-    "red_output_sha256": "a5cc19edc85ee645b80b3f7c2f0c3993caefdcf86af41eccc140a985143da3b8",
-    "restored_output_sha256": "af4b3de3ccd5a985999ba382dbca79131a04f4c20b9bea8e6da709a4ee47d09f"
+    "baseline_output_sha256": "186a691211a4d2e438837520428aecfe736f0682bda27d7a606c13ed42b78b63",
+    "red_output_sha256": "669b27dca7ce6e3cae031c7a8ddf4e986c8db458a841ec7aa13de8c0ef00cb80",
+    "restored_output_sha256": "186a691211a4d2e438837520428aecfe736f0682bda27d7a606c13ed42b78b63"
   },
   {
     "id": "R1-D-WORKFLOW",
@@ -139,7 +139,7 @@
     "green_exit_code": 0,
     "green_command": "python3 -B scripts/harness/tests/test_human_review.py WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main -v (isolated copy)",
     "baseline_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca",
-    "red_output_sha256": "fdfc2ad3b0d4580efb950d37eebfccfcb706699ffc2b289f0b1be539afdc5e15",
+    "red_output_sha256": "e66c47107a431fbca9ede2a1baa935c75198a98b1c7124f489b7fd1c7706b753",
     "restored_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca"
   },
   {
@@ -156,7 +156,7 @@
     "green_exit_code": 0,
     "green_command": "python3 -B scripts/harness/tests/test_human_review.py RemoteLifecycle.test_wrong_sha_success_still_rejected -v (isolated copy)",
     "baseline_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812",
-    "red_output_sha256": "aca478a7242e4ab456921d78620da56532ead962765f148726b6301b62cbb91c",
+    "red_output_sha256": "fddc12cf4f976f6d24217b9f10c2e982a068f50110225f08b533cbfcad5ec66d",
     "restored_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812"
   },
   {
@@ -164,16 +164,16 @@
     "mutation": "codec.encode(publication) -> new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)",
     "expected_oracle": "ARCH_AIR_OUTPUT JSON library",
     "observed_exit_code": 1,
-    "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-88x45yme/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+    "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-dz5jj5gq/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
     "baseline_exit_code": 0,
-    "baseline_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
-    "restored_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
+    "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+    "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal boundary (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "0196df0309a9284e27c7fc0ae2fa7a7c040d1a240844d08c11b962a646da579f",
-    "red_output_sha256": "36dededac10185cb115899444dc0bbf172cff196861065b849ed8646dbcf8804",
-    "restored_output_sha256": "747ad2132dbe5c022f17d93f24311f86da731012c3f49af5f240f4c01809d147"
+    "baseline_output_sha256": "9f6de0cdc340fde1330cc64d92302586b3f5dc51b661c69c13975221758323ab",
+    "red_output_sha256": "1c7b83100ad5cb8f940bc5497ecd8a0f030603bee28c1271fa5aaf435c40060d",
+    "restored_output_sha256": "f82bb6f8dc6240a8b09a68c8a46f4ba1a071ed7e64b977366b97a2f70980eb47"
   },
   {
     "id": "AIR-NEWLINE",
@@ -182,14 +182,14 @@
     "observed_exit_code": 1,
     "failure_reason": "java.lang.AssertionError: AIR_OUTPUT exact shared codec bytes",
     "baseline_exit_code": 0,
-    "baseline_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
-    "restored_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
+    "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+    "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "dd9940611456bf146cdf902efde3dfaa5e8539be03f74512f10efdcf3047d1e7",
-    "red_output_sha256": "a5b547822afc03c86313c24dc49c5b7ea96e996edd2006ea1e0928fbcef474d7",
-    "restored_output_sha256": "67027bf25c3bf01ecfa0332f29c84ada7fd663759144ac92e0b4e2af5fedf392"
+    "baseline_output_sha256": "8f54b06a05302d619ef35ff85acbbd13f7bbfd2d70ff3e13eb381b5930d3dd81",
+    "red_output_sha256": "98adb832e90ec211c770d83b8af17859f3742ecf8590da8da944402ab4cda60c",
+    "restored_output_sha256": "0de67385abf56a64711be96a7e789e4f9bffed387c1f7add5f10ba1c0e0fe3a8"
   },
   {
     "id": "NON-SUCCESS-WRITES",
@@ -203,9 +203,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "9aa80e0b10da5627ce58a2f684c0dc0b579f8ff3b0e92300fedc5b8cc5fdb751",
-    "red_output_sha256": "adc4dea8920b10ae7259728bcc0e801b47459163a53eb20d75105511923a4305",
-    "restored_output_sha256": "3a3756727472abc02681cfd02d67c67fb202e94c9c0660a2cef7463a380077d2"
+    "baseline_output_sha256": "4d996ae8d035d675ab819b361b20c18619887d798582b6b870803c4adf0eb49f",
+    "red_output_sha256": "e38e27e9b901b5561f10a02800f84ad1251e8ccfecd6bfa37a0e6750bcaecb9a",
+    "restored_output_sha256": "07f75bbb4061bc96ed82cd5f7ddc58b19200fced0d440ae43686f47d18c1632a"
   },
   {
     "id": "LOWERING-EXIT-ZERO",
@@ -219,9 +219,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "8a475da2dbb66d920726116834f66b8d814d9b53a44a7081352f8b21d5a25397",
-    "red_output_sha256": "bda7b7b23c27b4d7ae6df68c8a18c1acb609c2e912fcf1473829ce7f1933707c",
-    "restored_output_sha256": "4cbc8c2bce2731e5af44be4e8930004029d6153204344e671a5d69793e5a86c4"
+    "baseline_output_sha256": "9c1610d4e0a3c8284739809d3d5865f27fe6da82851c635f8910034d50dd35ec",
+    "red_output_sha256": "812994f086a723f562f51cd9886fed91855ecf3296765777cc7b41ecc262a71f",
+    "restored_output_sha256": "6d5a441600cddec7791c5f140d1e896bf6539081bbf297b00f5baf785df86f42"
   },
   {
     "id": "CODEC-EXIT-ZERO",
@@ -235,9 +235,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "40e2df8afaaa92a2edf3d6d89377ba4403220ee857c21ad382f7bc1a4a380587",
-    "red_output_sha256": "7453f1f8a6e2c950a2d29aaddf50aad7aaad468e5a88776f26d536c3fd47d4e0",
-    "restored_output_sha256": "7125bcb58220f242f682a9dd17bdd80258f7080c70a7e7673b8dff8e86e161da"
+    "baseline_output_sha256": "edf148219bd9f1308badbb3c0eacd8e4fb61f28b0c6c943e9491331f413b6376",
+    "red_output_sha256": "1b75536835fe1987b9b646a103e01fa62f8dc4cbd6352c6e15922c916bcbf8a5",
+    "restored_output_sha256": "6ee1dabec0e769ba7672a07cbc8ee8f0bc94c883d746636526840fd971f2a329"
   },
   {
     "id": "CORE-CODEC",
@@ -251,9 +251,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal architecture (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "3cfd79cabff4f7e3494bb47287da510012208a2cb7147027fba8039688a9b6c7",
-    "red_output_sha256": "9daeff0e202da8650dd06aaf1f3b92c89ee828ecc03d876093978119cc1fdb3f",
-    "restored_output_sha256": "77e1b8c819c7f18601f453d709e34186be51352b8c91dd75b2214a4201094ad2"
+    "baseline_output_sha256": "0b061396a6329de6eba6caac14e6781a32eb5866611cfa727fa7d91a69cbd104",
+    "red_output_sha256": "5ac8dae8757c91519a56f46337bf5461fae6783820e044e059cb94519e04e91e",
+    "restored_output_sha256": "b34b766940e23afc45f4ef3ac44eb0cbc186a75f37b2270cfbdbfa0c2340ca5f"
   },
   {
     "id": "SUITE-REMOVED",
@@ -267,9 +267,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "c81bd1ed9524dc1acabccfe0f98298f8fae1879436f4beb7dd3cfcfd1d6932b4",
-    "red_output_sha256": "688f1a6694cef054353e30960e57a8a511d5cb747c5d39b7a0e5052d64bf2fa9",
-    "restored_output_sha256": "003818a78f7afb89054d652a419361cfe1a5fa3e85bf086e94c72890411ab0c6"
+    "baseline_output_sha256": "73564f9e08bd423a8264663e0760e432625f19833c6241453de3117bf81182c3",
+    "red_output_sha256": "a6c19e1d85dfca80c02c1b45f13e1a3fafc07d133b5e247f05d134762509d6cc",
+    "restored_output_sha256": "37f77c74d5c0b786354d80765dcdf824bc7edc4584c6b482a8cdfa3b851e97ca"
   },
   {
     "id": "SUITE-SKIPPED",
@@ -283,9 +283,9 @@
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "26810f9a69e2be750e5d8aed3a3b1fe4f2a476834ce49dfd0a6a1f6a6a760e70",
-    "red_output_sha256": "2304a886d1fa2f6a8c40f80734509e28f9a10766cabe6af9252e1ee4dad5bd88",
-    "restored_output_sha256": "742101831217e84f5a09b8a29f57420b13d54444abcc94a2ea9a48f098f7e399"
+    "baseline_output_sha256": "a94479d14af9e651ab20d5cdd3d13cb3ff10f96507530d979127a55956db06f1",
+    "red_output_sha256": "a69fc56fd0f8ab67280d451dcaf0e88aa8b580960bebc90da4fd14904f3d0fc9",
+    "restored_output_sha256": "5191275b72713c1f303d3ff535bbb54dab4c65760d4a7043086269e1f9f67b38"
   },
   {
     "id": "OUTPUT-BEFORE-ENCODE",
@@ -294,13 +294,13 @@
     "observed_exit_code": 1,
     "failure_reason": "java.lang.AssertionError: AIR_OUTPUT encode completes before any physical publication",
     "baseline_exit_code": 0,
-    "baseline_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
-    "restored_digest": "58ada6035cb73cbbe09e57ad825d6c882dcb58ba8abb72b86607e139d618f317",
+    "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+    "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
     "restoration_status": "RESTORED",
     "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
     "green_exit_code": 0,
-    "baseline_output_sha256": "2bcda3689336a1dbe308a31542e0cc2000e166ad0d4fa2cb27822603051757d4",
-    "red_output_sha256": "329702e1ae503774e67b3940a91416b6da0764fbe1f7a4ccd1724be716ca4a1a",
-    "restored_output_sha256": "5b79bd43381d88965ecab48df27a55d61a3c4d490999dcc976f2385a5fe0d53a"
+    "baseline_output_sha256": "d2069f29f6c1fb1d2100da66d593d81576d2350cf1cd32336f618ed526afb25d",
+    "red_output_sha256": "53451e3524a6815a9b9fea44adf62c50a882e6b49b6b58cc7c8088ba98f94f07",
+    "restored_output_sha256": "b16848f92a9296fea72b77ff2f87c57a78d73f3a6587d28ee463abe92bf11e81"
   }
 ]

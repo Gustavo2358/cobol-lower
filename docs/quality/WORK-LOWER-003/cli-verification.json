@@ -49,5 +49,9 @@
   ],
   "probe": "LOWERING=SUCCESS\nAIR_BYTES=398532 EQUAL=true\nCLI_BYTES_EQUAL=true CLI_DECODE_EQUAL=true\n",
   "output_bytes": 398532,
-  "sha256": "79270eabe0d2d836594c6d58fc3b2abb462c6d736d698477b680a656153bab44"
+  "sha256": "79270eabe0d2d836594c6d58fc3b2abb462c6d736d698477b680a656153bab44",
+  "root_destination_failure": {
+    "exit_code": 6,
+    "stderr": "AIR output /: destination must name a file below a directory\n"
+  }
 }
