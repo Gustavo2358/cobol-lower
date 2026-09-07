@@ -1,0 +1,77 @@
+schema_version: 1
+id: WORK-LOWER-002
+title: 'Pin de proveniência air-java PR #5 / 1A'
+status: active
+risk: low
+goal: Fixar proveniência em b78f4068d8a479f48eb048b8d76fa60a0997dc4a, preservando
+  norma e produto.
+authorization:
+  state: granted
+  scope: CP0 provenance/pinning only; no implementation of 2A/2B
+  execution_mode: single-checkpoint
+  authority: 'Pedido explícito do usuário em 2026-09-07: preparar somente proveniência/pinning
+    para 2A/2B, com commit, push, CI e PR próprios; parar para review humano, sem
+    merge.'
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids: []
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/change-control.md
+- docs/engineering/gates.md
+- docs/sources/sources.lock.json
+related_domain_rules: []
+related_decisions: []
+related_invariants: []
+evals: []
+source_scope:
+- scripts/harness/challenge.py
+test_scope:
+- scripts/harness/tests/lifecycle_fixture.py
+- scripts/harness/tests/test_closure.py
+docs_scope:
+- docs/sources/sources.lock.json
+- docs/sources/upstream-state.md
+- docs/sources/index.md
+- docs/work/index.md
+- docs/work/registry.json
+- docs/work/active/README.md
+- docs/work/active/WORK-LOWER-002
+- planned:docs/quality/WORK-LOWER-002
+must_not_change:
+- pom.xml
+- core
+- adapters
+- .github
+- MANIFEST.sha256
+- analysis-ir normative pin
+- existing historical evidence
+- other repositories
+- harness production gates/checkers and expected rejection codes
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Fixar proveniência em b78f4068d8a479f48eb048b8d76fa60a0997dc4a, preservando
+    norma e produto.
+  depends_on: []
+  gates: *id001
+  evals: []
+  status: active
+git:
+  branch: chore/pin-air-java-1a
+  pull_request: 3
+  suggested_branch: chore/pin-air-java-1a
+  one_pr_per_work_item: true
+  merge_authorized: false

@@ -12,7 +12,7 @@ from architecture import source_errors, class_errors
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts/harness/tests"))
-from lifecycle_fixture import activate_fixture, attach_git
+from lifecycle_fixture import activate_fixture, attach_git, revoke_active_authority
 
 
 def sha(data):
@@ -64,6 +64,8 @@ def main():
                    lambda: document_errors(root), "HISTORY", "DOC-HISTORY-AUTH")
             mutate(root, registry, lambda b: history_change(b, lambda r: r["history"][0].update(pull_request=999)),
                    lambda: document_errors(root), "HISTORY", "DOC-HISTORY-GIT")
+            # An unrelated authorized work must not satisfy this no-active-grant scenario.
+            revoke_active_authority(root)
             mutate(root, registry, lambda b: history_change(b, lambda r: r.update(history=[dict(id="WORK-LOWER-999")])),
                    lambda: document_errors(root), "UNAUTHORIZED_IMPLEMENTATION", "DOC-HISTORY-TRUST")
             count += 3

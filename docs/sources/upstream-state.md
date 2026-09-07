@@ -1,12 +1,12 @@
 # Estado upstream observado
 
-**Consulta:** 2026-09-06. A baseline abaixo é fixa para preparar o trabalho; não garante que main não avançará. Atualizações posteriores seguem controle de mudanças.
+**Consulta:** 2026-09-06; apenas air-java revalidado em 2026-09-07. A baseline abaixo é fixa para preparar o trabalho; não garante que main não avançará. Atualizações posteriores seguem controle de mudanças.
 
 | Produto | Commit observado | Estado relevante |
 | --- | --- | --- |
 | proleap-poc | `c8a891e0827ae1dc1140246f625fd16c2ac9bd97` | Merge de Entry/start/GOBACK; SP 1.1.0 e filename canônico |
 | analysis-ir | `122ce54e1b9ef9b00646f93ece409ca8b63bc933` | AIR 2.0.0 reconciliada; binding JSON 1.0.0 DRAFT |
-| air-java | `6a4091e5394fc22b3d2ada9abbdb530eb3572a58` | Merge da reconciliação; biblioteca 0.1.0-SNAPSHOT Java 21 |
+| air-java | `b78f4068d8a479f48eb048b8d76fa60a0997dc4a` | Merge PR #5 / 1A; air-model → air-java, air-json → codec compartilhado; Java 21 |
 | analysis-cfg | `4685dca32bf4f31a0e699ec6a3927018ab1b1d84` | Contrato de porta Publication/BuildCfg e orientação docs-only na baseline consultada |
 
 ## Ajustes explícitos ao handoff
@@ -22,3 +22,7 @@ A documentação CFG consultada ainda diz que o binding não existia no snapshot
 Foram consultados metadados de refs e os contratos/arquivos selecionados listados no lock, além do contexto de reviews anterior desta conversa. Não foi executado build do proleap/air-java/CFG para produzir este pacote. Não há release Maven ou binding accepted comprovados por esta entrega. Não existe golden SP capturado no ZIP.
 
 O primeiro trabalho deve confirmar acessibilidade dos snapshots, resolver air-java reprodutivelmente e capturar a fixture real. Uma falha de acesso deve ser informada; não usar uma biblioteca homônima ou outro commit silenciosamente.
+
+## Pin autorizado para os próximos checkpoints
+
+O upstream air-java autorizado para os próximos checkpoints é `b78f4068d8a479f48eb048b8d76fa60a0997dc4a`. `pom.xml` é o parent `air-java-parent`; `air-model/` contém model/validator no artefato `air-java`, e `air-json/` contém o codec compartilhado `AirJson`, com cobertura 1A. A autoridade normativa permanece `analysis-ir@122ce54e1b9ef9b00646f93ece409ca8b63bc933`. Este checkpoint atualiza apenas proveniência; 2A/2B e integração do codec não foram iniciados. Evidência em [WORK-LOWER-002](../work/active/WORK-LOWER-002/state.md). As observações do pacote original acima conservam seu contexto histórico.

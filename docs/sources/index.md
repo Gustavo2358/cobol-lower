@@ -7,7 +7,7 @@
 | SRC-SP | Contrato do Semantic Product 1.1.0, writer público e testes Entry/GOBACK do proleap-poc |
 | SRC-HARNESS | AGENTS, workflow, gates, política semântica/testes/impacto do proleap-poc |
 | SRC-AIR | Especificação normativa da Analysis IR 2.0.0 |
-| SRC-AIR-JAVA | Modelo/validator Java compartilhado reconciliado, sem transporte |
+| SRC-AIR-JAVA | Repositório com model/validator em air-model (artefato air-java) e codec compartilhado em air-json; implementação, não autoridade normativa |
 | SRC-CFG | Contrato do consumer independente e sua porta em memória |
 | SRC-HANDOFF | Handoff enviado pelo usuário; [original preservado](history/handoff-cobol-lower-first-slice.md) |
 | SRC-PROMPTS | Boas práticas de prompts da conversa; [original preservado](history/handoff-boas-praticas-prompts-agenticos.txt) |

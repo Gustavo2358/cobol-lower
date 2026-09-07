@@ -1,0 +1,282 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-002",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "chore/pin-air-java-1a",
+  "pull_request": 3,
+  "base_commit": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+  "reviewed_head": "e106a7f98905e2572d3d9a258cfe23b623fd961f",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-002/spec.md",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "18b9f6dfaa1147f563314ecce00ab05012f574b1773303eff934dd17388380bf",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-002/CP0.json",
+    "docs/work/active/WORK-LOWER-002/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/change-control.md",
+        "sha256": "c676df8332b7af04c79e6e9658d63446b928752e38c170f9f527d7491ff98c8f",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "ac57c36d215348d4822ec2841164ca49d22c28981a23309c31d40e0abdda81c3",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "7d4183af3be50ff844e0b095b032e79fe2c81fcd2fb6b8ac7a6f6b99390ded37",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "208abfcbf72bf08d3359ae0222492376e64cbd26dd48811d6e69354cce20ef28",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "9bda222dccdbc7c386c41ba51400af1d8ebee1c1cb130dcbe9a1f2e71d8228f6",
+        "git_revision": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-002/CP0-manifest.yaml",
+        "sha256": "35c105f160864928684372baa7e6013c05d00ef75e656621d4d1506968d33d23",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-002/audit-provenance.py",
+        "sha256": "19b36c0894c0df8fdcfe566f586f8fb1a982453425f02232a18200eae411e766",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "fe56445851464642946def4f4e441df20c07ef7c6c029de38ee05cba28e91ad2",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-002/eval.md",
+        "sha256": "704f872ff5caf88d8d473fd934a5ceb6cdabab6101f43784c77e087b131fd262",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-002/plan.md",
+        "sha256": "bf87f3845445078ed8ea878ce27723c5c30bfbd60158ff20118bcfb03f2e5e1d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-002/spec.md",
+        "sha256": "d5682370ebce2774f8f968997873114230ee299f8eda959de53dbf6d5e58600e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "dfd4ad0ae41628ee18915001efd6f6870ddf5350f9f85529b5ec72d4ee654f35",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1800
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json (component docs)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json (component architecture)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json (component semantic)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 779,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json (component performance)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 95,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-002/CP0.json (component git)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/consumer-pinning/lower-build; isolated m2; exact upstream merge",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "PIN-PATH-TOPOLOGY",
+      "mutation": "In-memory source-lock copy drops air-model/ from a model path; other mutants use old pin, missing path and wrong URL.",
+      "expected_oracle": "git cat-file -t authorized-SHA:path must resolve a blob; pin and URL must match the authorized merge.",
+      "observed_exit_code": 1,
+      "failure_reason": "Obsolete src/main path is absent from the pinned Git tree; expected RED recorded in provenance.log.",
+      "baseline_digest": "722fe918ef1c3d3eebfb38110598016b4674c4a15e91777ae667406689b75956",
+      "restored_digest": "722fe918ef1c3d3eebfb38110598016b4674c4a15e91777ae667406689b75956",
+      "baseline_exit_code": 0,
+      "restoration_status": "RESTORED",
+      "green_command": "python3 docs/quality/WORK-LOWER-002/audit-provenance.py . /tmp/pin-air-java-1a-upstream e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+      "green_exit_code": 0
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": null,
+      "guarantees": [
+        "Existing minimal-entry-goback@1 assertions and admission/provenance/performance contracts; six full components; restored harness adversarial scenarios."
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "evidence": [
+      "docs/quality/WORK-LOWER-002/CP0-review.md"
+    ],
+    "kind": "self-review",
+    "reviewer_context": "Codex current task; same implementer, separate final diff pass",
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "Provenance only; no 2A/2B, CLI, AIR JSON adapter, CFG JSON or E2E.",
+    "Original package MANIFEST.sha256 is historical and is verified at its original Git revision.",
+    "Initial CP0 FREEZE preserved null PR before creation; current execution is explicitly bound to PR #3 in the live manifest/registry and this certificate."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true,
+    "scope": "pre_commit"
+  }
+}

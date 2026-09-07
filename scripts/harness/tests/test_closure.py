@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts/harness"))
 import checks
-from lifecycle_fixture import ACTIVE, MANIFEST, activate_fixture, close_fixture, copy_checkout
+from lifecycle_fixture import ACTIVE, MANIFEST, activate_fixture, close_fixture, copy_checkout, revoke_active_authority
 
 
 class Closure(unittest.TestCase):
@@ -69,6 +69,8 @@ class Closure(unittest.TestCase):
         self.rejects()
 
     def test_arbitrary_history_does_not_authorize_code(self):
+        revoke_active_authority(self.root)
+        self.assertEqual([], checks.document_errors(self.root))
         self.registry(lambda r: r.update(history=[dict(id="WORK-LOWER-999")]))
         self.rejects("UNAUTHORIZED_IMPLEMENTATION")
 

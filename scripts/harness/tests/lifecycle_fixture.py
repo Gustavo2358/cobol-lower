@@ -34,6 +34,21 @@ def registration(manifest):
                 backlog_ids=manifest["backlog_ids"], review_status="pending_human", merge_status="open_not_merged")
 
 
+def revoke_active_authority(root):
+    """Model absent active grants only inside a synthetic history-trust scenario."""
+    registry_path = root / "docs/work/registry.json"
+    registry = json.loads(registry_path.read_text())
+    for item in registry["active"]:
+        path = root / item["path"] / "work-item.yaml"
+        manifest = yaml.safe_load(path.read_text())
+        manifest["status"] = "blocked"
+        manifest["authorization"].update(state="revoked", current_checkpoint=None,
+                                         authorized_checkpoints=[], execution_mode="single-checkpoint")
+        item.update(status="blocked", authorized_checkpoints=[])
+        path.write_text(yaml.safe_dump(manifest, sort_keys=False))
+    registry_path.write_text(json.dumps(registry))
+
+
 def close_fixture(root):
     """Independent expected registration for the CP5 local-closure protocol."""
     registry_path = root / "docs/work/registry.json"

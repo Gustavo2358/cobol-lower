@@ -1,0 +1,44 @@
+Baseline e2488a362478057de7d59cdf9ae2b38b1f4040d3 extracted with git archive; command exit: 1
+Complete output SHA-256: 3c33ac5629c0aa109fa675994a812a5233526a50a7bb35f3b711335c8c69d282
+AGENTS.md: FAILED
+README.md: FAILED
+docs/architecture/invariants.json: FAILED
+docs/architecture/invariants.md: FAILED
+docs/domain/capability-matrix.md: FAILED
+docs/domain/first-slice-entry-goback.md: FAILED
+docs/domain/identity-and-provenance.md: FAILED
+docs/domain/semantic-input-contract.md: FAILED
+docs/domain/validation-and-results.md: FAILED
+docs/engineering/agent-session-protocol.md: FAILED
+docs/engineering/gates.json: FAILED
+docs/engineering/gates.md: FAILED
+docs/engineering/git-and-review.md: FAILED
+docs/engineering/prompt-authoring.md: FAILED
+docs/engineering/work-item-protocol.md: FAILED
+docs/evals/catalog.json: FAILED
+docs/evals/catalog.md: FAILED
+docs/evals/fixture-intake.json: FAILED
+docs/evals/fixtures.md: FAILED
+docs/evals/index.md: FAILED
+docs/product/mission-and-slices.md: FAILED
+docs/sources/handoff-integration.md: FAILED
+docs/templates/checkpoint-evidence.json: FAILED
+docs/templates/work-item.schema.json: FAILED
+docs/work/active/README.md: FAILED
+docs/work/backlog/BACKLOG-LOWER-001.md: FAILED
+docs/work/backlog.md: FAILED
+docs/work/history/README.md: FAILED
+docs/work/index.md: FAILED
+docs/work/proposals/WORK-LOWER-001/eval.md: FAILED open or read
+docs/work/proposals/WORK-LOWER-001/plan.md: FAILED open or read
+docs/work/proposals/WORK-LOWER-001/spec.md: FAILED open or read
+docs/work/proposals/WORK-LOWER-001/state.md: FAILED open or read
+docs/work/proposals/WORK-LOWER-001/work-item.yaml: FAILED open or read
+docs/work/registry.json: FAILED
+sha256sum: docs/work/proposals/WORK-LOWER-001/eval.md: No such file or directory
+sha256sum: docs/work/proposals/WORK-LOWER-001/plan.md: No such file or directory
+sha256sum: docs/work/proposals/WORK-LOWER-001/spec.md: No such file or directory
+sha256sum: docs/work/proposals/WORK-LOWER-001/state.md: No such file or directory
+sha256sum: docs/work/proposals/WORK-LOWER-001/work-item.yaml: No such file or directory
+sha256sum: WARNING: 30 computed checksums did NOT match
+sha256sum: WARNING: 5 listed files could not be read

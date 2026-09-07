@@ -86,8 +86,8 @@
     {
       "id": "SRC-AIR-JAVA",
       "repository": "Gustavo2358/air-java",
-      "commit": "6a4091e5394fc22b3d2ada9abbdb530eb3572a58",
-      "role": "shared_model_and_validator_not_normative_spec",
+      "commit": "b78f4068d8a479f48eb048b8d76fa60a0997dc4a",
+      "role": "shared_model_validator_and_codec_not_normative_spec",
       "maven": {
         "group_id": "io.github.gustavo2358",
         "artifact_id": "air-java",
@@ -100,25 +100,52 @@
         "docs/sources.lock.json",
         "docs/reconciliation-air-2.md",
         "docs/implementation-status.md",
-        "src/main/java/io/github/gustavo2358/air/model/Publication.java",
-        "src/main/java/io/github/gustavo2358/air/model/Operations.java",
-        "src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
-        "examples/MinimalPublication.java"
+        "air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "examples/MinimalPublication.java",
+        "pom.xml",
+        "air-model/pom.xml",
+        "air-json/pom.xml",
+        "air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
+        "docs/engineering/air-json.md"
       ],
-      "evidence_level": "reconciliation_review_in_conversation; merged_ref_rechecked_during_package_creation",
+      "evidence_level": "PR5_merge_and_paths_verified_at_exact_commit_for_provenance_checkpoint",
       "runtime_conformance_executed_for_this_package": false,
       "repository_url": "https://github.com/Gustavo2358/air-java",
       "file_urls": [
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/README.md",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/ARCHITECTURE.md",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/sources.lock.json",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/reconciliation-air-2.md",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/docs/implementation-status.md",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/model/Publication.java",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/model/Operations.java",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
-        "https://github.com/Gustavo2358/air-java/blob/6a4091e5394fc22b3d2ada9abbdb530eb3572a58/examples/MinimalPublication.java"
-      ]
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/README.md",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/ARCHITECTURE.md",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/docs/sources.lock.json",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/docs/reconciliation-air-2.md",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/docs/implementation-status.md",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/examples/MinimalPublication.java",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-model/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-json/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
+        "https://github.com/Gustavo2358/air-java/blob/b78f4068d8a479f48eb048b8d76fa60a0997dc4a/docs/engineering/air-json.md"
+      ],
+      "observed_on": "2026-09-07",
+      "modules": {
+        "parent": {
+          "path": "pom.xml",
+          "artifact_id": "air-java-parent"
+        },
+        "model": {
+          "path": "air-model/pom.xml",
+          "artifact_id": "air-java",
+          "role": "shared_model_and_validator"
+        },
+        "codec": {
+          "path": "air-json/pom.xml",
+          "artifact_id": "air-json",
+          "role": "shared_codec_1A_not_a_lower_dependency"
+        }
+      }
     },
     {
       "id": "SRC-CFG",
