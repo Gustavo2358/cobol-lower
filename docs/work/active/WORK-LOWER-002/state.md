@@ -15,7 +15,10 @@ O manifest do pacote original foi verificado em sua revisão histórica e preser
 
 ## Restante
 
-Publicar commit certificado, abrir PR próprio e confirmar CI do head. O recibo remoto fica no PR/handoff,
+[PR #3](https://github.com/Gustavo2358/cobol-lower/pull/3) aberto sem auto-merge.
+Primeiro commit certificado/publicado: `e106a7f98905e2572d3d9a258cfe23b623fd961f`.
+Número real do PR vinculado ao certificado no mesmo CP0; full novamente verde.
+Publicar o delta certificado e confirmar CI do head final. O recibo remoto fica no PR/handoff,
 sem presumir PASS remoto neste certificado local. Depois, apenas review humano; 2A/2B não iniciados.
 
 ## Descobertas que afetam o plano

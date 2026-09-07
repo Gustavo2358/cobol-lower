@@ -71,7 +71,7 @@ checkpoints:
   status: active
 git:
   branch: chore/pin-air-java-1a
-  pull_request: null
+  pull_request: 3
   suggested_branch: chore/pin-air-java-1a
   one_pr_per_work_item: true
   merge_authorized: false

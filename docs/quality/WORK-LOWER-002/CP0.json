@@ -5,15 +5,15 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "chore/pin-air-java-1a",
-  "pull_request": null,
+  "pull_request": 3,
   "base_commit": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
-  "reviewed_head": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+  "reviewed_head": "e106a7f98905e2572d3d9a258cfe23b623fd961f",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "execution_mode": "single-checkpoint",
   "authorization_reference": "docs/work/active/WORK-LOWER-002/spec.md",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "7a42e700b45ce8d293a6b6948c1fbcab0ad4f04ae3a4e8524693fd58af68eef9",
+  "candidate_diff_sha256": "18b9f6dfaa1147f563314ecce00ab05012f574b1773303eff934dd17388380bf",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-002/CP0.json",
     "docs/work/active/WORK-LOWER-002/state.md"
@@ -166,7 +166,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     },
     {
       "gate": "architecture",
@@ -177,7 +177,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     },
     {
       "gate": "semantic",
@@ -188,7 +188,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 779,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     },
     {
       "gate": "performance",
@@ -199,7 +199,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": 95,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     },
     {
       "gate": "full",
@@ -210,7 +210,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     },
     {
       "gate": "git",
@@ -221,7 +221,7 @@
       "status": "PASS",
       "exit_code": 0,
       "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-002/full.log"
+      "log_reference": "docs/quality/WORK-LOWER-002/full-pr-bound.log"
     }
   ],
   "not_executed": [],
@@ -269,7 +269,7 @@
   "limitations": [
     "Provenance only; no 2A/2B, CLI, AIR JSON adapter, CFG JSON or E2E.",
     "Original package MANIFEST.sha256 is historical and is verified at its original Git revision.",
-    "PR number is unknown before initial creation; CP0 permits null and remote resolves the unique branch PR."
+    "Initial CP0 FREEZE preserved null PR before creation; current execution is explicitly bound to PR #3 in the live manifest/registry and this certificate."
   ],
   "blockers": [],
   "certification": {

@@ -66,3 +66,12 @@ Diff integral revisado, inclusive fixture, documentos novos, logs e certificado;
 Certificação pre_commit e Git/trailer/digest usam o harness existente. PR/CI do head são obrigações pós-push,
 com recibo no próprio PR para evitar SHA autorreferente. Parar para review humano, sem merge/auto-merge.
 Não iniciado: 2A, 2B, CLI, AIR reader/writer, CFG JSON ou E2E; nenhum upstream alterado.
+
+## Vínculo do PR real
+
+[PR #3](https://github.com/Gustavo2358/cobol-lower/pull/3) criado após o primeiro commit certificado
+`e106a7f98905e2572d3d9a258cfe23b623fd961f`. O delta seguinte vincula número real em manifesto vivo,
+registry e certificado, sem reescrever o FREEZE anterior à criação do PR. Mesmo CP0/branch/PR, sem avanço de escopo.
+Revisão do diff cumulativo preserva todas as conclusões acima; [full repetido](full-pr-bound.log) passou com PR #3,
+779 assertions semânticas, 95 de performance, 126 testes do harness e todos os challenges restaurados.
+Certificação final vincula este delta documental ao candidato revisado, sem mudança adicional de produto/fixtures.

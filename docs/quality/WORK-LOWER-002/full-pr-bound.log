@@ -1,0 +1,43 @@
+Verified command exit: 0
+Selected result lines; full local log SHA-256: 1e816d37f9f8b69083c78a34edfb478532ec7ada4abe06e87bda521d5a5807e2
+FULL_COMPONENT_PASS=docs
+LOWER_TESTS=540
+LOWER_TESTS=239
+SEMANTIC_TEST_COUNT=779
+FULL_COMPONENT_PASS=semantic
+LOWER_TESTS=585
+LOWER_PERFORMANCE_TESTS=45
+LOWER_TESTS=289
+LOWER_PERFORMANCE_TESTS=50
+SEMANTIC_TEST_COUNT=874
+PERFORMANCE_TEST_COUNT=95
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+{"autoMergeRequest": null, "baseRefName": "main", "headRefName": "chore/pin-air-java-1a", "headRefOid": "e106a7f98905e2572d3d9a258cfe23b623fd961f", "isDraft": false, "mergeCommit": null, "number": 3, "reviewDecision": "", "state": "OPEN", "url": "https://github.com/Gustavo2358/cobol-lower/pull/3"}
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+Ran 126 tests in 16.763s
+OK
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "OPEN", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": null}
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "MERGED", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": {"oid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+FULL_COMPONENT_PASS=harness-tests
+PASS CHALLENGE: 10 restored falsifications and second GREEN
+{"id": "RETURN-HALT", "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)", "expected_oracle": "typed GOBACK must be Return, never Halt", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt", "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "e90ed885f7c1c45117c3f22680562f139e841d7c2b2145e077ff96d94bb5aa99", "red_output_sha256": "8ee03ad1df6cdb595ef0f0add681d26200a08f7539c395f8fbae6d819f091620", "restored_output_sha256": "d6a825cfd608aea46a1e026291050e6fb3171767be5694af98a2cabc806fb97e", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+{"id": "OPEN-COMPLETE", "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE", "expected_oracle": "alternative entry inventory stays PARTIAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL", "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "15c0d6f8ff4520fa2a1d005f2a868c7e100b3f9c3171b1dd2efe3e0d993f95ea", "red_output_sha256": "f3c2367cd5c99beb9456349eb3b2836fab269256dbc46f55d8b3164c2d3d21bd", "restored_output_sha256": "76c56786956d73bd518dac47b59049d6dd3b042f3c4b5cbf184e6022c130a872", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+{"id": "INDEX-SCAN", "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }", "expected_oracle": "reference ledger N+1, no repeated scan", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan", "baseline_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff", "restored_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "40cc4a964a076c06166995ba0e1e13860a359ad828a2609107f98d52d40a2b86", "red_output_sha256": "99625ebb3fe8b18f00b55210edd79b4202c61146ef770b7ab5fa9105b2aeae61", "restored_output_sha256": "68f161d8d158132e8ec70e5dd390590c5296d59d1afacd07eee706a71d3ac232", "baseline_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"], "restored_counts": ["SEMANTIC_TEST_COUNT=874", "PERFORMANCE_TEST_COUNT=95"]}
+PASS SEMANTIC CHALLENGE: 3 restored falsifications and second GREEN
+PASS REVIEW CHALLENGE: 5 restored falsifications and second GREEN
+FULL_COMPONENT_PASS=challenge
+PASS full
