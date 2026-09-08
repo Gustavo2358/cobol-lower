@@ -25,11 +25,11 @@ public final class CompactIdentitySuite {
         var id = CanonicalRevision.encode(input, Integer.MAX_VALUE).orElseThrow();
         check(id.matches("[0-9a-f]{32}"), "full XXH3-128 fixed 32 lowercase hex");
         // libxxhash 0.8.3 XXH3_128bits_withSeed(seed=0) of the original fixture's canonical-v1 facts, with xxh3-128-v1 domain.
-        check(id.equals("1718623a5d9fc4b5db0124dc15913f58"), "independent domain and all-facts vector");
+        check(id.equals("a5fce8cae9328bc4007fc589e1989e37"), "independent domain and all-facts vector");
         check(CanonicalRevision.encode(SpFixtures.minimal(), 32).orElseThrow().equals(id), "independent equivalent instances and final bound");
         check(CanonicalRevision.encode(input, 31).isEmpty(), "final bound never truncates");
-        check(CanonicalRevision.token(":😀\ud800").equals("4:003ad83dde00d800"), "local token UTF-16 unchanged including lone surrogate");
-        check(CanonicalRevision.token("").equals("0:"), "local empty token unchanged");
+        check(CanonicalRevision.token(":😀\ud800").equals("4:003ad83dde00d800"), "SourceKey token UTF-16 unchanged including lone surrogate");
+        check(CanonicalRevision.token("").equals("0:"), "SourceKey empty token unchanged");
         var a = withPolicy(input, "a", "bc"); var b = withPolicy(input, "ab", "c");
         check(!CanonicalRevision.encode(a, 32).equals(CanonicalRevision.encode(b, 32)), "adjacent strings have unambiguous lengths");
         check(!CanonicalRevision.encode(withPolicy(input, "\ud800", "x"), 32)
@@ -63,10 +63,10 @@ public final class CompactIdentitySuite {
             var append = CanonicalRevision.class.getDeclaredMethod("append", String.class); append.setAccessible(true);
             var facts = CanonicalRevision.class.getDeclaredMethod("input", SpInput.class); facts.setAccessible(true);
             var finish = CanonicalRevision.class.getDeclaredMethod("finish"); finish.setAccessible(true);
-            append.invoke(encoder, "minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/");
+            append.invoke(encoder, "minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/local-xxh3-128-v1/");
             facts.invoke(encoder, longer);
             check(finish.invoke(encoder).equals(longResult.publication().orElseThrow().id().localId()), "observed incremental hash agrees with public port");
-            check(observed[0] == 5275L + 5 + 4L * (100_000 - 5), "all canonical bytes streamed");
+            check(observed[0] == 5293L + 5 + 4L * (100_000 - 5), "all canonical bytes streamed");
             check(observed[1] > 1000 && observed[2] == 1, "bounded updates with exactly one finalization");
             check(delegate.getState().length < 2048, "hash4j stream state remains bounded for long fact");
         } catch (ReflectiveOperationException ex) { throw new AssertionError(ex); }

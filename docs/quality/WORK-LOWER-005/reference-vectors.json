@@ -1,0 +1,53 @@
+{
+  "reference": "libxxhash XXH3_128bits_withSeed",
+  "version": 803,
+  "seed": 0,
+  "local": [
+    {
+      "fields": [
+        "operation",
+        "goback-return",
+        "unit",
+        "statement:0"
+      ],
+      "bytes": 204,
+      "hex": "88ad413aefe55e22f2e73d930c6f4a21"
+    },
+    {
+      "fields": [
+        "origin",
+        "original",
+        "statement",
+        ":\ud83d\ude00\ud800"
+      ],
+      "bytes": 162,
+      "hex": "622eaafad380eea59ef14d68bd36b281"
+    },
+    {
+      "fields": [
+        "artifact",
+        "original",
+        "publication",
+        ""
+      ],
+      "bytes": 163,
+      "hex": "e0287a2579ca0902fb5d877a543d036e"
+    },
+    {
+      "fields": [
+        "artifact",
+        "expanded",
+        "publication",
+        "semantic-product-entry-goback.cbl"
+      ],
+      "bytes": 296,
+      "hex": "35caed1bd51817e77238ccf93a78373a"
+    }
+  ],
+  "publication": {
+    "bytes": 5293,
+    "hex": "a5fce8cae9328bc4007fc589e1989e37",
+    "preimage": "docs/quality/WORK-LOWER-005/reference-publication-preimage.txt",
+    "preimage_sha256": "d39da920fd83076c33d6d292cc208732a3fdd63d0c0b70bb26ef4ea0be689b5d"
+  }
+}

@@ -1,0 +1,30 @@
+WORK-LOWER-005 CP0; cwd repository root; Temurin21.0.12.1+1, Maven3.9.16,
+Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local; upstream bootstrap verified exact source lock.
+Published logs strip trailing whitespace only; raw /tmp log SHA256 values are listed below.
+Baseline semantic exit0: 2457 assertions, original SP fixture/pins unchanged.
+Initial RED exit1 on old production: LOCAL_ID derived operation must be fixed 32 lowercase hex.
+First implementation trial exit1: public-port test had invalid long handle; preserved old test/
+FREEZE and documented correction, no production admission change. green2 semantic exit0.
+Public occurrence renaming oracles strengthened before final falsification; green3 performance exit0.
+Seven identity falsifications: baseline0, expected RED1, restored0; exact source digests matched.
+Role erasure is rejected by explicit production LOCAL_ID_COLLISION, recognized by a narrow
+fix to the temporary experiment helper's AssertionError-only filter. Permanent gates unchanged.
+Second GREEN for each mutation; full exit0: all six gates, 139 harness tests, 27 historical challenges.
+Semantic 202819 assertions (including 200362 local-identity assertions, most cardinality/repeat checks).
+Performance includes the same semantic regression plus 95 performance assertions, total202914.
+AIR output 147 counted assertions plus complete typed-record bijection oracle (20 unique IDs,
+163 Java ID occurrences), all non-ID facts equal, AirValidator and shared AirJson roundtrip.
+CLI run twice exit0, same bytes/hash: 15720 -> 13827 bytes. No cross-repo E2E or CFG executed.
+Focused cardinality100000; long UTF161000000 ->4000169 streamed bytes, maximum buffer256.
+Public input: largest canonical handle statement:2147483647, unit key/filename100000 each.
+SourceKeys remain expanded; no claim of full 100k-instruction program, peak heap or CPU gain.
+bootstrap.log sha256=f156572b3a18c93e326dcef80c2b61bd6928bf982e16b2518ec1b30cdad05371
+baseline.log sha256=764c03aa1d8c2df8758b717de4e06f608c67d530308060aacdb3f3f65519e6ef
+red.log sha256=8cde52a471fc9349b8664579f370864b20b2a33be90db085b761c1103585ab1a
+green1.log sha256=efbef8f54e41dce9aa6b5aedbf287a9666dd79640f73d8a81a8ea3dd4cbacd16
+green2.log sha256=ebf71cf34b09b3a17eee2f6bc38422dc824fc22f8e075a66550946141c0390f0
+green3.log sha256=12970ad84a47871135af40695dac87746731582afe33975a1bc0e939fb63da16
+challenge.log sha256=4ca968c9ddb189ed6befe94ad489d1263695238149156bb90493317941e365b0
+challenge-final.log sha256=0ec94acd7873ae0c09f83301ca4c4756145f415fa117b86c9b8e2a4eee17305b
+full.log sha256=10a40d63e594e806ec74e83eca12b8ecd25afe16e01caad02f21ae3d863a28dc
+cli.json sha256=3677439577140a75579e3bcbf0ba629a1892673ea373ce7632f4634dbf78f06a

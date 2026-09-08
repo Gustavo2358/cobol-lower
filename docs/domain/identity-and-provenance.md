@@ -6,7 +6,7 @@ Handles locais do Semantic Product são qualificados pela unit/publicação de e
 
 O lowerer mantém correlação explícita e tipada entre identidades de entrada e saída. Uma origem pode produzir vários IDs AIR; vários conceitos auxiliares podem derivar da mesma ocorrência sem duplicar o fato de origem. O consumidor AIR não precisa interpretar handles COBOL.
 
-## Política de IDs implementada — xxh3-128-v1
+## Política de IDs implementada — xxh3-128-v1 / local-xxh3-128-v1
 
 IDs devem ser determinísticos para a mesma publicação semântica, revisão e opções/versionamento do lowering. Não usar relógio, UUID aleatório, object identity, `hashCode()` de objeto ou ordem de HashMap. Determinismo não é estabilidade longitudinal após editar fonte.
 
@@ -18,7 +18,7 @@ Um hash do arquivo JSON bruto não é automaticamente identidade semântica, poi
 
 WORK-LOWER-004 substitui explicitamente a identidade integral canonical-v1 do CP3 por
 XXH3-128 completo, 32 caracteres hexadecimais minúsculos. A preimagem tem domínio
-`minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/` e os mesmos fatos admitidos e enquadramento:
+`minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/local-xxh3-128-v1/` e os mesmos fatos admitidos e enquadramento:
 presença opcional, contagem de listas, strings com comprimento UTF-16 e quatro hex por
 code unit. hash4j 0.30.0, seed zero, formato high64/low64 com zeros iniciais preservados. Bytes ASCII são enviados incrementalmente ao hash, sem montar revisão integral.
 A hipótese é boa dispersão de hash não criptográfico e baixa probabilidade de colisões acidentais; não se alega resistência criptográfica ou injetividade matemática
@@ -28,10 +28,20 @@ Tempo O(B) para processar fatos, memória auxiliar O(1) no cálculo do hash. O I
 fixo; maximumIdentityCharacters limita somente esses 32 caracteres finais. Valores menores
 produzem IMPLEMENTATION_LIMIT/IDENTITY_LIMIT sem truncamento; não há limite oculto sobre
 o volume canônico. Os limites de admissão/validação continuam independentes.
-`CanonicalRevision.token` conserva sua codificação integral anterior para IDs locais/SourceKeys.
+WORK-LOWER-005 inclui a política local no domínio da revisão da publicação.
+IDs locais derivados usam XXH3-128 seed0, 32 hex, prefixo
+`minimal-entry-goback@1/AIR2/local-xxh3-128-v1/` e quatro campos framed:
+namespace, papel, proprietário, chave original. Cada hash recebe bytes em buffer256,
+sem token/preimagem integral. Registro por publicação guarda digest → referências da
+tupla original, comparadas exatamente; colisão de tuplas distintas falha explicitamente
+com LOCAL_ID_COLLISION antes de retornar Publication. Reuso do mesmo ArtifactId é legítimo.
+Papéis original/expanded e ocorrências identificadas por handles permanecem distintos.
+Constantes unit/unit-origin/entry-inventory continuam constantes e disjuntas dos hashes.
+`CanonicalRevision.token` conserva sua codificação integral anterior apenas para SourceKeys;
+essa expansão proporcional ao texto é limitação residual para a avaliação de escala.
 Opções operacionais/telemetria não integram fatos semânticos. Unit/Entry/Sequence/Return
 possuem namespaces AIR próprios; joins usam IDs tipados completos. Contrato/fontes e oracles:
-[CP0](../work/active/WORK-LOWER-004/spec.md).
+[CP0](../work/active/WORK-LOWER-005/spec.md).
 
 Entry deriva da origem publicada para a entry/PROCEDURE DIVISION; Return deriva do GOBACK. Labels e estruturas auxiliares possuem origem derivada com regra identificada. Preserve artefato, cadeia de include, original versus expanded, exatidão e lacunas onde o contrato possibilitar.
 

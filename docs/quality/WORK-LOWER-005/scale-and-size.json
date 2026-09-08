@@ -1,0 +1,44 @@
+{
+  "policy": "local-xxh3-128-v1",
+  "baseline_commit": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+  "baseline_air_bytes": 15720,
+  "baseline_air_sha256": "e7ce2c810b57d9c1e08d467d097c8f523b06a4ab4f0bed27b7aa7cf24fa51a5b",
+  "baseline_matches_read_only_parent": true,
+  "observed_air_bytes": 13827,
+  "saved_bytes": 1893,
+  "semantic_comparison": {
+    "typed_id_bijection": 20,
+    "derived_local_ids": 16,
+    "java_typed_id_occurrences": 163,
+    "all_non_id_facts_equal": true,
+    "source_keys_unchanged": true
+  },
+  "publication_id": "a5fce8cae9328bc4007fc589e1989e37",
+  "observations": [
+    {
+      "log": "/tmp/lower-local/green2.log",
+      "cardinality": 100000,
+      "cardinality_elapsed_ms": 365,
+      "repeat_calls": 100000,
+      "long_text_utf16_units": 1000000,
+      "long_streamed_bytes": 4000169,
+      "long_max_update_buffer_bytes": 256,
+      "long_probe_elapsed_ms": 42
+    }
+  ],
+  "public_port": {
+    "statement_handle": "statement:2147483647",
+    "compilation_unit_key_characters": 100000,
+    "filename_characters": 100000,
+    "status": "SUCCESS",
+    "invalid_text_handle_characters": 100000,
+    "invalid_handle_status": "INVALID_INPUT"
+  },
+  "limits": [
+    "Measured elapsed times include test reflection/assertions; not throughput benchmark or before/after gain.",
+    "No peak heap/CPU gain claimed. Hash input buffer/state and retained reference bounds observed; Java input, output and SourceKeys have separate memory costs.",
+    "100000 identity keys, not full program with 100000 statements. Existing single GOBACK slice and int handle admission preserved.",
+    "SourceKeys retain length+hex tokens and remain proportional to original text; logical names remain unchanged.",
+    "No E2E/CFG run in this task."
+  ]
+}

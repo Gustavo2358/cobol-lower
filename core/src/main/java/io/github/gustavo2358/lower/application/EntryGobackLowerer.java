@@ -22,12 +22,15 @@ public final class EntryGobackLowerer implements LowerInput {
             };
             return new LoweringResult(status, admission, Optional.empty(), Optional.empty(), List.of(), List.of(), List.of());
         }
+        return translate(input, options, admission, new LocalIds());
+    }
+    private LoweringResult translate(SpInput input, Options options, Admission admission, LocalIds ids) {
         var revision = CanonicalRevision.encode(input, options.maximumIdentityCharacters());
         if (revision.isEmpty()) return new LoweringResult(LoweringResult.Status.IMPLEMENTATION_LIMIT, admission,
                 Optional.empty(), Optional.empty(), List.of(), List.of(), List.of(new LoweringResult.Limitation(
                         LoweringResult.LimitCode.IDENTITY_LIMIT, "publication", "PublicationId exceeds explicit character limit; no prefix published.")));
         var publication = new PublicationId(revision.orElseThrow()); var unit = new UnitId(publication, "unit");
-        var origins = new SourceOrigins(publication);
+        var origins = new SourceOrigins(publication, ids);
         var labels = new LinkedHashMap<SpInput.StatementId, LabelId>();
         var statements = new ArrayList<LoweringResult.StatementLink>();
         var entryLinks = new ArrayList<LoweringResult.EntryLink>();
@@ -36,30 +39,30 @@ public final class EntryGobackLowerer implements LowerInput {
         var unitInputs = new ArrayList<OriginId>();
         for (var statement : input.statements()) {
             // Admission established typed GOBACK and exact exit/continuation, never textual spelling.
-            var source = statement.header(); String key = CanonicalRevision.token(source.id().handle());
-            var origin = origins.source("statement/" + key, source.provenance());
-            var label = new LabelId(unit, "goback-sequence/" + key); labels.put(source.id(), label);
-            var operation = new OperationId(unit, "goback-return/" + key);
+            var source = statement.header(); String key = source.id().handle();
+            var origin = origins.source("statement", key, source.provenance());
+            var label = new LabelId(unit, ids.id("label", "goback-sequence", unit.localId(), key)); labels.put(source.id(), label);
+            var operation = new OperationId(unit, ids.id("operation", "goback-return", unit.localId(), key));
             var scope = new Scopes.EntityScope(List.of(operation));
             var exact = new Evidence.Claim(scope, Evidence.PrecisionStatus.EXACT, List.of());
-            var storage = unavailable(publication, operation, origin, Evidence.Dimension.STORAGE, uncertainties);
-            var effects = unavailable(publication, operation, origin, Evidence.Dimension.EFFECTS, uncertainties);
-            var values = unavailable(publication, operation, origin, Evidence.Dimension.VALUES, uncertainties);
-            var dependencies = unavailable(publication, operation, origin, Evidence.Dimension.DEPENDENCIES, uncertainties);
+            var storage = unavailable(ids, publication, operation, origin, Evidence.Dimension.STORAGE, uncertainties);
+            var effects = unavailable(ids, publication, operation, origin, Evidence.Dimension.EFFECTS, uncertainties);
+            var values = unavailable(ids, publication, operation, origin, Evidence.Dimension.VALUES, uncertainties);
+            var dependencies = unavailable(ids, publication, operation, origin, Evidence.Dimension.DEPENDENCIES, uncertainties);
             var reasons = new ArrayList<UncertaintyId>();
             for (var claim : List.of(storage, effects, values, dependencies)) reasons.addAll(claim.reasons());
             var header = new Operations.Header(operation, origin, Evidence.CoverageStatus.MODELED,
                     new Evidence.Precision(exact, storage, effects, values, dependencies), reasons);
-            var sequenceOrigin = origins.derived("sequence/" + key, List.of(origin), "minimal-entry-goback@1/sequence");
+            var sequenceOrigin = origins.derived(ids.id("origin", "sequence", unit.localId(), key), List.of(origin), "minimal-entry-goback@1/sequence");
             sequences.add(new Sequence(label, List.of(), new Operations.Return(header, List.of()), sequenceOrigin));
             statements.add(new LoweringResult.StatementLink(source.id(), operation, label, origin));
             items.add(new Evidence.CoverageItem(sourceKey(input.unit(), "statement", source.id().handle()), origin,
                     Evidence.CoverageStatus.MODELED, List.of(operation, label), List.of(), Optional.empty()));
         }
         for (var entry : input.entryInventory().entries()) {
-            String key = CanonicalRevision.token(entry.id().handle());
-            var origin = origins.source("entry/" + key, entry.provenance()); unitInputs.add(origin);
-            var id = new EntryId(unit, "primary-entry/" + key);
+            String key = entry.id().handle();
+            var origin = origins.source("entry", key, entry.provenance()); unitInputs.add(origin);
+            var id = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), key));
             var label = labels.get(entry.start().statement().orElseThrow());
             if (label == null) throw new IllegalStateException("admission/start index invariant violated");
             var signature = new Interactions.Signature(new Interactions.ParameterInventory(List.of(), Interactions.NoRemainder.INSTANCE),
@@ -84,9 +87,9 @@ public final class EntryGobackLowerer implements LowerInput {
         return new LoweringResult(assessment.status(), admission, assessment.publication(), Optional.of(assessment.validation()),
                 entryLinks, statements, origins.limitations());
     }
-    private static Evidence.Claim unavailable(PublicationId publication, OperationId operation, OriginId origin,
+    private static Evidence.Claim unavailable(LocalIds ids, PublicationId publication, OperationId operation, OriginId origin,
             Evidence.Dimension dimension, List<Evidence.Uncertainty> uncertainties) {
-        var id = new UncertaintyId(publication, operation.localId() + "/" + dimension.name());
+        var id = new UncertaintyId(publication, ids.id("uncertainty", "unproved", operation.localId(), dimension.name()));
         var scope = new Scopes.EntityScope(List.of(operation));
         uncertainties.add(new Evidence.Uncertainty(id, "cobol-lower:UNPROVED_" + dimension.name(), List.of(dimension), scope,
                 "The local control rule does not certify " + dimension.name() + "; upstream readiness retained separately.", origin));

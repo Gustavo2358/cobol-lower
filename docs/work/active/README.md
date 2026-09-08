@@ -1,3 +1,3 @@
 # Trabalho autorizado
 
-[WORK-LOWER-004](WORK-LOWER-004/work-item.yaml): CP0 único de identidade compacta.
+[WORK-LOWER-005](WORK-LOWER-005/work-item.yaml): CP0 único de IDs locais compactos.
