@@ -1,0 +1,50 @@
+[
+  {
+    "command": [
+      "java",
+      "-cp",
+      "adapters/target/classes:/tmp/lower-4c/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+      "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+      "adapters/src/test/resources/sp/scalar-move-1.2.0.json",
+      "/tmp/lower-4c/scalar.air.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "bytes": 32138,
+    "sha256": "dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788",
+    "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+    "environment": "Temurin 21.0.12.1+1; pinned isolated m2 /tmp/lower-4c/m2"
+  },
+  {
+    "command": [
+      "java",
+      "-cp",
+      "adapters/target/classes:/tmp/lower-4c/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+      "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+      "adapters/src/test/resources/sp/scalar-move-1.2.0.json",
+      "/tmp/lower-4c/repeat.air.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "bytes": 32138,
+    "sha256": "dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788",
+    "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+    "environment": "Temurin 21.0.12.1+1; pinned isolated m2 /tmp/lower-4c/m2"
+  },
+  {
+    "command": [
+      "java",
+      "-cp",
+      "adapters/target/classes:/tmp/lower-4c/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/io/github/gustavo2358/cobol-lower-core/0.1.0-SNAPSHOT/cobol-lower-core-0.1.0-SNAPSHOT.jar:/tmp/lower-4c/m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-4c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+      "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+      "adapters/src/test/resources/sp/cobol-semantic-product.json",
+      "/tmp/lower-4c/cp3.air.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "bytes": 13827,
+    "sha256": "46919c1429db4aa310e66fc9df9374eeba53fd98e50a287fdd005c17622f33ad",
+    "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+    "environment": "Temurin 21.0.12.1+1; pinned isolated m2 /tmp/lower-4c/m2"
+  }
+]

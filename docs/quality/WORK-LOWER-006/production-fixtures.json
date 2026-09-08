@@ -1,0 +1,34 @@
+[
+  {
+    "name": "production-400",
+    "producer_commit": "2815e805fd3a9ef4762a39ab9435260fc76da0e8",
+    "path": "adapters/src/test/resources/sp/production-400.json.gz",
+    "bytes": 1071738,
+    "json_nodes": 56119,
+    "depth_including_scalars": 8,
+    "data": 400,
+    "moves": 400,
+    "sha256": "a59262f8ae9e7c2c9b0aa78b602020511b731146bb91b9f7fcfd16fa4317b64e",
+    "gzip_sha256": "ca7a8051f894ad0edf8b19afd936b6acd86528ffe0f3c532b5be9a5cf5c45c5c",
+    "generation_command": "mvn -q -ntp -Dmaven.repo.local=/tmp/lower-4c/m2 exec:java '-Dexec.args=--source target/SCALE-PRODUCTION.cbl --copybooks src/test/resources/cobol/semantic --output target/lower-production-400'",
+    "source": "adapters/src/test/resources/sp/SCALE-PRODUCTION.cbl",
+    "generation_cwd": "/tmp/lower-4c/proleap (isolated merge checkout)"
+  },
+  {
+    "name": "production-shared-10000",
+    "producer_commit": "2815e805fd3a9ef4762a39ab9435260fc76da0e8",
+    "path": "adapters/src/test/resources/sp/production-shared-10000.json.gz",
+    "bytes": 18809400,
+    "json_nodes": 1050154,
+    "depth_including_scalars": 8,
+    "data": 1,
+    "moves": 10000,
+    "sha256": "fe6178078abe4269676e08602df3a50773f53971a4b35234dc29606ef656ab72",
+    "gzip_sha256": "bb74d6e788bc014cb378287abdb35ef5415cf5c84674967c97f5b83c12dc2b05",
+    "admission_entity_visits": 190021,
+    "indexed_references": 70003,
+    "generation_command": "mvn -B -ntp -Dmaven.repo.local=/tmp/lower-4c/m2 -Dtest=ScalarMoveScaleTest test",
+    "source": "src/test/java/io/github/gustavo2358/cobolexplorer/ScalarMoveScaleTest.java",
+    "generation_cwd": "/tmp/lower-4c/proleap (isolated merge checkout)"
+  }
+]

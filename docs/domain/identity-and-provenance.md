@@ -41,7 +41,7 @@ Constantes unit/unit-origin/entry-inventory continuam constantes e disjuntas dos
 essa expansão proporcional ao texto é limitação residual para a avaliação de escala.
 Opções operacionais/telemetria não integram fatos semânticos. Unit/Entry/Sequence/Return
 possuem namespaces AIR próprios; joins usam IDs tipados completos. Contrato/fontes e oracles:
-[CP0](../work/active/WORK-LOWER-005/spec.md).
+[CP0](../work/history/WORK-LOWER-005.md).
 
 Entry deriva da origem publicada para a entry/PROCEDURE DIVISION; Return deriva do GOBACK. Labels e estruturas auxiliares possuem origem derivada com regra identificada. Preserve artefato, cadeia de include, original versus expanded, exatidão e lacunas onde o contrato possibilitar.
 

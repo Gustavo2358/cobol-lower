@@ -16,8 +16,8 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(coverage, "coverage");
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
-    /** Non-GOBACK payload semantics are outside this snapshot's capability. Occurrences survive. */
-    public sealed interface StatementFact permits GobackFact, OtherStatement { StatementHeader header(); }
+    /** Typed consumed variants; unsupported occurrences remain explicit. */
+    public sealed interface StatementFact permits GobackFact, MoveFact, OtherStatement { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -113,8 +113,12 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness) {
+    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText) {
+        public DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness) {
+            this(id, canonicalName, picture, provenance, coverage, readiness, Optional.empty());
+        }
         public DataFact {
+            Objects.requireNonNull(scalarText, "scalarText");
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(canonicalName, "canonicalName");
             Objects.requireNonNull(picture, "picture");
@@ -147,6 +151,43 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             Objects.requireNonNull(exit, "exit");
             Objects.requireNonNull(localContinuation, "localContinuation");
         }
+    }
+
+    // Closed 1.2.0 facts. Constructors preserve absence; admission validates semantic coherence.
+    public enum LogicalDomain { TEXT }
+    public enum StorageClass { WORKING_STORAGE }
+    public enum DeclarationScope { LOCAL }
+    public enum CopySemantics { FULL_IDENTITY, UNAVAILABLE }
+    public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
+    public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
+    public enum OperandRole { READ, WRITE, CALL_TARGET }
+    public enum ResolutionStatus { RESOLVED, AMBIGUOUS, UNRESOLVED, INPUT_MISSING }
+    public record OperandId(StatementId statement, String handle) {
+        public OperandId { Objects.requireNonNull(statement); Objects.requireNonNull(handle); }
+    }
+    public record ScalarText(LogicalDomain logicalDomain, int logicalExtent, StorageClass storageClass, DeclarationScope declarationScope) {
+        public ScalarText { Objects.requireNonNull(logicalDomain); Objects.requireNonNull(storageClass); Objects.requireNonNull(declarationScope); }
+    }
+    public record LogicalValue(LogicalDomain logicalDomain, String value, int logicalExtent) {
+        public LogicalValue { Objects.requireNonNull(logicalDomain); Objects.requireNonNull(value); }
+    }
+    public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) {
+        public LiteralSource { Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
+    }
+    public record Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected) {
+        public Binding { Objects.requireNonNull(status); candidates = List.copyOf(candidates); Objects.requireNonNull(selected); }
+    }
+    public record WholeItemAccess(DataId data) {
+        public WholeItemAccess { Objects.requireNonNull(data); }
+    }
+    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) {
+        public DataReference { Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
+    }
+    public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
+        public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }
+    }
+    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) implements StatementFact {
+        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); }
     }
 
     public record OtherStatement(StatementHeader header, Variant variant) implements StatementFact {

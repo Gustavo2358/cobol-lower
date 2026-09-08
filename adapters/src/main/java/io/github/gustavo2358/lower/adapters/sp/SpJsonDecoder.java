@@ -91,10 +91,19 @@ public final class SpJsonDecoder {
                 pending.pop().elements().forEachRemaining(pending::push);
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
-            if (!node.path("schema").textValue().equals("cobol-semantic-product") || !node.path("contractVersion").textValue().equals("1.1.0")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema,contractVersion");
-            var wire = mapper.treeToValue(node, Wire.Document.class);
-            requirePhysical(wire, "$", meter);
-            var input = Materialize.input(wire);
+            if (!node.path("schema").textValue().equals("cobol-semantic-product")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
+            SpInput input;
+            switch (node.path("contractVersion").textValue()) {
+                case "1.1.0" -> {
+                    var wire = mapper.treeToValue(node, Wire.Document.class);
+                    requirePhysical(wire, "$", meter); input = Materialize.input(wire);
+                }
+                case "1.2.0" -> {
+                    var wire = mapper.treeToValue(node, Wire12.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent12(wire); input = Materialize.input(wire);
+                }
+                default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
+            }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
                 .map(SpInput.OtherStatement.class::cast).map(v -> new UnsupportedVariant(v.header().id(), v.variant())).toList();
             return new Decoded(input, variants);
@@ -109,6 +118,27 @@ public final class SpJsonDecoder {
             return reject(Code.INPUT_ERROR, ex.getMessage());
         } catch (java.io.IOException ex) {
             return reject(Code.INPUT_ERROR, "$ bytes");
+        }
+    }
+
+    /** Upstream 1.2 typed fact invariants, not COBOL interpretation or input repair. */
+    private static void requireCoherent12(Wire12.Document wire) {
+        for (int i = 0; i < wire.dataDeclarations().size(); i++) {
+            var scalar = wire.dataDeclarations().get(i).scalarText();
+            if (scalar != null && scalar.logicalExtent() <= 0)
+                throw new PhysicalShape("$/dataDeclarations/" + i + "/scalarText/logicalExtent");
+        }
+        for (int i = 0; i < wire.statements().size(); i++) {
+            if (!(wire.statements().get(i) instanceof Wire12.MoveDocument move)) continue;
+            var source = move.source(); var logical = source.logicalValue();
+            if (logical == null) continue;
+            if (source.kind() != SpInput.LiteralKind.ALPHANUMERIC)
+                throw new PhysicalShape("$/statements/" + i + "/source/kind");
+            if (!source.value().equals(logical.value()))
+                throw new PhysicalShape("$/statements/" + i + "/source/value");
+            if (logical.logicalDomain() != SpInput.LogicalDomain.TEXT || logical.logicalExtent() < 0
+                    || logical.logicalExtent() != logical.value().codePointCount(0, logical.value().length()))
+                throw new PhysicalShape("$/statements/" + i + "/source/logicalValue");
         }
     }
 

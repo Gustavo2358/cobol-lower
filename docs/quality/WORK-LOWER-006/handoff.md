@@ -1,0 +1,239 @@
+# Checkpoint 4C — handoff
+
+Baseline cobol-lower: `f9e74ec3404efe830992d9535becca847ace80e8`, main limpa,
+fetch/switch/pull ff-only confirmado. Work item
+[WORK-LOWER-006](../../work/active/WORK-LOWER-006/work-item.yaml), CP0 interno único.
+[PR7](https://github.com/Gustavo2358/cobol-lower/pull/7) aberto para review humano.
+Branch `feat/lower-scalar-move`; commit final resolve pelo trailer
+`Checkpoint-Evidence: docs/quality/WORK-LOWER-006/CP0.json`. CI será consultado no
+SHA publicado e recebido no PR/handoff externo; não há autoinscrição recursiva.
+
+4A proleap-poc merge `2815e805fd3a9ef4762a39ab9435260fc76da0e8` (PR32).
+4B air-java merge `ce530a7e17ab12b23c48f29425f503ff920b09fb` (PR6).
+Merge e head pré-merge têm árvores iguais em ambos; o pin usa o merge real.
+AIR normativa permanece `122ce54e1b9ef9b00646f93ece409ca8b63bc933` / 2.0.0.
+Binding analysis-ir-json 1.0.0 DRAFT; Maven conjunta 0.1.0-SNAPSHOT.
+
+SP real: `cobol-semantic-product` 1.2.0, 5177 bytes,
+SHA-256 `468e3207f578e428ace89a311eadbd6e27c670331b739675b761479352adc7af`.
+Fonte AIR-MOVE.cbl intacta do merge; captura em checkout isolado e
+[comandos/digests](../../evals/fixture-intake.json), sem editar output.
+
+[AIR produzida](actual.air.json): **32138 bytes**, SHA-256
+`dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788`.
+PublicationId `77ae4cc3ed75332c64011efce81c431b`.
+1 Unit, 1 Object, 1 Cell, 1 Entry, 1 Assign, 1 Sequence, 2 operações e 2 operandos.
+Sequence=[Assign];Return([]). AirValidator issues=[]; shared encode/decode preserva
+o model inteiro; duas execuções CLI têm bytes iguais. A tabela usa localId para
+leitura; identidades completas incluem essa Publication e unit=`unit`, e operands
+incluem o OperationOwner do Assign. O runtime preserva links tipados e sourceKeys.
+
+| SP | AIR outputs |
+| --- | --- |
+| `data:0` | `object d277a147621da9e9d6d7e52986bbb8ee`; `storage 2eee2eced5889f75096c488505d6ba70` |
+| `operand:0:0` | `operand b03927c6498457ea98dfb8539b197ce8` |
+| `operand:0:1` | `operand 2365b2b2267995949d82bca22891396d` |
+| `statement:0` | `operation e52226b01b4afc8f6c6214aafd63e5ab`; `label ebe036f3af2349d52967a6a63d32e97f` |
+| `statement:1` | `operation 5ed7c27833651ab320a3b56d90ed923c`; `label ebe036f3af2349d52967a6a63d32e97f` |
+| `entry:0` | `entry c4de8a797697cb8ddf3012f2248da01f` |
+
+CP3: output 13827 bytes, SHA-256
+`46919c1429db4aa310e66fc9df9374eeba53fd98e50a287fdd005c17622f33ad`,
+PublicationId `a5fce8cae9328bc4007fc589e1989e37`, byte-identical ao aprovado no
+WORK-LOWER-005. [Execuções CLI](cli.json); fixture 1.1.0 permanece intacta.
+
+## Escala e complexidade
+
+| Probe | DATA | MOVE | Objects/Cells | Assigns | Visitas | Referências | AIR bytes |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Model N | 1000 | 1000 | 1000/1000 | 1000 | 24016 | 7003 | não codificado neste probe |
+| Model 2N | 2000 | 2000 | 2000/2000 | 2000 | 48016 | 14003 | não codificado neste probe |
+| Shared model | 1 | 10000 | 1/1 | 10000 | 190021 | 70003 | não codificado neste probe |
+| Codec N | 250 | 250 | 250/250 | 250 | — | — | 4766996 |
+| Codec 2N | 500 | 500 | 500/500 | 500 | — | — | 9521746 |
+| Shared codec | 1 | 1000 | 1/1 | 1000 | — | — | 11212321 |
+| Physical 60012 lines | 1 | 1 | 1/1 | 1 | — | — | 32237 |
+
+Observação inicial model N/2N/shared: 206/240/743 ms, aproximadamente;
+codec N/2N incluindo lowering+round-trip: 348/590 ms. Não são SLA nem medidas
+de pico de heap. Reexecuções variam; logs brutos conservam cada observação.
+O SP físico tem 5339 bytes e mantém source spans acima da linha60000 sem IDs
+proporcionais ao texto. Probes maiores de model são separados do transporte.
+
+Indexing O(D+S+R+P), DATA translation O(D), statement traversal O(S), assembly
+O(D+S+P). IDs O(B) nos bytes semânticos alimentados incrementalmente, O(D+S) para
+largura fixa. Radix DATA tem quatro passes de domínio int; maps têm custo amortizado.
+Referências medidas 7N+3; challenge scan→índice prova o oracle de custo estrutural.
+Sem scans globais por MOVE/continuação, nomes como join ou índices/origins reconstruídos.
+
+Identidade escalar versiona o domínio/preimage para SP1.2 e preserva local-xxh3-128-v1,
+32 lowerhex, papéis separados e collision registry local. DATA/valores/provas/next/
+provenance novos entram no hash; PIC, programPoint, legacy value e scopes de readiness
+não. SourceKeys escalares usam namespace compacto. CP3 permanece byte-identical.
+
+## Limites e verificação
+
+No head revisado 2474251, CLI tinha SP 100000 bytes/depth64/50000nós e admissão 100000 visitas.
+A remediação abaixo recalibra apenas SP/admission. AirJson mantém **16 MiB/depth128**.
+Uma AIR model-only válida com 1 DATA/2500 MOVEs excede o codec default: prova pelo
+seam público existente da composição CLI retorna exit 5/IMPLEMENTATION_LIMIT;
+zero chamadas de temp, destino anterior intacto, output novo ausente e nenhum
+resíduo. Nenhuma API/flag pública de limite ou codec de 512 MiB foi adicionada.
+Falhas de I/O conservam cleanup CP2A. O writer não converte byte[] em String.
+
+17 [challenges escalares](scalar-challenges.json) incluem todos os 16 exigidos e
+scan quadrático. Todos requerem AssertionError semântico, compilação concluída,
+restore byte a byte e segundo GREEN. Os desafios históricos também permanecem
+parte de full. Primeiro RED wire: 1.2.0 UNSUPPORTED_CONTRACT. Primeiro RED model:
+precise input recusado pelo perfil antigo. Erro inicial de accessor Java no teste
+foi setup/compilação e não conta como RED semântico.
+
+Gates locais docs/architecture/semantic/performance/full/git passaram: 203093
+assertions semânticas, 108 adicionais de performance e 139 testes do harness.
+Gates desse head anterior estão no [certificado preservado](reviewed-CP0.json); certificar não é
+aprovação humana. O review é self-review explícito. Nenhum merge/auto-merge.
+Publication/Unit PARTIAL, GOBACK com dimensões não provadas, INITIAL/value ausente,
+sem alias/storage byte-level geral, IF/CALL/CFG/dataflow/Possible Values.
+Nenhum repositório irmão é alterado. 4D e 4E não iniciados.
+
+## Input contract for Checkpoint 4E
+
+Executar no checkout cobol-lower do head deste PR, com Java21, Maven e build root
+isolado. O bootstrap resolve o source pin; a instalação usa a mesma m2:
+
+```sh
+export LOWER_BUILD_ROOT="$(mktemp -d /tmp/lower-4e-consumer.XXXXXX)"
+python3 scripts/harness/run.py bootstrap
+mvn -B -ntp "-Dmaven.repo.local=$LOWER_BUILD_ROOT/m2" install
+mvn -q -ntp -f adapters/pom.xml \
+  "-Dmaven.repo.local=$LOWER_BUILD_ROOT/m2" \
+  org.apache.maven.plugins:maven-dependency-plugin:3.8.1:build-classpath \
+  -DincludeScope=runtime -Dmdep.outputFile=target/runtime-classpath.txt
+java -cp "adapters/target/classes:$(cat adapters/target/runtime-classpath.txt)" \
+  io.github.gustavo2358.lower.adapters.cli.CobolLower \
+  /absolute/path/semantic-product.json /absolute/path/air.json
+```
+
+O comando java real foi executado nas duas fixtures deste checkpoint;
+[recibo](cli.json) conserva cwd/classpath/exit/hash. Para reproduzir somente 4C,
+substituir o input por `adapters/src/test/resources/sp/scalar-move-1.2.0.json`.
+No 4E o SP deve vir do frontend real 1.2.0, não deste snapshot como substituto.
+
+Oracles mínimos do 4E: exit 0, arquivo inteiro decodificável pelo shared AirJson,
+AirValidator issues=[], 1 Object/Cell known(text), PERSISTENT/PRIVATE, 1 Entry,
+1 Sequence [Assign(ObjectPlace VALUE_WRITE, Literal TextValue(PROGA) VALUE_READ)];
+Return([]), 2 operações/2 operandos, owners e referências fechados. Confrontar
+SP handles pelos links/sourceKeys e origens, preservar PARTIAL/uncertainties;
+repetição determinística. Hash/PublicationId acima só são expected se todos os
+fatos semânticos e provenance do input forem idênticos ao fixture congelado.
+Não extrapolar normalContinuation nem generalizar MOVE. Este handoff não executa 4E.
+
+## Blocker remediation
+
+Review humano recebido do usuário sobre 24742514410d938063149a4f466e81a29801adac.
+Mesmo WORK-LOWER-006/CP0/branch/PR7, sem novo work item. Certificado anterior
+preservado em [reviewed-CP0.json](reviewed-CP0.json) e no Git. Novo FREEZE autorizado
+corrige o oracle antigo de source.value inconsistente; não altera o snapshot4A.
+
+B1: **SP 1.2 literal coherence now enforced.** SpJsonDecoder.requireCoherent12,
+após shape e antes de Materialize, exige logicalValue presente→ALPHANUMERIC,
+source.value=logicalValue.value, TEXT e logicalExtent=codePointCount(value).
+ScalarText extent>0; logical extent>=0. Violação→INPUT_ERROR, sem reparo/default.
+Core continua consumindo somente fatos tipados, sem legacy value. Testes incluem
+mismatch, extent forjado, kind incompatível, vazio extent0 e Unicode A😀B com
+extent3 válido fisicamente/4 inválido; não se amplia o profile COBOL 4A.
+
+B2: **production SP/admission limits recalibrated from measured scale corpus.**
+
+| Limite | Antes | Agora | Medido no SP real 10k | Headroom |
+| --- | ---: | ---: | ---: | ---: |
+| SP bytes | 100000 | 33554432 (32 MiB) | 18809400 | 78.4% |
+| JSON nodes | 50000 | 1500000 | 1050154 | 42.8% |
+| Admission visits | 100000 | 250000 | 190021 | 31.6% |
+| Depth | 64 | 64 | 8 incluindo folhas | preservado |
+
+Tetos centralizados na classe interna ProductionLimits, sem flags/configuração
+pública. Próximos tetos operacionais arredondados fornecem margem explícita;
+bytes ficam abaixo de 64 MiB. [Corpus, hashes e comandos](production-fixtures.json).
+
+ProductionPathSuite atravessa arquivo SP real→SpFileInput→SpJsonDecoder→
+CobolLowerer→AirFileOutput com os defaults. 400 DATA/MOVEs: SP 1071738 bytes,
+56119 nodes; exit 0, AIR 7616219 bytes, shared round-trip/validator, 400Objects/Cells/
+Assigns. Esse oracle ficou RED contra os limites anteriores. Corpus1 DATA/10000 MOVE:
+decoder passa, lowering SUCCESS, 1 Object/Cell e 10000 Assigns, 70003 referências;
+CLI termina exit 5/AIR codec IMPLEMENTATION_LIMIT. AirJson 16 MiB é o primeiro
+limite, destino anterior preservado e nenhum temp. Acima dos novos tetos de
+bytes/nodes/visits, rejeição IMPLEMENTATION_LIMIT continua atômica.
+
+Probes1k/2k/shared 10k e ledgers existentes preservados, sem alterações em core.
+No full da remediação, tempos observados foram 191/222/702ms; não são SLA ou medição de heap.
+Ledgers: 1k=24016 visits/7003 references; 2k=48016/14003; shared10k=190021/70003.
+Contagens Object/Cell/Assign: 1000/1000/1000, 2000/2000/2000 e 1/1/10000.
+Indexação/tradução/traversal/assembly continuam O(D + S + R + P); a checagem
+de coerência adiciona somente uma passagem linear pelos fatos e valores lógicos.
+CP3 permanece 13827 bytes, SHA 46919c1429db4aa310e66fc9df9374eeba53fd98e50a287fdd005c17622f33ad,
+PublicationId a5fce8cae9328bc4007fc589e1989e37. Fixture 4C permanece 32138 bytes,
+SHA dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788,
+PublicationId 77ae4cc3ed75332c64011efce81c431b; 1 Object/Cell/Assign, 1 Sequence/Return,
+2 operandos. Regressões byte-idênticas; identidade/provenance/AIR não mudam.
+
+Nove novos desafios cobrem B1, três limites antigos, remoção de probe, INPUT
+aceito como expected, elevação de AirJson e novo transporte fora do escopo.
+Os dois últimos usam guard de diff após compilação. Um primeiro mutante AirJson
+usou aridade incorreta de construtor: erro de setup, não RED semântico; corrigido
+para a API real com ValidationOptions. Logs brutos preservam essa tentativa.
+Full local PASS: docs, architecture, semantic (203103 assertions), performance
+(108 adicionais), Git/scope, 141 testes do harness, 17 desafios escalares,
+27 históricos e 9 novos; RED compilável, restore exato e segundo GREEN.
+[Recibo dos novos desafios](blocker-production-challenges.json),
+[regressão CLI byte-idêntica](blocker-cli-regression.json),
+[logs brutos e hashes](blocker-log-digests.json) e [self-review](CP0-blocker-review.md).
+O primeiro full parou em whitespace documental; a segunda execução completa
+passou. Tentativas falhadas permanecem nos logs, não contam como PASS.
+
+Full local levou aproximadamente 11m35s antes do bootstrap remoto. Depois dele,
+o único ajuste executável foi timeout do workflow de 15 para 30 minutos;
+workflow policy e docs foram revalidados, sem remover gates. CI executa full
+novamente no SHA exato publicado. Certificação e verify-commit precedem push;
+o recibo remoto do SHA fica no PR7, sem autoinscrição recursiva no commit.
+Novo head é o commit identificado pelo trailer CP0 deste candidato.
+
+[Siblings read-only](blocker-sibling-integrity.json): todos os arquivos rastreados
+e status preservados. HEAD de analysis-cfg avançou externamente de e70150f para
+ec525cb (merge PR11) durante a tarefa, com árvore idêntica. Nenhum comando de
+mutação foi executado nesse repositório; source pins de 4C permanecem inalterados.
+
+## Known scale debt
+
+- D1 [BACKLOG-LOWER-017](../../work/backlog/BACKLOG-LOWER-017.md): AirJson 16 MiB /
+  large Publication transport. Owner principal air-java/air-json, impacto em
+  cobol-lower/analysis-cfg; priorizar antes de alegar E2E de AIR >16MiB.
+- D2 [BACKLOG-LOWER-018](../../work/backlog/BACKLOG-LOWER-018.md): peak-memory
+  amplification no transporte SP/AIR por representações integrais O(N) coexistentes.
+
+Ambos PLANNED / NOT STARTED, NOT AUTHORIZED, work_item=null, sem discovery.
+NOT IMPLEMENTED IN 4C.
+NOT A CLAIM OF LARGE-PROGRAM E2E READINESS.
+
+## CI preparation recovery
+
+O run34265242563, head22823086e0c177763137754f02b46c6bc7902efe, passou pelos gates
+anteriores e desafios escalares, mas falhou antes do primeiro desafio B1/B2:
+a chamada Maven focal de adapters pressupunha core e core:test-jar instalados
+na m2. Não foi erro de produto nem RED semântico. Reproduzido localmente com uma
+m2 temporária contendo dependências fixadas e nenhum artefato cobol-lower.
+
+Production challenge agora prepara o core/test-jar da cópia isolada atual com
+seu reactor antes das invocações focais. Nenhum oracle é pulado ou relaxado;
+produção, fixtures, pins e limites permanecem idênticos. Prova focal em outra
+m2 sem lower passou GREEN/RED compilável/restore exato/segundo GREEN. A nova
+certificação exige full em ambiente sem artefatos lower inicialmente, além do
+novo CI no SHA exato. A falha remota anterior permanece na evidência.
+
+Full na m2 inicialmente sem lower: PASS, 203103 assertions semânticas, 108
+adicionais de performance, 141 testes do harness, 17 escalares, 27 históricos
+e 9 novos desafios com restauração exata e segundo GREEN. Preparação core/test-jar
+PASS antes dos novos desafios. [Logs e hashes](ci-preparation-log-digests.json)
+incluem CI anterior, reprodução do cache ausente, prova focal e full completo.
+Nesta rodada, tempos observados 1k/2k/shared10k: 212/252/764ms; contagens,
+ledgers, SP/AIR bytes, hashes e PublicationIds permanecem os mesmos.

@@ -1,10 +1,16 @@
 # cobol-lower
 
+Checkpoint 4C: SP 1.2.0 → DATA escalar + MOVE FULL_IDENTITY + GOBACK → AIR JSON.
+[Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-006/work-item.yaml).
+CP3 1.1.0 preservado. CLI usa o shared codec (16 MiB/depth128); falhas de encode
+são exit5 sem output parcial. Limites SP CLI: 32 MiB/depth64/1500000 nós; admissão 250000 visitas, medidos
+no corpus real de 1 DATA/10000 MOVEs. O teto AirJson continua limitando grandes saídas. Sem CFG/dataflow/CALL.
+
 O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em `air-java::Publication`: uma Unit, Entry, Sequence e `Return([])`. O adapter de saída 2A publica essa Publication como AIR JSON canônico pelo codec compartilhado. Não reanalisa COBOL nem calcula CFG. O inventário alternativo permanece parcial.
 
 ## Usar e verificar
 
-A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `EntryGobackLowerer` implementa a mesma admissão usada por memória e arquivo. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
+A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
 
 No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê um Path sob limites explícitos. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
 
@@ -21,7 +27,7 @@ python3 scripts/harness/run.py full
 
 `full` exige a branch/PR autorizados; no CI publicado usa `--commit "$GITHUB_SHA"`, certificado/trailer e head exatos. Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
 
-## CLI 2A: arquivo SP → arquivo AIR
+## CLI: arquivo SP → arquivo AIR
 
 Depois do bootstrap acima, com Java 21 selecionado, instale o reactor no mesmo repositório Maven isolado:
 
@@ -74,7 +80,7 @@ preservado como suppressed na exception de I/O, sem transformar a execução em 
 Não cria diretórios pais. Não acrescenta newline, pretty-print, reparse ou fatos AIR.
 
 Defaults operacionais explícitos, iguais aos usados nos testes existentes do slice:
-SP 100.000 bytes, profundidade 64, 50.000 nós; admissão 100.000 entidades e 100 diagnostics;
+SP 32 MiB, profundidade 64, 1.500.000 nós; admissão 250.000 entidades e 100 diagnostics;
 identidades até 1.000.000 caracteres. `ValidationOptions.defaults()` do pin usa profundidade 128,
 2.000.000 entidades e 10.000 issues. `AirJson` usa seus defaults: 16 MiB e profundidade 128,
 com os mesmos defaults de validação. Limites não fazem parte da identidade, não mudam o perfil,
@@ -84,22 +90,25 @@ A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full/C
 SP real, verifica bytes contra o codec, decode integral, repetição, falhas e publicação física.
 Os oracles anteriores de Entry/Sequence/Return, PARTIAL, claims, origins, uncertainties e correlation
 continuam independentes do round-trip. AIR JSON não inclui o relatório externo de lowering; links de
-correlação continuam no `LoweringResult` em memória. Report JSON, 2B e E2E completo não foram iniciados.
+correlação continuam no `LoweringResult` em memória. O runtime não cria sidecar de correlação. CFG e E2E cross-repo permanecem fora do 4C.
 
 ## Garantias e limites
 
 O positivo real tem [captura/hash fixados](docs/evals/fixture-intake.json); expected AIR manual e oracles de tradução são independentes do lowerer. CP4 executou 779 assertions semânticas, 95 adicionais de custo/limites e full/challenge. [Histórico e certificado final](docs/work/history/WORK-LOWER-001.md) distinguem conclusão local, remoto e review humano.
 
-O [perfil](docs/domain/first-slice-entry-goback.md) exige uma entry primária/start/assinatura zero conhecidos e um GOBACK único. Inputs maiores são rejeitados integralmente, não filtrados. UNKNOWN/partial/input missing nunca viram zero, nop ou sucesso silencioso. Coverage parcial e dimensões não disponíveis atravessam em AIR. O checker estrutural não certifica a tradução nem perfil AIR completo.
+O [perfil CP3](docs/domain/first-slice-entry-goback.md) exige uma entry primária/start/assinatura zero conhecidos e um GOBACK único. O [profile escalar](docs/domain/scalar-text-move.md) admite DATA e MOVEs lineares provados, terminando em GOBACK. Fora desses profiles, inputs são rejeitados integralmente, não filtrados. UNKNOWN/partial/input missing nunca viram zero, nop ou sucesso silencioso. Coverage parcial e dimensões não disponíveis atravessam em AIR. O checker estrutural não certifica a tradução nem perfil AIR completo.
 
-PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex minúsculos, com limite aplicado ao ID final. IDs locais derivados usam `local-xxh3-128-v1`, 32 hex e registro de colisões por publicação. SourceKeys ainda mantêm tokens integrais. JSON é materializado sob limite de bytes, não streaming; métricas estruturais não são SLA nem instrumentação de internals Jackson/JDK. Outras famílias só têm forma física/ocorrência comum reconhecidas: não há alegação de validação semântica integral de MOVE/IF/CALL/DATA. Coordenadas/include sites insuficientes geram limitações tipadas, sem inventar localização. [Identidade/provenance](docs/domain/identity-and-provenance.md), [resultados](docs/domain/validation-and-results.md).
+PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex minúsculos, com limite aplicado ao ID final. IDs locais derivados usam `local-xxh3-128-v1`, 32 hex e registro de colisões por publicação. SourceKeys CP3 mantêm tokens integrais; o profile escalar usa namespace compacto e handles. JSON é materializado sob limite de bytes, não streaming; métricas estruturais não são SLA nem instrumentação de internals Jackson/JDK. DATA/MOVE têm somente a capacidade escalar delimitada; IF/CALL conservam ocorrências reconhecidas fisicamente, sem lowering semântico. Coordenadas/include sites insuficientes geram limitações tipadas, sem inventar localização. [Identidade/provenance](docs/domain/identity-and-provenance.md), [resultados](docs/domain/validation-and-results.md).
 
 ## Navegar
 
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
-WORK-LOWER-001 foi autorizado em modo multi-checkpoint CP0..CP5. O PR termina em review humano, sem merge/auto-merge. WORK-LOWER-003/2A foi mergeado. O WORK-LOWER-004/PR5 foi mergeado. WORK-LOWER-005 autoriza IDs locais compactos; análise CFG e E2E cross-repo continuam fora deste trabalho.
+WORK-LOWER-001–005 estão reconciliados após merges confirmados. O trabalho atual é
+[WORK-LOWER-006](docs/work/active/WORK-LOWER-006/work-item.yaml), somente 4C até AIR JSON.
+PR para review humano; sem merge/auto-merge ou 4D/4E.
 
-IDs locais derivados usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com
-registro de colisões por publicação. SourceKeys ainda são integrais.
-Política, limites e provas em [WORK-LOWER-005](docs/work/active/WORK-LOWER-005/spec.md).
+IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro de
+colisões por publicação. A revisão escalar usa domínio versionado próprio; CP3
+mantém seus bytes. [Política anterior](docs/work/history/WORK-LOWER-005.md) e
+[extensão escalar](docs/domain/scalar-text-move.md).

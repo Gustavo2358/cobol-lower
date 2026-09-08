@@ -26,3 +26,10 @@ O primeiro trabalho deve confirmar acessibilidade dos snapshots, resolver air-ja
 ## Pin autorizado para os próximos checkpoints
 
 O upstream air-java autorizado para os próximos checkpoints é `b78f4068d8a479f48eb048b8d76fa60a0997dc4a`. `pom.xml` é o parent `air-java-parent`; `air-model/` contém model/validator no artefato `air-java`, e `air-json/` contém o codec compartilhado `AirJson`, com cobertura 1A. A autoridade normativa permanece `analysis-ir@122ce54e1b9ef9b00646f93ece409ca8b63bc933`. O WORK-LOWER-002 atualizou apenas proveniência e foi mergeado. No 2A, `air-json:0.1.0-SNAPSHOT` passa a dependência de runtime exclusiva de adapters; model/validator continuam em core. 2B/CFG JSON/E2E completo não foram iniciados. Evidência em [WORK-LOWER-002](../work/history/WORK-LOWER-002.md). As observações do pacote original acima conservam seu contexto histórico.
+
+## Baseline 4C
+
+4A PR32 merge 2815e805fd3a9ef4762a39ab9435260fc76da0e8, SP1.2.0.
+4B PR6 merge ce530a7e17ab12b23c48f29425f503ff920b09fb, Maven0.1.0-SNAPSHOT.
+Ambos confirmados pela API; build isolado do merge, sem uso automático de head pré-merge.
+Pin normativo 122ce54e1b9ef9b00646f93ece409ca8b63bc933 intacto.

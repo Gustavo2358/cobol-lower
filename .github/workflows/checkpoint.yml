@@ -8,7 +8,8 @@ permissions:
 jobs:
   checkpoint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Full B1/B2 regression + restored challenges takes ~12 min before bootstrap.
+    timeout-minutes: 30
     env:
       LOWER_BUILD_ROOT: /tmp/lower-build-${{ github.run_id }}-${{ github.run_attempt }}
       GH_TOKEN: ${{ github.token }}

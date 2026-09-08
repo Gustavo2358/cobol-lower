@@ -7,7 +7,7 @@ import io.github.gustavo2358.lower.adapters.sp.FileLowering;
 import io.github.gustavo2358.lower.adapters.sp.SpFileInput;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.application.AdmitInput;
-import io.github.gustavo2358.lower.application.EntryGobackLowerer;
+import io.github.gustavo2358.lower.application.CobolLowerer;
 import io.github.gustavo2358.lower.application.LowerInput;
 import io.github.gustavo2358.lower.application.LoweringResult;
 import java.io.IOException;
@@ -15,16 +15,16 @@ import java.io.PrintStream;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-/** Minimal file composition for minimal-entry-goback@1. Exit codes are part of the CLI contract. */
+/** File composition for the admitted CP3 and scalar MOVE profiles. Exit codes are part of the CLI contract. */
 public final class CobolLower {
     public static final int SUCCESS = 0, USAGE = 2, INPUT = 3, LOWERING = 4, CODEC = 5, OUTPUT = 6;
-    public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(100_000, 64, 50_000);
-    public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(100_000, 100),
+    public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(ProductionLimits.SP_BYTES, ProductionLimits.SP_DEPTH, ProductionLimits.SP_NODES);
+    public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(ProductionLimits.ADMISSION_ENTITIES, 100),
             1_000_000, ValidationOptions.defaults());
     private CobolLower() { }
     public static void main(String[] args) { System.exit(run(args, System.err)); }
     public static int run(String[] args, PrintStream err) {
-        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new EntryGobackLowerer()), OPTIONS, new AirFileOutput());
+        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), OPTIONS, new AirFileOutput());
     }
     /** Composition seam; no JVM exit, alternate semantic decoder or lowering. */
     public static int run(String[] args, PrintStream err, FileLowering lowering, LowerInput.Options options, AirFileOutput output) {

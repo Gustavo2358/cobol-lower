@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 from architecture import architecture_errors
+from production_challenge import scope_errors
 from checks import certificate_errors, digest, document_errors, read_data, remote_errors, execution_authority
 from git_checks import candidate_errors, evidence_path, git, preflight
 from full_checks import execute_full, performance_counts
@@ -90,6 +91,11 @@ def semantic(extra=()):
     output_counts = [int(n) for n in re.findall(r"^LOWER_AIR_OUTPUT_TESTS=([0-9]+)$", output, re.M)]
     if len(output_counts) != 1 or output_counts[0] <= 0:
         raise RuntimeError("AIR output tests absent/zero/duplicate")
+    production_counts = re.findall(r"^LOWER_PRODUCTION_TESTS=([0-9]+)$", output, re.M)
+    if len(production_counts) != 1 or int(production_counts[0]) <= 0 or "PRODUCTION_SUCCESS_PROBE data=400 moves=400" not in output:
+        raise RuntimeError("production path probe absent/zero")
+    if "-Dlower.performance=true" in extra and "PRODUCTION_LIMIT_ORDER data=1 moves=10000" not in output:
+        raise RuntimeError("production limit-order probe absent")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
     return output
 
@@ -121,6 +127,8 @@ def challenge():
     run([sys.executable, "scripts/harness/semantic_challenge.py"])
     run([sys.executable, "scripts/harness/review_challenge.py"])
     run([sys.executable, "scripts/harness/output_challenge.py"])
+    run([sys.executable, "scripts/harness/scalar_challenge.py"])
+    run([sys.executable, "scripts/harness/production_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):
@@ -142,7 +150,7 @@ def architecture():
               "-DoutputType=json", "-DoutputFile=target/dependency-tree.json"))
     tree = read_data(ROOT / "core/target/dependency-tree.json")
     hash_jar = build_root() / "m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar"
-    fail_on(architecture_errors(ROOT, tree, jar, hash_jar))
+    fail_on(architecture_errors(ROOT, tree, jar, hash_jar) + scope_errors(ROOT))
 
 
 def fail_on(errors):

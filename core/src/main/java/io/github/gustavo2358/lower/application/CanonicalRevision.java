@@ -24,6 +24,37 @@ final class CanonicalRevision {
         encoder.append(PREFIX); encoder.input(input);
         return Optional.of(encoder.finish());
     }
+    static Optional<String> scalar(SpInput input, List<DataFact> data, List<MoveFact> moves, GobackFact terminal, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision();
+        e.append("scalar-text-move@1/AIR2/SP1.2/xxh3-128-v2/"); e.append(LocalIds.POLICY); e.append("/");
+        e.unit(input.unit());
+        e.list(data, d -> {
+            e.word(d.id().handle()); e.word(d.canonicalName()); e.provenance(d.provenance()); e.symbol(d.coverage());
+            var t = d.scalarText().orElseThrow();
+            e.symbol(t.logicalDomain()); e.number(t.logicalExtent()); e.symbol(t.storageClass()); e.symbol(t.declarationScope());
+        });
+        e.list(moves, m -> {
+            e.word("MOVE"); e.scalarHeader(m.header());
+            var source = m.source(); e.word(source.id().handle()); e.symbol(source.kind()); e.provenance(source.provenance());
+            var value = source.logicalValue().orElseThrow(); e.symbol(value.logicalDomain()); e.word(value.value()); e.number(value.logicalExtent());
+            var target = m.target(); e.word(target.id().handle()); e.symbol(target.role()); e.provenance(target.provenance());
+            e.symbol(target.binding().status()); e.word(target.binding().selected().orElseThrow().handle());
+            e.word(target.wholeItemAccess().orElseThrow().data().handle()); e.symbol(m.copySemantics());
+            e.symbol(m.normalContinuation().availability()); e.statementId(m.normalContinuation().statement().orElseThrow());
+            e.provenance(m.normalContinuation().provenance());
+        });
+        e.word("GOBACK"); e.scalarHeader(terminal.header()); e.symbol(terminal.exit()); e.symbol(terminal.localContinuation());
+        var entry = input.entryInventory().entries().getFirst();
+        e.word(entry.id().handle()); e.symbol(entry.role()); e.symbol(entry.availability()); e.provenance(entry.provenance()); e.symbol(entry.coverage());
+        e.symbol(entry.start().availability()); e.statementId(entry.start().statement().orElseThrow());
+        e.symbol(entry.signature().availability()); e.number(entry.signature().parameterCount().orElseThrow()); e.symbol(entry.signature().returningClause());
+        e.symbol(input.entryInventory().status()); e.symbol(input.entryInventory().scope());
+        e.list(input.entryInventory().gapCodes(), e::word);
+        e.list(input.gaps(), g -> { e.statementId(g.statement()); e.symbol(g.scope()); e.word(g.code()); e.word(g.detail()); e.provenance(g.provenance()); });
+        return Optional.of(e.finish());
+    }
+    private void scalarHeader(StatementHeader h) { statementId(h.id()); provenance(h.provenance()); symbol(h.coverage()); }
     private String finish() {
         flush();
         // Numeric high64 then low64, fixed 32 lowercase hex digits (not little-endian bytes).

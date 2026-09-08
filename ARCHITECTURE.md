@@ -49,3 +49,10 @@ Sem CFG builder, reaching definitions, possible values, resolução final de cha
 A identidade de publicação e os IDs locais derivados usam hash4j 0.30.0 no core, exclusivamente em CanonicalRevision (reutilizado por LocalIds),
 para XXH3-128 incremental. A dependência não atravessa a API pública; não acrescenta
 transporte nem framework. Algoritmo/seed/formato em [identidade](docs/domain/identity-and-provenance.md).
+
+## Checkpoint 4C
+
+CobolLowerer faz dispatch de dois profiles. ScalarMoveAdmission produz índices/plano;
+ScalarDataTranslator e ScalarSequenceAssembler compõem MoveHandler/GobackHandler,
+com assembly e validação compartilhada antes do resultado em memória.
+[Contrato escalar](docs/domain/scalar-text-move.md). CLI usa essa mesma porta.

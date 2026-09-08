@@ -1,0 +1,105 @@
+schema_version: 1
+id: WORK-LOWER-006
+title: 'Implementation: Checkpoint 4C scalar textual MOVE to AIR JSON'
+status: active
+risk: high
+goal: Consume explicit SP 1.2.0 scalar DATA and FULL_IDENTITY MOVE facts, emit one
+  linear AIR Sequence ending in Return, preserving CP3.
+authorization:
+  state: granted
+  scope: implementation Checkpoint 4C only, internally CP0; source pins, upstream
+    fixture intake, core/adapters, tests/challenges/scale, documentation/lifecycle,
+    commits/push/PR/CI; stop before human review and merge; explicit same-CP review
+    remediation B1 literal coherence/B2 bounded production capacity; D1/D2 backlog
+    only
+  execution_mode: single-checkpoint
+  authority: Explicit user request on 2026-09-08 in task 01a081d2-01f2-7fd0-b411-0a36b6793aa5,
+    all 35 sections of Checkpoint 4C. Siblings read-only; no 4D/4E. User follow-up
+    2026-09-08 authorizes the 31-section blocker remediation of head 24742514410d938063149a4f466e81a29801adac,
+    same WORK/CP/branch/PR.
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids: []
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- docs/engineering/semantic-analysis-policy.md
+- docs/engineering/research-and-evidence.md
+- docs/domain/first-slice-entry-goback.md
+- docs/domain/identity-and-provenance.md
+- docs/sources/sources.lock.json
+- docs/architecture/extensibility.md
+- docs/engineering/change-control.md
+- docs/evals/fixtures.md
+related_domain_rules: []
+related_decisions: []
+related_invariants:
+- INV-LWR-007
+- INV-LWR-017
+- INV-LWR-021
+evals: &id002
+- EVAL-LWR-007
+- EVAL-LWR-015
+- EVAL-LWR-018
+source_scope:
+- core/src/main/java
+- adapters/src/main/java
+test_scope:
+- core/src/test
+- adapters/src/test
+- core/pom.xml
+- adapters/pom.xml
+- scripts/harness/scalar_challenge.py
+- scripts/harness/run.py
+- scripts/harness/output_challenge.py
+- scripts/harness/production_challenge.py
+- scripts/harness/tests/test_air_output_gate.py
+- .github/workflows/checkpoint.yml
+docs_scope:
+- README.md
+- ARCHITECTURE.md
+- docs/domain
+- docs/sources/sources.lock.json
+- docs/sources/upstream-state.md
+- docs/evals
+- docs/work
+- docs/quality/WORK-LOWER-006
+must_not_change:
+- Other repositories and aggregate root; CFG/dataflow/Possible Values/CALL/IF/4D/4E
+- Historical quality evidence and CP3 upstream fixture
+- air-java model/validator/codec/default limits/Maven coordinate; analysis-ir normative
+  pin
+- No COBOL interpretation, expanded local identity strings, name joins, general storage
+  or MOVE, universal fallback
+- No merge, auto-merge, reset, clean, silent stash or force push
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Implement only 4C and stop at PR for human review
+  depends_on: []
+  gates: *id001
+  evals: *id002
+  status: active
+git:
+  branch: feat/lower-scalar-move
+  pull_request: 7
+  one_pr_per_work_item: true
+  merge_authorized: false
+  suggested_branch: feat/lower-scalar-move
