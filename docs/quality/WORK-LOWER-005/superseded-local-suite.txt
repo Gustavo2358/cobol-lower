@@ -1,0 +1,143 @@
+package io.github.gustavo2358.lower.application;
+
+import io.github.gustavo2358.air.model.*;
+import io.github.gustavo2358.air.model.Ids.*;
+import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.testing.SpFixtures;
+import io.github.gustavo2358.lower.testing.LoweringSuite;
+import com.dynatrace.hash4j.hashing.HashStream128;
+import java.lang.reflect.*;
+import java.util.*;
+
+/** Frozen observations of the new policy, using reflection only for private collision/stream probes. */
+public final class LocalIdentitySuite {
+    private static int count;
+    private LocalIdentitySuite() { }
+    private static void check(boolean value, String message) {
+        if (!value) throw new AssertionError("LOCAL_ID " + message);
+        count++;
+    }
+    private static Object call(Object target, String name, Class<?>[] types, Object... args) throws ReflectiveOperationException {
+        Method m = target.getClass().getDeclaredMethod(name, types); m.setAccessible(true); return m.invoke(target, args);
+    }
+    private static Object registry() throws ReflectiveOperationException {
+        var ctor = Class.forName("io.github.gustavo2358.lower.application.LocalIds").getDeclaredConstructor();
+        ctor.setAccessible(true); return ctor.newInstance();
+    }
+    private static String id(Object ids, String namespace, String role, String owner, String key) throws ReflectiveOperationException {
+        return (String) call(ids, "id", new Class<?>[]{String.class,String.class,String.class,String.class}, namespace,role,owner,key);
+    }
+    @SuppressWarnings("unchecked")
+    private static Map<String,Object> registered(Object ids) throws ReflectiveOperationException {
+        var field = ids.getClass().getDeclaredField("registered"); field.setAccessible(true);
+        return (Map<String,Object>) field.get(ids);
+    }
+    public static int run() {
+        var input = SpFixtures.minimal();
+        var result = new EntryGobackLowerer().lower(input, LoweringSuite.OPTIONS);
+        var publication = result.publication().orElseThrow();
+        // This public-port assertion is RED on the old implementation, without requiring a new API.
+        check(result.statements().getFirst().target().localId().matches("[0-9a-f]{32}"), "derived operation must be fixed 32 lowercase hex");
+        check(publication.id().localId().equals("a5fce8cae9328bc4007fc589e1989e37"), "publication binds local policy independent vector");
+        Set<Ids.Id> seen = new HashSet<>(); visit(publication, seen);
+        check(seen.stream().filter(i -> !(i instanceof PublicationId) && !constant(i)).count() == 16, "all sixteen derived definitions retained");
+        check(publication.artifacts().size() == 2, "legitimate original/expanded artifact reuse");
+        try {
+            var ids = registry();
+            check(id(ids,"operation","goback-return","unit","statement:0").equals("88ad413aefe55e22f2e73d930c6f4a21"), "native operation vector");
+            check(id(ids,"origin","original","statement",":😀\ud800").equals("622eaafad380eea59ef14d68bd36b281"), "native UTF-16 vector including lone surrogate");
+            check(id(ids,"artifact","original","publication","").equals("e0287a2579ca0902fb5d877a543d036e"), "native empty text vector");
+            check(id(ids,"artifact","expanded","publication","semantic-product-entry-goback.cbl").equals("35caed1bd51817e77238ccf93a78373a"), "native expanded artifact vector");
+            String baseline = id(ids,"artifact","original","publication","same");
+            check(baseline.equals(id(ids,"artifact","original","publication",new String("same"))), "equal identity reuse is legitimate");
+            check(!baseline.equals(id(ids,"artifact","expanded","publication","same")), "original and expanded roles separate");
+            check(!baseline.equals(id(ids,"origin","original","publication","same")), "typed namespaces separate");
+            check(!baseline.equals(id(ids,"artifact","original","other","same")), "owners separate");
+            check(!id(ids,"origin","source","a","bc").equals(id(ids,"origin","source","ab","c")), "adjacent fields framed");
+            check(!id(ids,"origin","source","a", "\ud800").equals(id(ids,"origin","source","a", "\ud801")), "lone surrogates never replaced");
+            check(!id(ids,"origin","source","a", "é").equals(id(ids,"origin","source","a", "e\u0301")), "no Unicode normalization");
+            cardinality(); longText(); collision(input);
+        } catch (ReflectiveOperationException e) { throw new AssertionError("LOCAL_ID private probe",e); }
+        System.out.println("LOCAL_ID_TESTS=" + count);
+        return count;
+    }
+    private static boolean constant(Ids.Id id) {
+        return id instanceof UnitId && id.localId().equals("unit")
+                || id instanceof OriginId && id.localId().equals("unit-origin")
+                || id instanceof UncertaintyId && id.localId().equals("entry-inventory/alternate-not-projected");
+    }
+    private static void visit(Object value, Set<Ids.Id> seen) {
+        if (value instanceof Ids.Id id) { check(constant(id) || id.localId().matches("[0-9a-f]{32}"), "every derived reference fixed width"); seen.add(id); }
+        if (value instanceof Optional<?> o) o.ifPresent(v -> visit(v,seen));
+        else if (value instanceof List<?> l) l.forEach(v -> visit(v,seen));
+        else if (value != null && value.getClass().isRecord()) {
+            try { for (var c : value.getClass().getRecordComponents()) visit(c.getAccessor().invoke(value),seen); }
+            catch (ReflectiveOperationException e) { throw new AssertionError(e); }
+        }
+    }
+    private static void cardinality() throws ReflectiveOperationException {
+        long started = System.nanoTime(); var ids = registry(); var unique = new HashSet<String>();
+        for (int i=0;i<100_000;i++) {
+            String key = "statement:" + i; String digest = id(ids,"operation","goback-return","unit",key);
+            check(digest.matches("[0-9a-f]{32}") && unique.add(digest), "100k occurrence identities remain distinct");
+            check(digest.equals(id(ids,"operation","goback-return","unit",key)), "100k repeat deterministic");
+        }
+        check(registered(ids).size() == 100_000 && unique.size() == 100_000, "100k registry has no loss or duplicate registrations");
+        System.out.println("LOCAL_ID_CARDINALITY=100000 elapsed_ms=" + (System.nanoTime()-started)/1_000_000);
+    }
+    private static void longText() throws ReflectiveOperationException {
+        // Exactly one million UTF-16 code units. Never build its 4-million-character hex token.
+        String text = ":😀\ud800".repeat(250_000); var ids = registry(); long started = System.nanoTime();
+        String digest = id(ids,"artifact","original","publication",text);
+        Object descriptor = registered(ids).get(digest);
+        check(call(descriptor,"key",new Class<?>[]{}) == text, "registry retains original string reference, not expanded copy");
+        for (var c : descriptor.getClass().getRecordComponents()) {
+            c.getAccessor().setAccessible(true); var value = c.getAccessor().invoke(descriptor);
+            check(!(value instanceof String s) || s == text || s.length()<32, "no expanded preimage in registry descriptor");
+        }
+        var ctor = CanonicalRevision.class.getDeclaredConstructor(); ctor.setAccessible(true); var encoder=ctor.newInstance();
+        var field=CanonicalRevision.class.getDeclaredField("stream");field.setAccessible(true);
+        var delegate=(HashStream128)field.get(encoder);long[] observed={0,0,0,0};
+        var spy=(HashStream128)Proxy.newProxyInstance(HashStream128.class.getClassLoader(),new Class<?>[]{HashStream128.class},(proxy,m,args)->{
+            if(m.getName().equals("putBytes")) {
+                byte[] bytes=(byte[])args[0]; int length=(Integer)args[2];
+                if(bytes.length>256 || length>256) throw new AssertionError("LOCAL_ID update buffer exceeds 256");
+                observed[0]+=length;observed[1]++;observed[3]=Math.max(observed[3],bytes.length);
+            }
+            if(m.getName().equals("get"))observed[2]++;
+            return m.invoke(delegate,args);
+        });field.set(encoder,spy);
+        call(encoder,"localFields",new Class<?>[]{String.class,String.class,String.class,String.class},"artifact","original","publication",text);
+        check(call(encoder,"finish",new Class<?>[]{}).equals(digest),"long streamed hash agrees with registered identity");
+        long expected="minimal-entry-goback@1/AIR2/local-xxh3-128-v1/".length();
+        for(int length:new int[]{8,8,11,1_000_000})expected+=Integer.toString(length).length()+1L+4L*length;
+        check(observed[0]==expected && observed[1]>15_000 && observed[2]==1 && observed[3]<=256,"exact long framing and bounded updates");
+        check(delegate.getState().length<2048,"hash stream state bounded");
+        System.out.println("LOCAL_ID_LONG_UTF16="+text.length()+" streamed_bytes="+observed[0]+" max_buffer="+observed[3]+" elapsed_ms="+(System.nanoTime()-started)/1_000_000);
+        String handle="h".repeat(100_000), filename="f".repeat(100_000);
+        var input=SpFixtures.minimal(SpFixtures.minimal().unit(),"entry:0",handle);
+        var g=(SpInput.GobackFact)input.statements().getFirst();var h=g.header();var p=h.provenance();
+        var location=new SpInput.Location(filename,4,11,4,16);
+        var header=new SpInput.StatementHeader(h.id(),h.programPoint(),h.containment(),new SpInput.Provenance(p.expanded(),location,p.includeChain(),p.exact()),h.coverage(),h.readiness());
+        input=SpFixtures.body(input,List.of(new SpInput.GobackFact(header,g.exit(),g.localContinuation())),input.structure(),input.gaps(),input.coverage());
+        var result=new EntryGobackLowerer().lower(input,LoweringSuite.OPTIONS);
+        check(result.status()==LoweringResult.Status.SUCCESS,"100k handle and filename admitted without hidden canonical text limit");
+        check(result.statements().getFirst().source().handle().equals(handle),"long original SP handle retained");
+        var publication=result.publication().orElseThrow();visit(publication,new HashSet<>());
+        check(publication.artifacts().stream().anyMatch(a->a.logicalName().equals(filename)),"long logical name unchanged");
+        check(publication.coverage().items().stream().anyMatch(i->i.sourceKey().length()>400_000),"SourceKey residual integral cost remains explicit");
+        System.out.println("LOCAL_ID_PUBLIC_PORT_HANDLE=100000 filename=100000 status="+result.status());
+    }
+    private static void collision(SpInput input) throws ReflectiveOperationException {
+        var ids=registry();String known=id(ids,"operation","goback-return","unit","statement:0");
+        String other=id(ids,"operation","goback-return","unit","statement:other");
+        var map=registered(ids);map.put(known,map.remove(other));
+        try {
+            call(new EntryGobackLowerer(),"translate",new Class<?>[]{SpInput.class,LowerInput.Options.class,Admission.class,ids.getClass()},
+                    input,LoweringSuite.OPTIONS,new EntryGobackAdmission().admit(input,LoweringSuite.OPTIONS.admission()),ids);
+            throw new AssertionError("LOCAL_ID collision must fail before any result escapes");
+        } catch(InvocationTargetException e) {
+            check(e.getCause() instanceof IllegalStateException && e.getCause().getMessage().startsWith("LOCAL_ID_COLLISION"),"controlled collision fails closed in real translation");
+        }
+    }
+}

@@ -92,10 +92,14 @@ O positivo real tem [captura/hash fixados](docs/evals/fixture-intake.json); expe
 
 O [perfil](docs/domain/first-slice-entry-goback.md) exige uma entry primária/start/assinatura zero conhecidos e um GOBACK único. Inputs maiores são rejeitados integralmente, não filtrados. UNKNOWN/partial/input missing nunca viram zero, nop ou sucesso silencioso. Coverage parcial e dimensões não disponíveis atravessam em AIR. O checker estrutural não certifica a tradução nem perfil AIR completo.
 
-PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex minúsculos, com limite aplicado ao ID final. IDs locais mantêm os tokens anteriores. JSON é materializado sob limite de bytes, não streaming; métricas estruturais não são SLA nem instrumentação de internals Jackson/JDK. Outras famílias só têm forma física/ocorrência comum reconhecidas: não há alegação de validação semântica integral de MOVE/IF/CALL/DATA. Coordenadas/include sites insuficientes geram limitações tipadas, sem inventar localização. [Identidade/provenance](docs/domain/identity-and-provenance.md), [resultados](docs/domain/validation-and-results.md).
+PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex minúsculos, com limite aplicado ao ID final. IDs locais derivados usam `local-xxh3-128-v1`, 32 hex e registro de colisões por publicação. SourceKeys ainda mantêm tokens integrais. JSON é materializado sob limite de bytes, não streaming; métricas estruturais não são SLA nem instrumentação de internals Jackson/JDK. Outras famílias só têm forma física/ocorrência comum reconhecidas: não há alegação de validação semântica integral de MOVE/IF/CALL/DATA. Coordenadas/include sites insuficientes geram limitações tipadas, sem inventar localização. [Identidade/provenance](docs/domain/identity-and-provenance.md), [resultados](docs/domain/validation-and-results.md).
 
 ## Navegar
 
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
-WORK-LOWER-001 foi autorizado em modo multi-checkpoint CP0..CP5. O PR termina em review humano, sem merge/auto-merge. WORK-LOWER-003/2A foi mergeado. O WORK-LOWER-004 autoriza somente PublicationId compacto; análise CFG e E2E cross-repo continuam fora deste trabalho.
+WORK-LOWER-001 foi autorizado em modo multi-checkpoint CP0..CP5. O PR termina em review humano, sem merge/auto-merge. WORK-LOWER-003/2A foi mergeado. O WORK-LOWER-004/PR5 foi mergeado. WORK-LOWER-005 autoriza IDs locais compactos; análise CFG e E2E cross-repo continuam fora deste trabalho.
+
+IDs locais derivados usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com
+registro de colisões por publicação. SourceKeys ainda são integrais.
+Política, limites e provas em [WORK-LOWER-005](docs/work/active/WORK-LOWER-005/spec.md).

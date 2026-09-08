@@ -1,0 +1,32 @@
+{
+  "executions": [
+    {
+      "command": [
+        "/home/gustavo/workspace/teste-e2e/checkpoint-3-e2e/tools/jdk21/bin/java",
+        "-cp",
+        "/home/gustavo/workspace/teste-e2e/cobol-lower/adapters/target/classes:/home/gustavo/workspace/teste-e2e/cobol-lower/core/target/classes:/tmp/lower-local/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-local/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-local/m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+        "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "/tmp/lower-local/actual.air.json"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/gustavo/workspace/teste-e2e/checkpoint-3-e2e/tools/jdk21/bin/java",
+        "-cp",
+        "/home/gustavo/workspace/teste-e2e/cobol-lower/adapters/target/classes:/home/gustavo/workspace/teste-e2e/cobol-lower/core/target/classes:/tmp/lower-local/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar:/tmp/lower-local/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar:/tmp/lower-local/m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar:/tmp/lower-local/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",
+        "io.github.gustavo2358.lower.adapters.cli.CobolLower",
+        "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "/tmp/lower-local/repeat.air.json"
+      ],
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ],
+  "bytes": 13827,
+  "sha256": "46919c1429db4aa310e66fc9df9374eeba53fd98e50a287fdd005c17622f33ad",
+  "equal": true,
+  "publication_id": "a5fce8cae9328bc4007fc589e1989e37"
+}

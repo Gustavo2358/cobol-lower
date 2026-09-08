@@ -65,7 +65,7 @@ public final class LoweringSuite {
             var renamed = SpFixtures.minimal(key, "entry:42", "statement:81");
             check(!observe(renamed, lower(renamed)).id().equals(p.id()), "revision namespace distinguishes unit and handles");
         }
-        var original = p.origins().stream().filter(x -> x instanceof Origins.Written w && w.id().localId().endsWith("/original"))
+        var original = p.origins().stream().filter(x -> x instanceof Origins.Written w && w.id().equals(((Origins.Derived) p.origins().stream().filter(o -> o.id().equals(result.statements().getFirst().origin())).findFirst().orElseThrow()).inputs().getFirst()))
                 .map(x -> (Origins.Written) x).filter(x -> x.location().orElseThrow() instanceof Origins.LineColumns lc && lc.span().start().line().intValueExact() == 4).findFirst().orElseThrow();
         var span = ((Origins.LineColumns) original.location().orElseThrow()).span();
         check(span.start().equals(new Origins.Position(BigInteger.valueOf(4), BigInteger.valueOf(11)))
@@ -93,7 +93,7 @@ public final class LoweringSuite {
         return count;
     }
     private static void revisionAndEvidence(SpInput input, Publication baseline) {
-        check(baseline.id().localId().equals("1718623a5d9fc4b5db0124dc15913f58"), "identity includes rule and semantic versions (independent XXH3-128 vector)");
+        check(baseline.id().localId().equals("a5fce8cae9328bc4007fc589e1989e37"), "identity includes rule and semantic versions (independent XXH3-128 vector)");
         var policy = input.policy();
         var policyRevision = new SpInput(input.unit(), new SpInput.Policy(policy.policyId(), "next-policy-revision", policy.qualifyMode(),
                 policy.pgmnameMode(), policy.dynamMode(), policy.dllMode()), input.dataDeclarations(), input.statements(), input.structure(), input.gaps(), input.coverage(), input.entryInventory());

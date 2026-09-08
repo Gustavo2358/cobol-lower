@@ -1,0 +1,660 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-005",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "perf/compact-local-ids",
+  "pull_request": 6,
+  "base_commit": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+  "reviewed_head": "73801ea7d4b7e97126de8b41e58d2f5041dcd866",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-005/spec.md",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "2fa6f7626790bfe0e78b6810c1e7a6d026fd497231cebda8ffffe1627b6df099",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-005/CP0.json",
+    "docs/work/active/WORK-LOWER-005/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "7f8470bac01bdeb993fd6ba39ba89a790a56b1e282a20b29dc1a4a1c10743ff0",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java",
+        "sha256": "f011c2ff8891ac0da158e8ae93a569014fb8a876f1f0267455d1f899b925a67a",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/IdentityRenamingOracle.java",
+        "sha256": "dfa8538bc08a78998f5271fb4d82cca47e521804ad2fd3480749ce078b123e46",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/AdmissionAdapterSuite.java",
+        "sha256": "1786c6301f7abc43da916d4a24eced35063368dc4704dcf37ce417b9c4124a20",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderPerformanceSuite.java",
+        "sha256": "60dd65869238bee4724a2ab3b1df8bfa7e59bc671f925d03a8da9d2f153af098",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderSuite.java",
+        "sha256": "c8de2f1372596adb178d81cecb36d1dadf579c384712a4c9ca7b28f50619123a",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/VerticalSuite.java",
+        "sha256": "b76eb560ed643fc093c92319884e49b7347d77d62cf4061777bcb7142149bfc8",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/air/README.md",
+        "sha256": "d2a484ab14e25381fc647b77e4868c9fac48b74e83b658097b524358151a3270",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/air/previous-local-policy.air.json",
+        "sha256": "e7ce2c810b57d9c1e08d467d097c8f523b06a4ab4f0bed27b7aa7cf24fa51a5b",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/README.md",
+        "sha256": "1a3b208cd64361d7acf993325867a3828787588b02b9d5c30255231e57652ed4",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/application/CompactIdentitySuite.java",
+        "sha256": "3d13da8e82f668356c4dfb499f2c78598ad838ba4e84e0352eefdc9687010783",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/application/LocalIdentitySuite.java",
+        "sha256": "e5b4c021cbdf46c1a0b994b2f118898b958d15a131295385f372a5cfe8f2b6af",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/BoundarySuite.java",
+        "sha256": "11c281bda1555e51b65d3afc55bf7d37d500269c55e73f3e57a0b453fc8e741e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/InputSuite.java",
+        "sha256": "d739ac95836cfad99ce3b9d8ab89e2fce3a8551e04ceb2ad93a6fc0869a1cf62",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+        "sha256": "f2df88df803baa207e24dedcabcddebaf6023554adebae2af6d6e8d92fec84c8",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/ManualAir.java",
+        "sha256": "15fd0551eab3ad5ac04541bd71669a82b59385b7d8e7eb60e575e54834d662af",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/PerformanceSuite.java",
+        "sha256": "515587604bf2ac89ddf27d92639accf3d6e292aefde3d77a28edabc2bbe4aaa9",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/ScaleInputs.java",
+        "sha256": "f7bb99faff7ebc5e9200e65593613172f0ce32d8d06315006e126b2bf2943555",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/SpFixtures.java",
+        "sha256": "4d430f5af4ef46105e2ab1f0e012de9da1ba2dd999fd6a57cb38aed5562d5ec5",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "ef0a3843dbf705ac20565356e2455d793bb89aa15da1a8c3b2d164e9824b9178",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "d73d5c0c2e6f549b5bddac5e39e04c587035eb602648c328a926c18e357b7bfe",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/identity-and-provenance.md",
+        "sha256": "6eea33c4563d6e47d31460baa975592aabcacc29d7d65928a9d5ccf5b7f72207",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "6104877f41cdc17868c38ce2c6e35b7ccb1f4a99db87c53ef3535c4a30f0e29a",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "7d4183af3be50ff844e0b095b032e79fe2c81fcd2fb6b8ac7a6f6b99390ded37",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/prompt-authoring.md",
+        "sha256": "29bcd8a403d779b52e60649f1c368c38f9f0f466c806a988a8279c016af35961",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/research-and-evidence.md",
+        "sha256": "c137ab03af2bcc6974362b2e2e9588a6fa44fe6e4e71c760a0107af6ad22b878",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/semantic-analysis-policy.md",
+        "sha256": "5366cade540d0ac8994a7cd0255a7bee85d14801a5852bf3d1673d7fc0f1f1e7",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "6953209363c755503b9ad64aa093c6cb10acd8b3d94936fdf0cc12675c3ae259",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "1ca1ac60c284fd947353310e755c6e8708e112546cd8a0360123232f4ff785f8",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-005/CP0-manifest.yaml",
+        "sha256": "e641350c3ec71e5248301291464f6c5d36becd0a920304c0c5c83abb19e9e507",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-005/oracle-correction.json",
+        "sha256": "9368db6736cf56b6f224a7fc058e0cc754a45387f232bd1e058f41aabe7fec1e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-005/reference-publication-preimage.txt",
+        "sha256": "d39da920fd83076c33d6d292cc208732a3fdd63d0c0b70bb26ef4ea0be689b5d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-005/reference-vectors.json",
+        "sha256": "efbd2c6833c87b7a68b39ad94e6fd2c4c7e78a1e4abd22e31012e8b3f11cbb74",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-005/superseded-local-suite.txt",
+        "sha256": "3c151a28c1b6179e0f21af06a6c5aa2d2788d55db156f8408533d8ea98bd2333",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "db515cb39d3fa9301395dbb41924b98eccff3a8e6e17f018ec38cb804bb7e46f",
+        "git_revision": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-005/eval.md",
+        "sha256": "b4675392af175ee9709d8635938a21b8acbfb8985e756be8bc7f4be63532a7b1",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-005/plan.md",
+        "sha256": "7f5a8e56e3a3377ea7de4690d2f708b8161bb1d6180ca8eca93a261ad38ce1a8",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-005/spec.md",
+        "sha256": "a626d2dd76fdedcd833bcdc5f11195b151ee06f7a48d18c71ec06584a394e216",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "24ed6def127104d416e730ba044a342cfe7e0fd21a065c2e7c408bea8728c609",
+        "git_revision": null,
+        "usage": "reference_only"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1800
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json (component docs)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json (component architecture)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json (component semantic)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 202819,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json (component performance)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 95,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-005/CP0.json (component git)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/full.log"
+    },
+    {
+      "gate": "local-policy-and-cli",
+      "required": true,
+      "command": "python3 scripts/harness/run.py performance; seven private identity mutations; Java CLI twice",
+      "cwd": ".",
+      "environment": "Java21; isolated build root /tmp/lower-local",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 200362,
+      "log_reference": "docs/quality/WORK-LOWER-005/validation.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": ".",
+      "environment": "Python3.14.4; real PR6 metadata; product/tests unchanged from 73801ea7d4b7e97126de8b41e58d2f5041dcd866",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/final-metadata.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-005/CP0.json",
+      "cwd": ".",
+      "environment": "Python3.14.4; real PR6 metadata; product/tests unchanged from 73801ea7d4b7e97126de8b41e58d2f5041dcd866",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/final-metadata.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "LOCAL-POLICY-PUBLICATION",
+      "mutation": "\"minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/\" + LocalIds.POLICY + \"/\" -> \"minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/\"",
+      "expected_oracle": "publication binds local policy independent vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: LOCAL_ID publication binds local policy independent vector",
+      "baseline_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "restored_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "ea31298b3a53e9e1b4533158797f7697480e0e7ff63ff5c095da2d45041a6abd",
+      "red_output_sha256": "c12c79dfe2d802c3d14a996131def7dcbd71fbe5bacc61ec14f96fadf64642e0",
+      "restored_output_sha256": "c04a4b2cf9571f4274bc9d9322c197bbd50cd7a73e9a1bb89c70c212e0a72f6e",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-OCCURRENCE",
+      "mutation": "ids.id(\"operation\", \"goback-return\", unit.localId(), key) -> ids.id(\"operation\", \"goback-return\", unit.localId(), \"statement:0\")",
+      "expected_oracle": "operation identity follows occurrence handle through public port",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: LOCAL_ID operation identity follows occurrence handle through public port",
+      "baseline_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "restored_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "e2531b8fd6921c5ff77256559501e2b11ce86c3b0b3c5d41f61b4e2eaaa40d3f",
+      "red_output_sha256": "8f51471841d40fab15674dd6e3ce29bd5d04c1b708a5fe70cbca0127d19a0815",
+      "restored_output_sha256": "3f308a1b5989b289b569e3236870ad9ad374a3b7c2c5027e749e22031a1faaaf",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-ROLES",
+      "mutation": "word(namespace); word(role); word(owner); word(key); -> word(namespace); word(\"constant\"); word(owner); word(key);",
+      "expected_oracle": "LOCAL_ID_COLLISION",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.IllegalStateException: LOCAL_ID_COLLISION: distinct identities share 7ecdd118a56347dc6db761809ebf492f",
+      "baseline_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "restored_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "1c8517938caca3e1bfd233eba2abea9e74cf43f69de9e908b3dac807ecc43bbd",
+      "red_output_sha256": "7df5e86a247aae06d79351c828954d40063e22a6bb4b8d59299a899495a337c0",
+      "restored_output_sha256": "a9b8c083e7ce4b551d2fed439a00c05a3d3e19734c7a4b2c0b4a75ae24b4110b",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-FRAMING",
+      "mutation": "append(Integer.toString(value.length())); append(\":\"); -> append(\":\");",
+      "expected_oracle": "publication binds local policy independent vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: LOCAL_ID publication binds local policy independent vector",
+      "baseline_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "restored_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "15bb8ed5f19e2bf93edcec97b1f50c27e79d27b08fe6d3b6b695cd9c8de3889b",
+      "red_output_sha256": "f67c4638ab3317a324ec49394c725d8146f2805b1a7d4cd136a592778393a4f1",
+      "restored_output_sha256": "328c5efb3a6352fe8d1fba8cd2e8ef8600fd1cdf009b75b9d04861942b15850e",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-SEED",
+      "mutation": "xxh3_128(0L) -> xxh3_128(1L)",
+      "expected_oracle": "publication binds local policy independent vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: LOCAL_ID publication binds local policy independent vector",
+      "baseline_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "restored_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "85fb530db0c9b86e6b2f273d7a4156797764d8e14c31ecea85c4ea3d5ee73524",
+      "red_output_sha256": "d2b4e88910be7e492105202cf63a1c776aea184e3b09672d5f04c3e78dc95e77",
+      "restored_output_sha256": "c3e9c101d7847f2147832e36193b2800651184100ed18fc1c1d32c0b53f7fe7a",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-BUFFER",
+      "mutation": "new byte[256] -> new byte[8192]",
+      "expected_oracle": "update buffer exceeds 256",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "Caused by: java.lang.AssertionError: LOCAL_ID update buffer exceeds 256",
+      "baseline_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "restored_digest": "fb0af7597cbb586074c21cc2f71d381c8f3a1fc05d173809d00cc5a9f70fa8ae",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "89d0dfdf95da4d8649b41f14239d9776b0119aa04ffab7c19d3f28b5f9f2afeb",
+      "red_output_sha256": "5860d97b81e2a8e66577800e1ea68f76218713b31a39234e038d9f371e1531cc",
+      "restored_output_sha256": "8c6e3e8dc784d92356abb81d6efd43d2a0eb06160c3a818c05fd95ba0fb46425",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "LOCAL-COLLISION-GUARD",
+      "mutation": "previous != null && !previous.equals(identity) -> false",
+      "expected_oracle": "collision must fail before any result escapes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: LOCAL_ID collision must fail before any result escapes",
+      "baseline_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+      "restored_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/LocalIds.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "a0756feb991d8a5f70c737e83aa84333376ba244cc3f21e9b40a90311adada17",
+      "red_output_sha256": "79ae587f920ea417b64067a15a181573aa5ff390a3e23ae1f719eeb8b36aeb01",
+      "restored_output_sha256": "c96a098e2864c55f52294024a88494c15deeee0cbe3ade4b5668c4d545ecd445",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=202914",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": null,
+      "guarantees": [
+        "Entire cumulative suite including SourceKeys, source facts, Entry/Return, provenance/claims/gaps/coverage; 139 harness tests and 27 restored historical challenges. New bijection oracle supersedes only old ID/size expectations. Existing pins/quality evidence/CLI unchanged."
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "evidence": [
+      "docs/quality/WORK-LOWER-005/CP0-review.md"
+    ],
+    "kind": "self-review",
+    "reviewer_context": "Codex implementer, complete diff including new files and lifecycle; no independent/human approval claimed",
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "Noncryptographic XXH3-128 accidental-collision assumption; no cryptographic or mathematical uniqueness claim.",
+    "100000 distinct identity keys and separate long text probes; no complete 100k-statement program, heap/CPU gain or cross-repo E2E claim. SourceKeys retain integral tokens.",
+    "Transport/integration gates remain SPECIFIED_NOT_IMPLEMENTED; existing semantic/full gates cover CLI output."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true
+  }
+}

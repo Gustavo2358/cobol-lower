@@ -12,17 +12,19 @@ import java.util.Optional;
 /** Source evidence conversion only; logical filenames are never opened or normalized. */
 final class SourceOrigins {
     private final Ids.PublicationId publication;
+    private final LocalIds ids;
     private final LinkedHashMap<String, Origins.Artifact> artifacts = new LinkedHashMap<>();
     private final List<Origins.Origin> origins = new ArrayList<>();
     private final List<LoweringResult.Limitation> limitations = new ArrayList<>();
-    SourceOrigins(Ids.PublicationId publication) { this.publication = publication; }
+    SourceOrigins(Ids.PublicationId publication, LocalIds ids) { this.publication = publication; this.ids = ids; }
     List<Origins.Artifact> artifacts() { return List.copyOf(artifacts.values()); }
     List<Origins.Origin> origins() { return List.copyOf(origins); }
     List<LoweringResult.Limitation> limitations() { return List.copyOf(limitations); }
     Ids.OriginId derived(String local, List<Ids.OriginId> inputs, String rule) {
         var id = new Ids.OriginId(publication, local); origins.add(new Origins.Derived(id, inputs, rule)); return id;
     }
-    Ids.OriginId source(String local, SpInput.Provenance provenance) {
+    Ids.OriginId source(String kind, String handle, SpInput.Provenance provenance) {
+        String local = ids.id("origin", "source", kind, handle);
         List<Origins.IncludeFrame> includes = new ArrayList<>();
         for (var frame : provenance.includeChain()) {
             includes.add(new Origins.IncludeFrame(artifact("original", frame.includingFile()), artifact("original", frame.includedFile()),
@@ -30,12 +32,12 @@ final class SourceOrigins {
             limitations.add(new LoweringResult.Limitation(LoweringResult.LimitCode.INCLUDE_SITE_UNAVAILABLE, local,
                     "Only includeLine was published; no complete AIR location. Raw frame retained in source evidence."));
         }
-        var original = written(local + "/original", "original", provenance.original(), includes, provenance.exact());
-        var expanded = written(local + "/expanded", "expanded", provenance.expanded(), includes, provenance.exact());
+        var original = written(ids.id("origin", "original", kind, handle), "original", provenance.original(), includes, provenance.exact());
+        var expanded = written(ids.id("origin", "expanded", kind, handle), "expanded", provenance.expanded(), includes, provenance.exact());
         return derived(local, List.of(original, expanded), "sp-provenance/original-expanded@1");
     }
     private Ids.ArtifactId artifact(String role, String file) {
-        String key = role + "/" + CanonicalRevision.token(file);
+        String key = ids.id("artifact", role, "publication", file);
         return artifacts.computeIfAbsent(key, k -> new Origins.Artifact(new Ids.ArtifactId(publication, k), file, Optional.empty())).id();
     }
     private Ids.OriginId written(String local, String role, SpInput.Location source, List<Origins.IncludeFrame> includes, boolean exact) {

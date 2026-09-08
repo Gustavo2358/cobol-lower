@@ -11,7 +11,7 @@ import com.dynatrace.hash4j.hashing.HashValues;
 
 /** Domain-separated, noncryptographic XXH3-128 of admitted canonical facts. */
 final class CanonicalRevision {
-    private static final String PREFIX = "minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/";
+    private static final String PREFIX = "minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/" + LocalIds.POLICY + "/";
     private final HashStream128 stream = Hashing.xxh3_128(0L).hashStream();
     private final byte[] buffer = new byte[256];
     private int used;
@@ -29,8 +29,17 @@ final class CanonicalRevision {
         // Numeric high64 then low64, fixed 32 lowercase hex digits (not little-endian bytes).
         return HashValues.toHexString(stream.get());
     }
+    static String local(String namespace, String role, String owner, String key) {
+        var encoder = new CanonicalRevision();
+        encoder.localFields(namespace, role, owner, key);
+        return encoder.finish();
+    }
+    private void localFields(String namespace, String role, String owner, String key) {
+        append("minimal-entry-goback@1/AIR2/"); append(LocalIds.POLICY); append("/");
+        word(namespace); word(role); word(owner); word(key);
+    }
     static String token(String value) {
-        // Local identities retain canonical-v1 tokens; they do not pass through the hash.
+        // SourceKeys retain canonical-v1 tokens. Derived AIR local IDs use local() instead.
         long required = Integer.toString(value.length()).length() + 1L + 4L * value.length();
         if (required > Integer.MAX_VALUE) throw new LimitReached();
         var text = new StringBuilder(); text.append(value.length()).append(':');

@@ -46,6 +46,6 @@ Na saída, implementado em 2A: `Publication → AirFileOutput → shared AirJson
 
 Sem CFG builder, reaching definitions, possible values, resolução final de chamadas, reconstrução de PIC/source ou callbacks para completar fatos. Construir labels/terminadores da AIR a partir de controle provado é lowering; descobrir controle não publicado pela ordem de statements não é.
 
-A identidade de publicação usa hash4j 0.30.0 no core, exclusivamente em CanonicalRevision,
+A identidade de publicação e os IDs locais derivados usam hash4j 0.30.0 no core, exclusivamente em CanonicalRevision (reutilizado por LocalIds),
 para XXH3-128 incremental. A dependência não atravessa a API pública; não acrescenta
 transporte nem framework. Algoritmo/seed/formato em [identidade](docs/domain/identity-and-provenance.md).
