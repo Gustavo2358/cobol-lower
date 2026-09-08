@@ -1,23 +1,15 @@
 # Trabalho atual
 
-## Item ativo
+[WORK-LOWER-004](active/WORK-LOWER-004/work-item.yaml): implementation CP0 único,
+PublicationId XXH3-128 compacto incremental. [Estado](active/WORK-LOWER-004/state.md).
+Nova autorização desta sessão; plano amplo E2E/escala não iniciado.
 
-[WORK-LOWER-003](active/WORK-LOWER-003/work-item.yaml): implementation CP0, **2A — AIR JSON output / CLI**. [Estado](active/WORK-LOWER-003/state.md).
+## Histórico reconciliado
 
-[WORK-LOWER-002](history/WORK-LOWER-002.md) encerrado após merge real da PR3 `77762ff...`; reviews não registrados na API.
+[WORK-LOWER-003](history/WORK-LOWER-003.md): PR4 merged em a12907d6, reviews não registrados.
+[WORK-LOWER-002](history/WORK-LOWER-002.md): PR3 merged em 77762ff2, reviews não registrados.
+[WORK-LOWER-001](history/WORK-LOWER-001.md): PR2 merged em e2488a36, reviews não registrados;
+CP5/R1 são evidência histórica imutável, sem autorização vigente.
 
-## Handoff histórico anterior
-
-Remediação de review humano do mesmo PR2: [R1 state](../quality/WORK-LOWER-001/R1-state.md), [autorização restrita](../quality/WORK-LOWER-001/R1-authorization.json). Não reabre o item nem inicia CP6/backlog. CP5 original `5a00a152d3c05793dad825c16226867c493ee31b` reconfirmado por [receipt remoto](../quality/WORK-LOWER-001/CP5-remote.json). A narrativa abaixo é o handoff original de fechamento; o delta pós-review fica em R1.
-
-WORK-LOWER-001 tem [fechamento local em histórico](history/WORK-LOWER-001.md), com review humano final do [PR2](https://github.com/Gustavo2358/cobol-lower/pull/2) pendente. Autorização concedida: multi-checkpoint CP0..CP5 em2026-09-06; [snapshot](../quality/WORK-LOWER-001/CP5-manifest.yaml). Conclusão local, certificação, check remoto e merge são estados distintos; [estado CP5](../quality/WORK-LOWER-001/CP5-state.md).
-
-Último recovery anterior ao fechamento: CP4 a487c52faded88d773c22333481f3a54a3327d47, [recibo success](../quality/WORK-LOWER-001/CP4-remote.json). SHA/check final de CP5 devem ser confirmados no PR pelo procedimento do harness.
-
-## Backlog
-
-[BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) completed localmente. Nenhum outro candidato foi iniciado ou autorizado. Não avançar automaticamente após CP5.
-
-## Mapas
-
-[Registry](registry.json), [backlog](backlog.md), [histórico](history/README.md), [templates](../templates/README.md), [Git/review](../engineering/git-and-review.md), [gates](../engineering/gates.md).
+[Registry](registry.json), [backlog](backlog.md), [histórico](history/README.md),
+[Git/review](../engineering/git-and-review.md), [gates](../engineering/gates.md).

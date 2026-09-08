@@ -7,6 +7,7 @@ import java.util.Objects;
 /** In-memory use case; all driving adapters must cross this same admission boundary. */
 public interface LowerInput {
     LoweringResult lower(SpInput input, Options options);
+    /** maximumIdentityCharacters bounds the final 32-character PublicationId, not canonical input volume. */
     record Options(AdmitInput.Limits admission, int maximumIdentityCharacters, ValidationOptions validation) {
         public Options {
             Objects.requireNonNull(admission); Objects.requireNonNull(validation);

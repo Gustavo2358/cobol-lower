@@ -1,0 +1,26 @@
+WORK-LOWER-004 CP0 / XXH3-128 verification. Cwd: repository root.
+Environment: Temurin Java21.0.12.1+1; Maven3.9.16; Python3.14.4;
+LOWER_BUILD_ROOT=/tmp/lower-compact; exact pinned upstream built by bootstrap.
+All logs below were produced during this session. Full raw output in full.log.
+Initial Java25 bootstrap exit1 setup failure; corrected explicitly to Java21, no semantic claim.
+SHA-256 stage superseded by explicit user steering before certification, separately recorded.
+New XXH3 FREEZE precedes implementation. RED (old SHA output): semantic exit1,
+COMPACT_ID full XXH3-128 fixed 32 lowercase hex. First GREEN: semantic exit0,
+2457 semantic assertions, 148 AIR output assertions, ID 32, AIR15720.
+Identity mutations: 5, all baseline0/red1/restored0, full records in identity-challenges.log.
+First XXH full rejected newline mutator via new size assertion before original codec oracle.
+Test reorder preserves both exact expectations, renews only test FREEZE; full rerun below.
+Final full: exit0, all six required gates, 139 harness tests, 27 restored challenges.
+Maven clean install: exit0, rebuilt all products and tests with no stale SHA classes.
+Java CLI two runs: exit0 each, identical bytes. Maven CLI exit0 and cmp exit0 against Java output.
+AIR complete after namespace substitution byte-identical to baseline, fixture untouched.
+G-ARCH probes: internal hash type accepted; public API and unrelated types rejected.
+No heap/CPU benchmark, 100k-lines claim, CFG generation or cross-repo E2E.
+xxh-bootstrap.log sha256=bf682b3f32011377077d47e9a681390eca6e2bdc8b0df29e08abf071ac0b8404
+xxh-red.log sha256=24eb1fb45853fd5cd95d185ebb7ef4099dfbddd8b435f37e9dbe30fe765c8709
+xxh-green.log sha256=f63b9c64d57b3dbcd3bbaa34cdb90cd4923b73c0029081c4543f35212b4c7b8a
+xxh-final-full.log sha256=cae440d4939e078460cf2e03405475192aac8b6bb84b83e28be995449c38c15b
+clean-install.log sha256=94849d167cf93d051376e2edfa82161c68b18fee302c080fa4130fccb016650d
+maven-cli.log sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+xxh-challenge.log sha256=2a04079d0f55a7d23919fb61766bde38c12605611b7c0516f6218d69ebe9f80b
+full.log removes only trailing whitespace from console lines for git diff --check; raw log SHA-256 is recorded above.

@@ -6,17 +6,32 @@ Handles locais do Semantic Product são qualificados pela unit/publicação de e
 
 O lowerer mantém correlação explícita e tipada entre identidades de entrada e saída. Uma origem pode produzir vários IDs AIR; vários conceitos auxiliares podem derivar da mesma ocorrência sem duplicar o fato de origem. O consumidor AIR não precisa interpretar handles COBOL.
 
-## Política de IDs implementada — canonical-v1
+## Política de IDs implementada — xxh3-128-v1
 
 IDs devem ser determinísticos para a mesma publicação semântica, revisão e opções/versionamento do lowering. Não usar relógio, UUID aleatório, object identity, `hashCode()` de objeto ou ordem de HashMap. Determinismo não é estabilidade longitudinal após editar fonte.
 
 **Risco a evitar:** derivar `PublicationId` somente da identidade da unit faz revisões diferentes aparentarem o mesmo namespace. A chave da publicação precisa distinguir o conteúdo/revisão semânticos e a política de tradução. O bootstrap deve especificar a função de identidade, seus componentes e o tratamento de colisões, com testes positivos e negativos; não escolher uma hash apenas para passar a fixture.
 
-Um digest do arquivo JSON bruto não é automaticamente identidade semântica, pois whitespace/ordem de propriedades podem variar sem mudar fatos. Uma estratégia de fingerprint canônica deve funcionar igualmente no caminho em memória. Já hash do arquivo é apropriado para proveniência de uma fixture, fora do domínio do lowering.
+Um hash do arquivo JSON bruto não é automaticamente identidade semântica, pois whitespace/ordem de propriedades podem variar sem mudar fatos. Uma estratégia de fingerprint canônica deve funcionar igualmente no caminho em memória. Já hash do arquivo é apropriado para proveniência de uma fixture, fora do domínio do lowering.
 
 ## Provenance
 
-Implementação congelada em CP3: CanonicalRevision codifica explicitamente todos os campos do SpInput admitido, com prefixo `minimal-entry-goback@1/AIR2/SP1.1/canonical-v1/`, presença opcional, tamanho de listas e tokens de string com comprimento UTF-16 e quatro hexadecimais por unidade. A codificação completa é injetiva, sem digest/hash ou tratamento probabilístico de colisão. Custo/tamanho O(B), IDs potencialmente longos; limite de caracteres resulta IMPLEMENTATION_LIMIT, sem truncar. Opções operacionais/telemetria não integram fatos semânticos. Unit/Entry/Sequence/Return possuem namespaces AIR próprios; joins usam IDs tipados completos.
+WORK-LOWER-004 substitui explicitamente a identidade integral canonical-v1 do CP3 por
+XXH3-128 completo, 32 caracteres hexadecimais minúsculos. A preimagem tem domínio
+`minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/` e os mesmos fatos admitidos e enquadramento:
+presença opcional, contagem de listas, strings com comprimento UTF-16 e quatro hex por
+code unit. hash4j 0.30.0, seed zero, formato high64/low64 com zeros iniciais preservados. Bytes ASCII são enviados incrementalmente ao hash, sem montar revisão integral.
+A hipótese é boa dispersão de hash não criptográfico e baixa probabilidade de colisões acidentais; não se alega resistência criptográfica ou injetividade matemática
+do hash ou impossibilidade de colisão. A política é aplicável igualmente à porta em memória.
+
+Tempo O(B) para processar fatos, memória auxiliar O(1) no cálculo do hash. O ID tem tamanho
+fixo; maximumIdentityCharacters limita somente esses 32 caracteres finais. Valores menores
+produzem IMPLEMENTATION_LIMIT/IDENTITY_LIMIT sem truncamento; não há limite oculto sobre
+o volume canônico. Os limites de admissão/validação continuam independentes.
+`CanonicalRevision.token` conserva sua codificação integral anterior para IDs locais/SourceKeys.
+Opções operacionais/telemetria não integram fatos semânticos. Unit/Entry/Sequence/Return
+possuem namespaces AIR próprios; joins usam IDs tipados completos. Contrato/fontes e oracles:
+[CP0](../work/active/WORK-LOWER-004/spec.md).
 
 Entry deriva da origem publicada para a entry/PROCEDURE DIVISION; Return deriva do GOBACK. Labels e estruturas auxiliares possuem origem derivada com regra identificada. Preserve artefato, cadeia de include, original versus expanded, exatidão e lacunas onde o contrato possibilitar.
 

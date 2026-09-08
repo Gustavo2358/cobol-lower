@@ -2,17 +2,15 @@
   "schema_version": 1,
   "active": [
     {
-      "id": "WORK-LOWER-003",
+      "id": "WORK-LOWER-004",
       "status": "active",
-      "path": "docs/work/active/WORK-LOWER-003",
+      "path": "docs/work/active/WORK-LOWER-004",
       "authorized_checkpoints": [
         "CP0"
       ],
-      "git_branch": "feat/air-json-output-cli",
-      "pull_request": 4,
-      "backlog_ids": [
-        "BACKLOG-LOWER-003"
-      ]
+      "git_branch": "perf/compact-publication-id",
+      "pull_request": 5,
+      "backlog_ids": []
     }
   ],
   "proposals": [],
@@ -36,8 +34,8 @@
       ],
       "manifest": "docs/quality/WORK-LOWER-001/CP5-manifest.yaml",
       "evidence": "docs/quality/WORK-LOWER-001/CP5.json",
-      "review_status": "changes_requested",
-      "merge_status": "open_not_merged",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
       "remediations": [
         {
           "id": "R1",
@@ -46,7 +44,22 @@
           "evidence": "docs/quality/WORK-LOWER-001/R1.json",
           "state": "docs/quality/WORK-LOWER-001/R1-state.md"
         }
-      ]
+      ],
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 2,
+        "branch": "feat/first-entry-goback-slice",
+        "base": "main",
+        "head_sha": "58100bcae16f7f0f1f2530bb7034bba394b5f48d",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "e2488a362478057de7d59cdf9ae2b38b1f4040d3",
+        "merged_at": "2026-09-07T01:56:17Z",
+        "observed_at": "2026-09-08T02:29:57.686892+00:00"
+      }
     },
     {
       "id": "WORK-LOWER-002",
@@ -77,6 +90,38 @@
         "merged_at": "2026-09-07T22:15:10Z",
         "observed_at": "2026-09-07T23:03:49Z"
       }
+    },
+    {
+      "id": "WORK-LOWER-003",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-003.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "feat/air-json-output-cli",
+      "pull_request": 4,
+      "backlog_ids": [
+        "BACKLOG-LOWER-003"
+      ],
+      "manifest": "docs/quality/WORK-LOWER-003/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-003/CP0.json",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 4,
+        "branch": "feat/air-json-output-cli",
+        "base": "main",
+        "head_sha": "d18cc1387ae964cc055157786108123d3c5090dd",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "merged_at": "2026-09-08T00:16:54Z",
+        "observed_at": "2026-09-08T02:29:57.686342+00:00"
+      }
     }
   ],
   "backlog": [
@@ -103,7 +148,7 @@
     {
       "id": "BACKLOG-LOWER-003",
       "title": "Adapter AIR JSON de saída e prova interoperável",
-      "status": "in_progress",
+      "status": "completed",
       "phase": "transport",
       "dependencies": [
         "BACKLOG-LOWER-001"

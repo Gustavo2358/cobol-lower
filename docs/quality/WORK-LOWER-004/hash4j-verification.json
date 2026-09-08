@@ -1,0 +1,15 @@
+{
+  "coordinates": "com.dynatrace.hash4j:hash4j:0.30.0",
+  "git_commit": "cb49f4525ee965080a72d3dd9f61af4a31fdb31c",
+  "license": "Apache-2.0",
+  "transitive_dependencies": [],
+  "java_test_runtime": "Temurin 21.0.12.1+1",
+  "java_source_release": 11,
+  "multi_release": true,
+  "native_libraries_in_jar": [],
+  "jar_sha256": "d3224b113ea835ce3452097747e5209ec760cf443dbed770d6ba68a0d480178f",
+  "native_reference_verifier": "system libxxhash XXH_versionNumber()=803, XXH3_128bits_withSeed, seed=0; verification only, not build/runtime dependency",
+  "seed": 0,
+  "format": "32 lower hex; high64 then low64, leading zeros preserved",
+  "sources_jar_sha256": "b60a85cdec4e840ab1a1fbc5d9ba72fe13dd94a631af3c437907a22318c821d4"
+}

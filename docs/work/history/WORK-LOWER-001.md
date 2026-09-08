@@ -28,3 +28,11 @@ Regra/limite: [primeiro slice](../../domain/first-slice-entry-goback.md) e [matr
 Limites: shape mínimo; outras famílias sem validação semântica integral; inventário alternativo parcial; precisão CONTROL local não eleva outras dimensões; spans/include sites incompletos explicitados; IDs longos limitados; JSON em árvore limitada por bytes; contadores sem SLA; AirValidator não é certificação semântica integral. Sem writer AIR, CFG ou alterações upstream.
 
 Próximo passo não iniciado: review humano do PR completo. Nenhum backlog dependente autorizado por este fechamento.
+
+## Reconciliação remota posterior
+
+PR #2 MERGED em 2026-09-07T01:56:17Z; head
+`58100bcae16f7f0f1f2530bb7034bba394b5f48d`, merge
+`e2488a362478057de7d59cdf9ae2b38b1f4040d3`, reviews=[] na API consultada
+nesta sessão. `not_recorded` não é aprovação. A fase R1 acima é histórica;
+o merge encerra sua autorização, sem reescrever R1 ou CP5.

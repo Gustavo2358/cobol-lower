@@ -1,0 +1,24 @@
+[
+  {
+    "probe": "internal",
+    "errors": []
+  },
+  {
+    "probe": "public-api",
+    "errors": [
+      "ARCH_API forbidden signature"
+    ]
+  },
+  {
+    "probe": "com.dynatrace.hash4j.random.PseudoRandomGenerator",
+    "rejected": true
+  },
+  {
+    "probe": "com.dynatrace.hash4j.hashing.HashingOther",
+    "rejected": true
+  },
+  {
+    "probe": "com.fasterxml.jackson.databind.ObjectMapper",
+    "rejected": true
+  }
+]

@@ -5,33 +5,56 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import com.dynatrace.hash4j.hashing.Hashing;
+import com.dynatrace.hash4j.hashing.HashStream128;
+import com.dynatrace.hash4j.hashing.HashValues;
 
-/** Injective, bounded canonical revision encoding; not a digest and not a transport format. */
+/** Domain-separated, noncryptographic XXH3-128 of admitted canonical facts. */
 final class CanonicalRevision {
-    private static final String PREFIX = "minimal-entry-goback@1/AIR2/SP1.1/canonical-v1/";
-    private final StringBuilder text = new StringBuilder();
-    private final int maximum;
-    private CanonicalRevision(int maximum) { this.maximum = maximum; }
+    private static final String PREFIX = "minimal-entry-goback@1/AIR2/SP1.1/xxh3-128-v1/";
+    private final HashStream128 stream = Hashing.xxh3_128(0L).hashStream();
+    private final byte[] buffer = new byte[256];
+    private int used;
+    private CanonicalRevision() { }
 
     static Optional<String> encode(SpInput input, int maximum) {
-        var encoder = new CanonicalRevision(maximum);
-        try { encoder.append(PREFIX); encoder.input(input); return Optional.of(encoder.text.toString()); }
-        catch (LimitReached limit) { return Optional.empty(); }
+        // This bound applies only to the final ID, never to the streamed canonical facts.
+        if (maximum < 32) return Optional.empty();
+        var encoder = new CanonicalRevision();
+        encoder.append(PREFIX); encoder.input(input);
+        return Optional.of(encoder.finish());
+    }
+    private String finish() {
+        flush();
+        // Numeric high64 then low64, fixed 32 lowercase hex digits (not little-endian bytes).
+        return HashValues.toHexString(stream.get());
     }
     static String token(String value) {
-        var encoder = new CanonicalRevision(Integer.MAX_VALUE); encoder.word(value); return encoder.text.toString();
-    }
-    private void append(String value) {
-        if (value.length() > maximum - text.length()) throw new LimitReached();
-        text.append(value);
-    }
-    private void word(String value) {
+        // Local identities retain canonical-v1 tokens; they do not pass through the hash.
         long required = Integer.toString(value.length()).length() + 1L + 4L * value.length();
-        if (required > maximum - text.length()) throw new LimitReached();
-        append(Integer.toString(value.length())); append(":");
+        if (required > Integer.MAX_VALUE) throw new LimitReached();
+        var text = new StringBuilder(); text.append(value.length()).append(':');
         for (int i = 0; i < value.length(); i++) {
             int code = value.charAt(i);
             for (int shift = 12; shift >= 0; shift -= 4) text.append("0123456789abcdef".charAt((code >>> shift) & 15));
+        }
+        return text.toString();
+    }
+    private void flush() {
+        stream.putBytes(buffer, 0, used); used = 0;
+    }
+    private void ascii(char value) {
+        buffer[used++] = (byte) value;
+        if (used == buffer.length) flush();
+    }
+    private void append(String value) {
+        for (int i = 0; i < value.length(); i++) ascii(value.charAt(i));
+    }
+    private void word(String value) {
+        append(Integer.toString(value.length())); append(":");
+        for (int i = 0; i < value.length(); i++) {
+            int code = value.charAt(i);
+            for (int shift = 12; shift >= 0; shift -= 4) ascii("0123456789abcdef".charAt((code >>> shift) & 15));
         }
     }
     private void number(int value) { word(Integer.toString(value)); }

@@ -93,7 +93,7 @@ public final class LoweringSuite {
         return count;
     }
     private static void revisionAndEvidence(SpInput input, Publication baseline) {
-        check(baseline.id().localId().startsWith("minimal-entry-goback@1/AIR2/SP1.1/canonical-v1/"), "identity includes rule and semantic versions");
+        check(baseline.id().localId().equals("1718623a5d9fc4b5db0124dc15913f58"), "identity includes rule and semantic versions (independent XXH3-128 vector)");
         var policy = input.policy();
         var policyRevision = new SpInput(input.unit(), new SpInput.Policy(policy.policyId(), "next-policy-revision", policy.qualifyMode(),
                 policy.pgmnameMode(), policy.dynamMode(), policy.dllMode()), input.dataDeclarations(), input.statements(), input.structure(), input.gaps(), input.coverage(), input.entryInventory());
