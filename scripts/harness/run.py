@@ -141,7 +141,8 @@ def architecture():
     run(maven("-pl", "core", "org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree",
               "-DoutputType=json", "-DoutputFile=target/dependency-tree.json"))
     tree = read_data(ROOT / "core/target/dependency-tree.json")
-    fail_on(architecture_errors(ROOT, tree, jar))
+    hash_jar = build_root() / "m2/com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar"
+    fail_on(architecture_errors(ROOT, tree, jar, hash_jar))
 
 
 def fail_on(errors):

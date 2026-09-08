@@ -1,0 +1,550 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-004",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "perf/compact-publication-id",
+  "pull_request": null,
+  "base_commit": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+  "reviewed_head": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-004/spec.md",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "933a6ce1fca35952b35c3b5ad92c058212230e0faa3c861f98d61c58e833c950",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-004/CP0.json",
+    "docs/work/active/WORK-LOWER-004/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "4440ff984409ad6dd33c0a391e350be7b3d91492a1723eed6cc468f8d6217004",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java",
+        "sha256": "2904e59a0899eaa6c93ffafecd846416bff00528c3c78f9c033e04b6f76f3803",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/AdmissionAdapterSuite.java",
+        "sha256": "1786c6301f7abc43da916d4a24eced35063368dc4704dcf37ce417b9c4124a20",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderPerformanceSuite.java",
+        "sha256": "60dd65869238bee4724a2ab3b1df8bfa7e59bc671f925d03a8da9d2f153af098",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/DecoderSuite.java",
+        "sha256": "c8de2f1372596adb178d81cecb36d1dadf579c384712a4c9ca7b28f50619123a",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/VerticalSuite.java",
+        "sha256": "b76eb560ed643fc093c92319884e49b7347d77d62cf4061777bcb7142149bfc8",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/README.md",
+        "sha256": "1a3b208cd64361d7acf993325867a3828787588b02b9d5c30255231e57652ed4",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/application/CompactIdentitySuite.java",
+        "sha256": "455a8651415a1e934b0c43eafe9503e785833162e46ba94e65c4d42946a19737",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/BoundarySuite.java",
+        "sha256": "7f60b5d90a1befe96e4c2344fcd7e07697758d4855c80c999c3d87010bfe88a9",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/InputSuite.java",
+        "sha256": "d739ac95836cfad99ce3b9d8ab89e2fce3a8551e04ceb2ad93a6fc0869a1cf62",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+        "sha256": "28f6ff46de07cf470479d11d9544a68554e44a72d0dde744fe2db38a261c439a",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/ManualAir.java",
+        "sha256": "15fd0551eab3ad5ac04541bd71669a82b59385b7d8e7eb60e575e54834d662af",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/PerformanceSuite.java",
+        "sha256": "515587604bf2ac89ddf27d92639accf3d6e292aefde3d77a28edabc2bbe4aaa9",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/ScaleInputs.java",
+        "sha256": "f7bb99faff7ebc5e9200e65593613172f0ce32d8d06315006e126b2bf2943555",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/SpFixtures.java",
+        "sha256": "4d430f5af4ef46105e2ab1f0e012de9da1ba2dd999fd6a57cb38aed5562d5ec5",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "ef0a3843dbf705ac20565356e2455d793bb89aa15da1a8c3b2d164e9824b9178",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "d73d5c0c2e6f549b5bddac5e39e04c587035eb602648c328a926c18e357b7bfe",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/identity-and-provenance.md",
+        "sha256": "4aaadfeb40a7431723c2bbf4654e0550d7fc62a5d7898ae6bd4ee999c34b9aae",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "6104877f41cdc17868c38ce2c6e35b7ccb1f4a99db87c53ef3535c4a30f0e29a",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "7d4183af3be50ff844e0b095b032e79fe2c81fcd2fb6b8ac7a6f6b99390ded37",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/prompt-authoring.md",
+        "sha256": "29bcd8a403d779b52e60649f1c368c38f9f0f466c806a988a8279c016af35961",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/research-and-evidence.md",
+        "sha256": "c137ab03af2bcc6974362b2e2e9588a6fa44fe6e4e71c760a0107af6ad22b878",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/semantic-analysis-policy.md",
+        "sha256": "5366cade540d0ac8994a7cd0255a7bee85d14801a5852bf3d1673d7fc0f1f1e7",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "6953209363c755503b9ad64aa093c6cb10acd8b3d94936fdf0cc12675c3ae259",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "1ca1ac60c284fd947353310e755c6e8708e112546cd8a0360123232f4ff785f8",
+        "git_revision": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-004/CP0-manifest.yaml",
+        "sha256": "3163af14d283dfd06217f516718c3d49b563e5a1ce7c917af7ae5c192b3dea60",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "db515cb39d3fa9301395dbb41924b98eccff3a8e6e17f018ec38cb804bb7e46f",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-004/eval.md",
+        "sha256": "a06348a21b27f55ec9cdfb9687088449fa260c7df4bfc94476da089b13456bd0",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-004/plan.md",
+        "sha256": "5b22d4ec4cc46aecc722d1da60852e85dbff2f5641542fa997e258e8f3d74ded",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-004/spec.md",
+        "sha256": "c1f9a1e3bb1e6de402ef974101a40e73596222f3630c457009fcd35cbf4663e3",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "2671a8aed50915a337ff62f95803a65ce4fc8f7b802ef7fa0bd6f48b1851d514",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "scripts/harness/tests/test_architecture.py",
+        "sha256": "6647e5f21ca02f46edeba424e2a40f7e65151569cfd7469fb695e7c7d5703913",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/tests/test_execution_authority.py",
+        "sha256": "2a48ef8fd753ef87e6f48cb23f9439804357bf99719bd4e72cd23ce66a3128d9",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1800
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json (component docs)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json (component architecture)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json (component semantic)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 2457,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json (component performance)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 95,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-004/CP0.json (component git)",
+      "cwd": ".",
+      "environment": "Temurin21.0.12.1+1; Maven3.9.16; Python3.14.4; LOWER_BUILD_ROOT=/tmp/lower-compact",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/full.log"
+    },
+    {
+      "gate": "clean-build-cli",
+      "required": true,
+      "command": "mvn -B -ntp -Dmaven.repo.local=/tmp/lower-compact/m2 clean install; documented Maven/Java CLI commands; cmp",
+      "cwd": ".",
+      "environment": "Java21; isolated Maven dependency cache",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/validation.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "IDENTITY-POLICY-VERSION",
+      "mutation": "word(policy.version()); -> word(\"constant\");",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "restored_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "0751d1fde2dacccb01ad827575bba5ea540117e4c281b1a14bf143cce8eba8f0",
+      "red_output_sha256": "b5dd5303628f388c8de4f483d62ace275058938530f197dea3e0013fb33a183a",
+      "restored_output_sha256": "2163d968e50accee6d109877b6182b94b9decffaaa63decd52d2a6d90efce948",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-DOMAIN",
+      "mutation": "AIR2/SP1.1/xxh3-128-v1/ -> AIR2/SP1.1/xxh3-128-v2/",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "restored_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "b7f0a415d97fdfea501765a17a4d2edc3b0c72e4ed35565b2306e11923cf82c1",
+      "red_output_sha256": "1dc5d42713e9745864db5eb21821bf62022fef8cca29f8e987b3c7610840b8b2",
+      "restored_output_sha256": "b635f9d45cb9434f2664a7cc639691a77290dafb49f1965f293f255f9f8add98",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-FRAMING",
+      "mutation": "append(Integer.toString(value.length())); append(\":\"); -> append(\":\");",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "restored_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "585b24fdb4bd07e2f927359c0d58ee3d6513cb7c9e2deacf646f15db2383b7ef",
+      "red_output_sha256": "3b3bd7def034ea2c50640192ac7debc0228bf5ee0114864ac9e962a311322dab",
+      "restored_output_sha256": "d62f82dbcc02ecdfb7d3ec8d955631070884871f421b2ff7c442a02a3be1d336",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-SEED",
+      "mutation": "xxh3_128(0L) -> xxh3_128(1L)",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "restored_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "9485ec720d3fed27f4cd963259a83471c9ab40681402237a3154a2b1bcd0b770",
+      "red_output_sha256": "3c2f58991304d61adbb3a284746aa82e9c3e5e7d0d37f03fbe7742bd4b2b24ed",
+      "restored_output_sha256": "dab6095a78e6659d172ccc1a7b5be266b3dac7a0c1da2bf84f00dddddf884590",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-BUFFER",
+      "mutation": "new byte[256] -> new byte[8192]",
+      "expected_oracle": "hash update buffer bounded at 256 bytes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "Caused by: java.lang.AssertionError: COMPACT_ID hash update buffer bounded at 256 bytes",
+      "baseline_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "restored_digest": "0e1df8dfdea55ec8f3a539c1e6d70f00500c39205ba593fc9db212647eb5a750",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "ab8598445f65a51dffd1e2a1d2ee6a7c9a86059ac129a88c9f477bb765ccc8ec",
+      "red_output_sha256": "2a11e2ca5e262355acb7a0da8953e442cba6daecef331c53fca87accaa24fbb7",
+      "restored_output_sha256": "61e5eabc0ec89e015000c5aaa09b0b059b160ad75aae5d2a0dcb7cc6dcf859af",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=2552",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": null,
+      "guarantees": [
+        "Existing 779 semantic assertions preserved except explicitly superseded PublicationId expectation; 148 output assertions; 95 performance assertions; full with 139 harness tests and 27 restored historical challenges; byte-identical AIR modulo namespace; original fixture/pins/history preserved."
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "evidence": [
+      "docs/quality/WORK-LOWER-004/CP0-review.md"
+    ],
+    "kind": "self-review",
+    "reviewer_context": "Codex implementer, complete staged diff including new files and lifecycle; no independent/human approval claimed",
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "Noncryptographic XXH3-128 accidental-collision assumption; no cryptographic or mathematical uniqueness claim.",
+    "No heap/throughput benchmark or cross-repo E2E; token/local IDs remain integral.",
+    "Transport/integration gates remain SPECIFIED_NOT_IMPLEMENTED; existing semantic/full gates cover CLI output."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true
+  }
+}

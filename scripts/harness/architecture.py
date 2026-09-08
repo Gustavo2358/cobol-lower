@@ -5,7 +5,8 @@ import subprocess
 import zipfile
 import xml.etree.ElementTree as ET
 
-FORBIDDEN = re.compile(r"(?:java[./](?:io|nio|net|sql)[./]|javax[./]|jakarta[./]|com[./]|org[./]|"
+HASH4J_TYPE = r"com[./]dynatrace[./]hash4j[./]hashing[./](?:Hashing|Hasher128|HashStream128|HashValue128|HashValues)\b"
+FORBIDDEN = re.compile(r"(?:java[./](?:io|nio|net|sql)[./]|javax[./]|jakarta[./]|(?!" + HASH4J_TYPE + r")com[./]|org[./]|"
                        r"io[./]github[./]gustavo2358[./](?:cobolexplorer|analysis[./]cfg)[./]|"
                        r"io[./]github[./]gustavo2358[./]lower[./]adapters[./]|"
                        r"io[./]github[./]gustavo2358[./]air[./]json[./]|"
@@ -36,14 +37,15 @@ def class_errors(path):
     api = subprocess.run(["javap", "-public", "-s", str(path)], text=True, capture_output=True)
     if api.returncode:
         errors.append("ARCH_SETUP javap public")
-    elif FORBIDDEN.search(api.stdout):
+    elif FORBIDDEN.search(api.stdout) or re.search(HASH4J_TYPE, api.stdout):
         errors.append("ARCH_API forbidden signature")
     return errors
 
 
 def dependency_errors(tree):
     allowed = {("io.github.gustavo2358", "cobol-lower-core", "0.1.0-SNAPSHOT"),
-               ("io.github.gustavo2358", "air-java", "0.1.0-SNAPSHOT")}
+               ("io.github.gustavo2358", "air-java", "0.1.0-SNAPSHOT"),
+               ("com.dynatrace.hash4j", "hash4j", "0.30.0")}
     errors = []
     def visit(node):
         key = (node.get("groupId"), node.get("artifactId"), node.get("version"))
@@ -57,7 +59,14 @@ def dependency_errors(tree):
     return errors
 
 
-def architecture_errors(root, dependency_tree, air_jar):
+def identity_hash_dependency(owner, target):
+    """Only canonical identity uses these exact pinned hash4j API types."""
+    return owner == "io.github.gustavo2358.lower.application.CanonicalRevision" and target in {
+        "com.dynatrace.hash4j.hashing." + name
+        for name in ("Hashing", "Hasher128", "HashStream128", "HashValue128", "HashValues")}
+
+
+def architecture_errors(root, dependency_tree, air_jar, hash_jar):
     root = Path(root)
     errors = dependency_errors(dependency_tree)
     errors.extend(output_boundary_errors(root))
@@ -70,7 +79,7 @@ def architecture_errors(root, dependency_tree, air_jar):
     for path in classes:
         errors.extend(str(path.relative_to(root)) + ": " + e for e in class_errors(path))
     result = subprocess.run(["jdeps", "--multi-release", "21", "-verbose:class", "-filter:none",
-                             "--class-path", str(air_jar), str(root / "core/target/classes")],
+                             "--class-path", str(air_jar) + ":" + str(hash_jar), str(root / "core/target/classes")],
                             text=True, capture_output=True)
     if result.returncode:
         errors.append("ARCH_SETUP jdeps: " + result.stderr)
@@ -87,7 +96,7 @@ def architecture_errors(root, dependency_tree, air_jar):
             if target == "not" or FORBIDDEN.search(target):
                 errors.append("ARCH_JDEPS " + line.strip())
             elif "." in target and not target.startswith(("java.lang.", "java.util.", "java.math.",
-                    "io.github.gustavo2358.lower.", "io.github.gustavo2358.air.")):
+                    "io.github.gustavo2358.lower.", "io.github.gustavo2358.air.")) and not identity_hash_dependency(owner, target):
                 errors.append("ARCH_JDEPS outside allowed vocabulary: " + target)
     return errors
 

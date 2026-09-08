@@ -25,7 +25,7 @@ public final class EntryGobackLowerer implements LowerInput {
         var revision = CanonicalRevision.encode(input, options.maximumIdentityCharacters());
         if (revision.isEmpty()) return new LoweringResult(LoweringResult.Status.IMPLEMENTATION_LIMIT, admission,
                 Optional.empty(), Optional.empty(), List.of(), List.of(), List.of(new LoweringResult.Limitation(
-                        LoweringResult.LimitCode.IDENTITY_LIMIT, "publication", "Canonical revision exceeds explicit character limit; no prefix published.")));
+                        LoweringResult.LimitCode.IDENTITY_LIMIT, "publication", "PublicationId exceeds explicit character limit; no prefix published.")));
         var publication = new PublicationId(revision.orElseThrow()); var unit = new UnitId(publication, "unit");
         var origins = new SourceOrigins(publication);
         var labels = new LinkedHashMap<SpInput.StatementId, LabelId>();

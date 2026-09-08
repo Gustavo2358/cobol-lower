@@ -78,6 +78,10 @@ public final class AirOutputSuite {
         byte[] bytes = Files.readAllBytes(output);
         var codec = new AirJson(); Publication publication = expected.publication().orElseThrow();
         check(Arrays.equals(bytes, codec.encode(publication)), "exact shared codec bytes");
+        check(publication.id().localId().matches("[0-9a-f]{32}"), "compact complete XXH3-128 namespace");
+        // Original SP fixture, baseline a12907d6: 398532 bytes, 73 namespaces of length 5276.
+        check(bytes.length == 398532 - 73 * (5276 - 32), "only namespace bytes shrink from baseline");
+        System.out.println("COMPACT_AIR_BYTES=" + bytes.length);
         check(codec.decode(bytes).equals(publication), "round-trip entire real Publication");
         check(run(input, second).code() == 0 && Arrays.equals(bytes, Files.readAllBytes(second)), "deterministic repeated execution");
         Files.writeString(second, "old file");

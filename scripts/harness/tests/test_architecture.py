@@ -7,10 +7,28 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts/harness"))
-from architecture import source_errors, class_errors, dependency_errors
+from architecture import source_errors, class_errors, dependency_errors, identity_hash_dependency
 
 
 class Architecture(unittest.TestCase):
+    def test_identity_hash_vocabulary(self):
+        owner = "io.github.gustavo2358.lower.application.CanonicalRevision"
+        for suffix in ("Hashing", "Hasher128", "HashStream128", "HashValue128", "HashValues"):
+            target = "com.dynatrace.hash4j.hashing." + suffix
+            self.assertTrue(identity_hash_dependency(owner, target))
+            self.assertFalse(identity_hash_dependency(owner + "Other", target))
+        for target in ("java.security.MessageDigest", "java.security.SecureRandom", "com.dynatrace.hash4j.hashing.Hasher64",
+                       "com.dynatrace.hash4j.hashing.HashingOther", "com.dynatrace.hash4j.random.PseudoRandomGenerator", "java.nio.file.Path"):
+            self.assertFalse(identity_hash_dependency(owner, target))
+
+    def test_hash4j_dependency_is_pinned(self):
+        tree = dict(groupId="io.github.gustavo2358", artifactId="cobol-lower-core", version="0.1.0-SNAPSHOT",
+                    children=[dict(groupId="io.github.gustavo2358", artifactId="air-java", version="0.1.0-SNAPSHOT"),
+                              dict(groupId="com.dynatrace.hash4j", artifactId="hash4j", version="0.30.0")])
+        self.assertEqual([], dependency_errors(tree))
+        tree["children"][1]["version"] = "0.29.0"
+        self.assertTrue(dependency_errors(tree))
+
     def test_shared_vocabulary(self):
         self.assertEqual([], source_errors("import io.github.gustavo2358.air.model.Publication; class Boundary {}"))
 

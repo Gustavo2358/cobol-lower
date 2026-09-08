@@ -1,0 +1,19 @@
+{
+  "baseline_commit": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+  "before_air_bytes": 398532,
+  "after_air_bytes": 15720,
+  "saved_bytes": 382812,
+  "reduction_percent": 96.05552377224413,
+  "namespace_occurrences": 73,
+  "publication_id": "1718623a5d9fc4b5db0124dc15913f58",
+  "identity_characters": 32,
+  "entire_air_equal_after_only_namespace_substitution": true,
+  "repeat_bytes_identical": true,
+  "java_cli_exit_codes": [
+    0,
+    0
+  ],
+  "baseline_air_sha256": "79270eabe0d2d836594c6d58fc3b2abb462c6d736d698477b680a656153bab44",
+  "new_air_sha256": "e7ce2c810b57d9c1e08d467d097c8f523b06a4ab4f0bed27b7aa7cf24fa51a5b",
+  "cfg_not_executed": true
+}

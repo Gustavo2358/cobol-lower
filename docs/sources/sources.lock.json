@@ -169,6 +169,39 @@
         "https://github.com/Gustavo2358/analysis-cfg/blob/4685dca32bf4f31a0e699ec6a3927018ab1b1d84/docs/architecture/ports-and-adapters.md",
         "https://github.com/Gustavo2358/analysis-cfg/blob/4685dca32bf4f31a0e699ec6a3927018ab1b1d84/docs/work/backlog/BACKLOG-CFG-002.md"
       ]
+    },
+    {
+      "id": "SRC-HASH4J",
+      "repository": "dynatrace-oss/hash4j",
+      "repository_url": "https://github.com/dynatrace-oss/hash4j",
+      "commit": "cb49f4525ee965080a72d3dd9f61af4a31fdb31c",
+      "role": "noncryptographic_publication_identity_implementation",
+      "maven": {
+        "group_id": "com.dynatrace.hash4j",
+        "artifact_id": "hash4j",
+        "version": "0.30.0"
+      },
+      "license": "Apache-2.0",
+      "runtime_dependencies": [],
+      "java_release": 11,
+      "multi_release_java": [
+        21,
+        25
+      ],
+      "algorithm": "XXH3-128",
+      "seed": 0,
+      "format": "32 lowercase hexadecimal digits, high64 followed by low64",
+      "paths": [
+        "LICENSE",
+        "build.gradle",
+        "src/main/java/com/dynatrace/hash4j/hashing/Hashing.java",
+        "src/main/java/com/dynatrace/hash4j/hashing/XXH3_128.java",
+        "src/main/java/com/dynatrace/hash4j/hashing/XXH3Base.java",
+        "src/main/java/com/dynatrace/hash4j/hashing/HashStream128.java",
+        "src/main/java/com/dynatrace/hash4j/hashing/HashValues.java"
+      ],
+      "evidence_level": "exact_tag_sources_POM_license_API_reviewed; native_0.8.3_vectors_executed; Java21_validation_in_CP0",
+      "observed_on": "2026-09-08"
     }
   ],
   "local_sources": [

@@ -17,6 +17,11 @@ class ExecutionAuthority(unittest.TestCase):
         self.addCleanup(temp.cleanup)
         self.root = Path(temp.name)
         copy_checkout(self.root)
+        # Controlled unmerged premise; independent of the live historical merge registry.
+        path = self.root / "docs/work/registry.json"
+        registry = read_data(path)
+        registry["history"][0].update(merge_status="open_not_merged", review_status="changes_requested")
+        path.write_text(json.dumps(registry))
         self.record = read_data(self.root / "docs/quality/WORK-LOWER-001/R1.json")
 
     def test_explicit_v2_unmerged_remediation_positive(self):

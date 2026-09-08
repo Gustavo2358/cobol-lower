@@ -1,0 +1,131 @@
+{
+  "status": "superseded_before_certification",
+  "reason": "Explicit user steering in this session replaces SHA-256 with full XXH3-128, no security requirement.",
+  "baseline": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+  "sha256_green_counts": {
+    "semantic": 870,
+    "air_output": 148,
+    "performance": 95
+  },
+  "sha256_air_bytes": 18056,
+  "sha256_identity_characters": 64,
+  "sha256_falsifications": [
+    {
+      "id": "IDENTITY-POLICY-VERSION",
+      "mutation": "word(policy.version()); -> word(\"constant\");",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "restored_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "2f7c15fc2d79b0a305966c7872c0d77b146f3f6fa6077b8ab254e630a248dbe6",
+      "red_output_sha256": "fafc037fe7483292a2434bef3f07c52b243228e373938becd5a3eff4d81474dc",
+      "restored_output_sha256": "f29babf00ec1b85f3e044cf152912649d763064ac486841cc829319106aa7f87",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-DOMAIN",
+      "mutation": "AIR2/SP1.1/sha256-v2/ -> AIR2/SP1.1/sha256-v3/",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "restored_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "4548b4d95c8169f73015876a1cd5fdf3206aed7f4ca475947ec5ada28f102b5d",
+      "red_output_sha256": "f919deee24cffd1ac1450b74449cd7af14266630167e4b24de8882df3cd63252",
+      "restored_output_sha256": "a1f087a04ae0bd70c373a4d5ef3280ca93db04fec9443b2df878d8a4ca41cdf9",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-FRAMING",
+      "mutation": "append(Integer.toString(value.length())); append(\":\"); -> append(\":\");",
+      "expected_oracle": "independent domain and all-facts vector",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID independent domain and all-facts vector",
+      "baseline_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "restored_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "20ff5a4649434e2761700ff8b3cce895aa950ec28ef60f193a29475ca8a0a828",
+      "red_output_sha256": "2b92f72fde3f9de1d5f494d77cd21f84573e6467787fd0ad0fde006793ac585e",
+      "restored_output_sha256": "f36588ef4adfeae22e7258b427257c5927cd913d714ae1cb2cc3da7543994306",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "IDENTITY-BUFFER",
+      "mutation": "new byte[256] -> new byte[8192]",
+      "expected_oracle": "digest update buffer exceeds 256 bytes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: COMPACT_ID digest update buffer exceeds 256 bytes",
+      "baseline_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "restored_digest": "2609c6f962ac8db221a928293c7a237720d35d9824e2ed92f65bbba2ff720fc2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "44a352a7c794a59048fbc1e93bd01b337bf5b3d6dbc3bde7513b9ba2d40dec89",
+      "red_output_sha256": "affa7b828863069bb2e0512d1a7c23618353631fedbcac5da1029bb204409794",
+      "restored_output_sha256": "88ded703c1c35d7fb9ba21515174b7119d81a64485bcd0a3c377ddd861a448c2",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=965",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    }
+  ],
+  "not_certified": true,
+  "full_failures": [
+    "ARCH_JDEPS java.security types excluded",
+    "Historical execution-authority tests inherited merged status instead of explicit synthetic unmerged premise"
+  ],
+  "artifact_sha256": {
+    "CompactIdentitySuite.java": "bc33ea88751c3af0708d1c133f29dcc594106d5d8017d792c408ccf0c4dddcf7",
+    "CanonicalRevision.java": "e70530cdd43bf0bdb54b4f54fe74a2a567bbb1ba177a31a410f561d03c152e70",
+    "freeze.json": "5e559dfc2025b3ab10121d6e9b12268322d66a0689432bc9027e6a6fdda9a749",
+    "expected.json": "48e337bfa261692904f33fd7e9ab8daee5434db3cef5b2bb3db9ea130e13fa1c",
+    "size-comparison.json": "0f47dc19cf83462f94fa748b644cb72bc4a09286fa1ccc2b1d4a781cb8e67c57",
+    "full-green.log": "d9ea7b0efe53b479fc6f190db274ea7dca46336b0a3635cb0dbdfe89affac13d",
+    "full.log": "d518abb9a15f97eb85e25125e6769073b823db8241f9e7b3968ab6d59eeb7400",
+    "identity-challenge.log": "8aa75eed8ddd235a57c4a6aa2bffb8f3e6b39db7934ffedcc1189fc8ae6991b8",
+    "red.log": "7ed8a207b801683e2a304f9214d54edb38177b98486d07a45330b8b51ef3009e",
+    "first-green.log": "2401b52e61f0845f4eaa0bcc20d53fa3c08861280412d40f9250c35d6a9527d1"
+  }
+}
