@@ -100,7 +100,7 @@ public final class SpJsonDecoder {
                 }
                 case "1.2.0" -> {
                     var wire = mapper.treeToValue(node, Wire12.Document.class);
-                    requirePhysical(wire, "$", meter); input = Materialize.input(wire);
+                    requirePhysical(wire, "$", meter); requireCoherent12(wire); input = Materialize.input(wire);
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
@@ -118,6 +118,27 @@ public final class SpJsonDecoder {
             return reject(Code.INPUT_ERROR, ex.getMessage());
         } catch (java.io.IOException ex) {
             return reject(Code.INPUT_ERROR, "$ bytes");
+        }
+    }
+
+    /** Upstream 1.2 typed fact invariants, not COBOL interpretation or input repair. */
+    private static void requireCoherent12(Wire12.Document wire) {
+        for (int i = 0; i < wire.dataDeclarations().size(); i++) {
+            var scalar = wire.dataDeclarations().get(i).scalarText();
+            if (scalar != null && scalar.logicalExtent() <= 0)
+                throw new PhysicalShape("$/dataDeclarations/" + i + "/scalarText/logicalExtent");
+        }
+        for (int i = 0; i < wire.statements().size(); i++) {
+            if (!(wire.statements().get(i) instanceof Wire12.MoveDocument move)) continue;
+            var source = move.source(); var logical = source.logicalValue();
+            if (logical == null) continue;
+            if (source.kind() != SpInput.LiteralKind.ALPHANUMERIC)
+                throw new PhysicalShape("$/statements/" + i + "/source/kind");
+            if (!source.value().equals(logical.value()))
+                throw new PhysicalShape("$/statements/" + i + "/source/value");
+            if (logical.logicalDomain() != SpInput.LogicalDomain.TEXT || logical.logicalExtent() < 0
+                    || logical.logicalExtent() != logical.value().codePointCount(0, logical.value().length()))
+                throw new PhysicalShape("$/statements/" + i + "/source/logicalValue");
         }
     }
 

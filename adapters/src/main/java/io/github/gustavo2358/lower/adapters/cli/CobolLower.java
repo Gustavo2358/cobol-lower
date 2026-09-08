@@ -15,11 +15,11 @@ import java.io.PrintStream;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-/** Minimal file composition for minimal-entry-goback@1. Exit codes are part of the CLI contract. */
+/** File composition for the admitted CP3 and scalar MOVE profiles. Exit codes are part of the CLI contract. */
 public final class CobolLower {
     public static final int SUCCESS = 0, USAGE = 2, INPUT = 3, LOWERING = 4, CODEC = 5, OUTPUT = 6;
-    public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(100_000, 64, 50_000);
-    public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(100_000, 100),
+    public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(ProductionLimits.SP_BYTES, ProductionLimits.SP_DEPTH, ProductionLimits.SP_NODES);
+    public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(ProductionLimits.ADMISSION_ENTITIES, 100),
             1_000_000, ValidationOptions.defaults());
     private CobolLower() { }
     public static void main(String[] args) { System.exit(run(args, System.err)); }

@@ -86,6 +86,36 @@
       "capture_checkpoint": "WORK-LOWER-006/CP0",
       "jdk": "Temurin 21.0.12.1+1",
       "source_authority": "Public synthetic upstream source, no private corpus. No edits to generated SP."
+    },
+    {
+      "id": "FIXTURE-SP-PRODUCTION-400",
+      "kind": "upstream_golden",
+      "status": "CAPTURED",
+      "producer_repository": "Gustavo2358/proleap-poc",
+      "producer_commit": "2815e805fd3a9ef4762a39ab9435260fc76da0e8",
+      "contract_schema": "cobol-semantic-product",
+      "contract_version": "1.2.0",
+      "artifact_path": "adapters/src/test/resources/sp/production-400.json.gz",
+      "sha256": "a59262f8ae9e7c2c9b0aa78b602020511b731146bb91b9f7fcfd16fa4317b64e",
+      "bytes": 1071738,
+      "compression": "gzip lossless; SHA-256/bytes above are decompressed upstream bytes",
+      "generation_command": "mvn -q -ntp -Dmaven.repo.local=/tmp/lower-4c/m2 exec:java '-Dexec.args=--source target/SCALE-PRODUCTION.cbl --copybooks src/test/resources/cobol/semantic --output target/lower-production-400'",
+      "generation_cwd": "/tmp/lower-4c/proleap (isolated merge checkout)"
+    },
+    {
+      "id": "FIXTURE-SP-PRODUCTION-SHARED-10000",
+      "kind": "upstream_golden",
+      "status": "CAPTURED",
+      "producer_repository": "Gustavo2358/proleap-poc",
+      "producer_commit": "2815e805fd3a9ef4762a39ab9435260fc76da0e8",
+      "contract_schema": "cobol-semantic-product",
+      "contract_version": "1.2.0",
+      "artifact_path": "adapters/src/test/resources/sp/production-shared-10000.json.gz",
+      "sha256": "fe6178078abe4269676e08602df3a50773f53971a4b35234dc29606ef656ab72",
+      "bytes": 18809400,
+      "compression": "gzip lossless; SHA-256/bytes above are decompressed upstream bytes",
+      "generation_command": "mvn -B -ntp -Dmaven.repo.local=/tmp/lower-4c/m2 -Dtest=ScalarMoveScaleTest test",
+      "generation_cwd": "/tmp/lower-4c/proleap (isolated merge checkout)"
     }
   ]
 }

@@ -3,8 +3,8 @@
 Checkpoint 4C: SP 1.2.0 → DATA escalar + MOVE FULL_IDENTITY + GOBACK → AIR JSON.
 [Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-006/work-item.yaml).
 CP3 1.1.0 preservado. CLI usa o shared codec (16 MiB/depth128); falhas de encode
-são exit5 sem output parcial. Limite SP CLI atual: 100000 bytes; grandes probes
-em memória não são uma promessa de capacidade da CLI. Sem CFG/dataflow/CALL.
+são exit5 sem output parcial. Limites SP CLI: 32 MiB/depth64/1500000 nós; admissão 250000 visitas, medidos
+no corpus real de 1 DATA/10000 MOVEs. O teto AirJson continua limitando grandes saídas. Sem CFG/dataflow/CALL.
 
 O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em `air-java::Publication`: uma Unit, Entry, Sequence e `Return([])`. O adapter de saída 2A publica essa Publication como AIR JSON canônico pelo codec compartilhado. Não reanalisa COBOL nem calcula CFG. O inventário alternativo permanece parcial.
 
@@ -80,7 +80,7 @@ preservado como suppressed na exception de I/O, sem transformar a execução em 
 Não cria diretórios pais. Não acrescenta newline, pretty-print, reparse ou fatos AIR.
 
 Defaults operacionais explícitos, iguais aos usados nos testes existentes do slice:
-SP 100.000 bytes, profundidade 64, 50.000 nós; admissão 100.000 entidades e 100 diagnostics;
+SP 32 MiB, profundidade 64, 1.500.000 nós; admissão 250.000 entidades e 100 diagnostics;
 identidades até 1.000.000 caracteres. `ValidationOptions.defaults()` do pin usa profundidade 128,
 2.000.000 entidades e 10.000 issues. `AirJson` usa seus defaults: 16 MiB e profundidade 128,
 com os mesmos defaults de validação. Limites não fazem parte da identidade, não mudam o perfil,

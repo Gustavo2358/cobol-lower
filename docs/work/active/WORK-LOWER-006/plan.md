@@ -6,3 +6,17 @@
 4. FALSIFY: 16 mutações compiláveis, restauração exata e segundo GREEN.
 5. REGRESS/REVIEW/CERTIFY: seis gates first-slice, diff integral; commit/push/PR,
 CI checkpoint no head exato, limite de espera 3600s. Sem 4D/4E nem merge.
+
+## Retomada B1/B2
+
+RECOVER confirma head2474251 limpo/PR7 aberto; sem nova branch/work. Medir corpus
+upstream em /tmp; congelar testes; RED→B1/B2→GREEN; 9 novos desafios, full com
+probes anteriores, self-review/certificação, commit/push no mesmo PR e CI exato.
+D1/D2 somente backlog. Certificado anterior preservado em reviewed-CP0.json e Git;
+novo FREEZE autorizado cobre oracles corrigidos, sem enfraquecer fixtures legítimas.
+
+CI execution budget only: the complete local B1/B2 full run took 11m35s before
+remote bootstrap. Raise the bounded workflow timeout from 15 to 30 minutes to
+accommodate all required challenges and bootstrap; no gate skipped or weakened.
+The full run precedes this timeout-only adjustment; recheck workflow policy,
+docs and Git afterward, and rerun full via CI on the exact published SHA.

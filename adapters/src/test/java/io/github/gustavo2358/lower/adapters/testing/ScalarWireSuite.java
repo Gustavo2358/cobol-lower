@@ -30,6 +30,29 @@ public final class ScalarWireSuite {
         check(result instanceof SpJsonDecoder.Rejected r && r.diagnostic().code() == SpJsonDecoder.Code.INPUT_ERROR, "strict physical rejection " + why);
     }
     private static ObjectNode object(ObjectNode root, String pointer) { return (ObjectNode)root.at(pointer); }
+    private static void coherence(ObjectNode golden) throws Exception {
+        var mismatch = golden.deepCopy(); object(mismatch, "/statements/0/source").put("value", "XXXXX");
+        physical(mismatch, "literal normalized value mismatch");
+        var forged = golden.deepCopy(); object(forged, "/statements/0/source").put("value", "A");
+        object(forged, "/statements/0/source/logicalValue").put("value", "A");
+        physical(forged, "literal code point extent mismatch");
+        var kind = golden.deepCopy(); object(kind, "/statements/0/source").put("kind", "NUMERIC");
+        physical(kind, "logical text requires ALPHANUMERIC");
+        var unicode = golden.deepCopy(); object(unicode, "/statements/0/source").put("value", "A😀B");
+        object(unicode, "/statements/0/source/logicalValue").put("value", "A😀B").put("logicalExtent", 3);
+        // Upstream TextValue supports code points. Physical-only; no claim of COBOL profile expansion.
+        decode(JSON.writeValueAsBytes(unicode));
+        object(unicode, "/statements/0/source/logicalValue").put("logicalExtent", 4);
+        physical(unicode, "supplementary code point is not two characters");
+        var empty = golden.deepCopy(); object(empty, "/statements/0/source").put("value", "");
+        object(empty, "/statements/0/source/logicalValue").put("value", "").put("logicalExtent", 0);
+        decode(JSON.writeValueAsBytes(empty));
+        object(empty, "/statements/0/source/logicalValue").put("logicalExtent", -1);
+        physical(empty, "logical extent nonnegative");
+        var scalar = golden.deepCopy(); object(scalar, "/dataDeclarations/0/scalarText").put("logicalExtent", 0);
+        physical(scalar, "scalar extent positive");
+    }
+    public static void main(String[] args) throws Exception { System.out.println("LOWER_COHERENCE_TESTS=" + run()); }
     public static int run() throws Exception {
         checks = 0; byte[] raw = resource("scalar-move-1.2.0.json");
         check(raw.length == 5177 && HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(raw)).equals("468e3207f578e428ace89a311eadbd6e27c670331b739675b761479352adc7af"), "merged upstream fixture digest");
@@ -41,6 +64,7 @@ public final class ScalarWireSuite {
         var codec = new AirJson(); var publication = result.publication().orElseThrow(); byte[] air = codec.encode(publication);
         check(codec.decode(air).equals(publication) && Arrays.equals(air, codec.encode(publication)), "shared exact round trip and deterministic bytes");
         var golden = (ObjectNode)JSON.readTree(raw);
+        coherence(golden);
         var legacy = golden.deepCopy(); legacy.put("contractVersion", "1.1.0"); physical(legacy, "new fields under 1.1.0");
         for (var path : List.of("/dataDeclarations/0/scalarText", "/statements/0/source/logicalValue", "/statements/0/target/wholeItemAccess",
                 "/statements/0/copySemantics", "/statements/0/normalContinuation")) {
@@ -58,9 +82,9 @@ public final class ScalarWireSuite {
             var node = golden.deepCopy(); int slash = path.lastIndexOf('/'); object(node, path.substring(0, slash)).putNull(path.substring(slash + 1));
             ScalarSuite.rejected(decode(JSON.writeValueAsBytes(node)), "wire absent proof " + path);
         }
-        var changed = golden.deepCopy(); object(changed, "/dataDeclarations/0").put("picture", "irrelevant"); object(changed, "/statements/0/source").put("value", "ignored legacy spelling");
+        var changed = golden.deepCopy(); object(changed, "/dataDeclarations/0").put("picture", "irrelevant");
         object(changed, "/statements/0/header/readiness/lowering").put("scope", "unrelated display text");
-        check(ScalarSuite.success(decode(JSON.writeValueAsBytes(changed))).publication().equals(result.publication()), "no picture/value/readiness text interpretation or hashing");
+        check(ScalarSuite.success(decode(JSON.writeValueAsBytes(changed))).publication().equals(result.publication()), "no picture/readiness text interpretation or hashing");
         var physical = decode(resource("scalar-physical-1.2.0.json")); var pr = ScalarSuite.success(physical);
         ScalarSuite.oracle(physical, pr, List.of("PROGA"), List.of(new SpInput.DataId(physical.unit(), "data:0")));
         byte[] physicalAir = codec.encode(pr.publication().orElseThrow());

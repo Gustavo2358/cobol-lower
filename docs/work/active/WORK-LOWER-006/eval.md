@@ -19,3 +19,17 @@ Cardinalidades e contadores de índices/traversal, bytes/tempos observados.
 wholeItem ausente, mismatch, Object por referência, Cell por MOVE, join por nome,
 role, literal UNKNOWN, DataLink, literal/target origins, Halt, duas Sequences,
 PublicationId sem fatos novos e local IDs expandidos. Compilação falha não conta.
+
+## Oracles da remediação
+
+B1: mismatch, forged extent, NUMERIC+logicalValue, extent negativo/zero DATA
+→ INPUT_ERROR; A😀B extent3 aceita fisicamente, extent4 recusa; vazio extent0
+aceita fisicamente; logicalValue=null materializa ausência e não emite Assign.
+B2: corpus SP real >100KB passa no default CLI e preserva cardinalidades/shared
+validator/round-trip. SP real1DATA/10k passa decoder/admission e retorna CODEC
+IMPLEMENTATION_LIMIT, preservando arquivo e sem temp. Bytes/nodes/entities acima
+dos novos limites rejeitam. Medir bytes/nodes/visits antes de escolher constantes.
+Novos desafios: ignorar B1 equality/codepoints, regredir três limites antigos,
+remover probe, aceitar INPUT como esperado, aumentar codec e novo codec/streaming
+fora do escopo. Semântico requer compile RED, restore exato e segundo GREEN;
+escopo usa guard de diff/arquitetura. Gates integrais anteriores preservados.

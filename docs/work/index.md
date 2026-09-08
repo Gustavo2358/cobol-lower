@@ -13,3 +13,7 @@ WORK-LOWER-001–005 reconciliados no histórico após merges confirmados.
 [WORK-LOWER-003](history/WORK-LOWER-003.md): merged, reviews não registrados.
 [WORK-LOWER-004](history/WORK-LOWER-004.md): merged, reviews não registrados.
 [WORK-LOWER-005](history/WORK-LOWER-005.md): merged, reviews não registrados.
+
+Review B1/B2: mesmo WORK-LOWER-006/CP0/PR7. Dívidas futuras
+[BACKLOG-LOWER-017](backlog/BACKLOG-LOWER-017.md) e
+[BACKLOG-LOWER-018](backlog/BACKLOG-LOWER-018.md): planned/NOT STARTED, sem work item.

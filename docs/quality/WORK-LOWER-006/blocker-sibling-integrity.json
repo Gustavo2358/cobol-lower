@@ -1,0 +1,48 @@
+{
+  "proleap-poc": {
+    "head_before": "4345bc18917b8df56be1acd7e44118469ec3f3d3",
+    "head_after": "4345bc18917b8df56be1acd7e44118469ec3f3d3",
+    "status_before_after": "",
+    "tracked_files": 468,
+    "tracked_bytes_digest_before_after": "b15e1a4946ac3a1ae6b683ae55df3b5652cddb11aa323eeea1c411922bd611c6",
+    "tracked_bytes_unchanged": true,
+    "task_access": "read-only"
+  },
+  "air-java": {
+    "head_before": "ce530a7e17ab12b23c48f29425f503ff920b09fb",
+    "head_after": "ce530a7e17ab12b23c48f29425f503ff920b09fb",
+    "status_before_after": "",
+    "tracked_files": 148,
+    "tracked_bytes_digest_before_after": "b61292548ee46bdbaa2a89386e12687ffc6de723f14c2a98f672b78b94f088fe",
+    "tracked_bytes_unchanged": true,
+    "task_access": "read-only"
+  },
+  "analysis-ir": {
+    "head_before": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+    "head_after": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+    "status_before_after": "",
+    "tracked_files": 24,
+    "tracked_bytes_digest_before_after": "bfc0026d57b3e3f7e2b77c7eed3021ac55141e963381662b9922c1e713675855",
+    "tracked_bytes_unchanged": true,
+    "task_access": "read-only"
+  },
+  "analysis-cfg": {
+    "head_before": "e70150f7f33edf028768c08705840bf05e216f01",
+    "head_after": "ec525cbbad96d70c9663faa88e2672148fa8ee71",
+    "status_before_after": "",
+    "tracked_files": 255,
+    "tracked_bytes_digest_before_after": "f44b2f734f8d6dd51a13bd37d4ba2f389e5af88294631a0a2feca17c8f644ad1",
+    "tracked_bytes_unchanged": true,
+    "task_access": "read-only",
+    "external_head_change": "Observed merge PR11 outside this task; identical tracked bytes. No modification/checkout/fetch/merge performed by 4C remediation."
+  },
+  "artefatos-e2e": {
+    "head_before": "2484b76f9174a79ea702f17453f04955cd46a755",
+    "head_after": "2484b76f9174a79ea702f17453f04955cd46a755",
+    "status_before_after": "",
+    "tracked_files": 443,
+    "tracked_bytes_digest_before_after": "dfa14b25ffcafe86ac2610f1dc3690d4ddf1c9f56e382a1af3a8d1dbd05497bb",
+    "tracked_bytes_unchanged": true,
+    "task_access": "read-only"
+  }
+}

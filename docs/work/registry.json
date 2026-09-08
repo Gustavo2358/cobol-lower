@@ -356,6 +356,28 @@
       "dependencies": [],
       "path": "docs/work/backlog/BACKLOG-LOWER-016.md",
       "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-017",
+      "title": "Scale AIR JSON transport beyond current 16 MiB operational boundary",
+      "status": "planned",
+      "phase": "hardening",
+      "dependencies": [
+        "BACKLOG-LOWER-003"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-017.md",
+      "work_item": null
+    },
+    {
+      "id": "BACKLOG-LOWER-018",
+      "title": "Reduce peak-memory amplification across SP and AIR transport",
+      "status": "planned",
+      "phase": "hardening",
+      "dependencies": [
+        "BACKLOG-LOWER-003"
+      ],
+      "path": "docs/work/backlog/BACKLOG-LOWER-018.md",
+      "work_item": null
     }
   ]
 }

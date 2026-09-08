@@ -15,7 +15,13 @@ construindo os mapas DATA e Statement uma vez. Exige prova positiva scalarText,
 logicalValue TEXT, wholeItemAccess, binding RESOLVED/selected coerente, FULL_IDENTITY
 e normalContinuation KNOWN. Compara extensões lógicas publicadas para coerência;
 nunca conta caracteres para descobrir padding/conversão. Readiness.scope, PIC,
-legacy source.value, nomes e programPoint não completam nem escolhem semântica.
+nomes e programPoint não completam nem escolhem semântica. A boundary 1.2.0
+valida source.value como fato normalizado redundante: quando logicalValue existe,
+kind deve ser ALPHANUMERIC, os valores devem ser iguais e logicalExtent deve
+corresponder a codePointCount. Scalar extent >0, logical extent >=0. Incoerência
+é INPUT_ERROR antes de Materialize; nenhum campo é reparado ou passado ao core
+para interpretar spelling. O TextValue físico admite Unicode; isso não amplia
+o profile COBOL do 4A. logicalValue=null continua ausência admissível fisicamente.
 
 Há uma entry conhecida/assinatura zero, uma ou mais declarações e MOVEs, e cadeia
 explícita fechada em GOBACK. Todos os statements devem estar nessa cadeia; dados
@@ -66,15 +72,21 @@ volume semântico incremental, O(D+S) para largura fixa. Maps com custo amortiza
 Não há scan de DATA por MOVE nem scan de statement por continuação. Custos de
 codec/validator são do shared air-java e não estão cobertos por SLA do lower.
 
-CLI mantém limite SP 100000 bytes, depth64/50000 nós e limites de admissão atuais.
-Escala maior usa a porta em memória/decoder com limites explícitos de teste;
-não amplia capacidade semântica. Shared AirJson mantém 16 MiB/depth128. Encode
-ocorre antes de temp: exceder produz exit5 `AIR codec IMPLEMENTATION_LIMIT`, não
+CLI usa ProductionLimits: SP 32 MiB/depth64/1500000 nós, admissão 250000 visitas.
+O corpus real de 1 DATA/10000 MOVE mede 18809400 bytes/1050154 nodes/190021 visitas,
+profundidade 8 com folhas; headroom 78.4%/42.8%/31.6%. Não há CLI flags ou
+configuração pública. O corpus 400 DATA/MOVE tem 1071738 bytes/56119 nodes e
+produz 7616219 bytes AIR pela composição padrão. Os tetos continuam protegidos
+por contracasos de bytes/nodes/visits, sem publicação parcial. Shared AirJson mantém 16 MiB/depth128. Encode
+ocorre antes de temp: exceder produz exit 5 `AIR codec IMPLEMENTATION_LIMIT`, não
 trunca/cria prefixo e preserva eventual destino anterior. Falha de I/O é exit6
 com cleanup do temp same-dir; bytes do codec vão diretamente ao writer.
 Não foi criada opção pública de limite nem codec/validator paralelo.
 
 Probes codificados 250/500 DATA+MOVE e 1 DATA/1000 MOVEs cabem no default. Probes
 1000/2000 DATA+MOVE e 1 DATA/10000 MOVEs são do model; o limite operacional é
-mostrado separadamente com 1 DATA/2500 MOVEs no default. A composição CLI de teste
-usa a porta existente para alcançar a fronteira de saída sem alterar o teto SP.
+mostrado separadamente com 1 DATA/2500 MOVEs no default. O probe real de 1 DATA/10000 MOVE também atravessa arquivo/decoder/admission/lower
+com defaults de produção e falha somente no codec AirJson conhecido. D1/D2
+ficam em [BACKLOG-LOWER-017](../work/backlog/BACKLOG-LOWER-017.md) e
+[BACKLOG-LOWER-018](../work/backlog/BACKLOG-LOWER-018.md), planned/NOT STARTED.
+NOT IMPLEMENTED IN 4C. NOT A CLAIM OF LARGE-PROGRAM E2E READINESS.
