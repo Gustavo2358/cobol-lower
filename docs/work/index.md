@@ -2,7 +2,9 @@
 
 ## Item ativo
 
-[WORK-LOWER-002](active/WORK-LOWER-002/work-item.yaml), CP0 de proveniência autorizado em 2026-09-07. [Estado](active/WORK-LOWER-002/state.md). Sem execução de 2A/2B; review humano após CI do head.
+[WORK-LOWER-003](active/WORK-LOWER-003/work-item.yaml): implementation CP0, **2A — AIR JSON output / CLI**. [Estado](active/WORK-LOWER-003/state.md).
+
+[WORK-LOWER-002](history/WORK-LOWER-002.md) encerrado após merge real da PR3 `77762ff...`; reviews não registrados na API.
 
 ## Handoff histórico anterior
 

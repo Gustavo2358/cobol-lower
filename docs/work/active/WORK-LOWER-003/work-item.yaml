@@ -1,0 +1,103 @@
+schema_version: 1
+id: WORK-LOWER-003
+title: 'Implementation: 2A — AIR JSON output / CLI'
+status: active
+risk: medium
+goal: SP file real → lowering existente → shared AirJson → arquivo canônico; CLI mínima
+  com falhas honestas.
+authorization:
+  state: granted
+  scope: 'implementation CP0: roadmap 2A only; reconcile WORK-LOWER-002, writer/CLI,
+    tests, gates, docs, commit/push/PR, no merge'
+  execution_mode: single-checkpoint
+  authority: 'Pedido explícito do usuário em 2026-09-07: implementar somente 2A, preservar
+    pins, publicar PR e CI no head exato, parar para review humano.'
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids:
+- BACKLOG-LOWER-003
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- docs/domain/first-slice-entry-goback.md
+- docs/engineering/change-control.md
+- docs/sources/sources.lock.json
+related_domain_rules: []
+related_decisions: []
+related_invariants: []
+evals: []
+source_scope:
+- pom.xml
+- adapters/pom.xml
+- adapters/src/main/java/io/github/gustavo2358/lower/adapters/air
+- adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli
+- scripts/harness/run.py
+- scripts/harness/checks.py
+- scripts/harness/architecture.py
+test_scope:
+- adapters/src/test/java/io/github/gustavo2358/lower/adapters/air
+- scripts/harness/tests
+- scripts/harness/output_challenge.py
+docs_scope:
+- README.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/domain/first-slice-entry-goback.md
+- docs/engineering/gates.md
+- docs/engineering/work-item-protocol.md
+- docs/sources/sources.lock.json
+- docs/sources/upstream-state.md
+- docs/sources/index.md
+- docs/work/index.md
+- docs/work/registry.json
+- docs/work/backlog.md
+- docs/work/backlog/BACKLOG-LOWER-003.md
+- docs/work/active/README.md
+- docs/work/history/README.md
+- planned:docs/work/active/WORK-LOWER-002
+- docs/work/history/WORK-LOWER-002.md
+- docs/work/active/WORK-LOWER-003
+- docs/quality/WORK-LOWER-003
+- docs/evals/catalog.md
+must_not_change:
+- core
+- adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp
+- adapters/src/test/resources/sp
+- existing semantic tests/golden
+- existing historical evidence
+- air-java pin b78f4068d8a479f48eb048b8d76fa60a0997dc4a
+- analysis-ir pin 122ce54e1b9ef9b00646f93ece409ca8b63bc933
+- other repositories
+- roadmap.md
+- CFG/2B/E2E
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: 2A — AIR JSON output / CLI
+  depends_on: []
+  gates: *id001
+  evals: []
+  status: ready_for_review
+git:
+  branch: feat/air-json-output-cli
+  pull_request: 4
+  suggested_branch: feat/air-json-output-cli
+  one_pr_per_work_item: true
+  merge_authorized: false

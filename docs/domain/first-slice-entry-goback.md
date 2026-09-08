@@ -57,4 +57,4 @@ Primeiro construir manualmente o shape AIR e validar. Depois consumir a fixture 
 
 ## Fora de escopo
 
-DATA, MOVE, IF, CALL, branches, storage/alias, resolução de target, opaque universal, CFG, RD/PV, writer AIR e CLI rica. A saída em arquivo permanece no roadmap; apenas não faz parte deste primeiro proof point.
+DATA, MOVE, IF, CALL, branches, storage/alias, resolução de target, opaque universal, CFG, RD/PV, writer AIR e CLI rica. O checkpoint posterior 2A compõe este mesmo slice com o codec compartilhado, writer físico e CLI mínima; o domínio e o perfil permanecem iguais. CFG JSON e E2E completo continuam futuros.

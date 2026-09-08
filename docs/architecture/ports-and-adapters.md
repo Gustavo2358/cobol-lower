@@ -25,7 +25,7 @@ File adapter [Path/UTF-8/JSON DTO] → SemanticProductInput → LowerCobol
                                                           ↓
                                                    LoweringResult
                                                           ↓
-                     caller → AIR JSON writer externo (checkpoint posterior)
+                     caller → AirFileOutput → shared AirJson → AIR JSON file (2A)
 ```
 
 ## Caminho integrado

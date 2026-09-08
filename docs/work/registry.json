@@ -2,15 +2,17 @@
   "schema_version": 1,
   "active": [
     {
-      "id": "WORK-LOWER-002",
+      "id": "WORK-LOWER-003",
       "status": "active",
-      "path": "docs/work/active/WORK-LOWER-002",
+      "path": "docs/work/active/WORK-LOWER-003",
       "authorized_checkpoints": [
         "CP0"
       ],
-      "git_branch": "chore/pin-air-java-1a",
-      "pull_request": 3,
-      "backlog_ids": []
+      "git_branch": "feat/air-json-output-cli",
+      "pull_request": 4,
+      "backlog_ids": [
+        "BACKLOG-LOWER-003"
+      ]
     }
   ],
   "proposals": [],
@@ -45,6 +47,36 @@
           "state": "docs/quality/WORK-LOWER-001/R1-state.md"
         }
       ]
+    },
+    {
+      "id": "WORK-LOWER-002",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-002.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "chore/pin-air-java-1a",
+      "pull_request": 3,
+      "backlog_ids": [],
+      "manifest": "docs/quality/WORK-LOWER-002/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-002/CP0.json",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 3,
+        "branch": "chore/pin-air-java-1a",
+        "base": "main",
+        "head_sha": "2d1db6ae7cf8eed812df29a2d990e9954f437928",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "merged_at": "2026-09-07T22:15:10Z",
+        "observed_at": "2026-09-07T23:03:49Z"
+      }
     }
   ],
   "backlog": [
@@ -71,13 +103,13 @@
     {
       "id": "BACKLOG-LOWER-003",
       "title": "Adapter AIR JSON de saída e prova interoperável",
-      "status": "candidate",
+      "status": "in_progress",
       "phase": "transport",
       "dependencies": [
         "BACKLOG-LOWER-001"
       ],
       "path": "docs/work/backlog/BACKLOG-LOWER-003.md",
-      "work_item": null
+      "work_item": "WORK-LOWER-003"
     },
     {
       "id": "BACKLOG-LOWER-004",

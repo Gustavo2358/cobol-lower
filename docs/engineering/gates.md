@@ -61,3 +61,19 @@ O recibo remoto vive no PR/handoff e é roteado no state seguinte conforme recov
 ## Evidência
 
 Registrar comando, cwd lógico, SHA, ambiente, saída/contagem, exit code, subset/perfil, contracaso e restauração. FAIL por setup não mata um mutante semântico. PASS documental não prova semântica. Não anunciar branch protection configurada só porque o workflow existe.
+
+## 2A: suíte de saída obrigatória no perfil existente
+
+`semantic` exige também exatamente um marcador `LOWER_AIR_OUTPUT_TESTS` positivo, emitido pela
+execução Maven `air-output-suite`. Remover/skippá-la faz o gate falhar mesmo com Maven exit 0.
+`full` e o job CI `checkpoint` executam esse mesmo gate; não há seleção por branch/work item.
+`bootstrap` vincula os dois jars (air-java e air-json) ao build do SHA e seus digests; ambos são
+reverificados no uso. G-ARCH verifica core sem air.json em source/API/bytecode/jdeps/Maven,
+Jackson restrito ao SP, ownership do package upstream e ausência de shading/cópias nos jars.
+Review continua necessário para detectar serializers semanticamente duplicados sob nomes diferentes.
+
+`output_challenge.py` acrescenta nove contracasos: Jackson na saída, newline, escrita não SUCCESS,
+exit 0 em lowering/codec, dependência core→codec, suíte removida, suíte skipped e I/O antes do encode.
+Cada um exige baseline GREEN, RED focal pela causa esperada, restauração byte a byte e segundo GREEN.
+Transport e integration continuam SPECIFIED_NOT_IMPLEMENTED: o contrato atual de transport inclui
+reader independente; o 2A usa o mesmo codec, sem alegar segunda implementação ou integração CFG.

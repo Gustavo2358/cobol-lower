@@ -1,0 +1,683 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-003",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "feat/air-json-output-cli",
+  "pull_request": 4,
+  "base_commit": "77762ff2705974ecb874bc4824119c031f6d99bc",
+  "reviewed_head": "611fe2c9708ad03118840415e68d7531190dcdb9",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-003/spec.md",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "337c38b51dba035a3bbfb1a6cca00af1b427d089a536fa8ee1a4c0ea1b3dfd79",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-003/CP0.json",
+    "docs/work/active/WORK-LOWER-003/state.md"
+  ],
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "6cacef74b24f9299b601ce162bf5866cb960d4bfafb7a163ba37482d8e59b7df",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java",
+        "sha256": "f70d3fcc323e7b5f5d9f39b435343d120ab58c4ec9a3254575f136f0f4978483",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/VerticalSuite.java",
+        "sha256": "b76eb560ed643fc093c92319884e49b7347d77d62cf4061777bcb7142149bfc8",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cobol-semantic-product.json",
+        "sha256": "7ebce874bb98262598b908b176290368f738a21561c35a6ac342fc72e66d04ed",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/LoweringSuite.java",
+        "sha256": "3c95d2ae2936f83bf67305c73b34c391ea563aa95e814d1504f69f901975c1f6",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "7d499d00b48e5f319bdb0818cf7dbdc3a1cd5f25d08582fc2e0bbf2dd38fa6e7",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "a33273022ff94c169780fe426d984c26a74e70bcf2db16ad0e2938d0b88030a2",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/change-control.md",
+        "sha256": "c676df8332b7af04c79e6e9658d63446b928752e38c170f9f527d7491ff98c8f",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "ac57c36d215348d4822ec2841164ca49d22c28981a23309c31d40e0abdda81c3",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "7d4183af3be50ff844e0b095b032e79fe2c81fcd2fb6b8ac7a6f6b99390ded37",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "6953209363c755503b9ad64aa093c6cb10acd8b3d94936fdf0cc12675c3ae259",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "9bda222dccdbc7c386c41ba51400af1d8ebee1c1cb130dcbe9a1f2e71d8228f6",
+        "git_revision": "77762ff2705974ecb874bc4824119c031f6d99bc",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-003/CP0-manifest.yaml",
+        "sha256": "88ab95ef0f59cab3490a79da6f6892e087ff4861216dcf93d94bbacb2a5f0505",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "5f897e57b1da31e899d37c1bfd639a523877d7f7191bb0bb22ba8027dbde4ac8",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-003/eval.md",
+        "sha256": "b9cde0b4f463270bcd1fc07851458b11adb7c2c8467892300858b34ffc689114",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-003/plan.md",
+        "sha256": "40e0686eac66781c95537176265ce81f33eff121bef7300ac7d77d5d6d47e8e1",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-003/spec.md",
+        "sha256": "849fa5423b492079e514e312b5b17f22d0a243820cbee56cbf4da49b0938b976",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "48a9b1e28f7d6337875bb8476ae02d4caeddb5e6cb7f3040d743a2715f970e35",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "scripts/harness/output_challenge.py",
+        "sha256": "a4a223519616b74563df0ec92765ca2b75d03d27c536eb1b2dbcbf54b5c4d78d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/tests/test_air_output_gate.py",
+        "sha256": "be76718e54579fe5bdfeaec640c183c5cd349d7ff3615ba4342111950a50e4fc",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/tests/test_output_lifecycle.py",
+        "sha256": "79456acd81e347f892295f14628d47b3af9952690351ca46d9951c3ad5585e7f",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 1800
+  },
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json (component docs)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json (component architecture)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json (component semantic)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 779,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json (component performance)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 95,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-003/CP0.json (component git)",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "bootstrap",
+      "required": false,
+      "command": "python3 scripts/harness/run.py bootstrap",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/bootstrap-provenance.json"
+    },
+    {
+      "gate": "air-output",
+      "required": false,
+      "command": "Maven air-output-suite via semantic/full",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 146,
+      "log_reference": "docs/quality/WORK-LOWER-003/validation.log"
+    },
+    {
+      "gate": "lifecycle",
+      "required": false,
+      "command": "python3 -m unittest discover -s scripts/harness/tests -p test_output_lifecycle.py",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 4,
+      "log_reference": "docs/quality/WORK-LOWER-003/red-and-lifecycle.log"
+    },
+    {
+      "gate": "cli",
+      "required": false,
+      "command": "Maven/Java CLI and independent direct encode/decode comparison",
+      "cwd": ".",
+      "environment": "Temurin 21.0.12.1; Maven 3.9.16; Python 3.14; LOWER_BUILD_ROOT=/tmp/lower-2a; exact pinned upstream and isolated m2",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-003/cli-verification.json"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "RETURN-HALT",
+      "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)",
+      "expected_oracle": "typed GOBACK must be Return, never Halt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt",
+      "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "ccdfe1913d44ef360b47783f11e7e82a2c5d70d6073b6ced0f7f23c9d697b5a5",
+      "red_output_sha256": "ae3f392b21e31c2f29c3da51608844ed543f3283c2a14bf7e84a49a308f3aea7",
+      "restored_output_sha256": "659c6ee2b77b45f339ca276636b5ab419aea70b74116c9ad0820b5a1cb63b69b",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "OPEN-COMPLETE",
+      "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE",
+      "expected_oracle": "alternative entry inventory stays PARTIAL",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL",
+      "baseline_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "restored_digest": "47478c6a39b8b2a5df988ff9519b05eb2bde0d20cc9f02313e24a3545c8ce25b",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "2aa419e098e1270f9cc70906a1759b744b183665c34027377d47de81d86ef496",
+      "red_output_sha256": "231a90c751a45e4d0217950969774ac359a04509ce77c8fc3ff2462044adc2fd",
+      "restored_output_sha256": "f0d9b3d877f63dd0e09326c6cbce380360ea90a9a97198f1ffdae8c74ec19635",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "INDEX-SCAN",
+      "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }",
+      "expected_oracle": "reference ledger N+1, no repeated scan",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan",
+      "baseline_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff",
+      "restored_digest": "75675e6451faeba97c40e3f0c25dae9f3ade71f377bedf399d361b8caf07ddff",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "306857813f7a29b762890e560f382f57436aa8fb2ea2d8dff2a1a75df1fb0c74",
+      "red_output_sha256": "0375a4ba6606773071fb07fbf70fc406d216fa8650686f3638cbee17b2aad616",
+      "restored_output_sha256": "44480f5758ae82d583232ee090e45284734733668744d728a760d95f91b55df5",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=874",
+        "PERFORMANCE_TEST_COUNT=95"
+      ]
+    },
+    {
+      "id": "R1-A-RECEIPT",
+      "mutation": "remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], expected, receipt) -> remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], receipt[\"pushed_sha\"], receipt)",
+      "expected_oracle": "ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt",
+      "baseline_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "restored_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt -v (isolated copy)",
+      "baseline_output_sha256": "f519301d4ea4da49bef9e76b296e01fb58ce4ccc1ba0b3363db267e84cd29fde",
+      "red_output_sha256": "f67063e4b6ff06ced664b552c3e288aacce004fe28db8e3df412668a1314e9ed",
+      "restored_output_sha256": "56b76b6a9e6989ef61029df8b95d2e195099e8b2c4f6fc71cdf2847736d0a5ec"
+    },
+    {
+      "id": "R1-B-ORACLE",
+      "mutation": "if usage == \"candidate_immutable\": -> if False and usage == \"candidate_immutable\":",
+      "expected_oracle": "FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes",
+      "baseline_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1",
+      "restored_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1",
+      "digest_scope": "scripts/harness/git_checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes -v (isolated copy)",
+      "baseline_output_sha256": "db53ea1de49bc97a31bda6fc3f6fbef70af3620850b7245c6bf20eee29cef51a",
+      "red_output_sha256": "4ba1d2ffaaad2f419ae080d80f160a2391a01d3c595b311e47d0a7ab52bdee79",
+      "restored_output_sha256": "db53ea1de49bc97a31bda6fc3f6fbef70af3620850b7245c6bf20eee29cef51a"
+    },
+    {
+      "id": "R1-C-AUTHORITY",
+      "mutation": "if for_execution: -> if False and for_execution:",
+      "expected_oracle": "ReviewDocuments.test_history_never_authorizes_execution",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: ReviewDocuments.test_history_never_authorizes_execution",
+      "baseline_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "restored_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_never_authorizes_execution -v (isolated copy)",
+      "baseline_output_sha256": "186a691211a4d2e438837520428aecfe736f0682bda27d7a606c13ed42b78b63",
+      "red_output_sha256": "669b27dca7ce6e3cae031c7a8ddf4e986c8db458a841ec7aa13de8c0ef00cb80",
+      "restored_output_sha256": "186a691211a4d2e438837520428aecfe736f0682bda27d7a606c13ed42b78b63"
+    },
+    {
+      "id": "R1-D-WORKFLOW",
+      "mutation": "branches: ['**'] -> branches: ['feat/first-entry-goback-slice']",
+      "expected_oracle": "WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main",
+      "baseline_digest": "2c7d5f99bc00b56f1158abb8676df77e748656e7161d62e69c5c57d5c76e7d72",
+      "restored_digest": "2c7d5f99bc00b56f1158abb8676df77e748656e7161d62e69c5c57d5c76e7d72",
+      "digest_scope": ".github/workflows/checkpoint.yml",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main -v (isolated copy)",
+      "baseline_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca",
+      "red_output_sha256": "e66c47107a431fbca9ede2a1baa935c75198a98b1c7124f489b7fd1c7706b753",
+      "restored_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca"
+    },
+    {
+      "id": "R1-E-SHA",
+      "mutation": "and c.get(\"head_sha\") == sha -> and True",
+      "expected_oracle": "RemoteLifecycle.test_wrong_sha_success_still_rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: RemoteLifecycle.test_wrong_sha_success_still_rejected",
+      "baseline_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "restored_digest": "2aae11dbf723edb6851ede579badab95a8167e12d53a59f85085ee1ed797b9f9",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py RemoteLifecycle.test_wrong_sha_success_still_rejected -v (isolated copy)",
+      "baseline_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812",
+      "red_output_sha256": "fddc12cf4f976f6d24217b9f10c2e982a068f50110225f08b533cbfcad5ec66d",
+      "restored_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812"
+    },
+    {
+      "id": "AIR-JACKSON",
+      "mutation": "codec.encode(publication) -> new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)",
+      "expected_oracle": "ARCH_AIR_OUTPUT JSON library",
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-dz5jj5gq/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal boundary (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "9f6de0cdc340fde1330cc64d92302586b3f5dc51b661c69c13975221758323ab",
+      "red_output_sha256": "1c7b83100ad5cb8f940bc5497ecd8a0f030603bee28c1271fa5aaf435c40060d",
+      "restored_output_sha256": "f82bb6f8dc6240a8b09a68c8a46f4ba1a071ed7e64b977366b97a2f70980eb47"
+    },
+    {
+      "id": "AIR-NEWLINE",
+      "mutation": "files.write(temporary, bytes); -> files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + \"\\n\").getBytes(java.nio.charset.StandardCharsets.UTF_8));",
+      "expected_oracle": "exact shared codec bytes",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT exact shared codec bytes",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "8f54b06a05302d619ef35ff85acbbd13f7bbfd2d70ff3e13eb381b5930d3dd81",
+      "red_output_sha256": "98adb832e90ec211c770d83b8af17859f3742ecf8590da8da944402ab4cda60c",
+      "restored_output_sha256": "0de67385abf56a64711be96a7e789e4f9bffed387c1f7add5f10ba1c0e0fe3a8"
+    },
+    {
+      "id": "NON-SUCCESS-WRITES",
+      "mutation": "err.println(\"Lowering \" + result.status()); -> try { output.write(new EntryGobackLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }\n            catch (IOException ex) { throw new IllegalStateException(ex); }\n            err.println(\"Lowering \" + result.status());",
+      "expected_oracle": "non-SUCCESS never invokes physical output",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT non-SUCCESS never invokes physical output",
+      "baseline_exit_code": 0,
+      "baseline_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restored_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "4d996ae8d035d675ab819b361b20c18619887d798582b6b870803c4adf0eb49f",
+      "red_output_sha256": "e38e27e9b901b5561f10a02800f84ad1251e8ccfecd6bfa37a0e6750bcaecb9a",
+      "restored_output_sha256": "07f75bbb4061bc96ed82cd5f7ddc58b19200fced0d440ae43686f47d18c1632a"
+    },
+    {
+      "id": "LOWERING-EXIT-ZERO",
+      "mutation": "return LOWERING; -> return SUCCESS;",
+      "expected_oracle": "expected exit 4",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT expected exit 4, got Execution[code=0, diagnostic=Lowering INVALID_INPUT",
+      "baseline_exit_code": 0,
+      "baseline_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restored_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "9c1610d4e0a3c8284739809d3d5865f27fe6da82851c635f8910034d50dd35ec",
+      "red_output_sha256": "812994f086a723f562f51cd9886fed91855ecf3296765777cc7b41ecc262a71f",
+      "restored_output_sha256": "6d5a441600cddec7791c5f140d1e896bf6539081bbf297b00f5baf785df86f42"
+    },
+    {
+      "id": "CODEC-EXIT-ZERO",
+      "mutation": "return CODEC; -> return SUCCESS;",
+      "expected_oracle": "expected exit 5",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT expected exit 5, got Execution[code=0, diagnostic=AIR codec IMPLEMENTATION_LIMIT $: Output size limit exceeded",
+      "baseline_exit_code": 0,
+      "baseline_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restored_digest": "22ed6f50c2e8bff46026b8500de3fb32d7cdfcbc76115ab68e4495bbe3151a66",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "edf148219bd9f1308badbb3c0eacd8e4fb61f28b0c6c943e9491331f413b6376",
+      "red_output_sha256": "1b75536835fe1987b9b646a103e01fa62f8dc4cbd6352c6e15922c916bcbf8a5",
+      "restored_output_sha256": "6ee1dabec0e769ba7672a07cbc8ee8f0bc94c883d746636526840fd971f2a329"
+    },
+    {
+      "id": "CORE-CODEC",
+      "mutation": "</dependencies> -> <dependency><groupId>io.github.gustavo2358</groupId><artifactId>air-json</artifactId></dependency></dependencies>",
+      "expected_oracle": "ARCH_DEPENDENCY",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL ARCH_DEPENDENCY ('io.github.gustavo2358', 'air-json', '0.1.0-SNAPSHOT')",
+      "baseline_exit_code": 0,
+      "baseline_digest": "0e004e6a8cccd5f6cdfb50d2c1ffe1dbb4625e01e4dd9c3bd5dce7c3395583d1",
+      "restored_digest": "0e004e6a8cccd5f6cdfb50d2c1ffe1dbb4625e01e4dd9c3bd5dce7c3395583d1",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal architecture (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "0b061396a6329de6eba6caac14e6781a32eb5866611cfa727fa7d91a69cbd104",
+      "red_output_sha256": "5ac8dae8757c91519a56f46337bf5461fae6783820e044e059cb94519e04e91e",
+      "restored_output_sha256": "b34b766940e23afc45f4ef3ac44eb0cbc186a75f37b2270cfbdbfa0c2340ca5f"
+    },
+    {
+      "id": "SUITE-REMOVED",
+      "mutation": "<execution><id>air-output-suite</id> -> remove execution",
+      "expected_oracle": "AIR output tests absent/zero/duplicate",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL AIR output tests absent/zero/duplicate",
+      "baseline_exit_code": 0,
+      "baseline_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restored_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "73564f9e08bd423a8264663e0760e432625f19833c6241453de3117bf81182c3",
+      "red_output_sha256": "a6c19e1d85dfca80c02c1b45f13e1a3fafc07d133b5e247f05d134762509d6cc",
+      "restored_output_sha256": "37f77c74d5c0b786354d80765dcdf824bc7edc4584c6b482a8cdfa3b851e97ca"
+    },
+    {
+      "id": "SUITE-SKIPPED",
+      "mutation": "<mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass> -> <skip>true</skip><mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass>",
+      "expected_oracle": "AIR output tests absent/zero/duplicate",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL AIR output tests absent/zero/duplicate",
+      "baseline_exit_code": 0,
+      "baseline_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restored_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "a94479d14af9e651ab20d5cdd3d13cb3ff10f96507530d979127a55956db06f1",
+      "red_output_sha256": "a69fc56fd0f8ab67280d451dcaf0e88aa8b580960bebc90da4fd14904f3d0fc9",
+      "restored_output_sha256": "5191275b72713c1f303d3ff535bbb54dab4c65760d4a7043086269e1f9f67b38"
+    },
+    {
+      "id": "OUTPUT-BEFORE-ENCODE",
+      "mutation": "byte[] bytes = codec.encode(publication);\n        Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent()); -> Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());\n        byte[] bytes = codec.encode(publication);",
+      "expected_oracle": "encode completes before any physical publication",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT encode completes before any physical publication",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "d2069f29f6c1fb1d2100da66d593d81576d2350cf1cd32336f618ed526afb25d",
+      "red_output_sha256": "53451e3524a6815a9b9fea44adf62c50a882e6b49b6b58cc7c8088ba98f94f07",
+      "restored_output_sha256": "b16848f92a9296fea72b77ff2f87c57a78d73f3a6587d28ee463abe92bf11e81"
+    }
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": null,
+      "guarantees": [
+        "779 unchanged prior semantic assertions; 146 AIR output assertions; 95 performance assertions; full/harness/challenges; immutable fixtures/pins/core; no sibling edits."
+      ],
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ],
+  "review": {
+    "status": "PASS",
+    "evidence": [
+      "docs/quality/WORK-LOWER-003/CP0-review.md"
+    ],
+    "kind": "self-review",
+    "reviewer_context": "Codex same implementer; complete staged diff review and focused follow-up on metadata",
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "open_not_merged",
+  "limitations": [
+    "Codec compartilhado 1A / binding DRAFT; somente 2A, sem 2B/E2E.",
+    "Fallback de move não atômico depende da plataforma; caller confia no exit code.",
+    "transport/integration remain SPECIFIED_NOT_IMPLEMENTED; output suite is required inside semantic/full/CI."
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true
+  }
+}

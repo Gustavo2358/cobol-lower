@@ -363,7 +363,11 @@ Evals são contratos de prova, não testes já executados. Cada caso informa pos
 **Estado:** AUTOMATED_VERIFIED. Escopo, paths e execução em [catalog.json](catalog.json); não implica aprovação humana ou capacidade além do slice.
 
 <a id="EVAL-LWR-025"></a>
-## EVAL-LWR-025 — AIR JSON futuro
+## EVAL-LWR-025 — AIR JSON: transporte independente futuro
+
+O 2A implementa `Publication → shared AirJson → AIR JSON file` e testa o round-trip com o mesmo
+codec em semantic/full. O gate de transporte independente abaixo permanece futuro; essa suíte
+não o promove a PASS nem substitui seus oracles.
 
 **Propriedade:** Codec externo preserva semântica/IDs/unknowns da Publication.
 

@@ -6,7 +6,7 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 | --- | --- | --- |
 | [BACKLOG-LOWER-001](backlog/BACKLOG-LOWER-001.md) | Primeiro slice Entry/GOBACK → AIR Return | `completed` |
 | [BACKLOG-LOWER-002](backlog/BACKLOG-LOWER-002.md) | Sequenciamento e inventários executáveis maiores | `needs_discovery` |
-| [BACKLOG-LOWER-003](backlog/BACKLOG-LOWER-003.md) | Adapter AIR JSON de saída e prova interoperável | `candidate` |
+| [BACKLOG-LOWER-003](backlog/BACKLOG-LOWER-003.md) | Adapter AIR JSON de saída e prova interoperável | `in_progress` |
 | [BACKLOG-LOWER-004](backlog/BACKLOG-LOWER-004.md) | Primeira integração com analysis-cfg | `candidate` |
 | [BACKLOG-LOWER-005](backlog/BACKLOG-LOWER-005.md) | DATA nominal e tipos/storage explicitamente desconhecidos | `needs_discovery` |
 | [BACKLOG-LOWER-006](backlog/BACKLOG-LOWER-006.md) | MOVE preciso e normalização de valores | `needs_discovery` |
@@ -21,4 +21,4 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 | [BACKLOG-LOWER-015](backlog/BACKLOG-LOWER-015.md) | Adapter de integração em memória e composição Maven | `candidate` |
 | [BACKLOG-LOWER-016](backlog/BACKLOG-LOWER-016.md) | Evolução do harness e conformidade declarada | `candidate` |
 
-A saída AIR em arquivo permanece uma meta explícita em BACKLOG-LOWER-003. A integração em memória com CFG (BACKLOG-LOWER-004) não precisa esperar esse codec. A composição Maven futura está em BACKLOG-LOWER-015. Não inventar datas de entrega por item.
+A saída AIR em arquivo está implementada localmente no 2A de BACKLOG-LOWER-003, aguardando gates/PR/review. A integração em memória com CFG (BACKLOG-LOWER-004) não precisa esperar esse codec. A composição Maven futura está em BACKLOG-LOWER-015. Não inventar datas de entrega por item.
