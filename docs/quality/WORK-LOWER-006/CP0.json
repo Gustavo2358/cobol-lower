@@ -5,15 +5,15 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "feat/lower-scalar-move",
-  "pull_request": null,
+  "pull_request": 7,
   "base_commit": "f9e74ec3404efe830992d9535becca847ace80e8",
-  "reviewed_head": "f9e74ec3404efe830992d9535becca847ace80e8",
+  "reviewed_head": "3ec59e287d16a0f511903ac3dd42e6182e29da0d",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "execution_mode": "single-checkpoint",
   "authorization_reference": "docs/work/active/WORK-LOWER-006/spec.md",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "b6883cbc99964412e045f2b0bf13d0fe3c612edc6b7766dbe8ea39a114421ec4",
+  "candidate_diff_sha256": "4973f852e65c17d25ab20c5b7475553f246303797485f5455c8af8d2af991699",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-006/CP0.json",
     "docs/work/active/WORK-LOWER-006/state.md"

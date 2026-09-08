@@ -3,6 +3,7 @@
 Baseline cobol-lower: `f9e74ec3404efe830992d9535becca847ace80e8`, main limpa,
 fetch/switch/pull ff-only confirmado. Work item
 [WORK-LOWER-006](../../work/active/WORK-LOWER-006/work-item.yaml), CP0 interno único.
+[PR7](https://github.com/Gustavo2358/cobol-lower/pull/7) aberto para review humano.
 Branch `feat/lower-scalar-move`; commit final resolve pelo trailer
 `Checkpoint-Evidence: docs/quality/WORK-LOWER-006/CP0.json`. CI será consultado no
 SHA publicado e recebido no PR/handoff externo; não há autoinscrição recursiva.
@@ -86,6 +87,8 @@ parte de full. Primeiro RED wire: 1.2.0 UNSUPPORTED_CONTRACT. Primeiro RED model
 precise input recusado pelo perfil antigo. Erro inicial de accessor Java no teste
 foi setup/compilação e não conta como RED semântico.
 
+Gates locais docs/architecture/semantic/performance/full/git passaram: 203093
+assertions semânticas, 108 adicionais de performance e 139 testes do harness.
 Gates locais/CI são registrados no [certificado](CP0.json); certificar não é
 aprovação humana. O review é self-review explícito. Nenhum merge/auto-merge.
 Publication/Unit PARTIAL, GOBACK com dimensões não provadas, INITIAL/value ausente,

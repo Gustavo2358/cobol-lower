@@ -40,3 +40,8 @@ no handoff. Review humano e CI no commit publicado são etapas distintas.
 
 Logs brutos são armazenados em gzip lossless (mtime=0), com hash do conteúdo
 original e prova de descompressão exata; whitespace Maven não é normalizado.
+
+Revisão do segundo commit: somente vínculo PR7 no manifesto/registry/certificado,
+estado e handoff. Produção, testes, oracles e fonte lock iguais ao commit de
+implementação 3ec59e287d16a0f511903ac3dd42e6182e29da0d. Gates full preservados;
+docs e certificação reexecutados para a metadata final.

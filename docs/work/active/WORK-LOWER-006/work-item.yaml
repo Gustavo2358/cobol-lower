@@ -92,7 +92,7 @@ checkpoints:
   status: active
 git:
   branch: feat/lower-scalar-move
-  pull_request: null
+  pull_request: 7
   one_pr_per_work_item: true
   merge_authorized: false
   suggested_branch: feat/lower-scalar-move
