@@ -100,7 +100,7 @@ checkpoints:
   status: ready_for_review
 git:
   branch: perf/compact-local-ids
-  pull_request: null
+  pull_request: 6
   one_pr_per_work_item: true
   merge_authorized: false
   suggested_branch: perf/compact-local-ids

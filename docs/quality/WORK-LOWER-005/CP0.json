@@ -5,15 +5,15 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "perf/compact-local-ids",
-  "pull_request": null,
+  "pull_request": 6,
   "base_commit": "1a456e7673df0e3357f157e0249d74aef12bdf63",
-  "reviewed_head": "1a456e7673df0e3357f157e0249d74aef12bdf63",
+  "reviewed_head": "73801ea7d4b7e97126de8b41e58d2f5041dcd866",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "execution_mode": "single-checkpoint",
   "authorization_reference": "docs/work/active/WORK-LOWER-005/spec.md",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "457dcad56238e160ddb7ba43fd758ee7dbe4ab75f7855592431de859333f20cd",
+  "candidate_diff_sha256": "2fa6f7626790bfe0e78b6810c1e7a6d026fd497231cebda8ffffe1627b6df099",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-005/CP0.json",
     "docs/work/active/WORK-LOWER-005/state.md"
@@ -413,6 +413,28 @@
       "exit_code": 0,
       "test_count": 200362,
       "log_reference": "docs/quality/WORK-LOWER-005/validation.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": ".",
+      "environment": "Python3.14.4; real PR6 metadata; product/tests unchanged from 73801ea7d4b7e97126de8b41e58d2f5041dcd866",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/final-metadata.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-005/CP0.json",
+      "cwd": ".",
+      "environment": "Python3.14.4; real PR6 metadata; product/tests unchanged from 73801ea7d4b7e97126de8b41e58d2f5041dcd866",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-005/final-metadata.log"
     }
   ],
   "not_executed": [],
@@ -606,7 +628,9 @@
         3,
         4,
         5,
-        6
+        6,
+        7,
+        8
       ]
     }
   ],

@@ -38,3 +38,8 @@ alegado. Invariantes estruturais de hash não são perfilador do lowering inteir
 Revisão final conferiu full, sete falsificações restauradas, segundo GREEN, diff
 com novos arquivos e docs/evidence/state antes da certificação. Nenhum finding
 bloqueante de produção encontrado nesta passagem. PR/humano/CI não inferidos de testes locais.
+
+Revisão do ajuste documental final: PR6 real aberto, manifesto/registry/evidence concordam;
+primeiro commit73801ea7d4b7e97126de8b41e58d2f5041dcd866 já publicado. Nenhuma alteração de
+produto/testes/oracles após full; repetir docs/git e certificação. Este ajuste pertence
+ao mesmo CP0, sem próximo checkpoint ou aprovação humana inventada.

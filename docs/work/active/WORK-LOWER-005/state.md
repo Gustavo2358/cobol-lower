@@ -23,7 +23,11 @@ certificação pre_commit em [CP0](../../../quality/WORK-LOWER-005/CP0.json), de
 [escala](../../../quality/WORK-LOWER-005/scale-and-size.json). Finding de teste de handle
 inválido resolvido/documentado sem alterar a porta. Nenhum finding bloqueante restante.
 
-Fase ready_for_review local; primeiro commit certificado/PR serão publicados.
+Fase ready_for_review local. Primeiro commit certificado/publicado:
+73801ea7d4b7e97126de8b41e58d2f5041dcd866. [PR #6](https://github.com/Gustavo2358/cobol-lower/pull/6)
+aberto, isDraft=false, autoMergeRequest=null. Número real vinculado a manifesto/registry/
+evidência no mesmo CP0; produto/testes inalterados neste ajuste documental, docs/git e
+certificação repetidos. O commit final resolve pelo trailer, sem autoinscrição recursiva.
 Certificação local não é CI nem aprovação humana. Resolver commit final pelo trailer
 Checkpoint-Evidence, observar checkpoint no HEAD exato e registrar recibo no PR/handoff,
 sem commit recursivo para autoinscrever SHA. Entrega permite E2E na tarefa de origem.
