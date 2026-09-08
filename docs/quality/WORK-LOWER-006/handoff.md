@@ -214,3 +214,26 @@ mutação foi executado nesse repositório; source pins de 4C permanecem inalter
 Ambos PLANNED / NOT STARTED, NOT AUTHORIZED, work_item=null, sem discovery.
 NOT IMPLEMENTED IN 4C.
 NOT A CLAIM OF LARGE-PROGRAM E2E READINESS.
+
+## CI preparation recovery
+
+O run34265242563, head22823086e0c177763137754f02b46c6bc7902efe, passou pelos gates
+anteriores e desafios escalares, mas falhou antes do primeiro desafio B1/B2:
+a chamada Maven focal de adapters pressupunha core e core:test-jar instalados
+na m2. Não foi erro de produto nem RED semântico. Reproduzido localmente com uma
+m2 temporária contendo dependências fixadas e nenhum artefato cobol-lower.
+
+Production challenge agora prepara o core/test-jar da cópia isolada atual com
+seu reactor antes das invocações focais. Nenhum oracle é pulado ou relaxado;
+produção, fixtures, pins e limites permanecem idênticos. Prova focal em outra
+m2 sem lower passou GREEN/RED compilável/restore exato/segundo GREEN. A nova
+certificação exige full em ambiente sem artefatos lower inicialmente, além do
+novo CI no SHA exato. A falha remota anterior permanece na evidência.
+
+Full na m2 inicialmente sem lower: PASS, 203103 assertions semânticas, 108
+adicionais de performance, 141 testes do harness, 17 escalares, 27 históricos
+e 9 novos desafios com restauração exata e segundo GREEN. Preparação core/test-jar
+PASS antes dos novos desafios. [Logs e hashes](ci-preparation-log-digests.json)
+incluem CI anterior, reprodução do cache ausente, prova focal e full completo.
+Nesta rodada, tempos observados 1k/2k/shared10k: 212/252/764ms; contagens,
+ledgers, SP/AIR bytes, hashes e PublicationIds permanecem os mesmos.

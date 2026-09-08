@@ -20,3 +20,11 @@ remote bootstrap. Raise the bounded workflow timeout from 15 to 30 minutes to
 accommodate all required challenges and bootstrap; no gate skipped or weakened.
 The full run precedes this timeout-only adjustment; recheck workflow policy,
 docs and Git afterward, and rerun full via CI on the exact published SHA.
+
+CI run34265242563 reached the new production challenges after the other gates
+and scalar challenges passed, then failed during baseline dependency resolution:
+adapter-only Maven invocation assumed core/test-jar installed in the local m2.
+Reproduced with a fresh temporary m2 excluding all cobol-lower artifacts. Fix
+only challenge preparation: install current isolated core plus test-jar with
+its reactor before focal adapter invocations. No oracle/product changes. Rerun
+full using that fresh build root, preserve failed CI log, recertify and normal push.

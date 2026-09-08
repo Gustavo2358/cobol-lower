@@ -50,3 +50,16 @@ restaurados. Após esse full, apenas o teto temporal do workflow foi elevado de
 Todos os gates permanecem. Arquivos dos siblings são idênticos; o HEAD de
 analysis-cfg avançou externamente para merge PR11 com a mesma árvore, registrado
 no recibo read-only. Nenhum source pin mudou.
+
+A execução CI34265242563 no commit2282308 encontrou uma dependência implícita de
+cache apenas no executor novo: `mvn -pl adapters` exigia core/test-jar instalados.
+Reproduzida a falha em m2 temporária sem nenhum artefato lower, mantendo somente
+as dependências fixadas. A correção prepara o reactor core com install a partir
+da cópia isolada atual antes dos desafios; não pula testes, não muda oracles,
+produção ou dependências upstream. A nova certificação exige full nesse ambiente.
+
+Full nesse ambiente inicialmente sem lower PASS: todos os gates, nove novos
+desafios, 17 escalares e históricos, sem alteração dos oracles. O diff adicional
+foi revisado: dez linhas do executor para preparação explícita e evidência/docs;
+nenhum arquivo de produção mudou após2282308. Certificar e verificar novo commit
+antes de push normal; o CI anterior falhado não é promovido a PASS.

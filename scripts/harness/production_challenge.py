@@ -54,7 +54,15 @@ def main():
         for folder in ('core','adapters','docs','scripts','.github'):
             shutil.copytree(ROOT/folder,root/folder,ignore=shutil.ignore_patterns('target','__pycache__'))
         for name in ('pom.xml','AGENTS.md','ARCHITECTURE.md','README.md','.gitignore'): shutil.copy2(ROOT/name,root/name)
-        maven = ['mvn','-B','-ntp','-Dmaven.repo.local='+str(Path(os.environ['LOWER_BUILD_ROOT'])/'m2'),'-pl','adapters','test-compile']
+        maven = ['mvn','-B','-ntp','-Dmaven.repo.local='+str(Path(os.environ['LOWER_BUILD_ROOT'])/'m2')]
+        # Focal adapter invocations do not have a reactor. Produce their current
+        # core and test-jar dependencies explicitly, even with a clean CI cache.
+        prepared = subprocess.run(maven+['-pl','core','-am','install'],cwd=root,
+            stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        (logs/'prepare-core.log').write_bytes(prepared.stdout)
+        if prepared.returncode: raise RuntimeError('production challenge core preparation failed\n'+prepared.stdout.decode())
+        print('PRODUCTION_CHALLENGE_PREPARED_CORE=current isolated source and tests',flush=True)
+        maven += ['-pl','adapters','test-compile']
         def execute(label, mode):
             if mode == 'semantic': command = [sys.executable,'scripts/harness/run.py','semantic']
             elif mode == 'scope': command = maven
