@@ -33,3 +33,9 @@ O JSON usa handles locais, não um campo de unit em cada referência. Portanto u
 ## Fonte insuficiente
 
 Se o shape físico não trouxer um fato necessário, registrar finding upstream. Não consultar AST, source, reports, HTML ou resolver durante execução. Leitura do código/documentação upstream durante discovery e geração offline de fixture é permitida; dependência de produção/teste ordinário no frontend não é.
+
+## Versões admitidas no Checkpoint 4C
+
+SP 1.1.0 mantém o slice anterior; SP 1.2.0 tem DTO físico separado e transporta
+[provas escalares tipadas](scalar-text-move.md). Novos campos não são aceitos sob
+1.1.0, nem omitidos/defaultados sob 1.2.0. Portas próprias independem do frontend.

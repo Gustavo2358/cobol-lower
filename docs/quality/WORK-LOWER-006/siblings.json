@@ -1,0 +1,47 @@
+{
+  "observed_at": "2026-09-08T17:06:12.244244+00:00",
+  "method": "git rev-parse/status/ls-files and SHA-256 of each tracked working-tree file versus before receipt; no sibling writes",
+  "before_receipt_sha256": "fe29ea4dcfc98546a8d9dbe96248b6aecb3e75e754c3b54353470982d61b7f31",
+  "repositories": {
+    "proleap-poc": {
+      "head": "4345bc18917b8df56be1acd7e44118469ec3f3d3",
+      "status": "",
+      "tracked_files": 468,
+      "same_head": true,
+      "same_status": true,
+      "same_file_hashes": true
+    },
+    "air-java": {
+      "head": "ce530a7e17ab12b23c48f29425f503ff920b09fb",
+      "status": "",
+      "tracked_files": 148,
+      "same_head": true,
+      "same_status": true,
+      "same_file_hashes": true
+    },
+    "analysis-ir": {
+      "head": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+      "status": "",
+      "tracked_files": 24,
+      "same_head": true,
+      "same_status": true,
+      "same_file_hashes": true
+    },
+    "analysis-cfg": {
+      "head": "2b4df46d53ce5b21a5c315d3f691b183cb6bd124",
+      "status": "",
+      "tracked_files": 191,
+      "same_head": true,
+      "same_status": true,
+      "same_file_hashes": true
+    },
+    "artefatos-e2e": {
+      "head": "2484b76f9174a79ea702f17453f04955cd46a755",
+      "status": "",
+      "tracked_files": 443,
+      "same_head": true,
+      "same_status": true,
+      "same_file_hashes": true
+    }
+  }
+}

@@ -91,10 +91,19 @@ public final class SpJsonDecoder {
                 pending.pop().elements().forEachRemaining(pending::push);
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
-            if (!node.path("schema").textValue().equals("cobol-semantic-product") || !node.path("contractVersion").textValue().equals("1.1.0")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema,contractVersion");
-            var wire = mapper.treeToValue(node, Wire.Document.class);
-            requirePhysical(wire, "$", meter);
-            var input = Materialize.input(wire);
+            if (!node.path("schema").textValue().equals("cobol-semantic-product")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
+            SpInput input;
+            switch (node.path("contractVersion").textValue()) {
+                case "1.1.0" -> {
+                    var wire = mapper.treeToValue(node, Wire.Document.class);
+                    requirePhysical(wire, "$", meter); input = Materialize.input(wire);
+                }
+                case "1.2.0" -> {
+                    var wire = mapper.treeToValue(node, Wire12.Document.class);
+                    requirePhysical(wire, "$", meter); input = Materialize.input(wire);
+                }
+                default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
+            }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
                 .map(SpInput.OtherStatement.class::cast).map(v -> new UnsupportedVariant(v.header().id(), v.variant())).toList();
             return new Decoded(input, variants);

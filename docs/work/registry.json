@@ -2,14 +2,14 @@
   "schema_version": 1,
   "active": [
     {
-      "id": "WORK-LOWER-005",
+      "id": "WORK-LOWER-006",
       "status": "active",
-      "path": "docs/work/active/WORK-LOWER-005",
+      "path": "docs/work/active/WORK-LOWER-006",
       "authorized_checkpoints": [
         "CP0"
       ],
-      "git_branch": "perf/compact-local-ids",
-      "pull_request": 6,
+      "git_branch": "feat/lower-scalar-move",
+      "pull_request": null,
       "backlog_ids": []
     }
   ],
@@ -151,6 +151,36 @@
         "merge_commit": "1a456e7673df0e3357f157e0249d74aef12bdf63",
         "merged_at": "2026-09-08T03:52:18Z",
         "observed_at": "2026-09-08T04:00:41.931960+00:00"
+      }
+    },
+    {
+      "id": "WORK-LOWER-005",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-005.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "perf/compact-local-ids",
+      "pull_request": 6,
+      "backlog_ids": [],
+      "manifest": "docs/quality/WORK-LOWER-005/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-005/CP0.json",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 6,
+        "branch": "perf/compact-local-ids",
+        "base": "main",
+        "head_sha": "49811f662f435edc2a3b931e793c7a8300ffcd64",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "f9e74ec3404efe830992d9535becca847ace80e8",
+        "merged_at": "2026-09-08T11:06:59Z",
+        "observed_at": "2026-09-08T16:48:53.450014+00:00"
       }
     }
   ],

@@ -26,3 +26,8 @@ Uma nova variante deve ter tratamento explícito também no input adapter e no d
 ## O que não foi decidido
 
 Não foi congelado um planner universal de CFG, SSA, basic blocks máximos ou um lowering de uma Sequence por statement para toda a linguagem. Esses desenhos dependem dos fatos executáveis disponíveis e dos contratos de consumidores; devem ser analisados no slice correspondente.
+
+## Checkpoint 4C
+
+[scalar-text-move@1](scalar-text-move.md) acrescenta DATA escalar e MOVE FULL_IDENTITY
+com cadeia explícita até GOBACK. Não habilita MOVE geral, IF ou CALL.

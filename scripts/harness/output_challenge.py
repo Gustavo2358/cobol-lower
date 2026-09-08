@@ -14,7 +14,7 @@ CLI = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli/CobolLowe
 CASES = [
  ('AIR-JACKSON', AIR, 'codec.encode(publication)', 'new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)', 'boundary', 'ARCH_AIR_OUTPUT JSON library'),
  ('AIR-NEWLINE', AIR, 'files.write(temporary, bytes);', 'files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + "\\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));', 'semantic', 'exact shared codec bytes'),
- ('NON-SUCCESS-WRITES', CLI, 'err.println("Lowering " + result.status());', '''try { output.write(new EntryGobackLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }
+ ('NON-SUCCESS-WRITES', CLI, 'err.println("Lowering " + result.status());', '''try { output.write(new CobolLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }
             catch (IOException ex) { throw new IllegalStateException(ex); }
             err.println("Lowering " + result.status());''', 'semantic', 'non-SUCCESS never invokes physical output'),
  ('LOWERING-EXIT-ZERO', CLI, 'return LOWERING;', 'return SUCCESS;', 'semantic', 'expected exit 4'),

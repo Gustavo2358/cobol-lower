@@ -121,6 +121,7 @@ def challenge():
     run([sys.executable, "scripts/harness/semantic_challenge.py"])
     run([sys.executable, "scripts/harness/review_challenge.py"])
     run([sys.executable, "scripts/harness/output_challenge.py"])
+    run([sys.executable, "scripts/harness/scalar_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):

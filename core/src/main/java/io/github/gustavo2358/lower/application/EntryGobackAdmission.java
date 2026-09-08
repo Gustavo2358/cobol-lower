@@ -30,16 +30,16 @@ public final class EntryGobackAdmission implements AdmitInput {
         }
     }
 
-    private static void validate(SpInput input, Context c) {
+    static void validate(SpInput input, Context c) {
         c.touch();
         var unit = input.unit();
         c.require(!unit.compilationUnitId().isBlank() && !unit.canonicalProgramName().isBlank(), Rule.IDENTITY, "unit", null, "Unit namespace text must be nonblank");
         for (int component : unit.structuralPath()) { c.touch(); c.require(component >= 0, Rule.IDENTITY, "unit", null, "Nonnegative structural path"); }
         c.require(!input.policy().policyId().isBlank() && !input.policy().version().isBlank(), Rule.IDENTITY, "policy", null, "Policy identity/version are explicit");
-        var dataIds = new HashSet<DataId>();
+        var points = new HashSet<Integer>();
         for (var data : input.dataDeclarations()) {
             c.touch(); c.identity(data.id().unit(), data.id().handle(), "data", data.provenance());
-            c.require(dataIds.add(data.id()), Rule.DUPLICATE_ID, data.id().handle(), data.provenance(), "Unique DATA identity");
+            c.require(c.data.putIfAbsent(data.id(), data) == null, Rule.DUPLICATE_ID, data.id().handle(), data.provenance(), "Unique DATA identity");
             c.require(!data.canonicalName().isBlank() && data.picture().map(p -> !p.isBlank()).orElse(true), Rule.IDENTITY, data.id().handle(), data.provenance(), "Nonblank DATA text when present");
             c.provenance(data.provenance()); c.readiness(data.readiness(), data.id().handle(), data.provenance());
         }
@@ -51,7 +51,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.touch(); var h = statement.header();
             c.identity(h.id().unit(), h.id().handle(), "statement", h.provenance());
             c.require(c.statements.putIfAbsent(h.id(), statement) == null, Rule.DUPLICATE_ID, h.id().handle(), h.provenance(), "Unique statement identity");
-            c.require(h.programPoint() >= 0 && h.programPoint() > previousPoint, Rule.PROGRAM_POINT, h.id().handle(), h.provenance(), "Unique increasing structural program points, never execution order");
+            c.require(h.programPoint() >= 0 && (c.unordered ? points.add(h.programPoint()) : h.programPoint() > previousPoint), Rule.PROGRAM_POINT, h.id().handle(), h.provenance(), "Unique increasing structural program points, never execution order");
             previousPoint = h.programPoint();
             c.provenance(h.provenance()); c.readiness(h.readiness(), h.id().handle(), h.provenance());
             counts.merge(h.coverage(), 1L, Long::sum);
@@ -90,7 +90,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             }
         }
         for (var root : input.structure().roots()) { c.touch(); c.require(root.unit().equals(unit) && c.lookup(root) != null, Rule.STRUCTURE, root.handle(), null, "Root belongs to published unit"); }
-        c.require(input.structure().roots().equals(expectedRoots), Rule.STRUCTURE, "roots", null, "Roots equal published ROOT containment in structural order");
+        c.require((c.unordered ? input.structure().roots().size() == expectedRoots.size() && new HashSet<>(input.structure().roots()).equals(new HashSet<>(expectedRoots)) : input.structure().roots().equals(expectedRoots)), Rule.STRUCTURE, "roots", null, "Roots equal published ROOT containment in structural order");
         var branchKeys = new HashSet<BranchKey>();
         for (var branch : input.structure().branches()) {
             c.touch(); var key = new BranchKey(branch.parent(), branch.branch());
@@ -173,13 +173,16 @@ public final class EntryGobackAdmission implements AdmitInput {
         return switch (status) { case BLOCKED -> 0; case PARTIAL -> 1; case SUFFICIENT -> 2; case NOT_APPLICABLE -> -1; };
     }
     private record BranchKey(StatementId parent, Branch branch) { }
-    private static final class Context {
-        final SpInput input; final Limits limits;
+    static final class Context {
+        final SpInput input; final Limits limits; final boolean unordered;
+        final Map<DataId, DataFact> data = new LinkedHashMap<>();
         final Map<StatementId, StatementFact> statements = new HashMap<>();
         final List<Diagnostic> diagnostics = new ArrayList<>();
         long entities; long references; long components; boolean truncated;
         Phase phase = Phase.INPUT_VALIDATION;
-        Context(SpInput input, Limits limits) { this.input = input; this.limits = limits; }
+        Context(SpInput input, Limits limits) { this(input, limits, false); }
+        Context(SpInput input, Limits limits, boolean unordered) { this.input = input; this.limits = limits; this.unordered = unordered; }
+        DataFact data(DataId id) { references++; return data.get(id); }
         void touch() {
             if (++entities > limits.maxEntities()) {
                 require(false, Rule.LIMIT, "input", null, "Entity visit limit exceeded; no partial admission");
@@ -217,5 +220,5 @@ public final class EntryGobackAdmission implements AdmitInput {
         }
         Admission result(Status status) { return new Admission(status, Optional.ofNullable(input), diagnostics, new Statistics(entities, references, components), truncated); }
     }
-    private static final class LimitReached extends RuntimeException { private static final long serialVersionUID = 1L; }
+    static final class LimitReached extends RuntimeException { private static final long serialVersionUID = 1L; }
 }

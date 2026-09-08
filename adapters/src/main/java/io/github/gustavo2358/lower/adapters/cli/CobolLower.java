@@ -7,7 +7,7 @@ import io.github.gustavo2358.lower.adapters.sp.FileLowering;
 import io.github.gustavo2358.lower.adapters.sp.SpFileInput;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.application.AdmitInput;
-import io.github.gustavo2358.lower.application.EntryGobackLowerer;
+import io.github.gustavo2358.lower.application.CobolLowerer;
 import io.github.gustavo2358.lower.application.LowerInput;
 import io.github.gustavo2358.lower.application.LoweringResult;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public final class CobolLower {
     private CobolLower() { }
     public static void main(String[] args) { System.exit(run(args, System.err)); }
     public static int run(String[] args, PrintStream err) {
-        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new EntryGobackLowerer()), OPTIONS, new AirFileOutput());
+        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), OPTIONS, new AirFileOutput());
     }
     /** Composition seam; no JVM exit, alternate semantic decoder or lowering. */
     public static int run(String[] args, PrintStream err, FileLowering lowering, LowerInput.Options options, AirFileOutput output) {

@@ -79,6 +79,8 @@ public final class AirOutputSuite {
         var codec = new AirJson(); Publication publication = expected.publication().orElseThrow();
         check(Arrays.equals(bytes, codec.encode(publication)), "exact shared codec bytes");
         check(publication.id().localId().matches("[0-9a-f]{32}"), "compact complete XXH3-128 namespace");
+        check(java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes))
+            .equals("46919c1429db4aa310e66fc9df9374eeba53fd98e50a287fdd005c17622f33ad"), "CP3 approved exact bytes preserved");
         IdentityRenamingOracle.verify(publication);
         System.out.println("COMPACT_AIR_BYTES=" + bytes.length);
         check(codec.decode(bytes).equals(publication), "round-trip entire real Publication");
@@ -205,6 +207,7 @@ public final class AirOutputSuite {
                 for (Path path : paths.sorted(java.util.Comparator.reverseOrder()).toList()) Files.delete(path);
             }
         }
+        assertions += ScalarOutputSuite.run();
         System.out.println("LOWER_AIR_OUTPUT_TESTS=" + assertions);
     }
 }

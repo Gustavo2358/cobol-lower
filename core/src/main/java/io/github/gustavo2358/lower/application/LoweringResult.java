@@ -11,11 +11,16 @@ import java.util.Optional;
 /** Atomic outcome plus immutable source evidence, typed correlation and complete checker report. */
 public record LoweringResult(Status status, Admission admission, Optional<Publication> publication,
         Optional<ValidationResult> validation, List<EntryLink> entries, List<StatementLink> statements,
-        List<Limitation> limitations) {
+        List<Limitation> limitations, List<DataLink> data, List<OperandLink> operands) {
     public static final String PROFILE = "minimal-entry-goback@1";
+    public LoweringResult(Status status, Admission admission, Optional<Publication> publication,
+            Optional<ValidationResult> validation, List<EntryLink> entries, List<StatementLink> statements, List<Limitation> limitations) {
+        this(status, admission, publication, validation, entries, statements, limitations, List.of(), List.of());
+    }
     public LoweringResult {
         Objects.requireNonNull(status); Objects.requireNonNull(admission);
         Objects.requireNonNull(publication); Objects.requireNonNull(validation);
+        data = List.copyOf(data); operands = List.copyOf(operands);
         entries = List.copyOf(entries); statements = List.copyOf(statements); limitations = List.copyOf(limitations);
         if ((status == Status.SUCCESS) != publication.isPresent()) throw new IllegalArgumentException("atomic publication required");
         if (status == Status.SUCCESS && (admission.status() != Admission.Status.ADMITTED
@@ -27,6 +32,12 @@ public record LoweringResult(Status status, Admission admission, Optional<Public
     public enum LimitCode { COORDINATES_UNAVAILABLE, INCLUDE_SITE_UNAVAILABLE, IDENTITY_LIMIT }
     public record Limitation(LimitCode code, String subject, String requirement) {
         public Limitation { Objects.requireNonNull(code); Objects.requireNonNull(subject); Objects.requireNonNull(requirement); }
+    }
+    public record DataLink(SpInput.DataId source, Ids.ObjectId object, Ids.StorageId storage, Ids.OriginId origin) {
+        public DataLink { Objects.requireNonNull(source); Objects.requireNonNull(object); Objects.requireNonNull(storage); Objects.requireNonNull(origin); }
+    }
+    public record OperandLink(SpInput.OperandId source, Ids.OperandId target, Ids.OriginId origin) {
+        public OperandLink { Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(origin); }
     }
     public record EntryLink(SpInput.EntryId source, Ids.EntryId target, Ids.LabelId start, Ids.OriginId origin) {
         public EntryLink { Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(start); Objects.requireNonNull(origin); }

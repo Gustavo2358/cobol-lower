@@ -11,3 +11,5 @@
 | Como crescer para outras famílias? | [matriz de capacidades](capability-matrix.md) |
 
 Os documentos locais definem a política do lowerer; não substituem as especificações upstream fixadas. Cada regra tem origem registrada em [fontes](../sources/index.md).
+
+[DATA/MOVE escalar](scalar-text-move.md): Checkpoint 4C.
