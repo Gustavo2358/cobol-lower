@@ -46,3 +46,9 @@ todos os desafios anteriores novamente (exit0). Nenhum finding bloqueante remane
 Evidência da tentativa SHA-256 anterior é factual e marcada superseded, não certificada
 como XXH3-128. Testes/oracles finais usam XXH3-128; hashes SHA-256 do harness são mantidos.
 A revisão humana do PR completo é o próximo passo externo, ainda não concedida.
+
+Revisão do delta de publicação após e0568298e94aa02efcd27731e70ffd16d92c4efc:
+PR real #5 vinculado a manifesto corrente/registry/evidence/state; snapshot FREEZE anterior
+ao PR permanece intocado (PR null permitido pelo lifecycle). Produção, testes, oracles,
+full.log e contratos imutáveis idênticos ao primeiro commit. Docs/Git repetidos; nenhum
+novo finding. CI do commit final é obrigação pós-push, sem antecipar seu resultado.

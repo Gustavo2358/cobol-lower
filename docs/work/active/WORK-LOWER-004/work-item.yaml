@@ -108,7 +108,7 @@ checkpoints:
   status: ready_for_review
 git:
   branch: perf/compact-publication-id
-  pull_request: null
+  pull_request: 5
   one_pr_per_work_item: true
   merge_authorized: false
   suggested_branch: perf/compact-publication-id

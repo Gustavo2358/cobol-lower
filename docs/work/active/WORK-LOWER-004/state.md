@@ -18,7 +18,12 @@ FREEZE v2/certificação pre_commit em [CP0](../../../quality/WORK-LOWER-004/CP0
 Limitações: hash não criptográfico, sem prova de unicidade matemática/CPU/heap ou grande escala;
 nenhum CFG ou E2E cross-repo executado. Produção de adapters/CLI/binding/AIR/SP intocada.
 
-Fase ready_for_review local; primeiro commit certificado ainda será publicado e PR vinculado.
+Fase ready_for_review local. Primeiro commit certificado pre_commit/publicado:
+`e0568298e94aa02efcd27731e70ffd16d92c4efc`.
+[PR #5](https://github.com/Gustavo2358/cobol-lower/pull/5) aberto, autoMergeRequest null.
+Número real agora vinculado ao manifesto/registry/evidência no mesmo CP0. Código/testes
+inalterados neste ajuste documental; docs/git e certificação repetidos. O commit final
+se resolve pelo trailer da evidência, sem autoinscrição recursiva.
 Certificação técnica local não é aprovação humana ou CI remoto. Confirmar check checkpoint
 no HEAD publicado e registrar recibo no PR/handoff, sem autoinscrição do próprio SHA.
 Próximo passo externo: revisão humana solicitada do PR completo. Sem merge/auto-merge;

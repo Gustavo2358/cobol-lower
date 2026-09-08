@@ -5,15 +5,15 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "perf/compact-publication-id",
-  "pull_request": null,
+  "pull_request": 5,
   "base_commit": "a12907d61dbad619bdda48dee16f8ae6a63460db",
-  "reviewed_head": "a12907d61dbad619bdda48dee16f8ae6a63460db",
+  "reviewed_head": "e0568298e94aa02efcd27731e70ffd16d92c4efc",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "execution_mode": "single-checkpoint",
   "authorization_reference": "docs/work/active/WORK-LOWER-004/spec.md",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "933a6ce1fca35952b35c3b5ad92c058212230e0faa3c861f98d61c58e833c950",
+  "candidate_diff_sha256": "8c01689629dea45767c741225f8b3fbcc0ad9b55231675182df0473d7bab2dc3",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-004/CP0.json",
     "docs/work/active/WORK-LOWER-004/state.md"
@@ -377,6 +377,28 @@
       "exit_code": 0,
       "test_count": null,
       "log_reference": "docs/quality/WORK-LOWER-004/validation.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": ".",
+      "environment": "Java21; Python3.14.4; live PR5 metadata; production/tests unchanged from e0568298e94aa02efcd27731e70ffd16d92c4efc",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/final-metadata.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-004/CP0.json",
+      "cwd": ".",
+      "environment": "Java21; Python3.14.4; live PR5 metadata; production/tests unchanged from e0568298e94aa02efcd27731e70ffd16d92c4efc",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-004/final-metadata.log"
     }
   ],
   "not_executed": [],
@@ -520,7 +542,9 @@
         3,
         4,
         5,
-        6
+        6,
+        7,
+        8
       ]
     }
   ],

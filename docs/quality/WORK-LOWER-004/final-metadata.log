@@ -1,0 +1,3 @@
+PASS docs
+{"autoMergeRequest": null, "baseRefName": "main", "headRefName": "perf/compact-publication-id", "headRefOid": "e0568298e94aa02efcd27731e70ffd16d92c4efc", "isDraft": false, "mergeCommit": null, "number": 5, "reviewDecision": "", "state": "OPEN", "url": "https://github.com/Gustavo2358/cobol-lower/pull/5"}
+PASS git
