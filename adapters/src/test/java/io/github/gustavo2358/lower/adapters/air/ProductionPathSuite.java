@@ -14,7 +14,7 @@ import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-/** Real merged upstream snapshots through the production file composition, with bounded resource oracles. */
+/** Real merged upstream snapshots through the production file composition, with semantic and structural safety oracles. */
 public final class ProductionPathSuite {
     private static int checks;
     private static void check(boolean value, String message) { if (!value) throw new AssertionError("PRODUCTION " + message); checks++; }
@@ -53,8 +53,7 @@ public final class ProductionPathSuite {
     }
     private static void measurements(boolean production) throws Exception {
         byte[] raw = fixture(true);
-        // Before recalibration this mode measures the real corpus with its exact observed physical bounds.
-        var limits = production ? CobolLower.INPUT_LIMITS : new SpJsonDecoder.Limits(raw.length, 64, 1_050_154);
+        var limits = CobolLower.INPUT_LIMITS;
         var measurement = new SpJsonDecoder(limits).decodeMeasured(raw);
         check(measurement.result() instanceof SpJsonDecoder.Decoded, "10k decoder passes production bound: " + measurement.result());
         var result = new CobolLowerer().lower(((SpJsonDecoder.Decoded)measurement.result()).input(), production ? CobolLower.OPTIONS : ScalarSuite.OPTIONS);
@@ -78,20 +77,12 @@ public final class ProductionPathSuite {
         System.out.println("PRODUCTION_LIMIT_ORDER data=1 moves=10000 exit=" + code + " first_limit=AIR_JSON");
     }
     private static void guards(Path directory) throws Exception {
-        var path = directory.resolve("too-large.sp.json");
-        try (var file = new RandomAccessFile(path.toFile(), "rw")) { file.setLength((long)CobolLower.INPUT_LIMITS.maxBytes() + 1); }
-        var failure = new SpFileInput(CobolLower.INPUT_LIMITS).read(path);
-        check(failure instanceof SpJsonDecoder.Rejected r && r.diagnostic().code() == SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, "bounded file bytes");
+        var path = directory.resolve("deep.sp.json");
+        Files.writeString(path, "{\"nested\":" + "[".repeat(65) + "0" + "]".repeat(65) + "}");
         var destination = directory.resolve("rejected.air.json"); Files.write(destination, new byte[]{37});
         var diagnostics = new ByteArrayOutputStream();
         check(cli(path, destination, diagnostics) == CobolLower.INPUT && diagnostics.toString(StandardCharsets.UTF_8).contains("IMPLEMENTATION_LIMIT")
-            && Arrays.equals(Files.readAllBytes(destination), new byte[]{37}), "oversize CLI input atomic");
-        String nodes = "{\"nodes\":[" + "null,".repeat(CobolLower.INPUT_LIMITS.maxNodes()) + "null]}";
-        var measured = new SpJsonDecoder(CobolLower.INPUT_LIMITS).decodeMeasured(nodes.getBytes(StandardCharsets.UTF_8));
-        check(measured.result() instanceof SpJsonDecoder.Rejected r && r.diagnostic().code() == SpJsonDecoder.Code.IMPLEMENTATION_LIMIT
-            && measured.statistics().jsonNodesVisited() == (long)CobolLower.INPUT_LIMITS.maxNodes() + 1, "bounded JSON nodes");
-        var result = new CobolLowerer().lower(ScalarInputs.create(1, 20_000), CobolLower.OPTIONS);
-        check(result.status() == LoweringResult.Status.IMPLEMENTATION_LIMIT && result.publication().isEmpty(), "bounded admission entities atomic");
+            && Arrays.equals(Files.readAllBytes(destination), new byte[]{37}), "depth rejection remains atomic");
         check(CobolLower.INPUT_LIMITS.maxDepth() == 64 && AirJson.Limits.defaults().maximumDocumentBytes() == 16 * 1024 * 1024
             && AirJson.Limits.defaults().maximumDepth() == 128, "depth and shared codec defaults unchanged");
     }
@@ -104,6 +95,10 @@ public final class ProductionPathSuite {
             else { success(directory); if (!mode.equals("success")) guards(directory); if (mode.equals("all")) large(directory); }
         } finally {
             try (var files = Files.walk(directory)) { for (var path : files.sorted(Comparator.reverseOrder()).toList()) Files.delete(path); }
+        }
+        if (mode.equals("all")) {
+            System.out.println("LOWER_CAPACITY_TESTS=" + CapacitySuite.run());
+            CapacitySafetySuite.run();
         }
         return checks;
     }

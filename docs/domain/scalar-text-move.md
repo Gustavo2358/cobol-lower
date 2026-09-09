@@ -72,12 +72,19 @@ volume semântico incremental, O(D+S) para largura fixa. Maps com custo amortiza
 Não há scan de DATA por MOVE nem scan de statement por continuação. Custos de
 codec/validator são do shared air-java e não estão cobertos por SLA do lower.
 
-CLI usa ProductionLimits: SP 32 MiB/depth64/1500000 nós, admissão 250000 visitas.
-O corpus real de 1 DATA/10000 MOVE mede 18809400 bytes/1050154 nodes/190021 visitas,
-profundidade 8 com folhas; headroom 78.4%/42.8%/31.6%. Não há CLI flags ou
-configuração pública. O corpus 400 DATA/MOVE tem 1071738 bytes/56119 nodes e
-produz 7616219 bytes AIR pela composição padrão. Os tetos continuam protegidos
-por contracasos de bytes/nodes/visits, sem publicação parcial. Shared AirJson mantém 16 MiB/depth128. Encode
+A entrada de produção não possui limites artificiais de bytes, nós ou visitas.
+`ProductionLimits.SP_DEPTH=64` permanece como proteção do parser/validação de
+estruturas patológicas; o tamanho de arrays válidos não consome profundidade.
+O contador de visitas continua como telemetria para os ledgers de complexidade.
+Os 100 diagnostics limitam relatos de inputs já inválidos. Strings de valores
+não têm teto de capacidade no parser; overflow e validação de shape permanecem.
+
+Historicamente, CP4C calibrou 32MiB/1500000 nós/250000 visitas no corpus real
+de 1 DATA/10000 MOVE (18809400 bytes/1050154 nós/190021 visitas, depth8 com
+folhas). A decisão atual e o RED/GREEN estão em
+[WORK-LOWER-007](../work/active/WORK-LOWER-007/work-item.yaml); evidência CP4C
+permanece imutável. Não há configuração pública nova. Shared AirJson permanece
+no pin atual com 16MiB/depth128, uma limitação independente. Encode
 ocorre antes de temp: exceder produz exit 5 `AIR codec IMPLEMENTATION_LIMIT`, não
 trunca/cria prefixo e preserva eventual destino anterior. Falha de I/O é exit6
 com cleanup do temp same-dir; bytes do codec vão diretamente ao writer.

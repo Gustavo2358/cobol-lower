@@ -96,6 +96,10 @@ def semantic(extra=()):
         raise RuntimeError("production path probe absent/zero")
     if "-Dlower.performance=true" in extra and "PRODUCTION_LIMIT_ORDER data=1 moves=10000" not in output:
         raise RuntimeError("production limit-order probe absent")
+    if "-Dlower.performance=true" in extra:
+        capacity = re.findall(r"^LOWER_CAPACITY_TESTS=([0-9]+)$", output, re.M)
+        if len(capacity) != 1 or int(capacity[0]) <= 0 or "CAPACITY_DETERMINISM=PASS" not in output:
+            raise RuntimeError("capacity proof absent/zero/duplicate")
     print("SEMANTIC_TEST_COUNT=" + str(sum(counts)))
     return output
 
@@ -129,6 +133,7 @@ def challenge():
     run([sys.executable, "scripts/harness/output_challenge.py"])
     run([sys.executable, "scripts/harness/scalar_challenge.py"])
     run([sys.executable, "scripts/harness/production_challenge.py"])
+    run([sys.executable, "scripts/harness/capacity_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):

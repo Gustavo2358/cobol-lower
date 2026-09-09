@@ -30,6 +30,15 @@ class AirOutputGate(unittest.TestCase):
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
             with self.assertRaisesRegex(RuntimeError,'production limit-order probe absent'):
                 harness.semantic(('-Dlower.performance=true',))
+    def test_capacity_proof_is_mandatory_in_performance(self):
+        prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
+                  'PRODUCTION_SUCCESS_PROBE data=400 moves=400\nPRODUCTION_LIMIT_ORDER data=1 moves=10000\n')
+        for marker in ('', 'LOWER_CAPACITY_TESTS=0\n', 'LOWER_CAPACITY_TESTS=1\nLOWER_CAPACITY_TESTS=1\n', 'LOWER_CAPACITY_TESTS=1\n'):
+            with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=prefix+marker):
+                with self.assertRaisesRegex(RuntimeError,'capacity proof absent/zero/duplicate'):
+                    harness.semantic(('-Dlower.performance=true',))
+        with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=prefix+'LOWER_CAPACITY_TESTS=1\nCAPACITY_DETERMINISM=PASS\n'):
+            harness.semantic(('-Dlower.performance=true',))
     def test_core_codec_source_is_forbidden(self):
         self.assertTrue(source_errors('import io.github.gustavo2358.air.json.AirJson;'))
     def test_core_codec_maven_is_forbidden(self):

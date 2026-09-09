@@ -39,7 +39,7 @@ public final class VerticalSuite {
     }
     public static int run(byte[] golden) throws Exception {
         var mapper = new ObjectMapper(); var port = new EntryGobackLowerer(); int[] calls = {0};
-        var reader = new SpFileInput(new SpJsonDecoder.Limits(100_000, 64, 50_000));
+        var reader = new SpFileInput(new SpJsonDecoder.Limits(64));
         var driver = new FileLowering(reader, (input, options) -> { calls[0]++; return port.lower(input, options); });
         var file = Files.createTempFile("lower-vertical-", ".json");
         try {
@@ -59,7 +59,7 @@ public final class VerticalSuite {
             var rejected = ((FileLowering.Lowered)driver.lower(file, LoweringSuite.OPTIONS)).result();
             check(rejected.status() == LoweringResult.Status.INVALID_INPUT && rejected.publication().isEmpty()
                     && rejected.admission().diagnostics().stream().anyMatch(x -> x.rule() == Admission.Rule.ENTRY_START), "file cannot repair semantic start");
-            var decoded = ((SpJsonDecoder.Decoded)new SpJsonDecoder(new SpJsonDecoder.Limits(100_000,64,50_000)).decode(mapper.writeValueAsBytes(bad))).input();
+            var decoded = ((SpJsonDecoder.Decoded)new SpJsonDecoder(new SpJsonDecoder.Limits(64)).decode(mapper.writeValueAsBytes(bad))).input();
             check(rejected.equals(port.lower(decoded, LoweringSuite.OPTIONS)), "contradictory input gets identical port result");
             int beforeFailure = calls[0];
             for (String payload : List.of("{", new String(golden, java.nio.charset.StandardCharsets.UTF_8).replace("1.1.0", "9.0.0"))) {
@@ -68,11 +68,9 @@ public final class VerticalSuite {
                 check(calls[0] == beforeFailure, "physical rejection cannot invoke semantic port");
             }
             Files.write(file, golden);
-            check(new FileLowering(new SpFileInput(new SpJsonDecoder.Limits(golden.length - 1,64,50_000)), port).lower(file, LoweringSuite.OPTIONS)
-                    instanceof FileLowering.PhysicalFailure failure && failure.diagnostic().code() == SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, "file byte limit has no partial Publication");
             Files.writeString(file, new String(golden, java.nio.charset.StandardCharsets.UTF_8) + " {\"unexpected\":true}");
-            check(new FileLowering(new SpFileInput(new SpJsonDecoder.Limits(golden.length,64,50_000)), port).lower(file, LoweringSuite.OPTIONS)
-                    instanceof FileLowering.PhysicalFailure failure && failure.diagnostic().code() == SpJsonDecoder.Code.IMPLEMENTATION_LIMIT,
+            check(new FileLowering(new SpFileInput(new SpJsonDecoder.Limits(64)), port).lower(file, LoweringSuite.OPTIONS)
+                    instanceof FileLowering.PhysicalFailure failure && failure.diagnostic().code() == SpJsonDecoder.Code.INPUT_ERROR,
                     "valid prefix plus trailing input must not become a successful Publication");
             Files.delete(file);
             observe(actual);

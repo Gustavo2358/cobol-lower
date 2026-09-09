@@ -12,7 +12,7 @@ import java.util.*;
 /** Real upstream fixture, strict version boundaries and independent relational AIR observations. */
 public final class ScalarWireSuite {
     private static final ObjectMapper JSON = new ObjectMapper();
-    private static final SpJsonDecoder DECODER = new SpJsonDecoder(new SpJsonDecoder.Limits(1_000_000, 64, 100_000));
+    private static final SpJsonDecoder DECODER = new SpJsonDecoder(new SpJsonDecoder.Limits(64));
     private static int checks;
     private ScalarWireSuite() { }
     private static void check(boolean condition, String why) { if (!condition) throw new AssertionError("SCALAR_WIRE " + why); checks++; }

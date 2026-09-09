@@ -1,0 +1,31 @@
+{
+  "profile": "synthetic SP1.2 shared DATA and FULL_IDENTITY MOVE; generated from unchanged real scalar-move-1.2.0 fixture",
+  "sp_bytes": 38179536,
+  "json_nodes": 2100154,
+  "container_depth": 7,
+  "depth_with_leaves": 8,
+  "sp_sha256": "202ce49d1a632ab2997bd8d9beb0300c4c81bfd6935e0cdfa64a564a844f3a3e",
+  "moves": 20000,
+  "data_objects": 1,
+  "cells": 1,
+  "entries": 1,
+  "sequences": 1,
+  "return_terminators": 1,
+  "statement_correlations": 20001,
+  "operand_correlations": 40000,
+  "admission_visits": 380021,
+  "references_checked": 140003,
+  "origins": 240013,
+  "publication_id": "66cf27c9e8562a9a8d46624b2412d512",
+  "determinism": "PASS full Publication.equals across independent file/bytes decodes plus ScalarSuite.oracle and AirValidator on both",
+  "byte_and_node_corpus_checks": "38,179,536 > 33,554,432; 2,100,154 > 1,500,000; 380,021 > 250,000",
+  "large_string_chars": 33554433,
+  "large_string_sp_bytes": 33559606,
+  "memory_probe": {
+    "java_heap_mib": 1536,
+    "maximum_rss_kib": 1627832,
+    "elapsed_seconds": 17.22,
+    "exit": 0,
+    "interpretation": "Single telemetry observation, includes generation and both Publications; no baseline-normalized amplification or SLA claim; BACKLOG-LOWER-018 not solved"
+  }
+}
