@@ -29,17 +29,15 @@ public final class DecoderPerformanceSuite {
             ((ObjectNode)tree.path("entryInventory").path("entries").get(0).path("start")).put("statement", "statement:" + (n - 1));
             byte[] bytes = mapper.writeValueAsBytes(tree); int expectedNodes = 82 + 37 * n;
             check(nodes(tree) == expectedNodes, "independent JSON schema ledger 82+37N");
-            var decoder = new SpJsonDecoder(new SpJsonDecoder.Limits(bytes.length, 64, expectedNodes)); long started = System.nanoTime();
+            var decoder = new SpJsonDecoder(new SpJsonDecoder.Limits(64)); long started = System.nanoTime();
             var measured = decoder.decodeMeasured(bytes); long elapsed = System.nanoTime() - started;
-            check(measured.result() instanceof SpJsonDecoder.Decoded, "exact decoder limits materialize full inventory");
+            check(measured.result() instanceof SpJsonDecoder.Decoded, "decoder materializes full inventory");
             check(((SpJsonDecoder.Decoded)measured.result()).input().equals(ScaleInputs.create(n)), "decoded scale facts equal independently handwritten memory input");
             check(measured.statistics().jsonNodesVisited() == expectedNodes, "measured JSON ledger 82+37N");
             check(measured.statistics().physicalValuesVisited() == 82L + 35L * n, "measured non-null DTO ledger 82+35N");
             check(measured.statistics().bytesProcessed() == bytes.length, "bytes measured not characters");
             check(decoder.decode(bytes).equals(measured.result()), "measured and ordinary decoder are one implementation");
-            check(limit(new SpJsonDecoder(new SpJsonDecoder.Limits(bytes.length,64,expectedNodes - 1)).decode(bytes)), "node limit cannot truncate to success");
-            check(limit(new SpJsonDecoder(new SpJsonDecoder.Limits(bytes.length - 1,64,expectedNodes)).decode(bytes)), "byte limit cannot truncate to success");
-            check(limit(new SpJsonDecoder(new SpJsonDecoder.Limits(bytes.length,2,expectedNodes)).decode(bytes)), "depth limit explicit");
+            check(limit(new SpJsonDecoder(new SpJsonDecoder.Limits(2)).decode(bytes)), "depth limit explicit");
             System.out.println("PERFORMANCE_DECODER n=" + n + " bytes=" + measured.statistics().bytesProcessed() + " nodes=" + measured.statistics().jsonNodesVisited()
                     + " physical=" + measured.statistics().physicalValuesVisited() + " elapsed_ns=" + elapsed + " java=" + System.getProperty("java.version")
                     + " os=" + System.getProperty("os.name") + " heap_used=" + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));

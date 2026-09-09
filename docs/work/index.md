@@ -1,5 +1,16 @@
 # Trabalho atual
 
+[WORK-LOWER-007](active/WORK-LOWER-007/work-item.yaml): remoção dos limites artificiais
+de entrada/admissão, CP0. [Estado](active/WORK-LOWER-007/state.md).
+
+## Pacote anterior preservado
+
+PR7 foi mergeado em 50cc57d; seu pacote permanece como recebido na baseline.
+A reconciliação histórica do manifesto de remediação exige trabalho separado no
+harness (o checker histórico só aceita CP0-manifest, mas o certificado final
+congela CP0-blocker-manifest). Nenhuma autoridade de CP4C é reutilizada por 007.
+
+
 [WORK-LOWER-006](active/WORK-LOWER-006/work-item.yaml): implementation Checkpoint 4C,
 CP0 único. [Estado](active/WORK-LOWER-006/state.md). Somente cobol-lower até AIR JSON.
 

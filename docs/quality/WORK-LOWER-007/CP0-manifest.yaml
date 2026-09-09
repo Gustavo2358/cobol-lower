@@ -1,0 +1,87 @@
+schema_version: 1
+id: WORK-LOWER-007
+title: Remove artificial SP input and admission size gates
+status: active
+risk: high
+goal: Supported valid SP is admitted and lowered independently of total bytes, nodes
+  and visits; preserve semantic output and safety.
+authorization:
+  state: granted
+  scope: Focused lower-only hardening, tests, evidence, lifecycle, commit/push/PR;
+    stop for human review without merge
+  execution_mode: single-checkpoint
+  authority: "Explicit user request 2026-09-09 in task 01a0881c-f3be-72f1-8ce6-553614c2d1d7,\
+    \ phases 1\u20137 and final review. No sibling modifications."
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids: []
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- docs/domain/scalar-text-move.md
+- docs/sources/sources.lock.json
+related_domain_rules: []
+related_decisions: []
+related_invariants:
+- INV-LWR-007
+- INV-LWR-017
+- INV-LWR-021
+evals: &id002
+- EVAL-LWR-007
+- EVAL-LWR-015
+- EVAL-LWR-018
+source_scope:
+- core/src/main/java
+- adapters/src/main/java
+test_scope:
+- core/src/test
+- adapters/src/test
+- scripts/harness/production_challenge.py
+- scripts/harness/run.py
+- scripts/harness/tests/test_air_output_gate.py
+- planned:scripts/harness/capacity_challenge.py
+docs_scope:
+- README.md
+- docs/domain/scalar-text-move.md
+- docs/work
+- docs/quality/WORK-LOWER-007
+must_not_change:
+- Sibling repositories/checkouts; CP5/W2/CFG/dataflow/PossibleValues; no contract
+  or lowering semantic changes
+- AIR model/validator/codec/defaults, Maven coordinates and sources.lock.json; no
+  unmerged dependency
+- Historical quality evidence; all existing normative SP/AIR fixtures
+- No streaming redesign, no claim BACKLOG-LOWER-018 solved; BACKLOG-LOWER-017/018
+  not repurposed
+- No merge/auto-merge/reset/clean/stash/rebase/force push
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Remove artificial size gates, prove RED/GREEN/challenges, publish PR and stop
+  depends_on: []
+  gates: *id001
+  evals: *id002
+  status: active
+git:
+  branch: fix/lower-remove-artificial-size-limits
+  pull_request: null
+  one_pr_per_work_item: true
+  merge_authorized: false
+  suggested_branch: fix/lower-remove-artificial-size-limits

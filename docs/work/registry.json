@@ -11,6 +11,17 @@
       "git_branch": "feat/lower-scalar-move",
       "pull_request": 7,
       "backlog_ids": []
+    },
+    {
+      "id": "WORK-LOWER-007",
+      "status": "active",
+      "path": "docs/work/active/WORK-LOWER-007",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "fix/lower-remove-artificial-size-limits",
+      "pull_request": null,
+      "backlog_ids": []
     }
   ],
   "proposals": [],

@@ -13,7 +13,7 @@ import static io.github.gustavo2358.lower.testing.SpFixtures.*;
 
 public final class InputSuite {
     private static final AdmitInput PORT = new EntryGobackAdmission();
-    private static final AdmitInput.Limits LIMITS = new AdmitInput.Limits(100_000, 100);
+    private static final AdmitInput.Limits LIMITS = new AdmitInput.Limits(100);
     private static int count;
     private InputSuite() { }
     private static void check(boolean value, String message) { if (!value) throw new AssertionError(message); count++; }
@@ -107,10 +107,10 @@ public final class InputSuite {
         }
         var sufficientEffects = new Readiness(h.readiness().lowering(), h.readiness().cfg(), claim(ReadinessStatus.SUFFICIENT, "invented effects"));
         expect(body(input, List.of(new GobackFact(header(h, h.id(), 0, h.containment(), h.coverage(), sufficientEffects), GobackExit.CURRENT_PROGRAM_INVOCATION, LocalContinuation.NONE)), input.structure(), List.of(), c), Status.INVALID_INPUT, Rule.READINESS);
-        var limit = PORT.admit(input, new AdmitInput.Limits(1, 100));
-        check(limit.status() == Status.IMPLEMENTATION_LIMIT && limit.input().orElseThrow().equals(input), "entity limit preserves complete input without admission");
+        var limit = PORT.admit(input, new AdmitInput.Limits(1));
+        check(limit.status() == Status.ADMITTED && !limit.diagnosticsTruncated(), "valid input needs no diagnostic budget");
         var manyErrors = body(twice, List.of(input.statements().get(0), duplicate), new Structure(List.of(), List.of()), List.of(), c);
-        limit = PORT.admit(manyErrors, new AdmitInput.Limits(100_000, 1));
+        limit = PORT.admit(manyErrors, new AdmitInput.Limits(1));
         check(limit.status() == Status.IMPLEMENTATION_LIMIT && limit.diagnosticsTruncated(), "diagnostic cap explicit");
         check(PORT.admit(input, LIMITS).equals(PORT.admit(minimal(), LIMITS)), "independent memory constructions deterministic");
         return count;

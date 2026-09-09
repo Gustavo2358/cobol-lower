@@ -1,10 +1,10 @@
 # cobol-lower
 
 Checkpoint 4C: SP 1.2.0 → DATA escalar + MOVE FULL_IDENTITY + GOBACK → AIR JSON.
-[Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-006/work-item.yaml).
+[Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-007/work-item.yaml).
 CP3 1.1.0 preservado. CLI usa o shared codec (16 MiB/depth128); falhas de encode
-são exit5 sem output parcial. Limites SP CLI: 32 MiB/depth64/1500000 nós; admissão 250000 visitas, medidos
-no corpus real de 1 DATA/10000 MOVEs. O teto AirJson continua limitando grandes saídas. Sem CFG/dataflow/CALL.
+são exit5 sem output parcial. SP válido suportado não possui teto de bytes, nós ou visitas de admissão.
+A proteção estrutural de profundidade 64 permanece. O teto AirJson continua limitando grandes saídas. Sem CFG/dataflow/CALL.
 
 O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em `air-java::Publication`: uma Unit, Entry, Sequence e `Return([])`. O adapter de saída 2A publica essa Publication como AIR JSON canônico pelo codec compartilhado. Não reanalisa COBOL nem calcula CFG. O inventário alternativo permanece parcial.
 
@@ -12,7 +12,7 @@ O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em
 
 A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
 
-No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê um Path sob limites explícitos. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
+No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê o Path completo com proteção estrutural de profundidade. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
 
 Requisitos do harness: Java21, Maven, Python3 com [dependências](scripts/harness/requirements.txt), Git e gh autenticado para checks Git/PR. Use um diretório temporário isolado para dependências; bootstrap verifica SHA de air-java, digests dos jars de model e codec e testes upstream antes de cada uso posterior:
 
@@ -80,11 +80,12 @@ preservado como suppressed na exception de I/O, sem transformar a execução em 
 Não cria diretórios pais. Não acrescenta newline, pretty-print, reparse ou fatos AIR.
 
 Defaults operacionais explícitos, iguais aos usados nos testes existentes do slice:
-SP 32 MiB, profundidade 64, 1.500.000 nós; admissão 250.000 entidades e 100 diagnostics;
-identidades até 1.000.000 caracteres. `ValidationOptions.defaults()` do pin usa profundidade 128,
+SP sem teto de bytes/nós/visitas; profundidade 64 e até 100 diagnostics para inputs inválidos.
+`SpJsonDecoder.Limits` recebe somente profundidade; `AdmitInput.Limits`, somente diagnostics.
+O limite de caracteres de identidade avalia o ID final de 32 caracteres, não o volume do SP. `ValidationOptions.defaults()` do pin usa profundidade 128,
 2.000.000 entidades e 10.000 issues. `AirJson` usa seus defaults: 16 MiB e profundidade 128,
 com os mesmos defaults de validação. Limites não fazem parte da identidade, não mudam o perfil,
-não elevam PARTIAL a COMPLETE e não convertem interrupção em sucesso. Não há flags neste checkpoint.
+não elevam PARTIAL a COMPLETE e não convertem interrupção em sucesso. Não há flags de capacidade. A memória disponível continua sendo um recurso finito; BACKLOG-LOWER-018 não foi resolvido.
 
 A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full/CI`, percorre a fixture
 SP real, verifica bytes contra o codec, decode integral, repetição, falhas e publicação física.
@@ -105,7 +106,7 @@ PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex min
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
 WORK-LOWER-001–005 estão reconciliados após merges confirmados. O trabalho atual é
-[WORK-LOWER-006](docs/work/active/WORK-LOWER-006/work-item.yaml), somente 4C até AIR JSON.
+[WORK-LOWER-007](docs/work/active/WORK-LOWER-007/work-item.yaml), remoção dos limites artificiais de entrada/admissão.
 PR para review humano; sem merge/auto-merge ou 4D/4E.
 
 IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro de

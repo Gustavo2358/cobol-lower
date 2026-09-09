@@ -1,4 +1,4 @@
-"""Bounded B1/B2 falsifications; scope guards preserve deferred transport decisions in 4C."""
+"""Production regressions; historical CP4C evidence remains immutable."""
 import hashlib
 import json
 import os
@@ -10,7 +10,9 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 SP = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java'
-LIMITS = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli/ProductionLimits.java'
+FILE = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java'
+ADMISSION = 'core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java'
+BYTE_GATE = (FILE, 'byte[] bytes = input.readAllBytes();', 'byte[] bytes = input.readAllBytes(); if (bytes.length > 100_000) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));')
 AIR = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java'
 SUITE = 'adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/ProductionPathSuite.java'
 OUTPUT_SUITE = 'adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java'
@@ -18,11 +20,11 @@ NEW_CODEC = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Stre
 CASES = [
  ('literal-value-coherence', [(SP, 'if (!source.value().equals(logical.value()))', 'if (false && !source.value().equals(logical.value()))')], 'coherence', 'literal normalized value mismatch'),
  ('literal-codepoints', [(SP, 'logical.logicalExtent() != logical.value().codePointCount(0, logical.value().length())', 'false')], 'coherence', 'literal code point extent mismatch'),
- ('old-production-bytes', [(LIMITS, 'SP_BYTES = 32 * 1024 * 1024', 'SP_BYTES = 100_000')], 'success', 'large SP success exit0'),
- ('old-production-nodes', [(LIMITS, 'SP_NODES = 1_500_000', 'SP_NODES = 50_000')], 'success', 'large SP success exit0'),
- ('old-production-entities', [(LIMITS, 'ADMISSION_ENTITIES = 250_000', 'ADMISSION_ENTITIES = 100_000')], 'large', '10k lowering passes production admission'),
+ ('old-production-bytes', [BYTE_GATE], 'success', 'large SP success exit0'),
+ ('old-production-nodes', [(SP, 'meter.nodes++;', 'if (++meter.nodes > 50_000) return reject(Code.IMPLEMENTATION_LIMIT, \"$\");')], 'success', 'large SP success exit0'),
+ ('old-production-entities', [(ADMISSION, 'entities++;', 'if (++entities > 100_000) throw new LimitReached();')], 'large', '10k lowering passes production admission'),
  ('remove-production-probe', [(OUTPUT_SUITE, 'int production = ProductionPathSuite.run();', 'int production = 1;')], 'semantic', 'production path probe absent/zero'),
- ('input-failure-as-expected', [(LIMITS, 'SP_BYTES = 32 * 1024 * 1024', 'SP_BYTES = 100_000'),
+ ('input-failure-as-expected', [BYTE_GATE,
    (SUITE, 'check(code == CobolLower.SUCCESS,', 'check(code == CobolLower.INPUT,')], 'success', 'successful production output exists'),
  ('raise-air-limit', [(AIR, 'this(new AirJson(), new FileOperations());', 'this(new AirJson(new AirJson.Limits(512 * 1024 * 1024, 128), io.github.gustavo2358.air.validation.ValidationOptions.defaults()), new FileOperations());')], 'scope', 'PRODUCTION_SCOPE immutable transport/core'),
  ('new-streaming-codec', [(NEW_CODEC, None, 'package io.github.gustavo2358.lower.adapters.sp; final class StreamingSpReader {}\n')], 'scope', 'PRODUCTION_SCOPE unexpected source'),
@@ -31,12 +33,14 @@ CASES = [
 def sha(raw): return hashlib.sha256(raw).hexdigest()
 
 def scope_errors(root):
-    """Current 4C delta only; no permanent prohibition on separately authorized future work."""
+    """Frozen production scope of the currently authorized work; historical guards are unchanged."""
     root = Path(root)
     registry = root/'docs/work/registry.json'
-    if not registry.exists() or not any(w['id'] == 'WORK-LOWER-006' for w in json.loads(registry.read_text())['active']):
-        return []
-    guard = json.loads((root/'docs/quality/WORK-LOWER-006/production-source-guard.json').read_text())
+    if not registry.exists(): return []
+    active = {w['id'] for w in json.loads(registry.read_text())['active']}
+    work = next((w for w in ('WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
+    if work is None: return []
+    guard = json.loads((root/'docs/quality'/work/'production-source-guard.json').read_text())
     expected = guard['source_hashes']; errors = []
     for path, digest in expected.items():
         if not (root/path).is_file() or sha((root/path).read_bytes()) != digest:
@@ -47,8 +51,8 @@ def scope_errors(root):
             if str(path.relative_to(root)) not in allowed: errors.append('PRODUCTION_SCOPE unexpected source ' + str(path.relative_to(root)))
     return errors
 
-def main():
-    logs = Path(os.environ['LOWER_BUILD_ROOT'])/'production-challenge-logs'; logs.mkdir(exist_ok=True)
+def main(cases=CASES, log_name="production"):
+    logs = Path(os.environ['LOWER_BUILD_ROOT'])/(log_name + '-challenge-logs'); logs.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='lower-production-challenge-') as directory:
         root = Path(directory)
         for folder in ('core','adapters','docs','scripts','.github'):
@@ -62,21 +66,35 @@ def main():
         (logs/'prepare-core.log').write_bytes(prepared.stdout)
         if prepared.returncode: raise RuntimeError('production challenge core preparation failed\n'+prepared.stdout.decode())
         print('PRODUCTION_CHALLENGE_PREPARED_CORE=current isolated source and tests',flush=True)
+        core_command = maven + ['-pl','core','-am','install','-Dexec.skip=true']
         maven += ['-pl','adapters','test-compile']
         def execute(label, mode):
             if mode == 'semantic': command = [sys.executable,'scripts/harness/run.py','semantic']
             elif mode == 'scope': command = maven
             else:
-                clazz = 'io.github.gustavo2358.lower.adapters.testing.ScalarWireSuite' if mode == 'coherence' else 'io.github.gustavo2358.lower.adapters.air.ProductionPathSuite'
+                clazz = ('io.github.gustavo2358.lower.adapters.testing.ScalarWireSuite' if mode == 'coherence' else
+                    'io.github.gustavo2358.lower.adapters.air.CapacitySuite' if mode == 'capacity' else
+                    'io.github.gustavo2358.lower.adapters.air.ProductionPathSuite')
                 command = maven+['exec:java','-Dexec.mainClass='+clazz,'-Dexec.classpathScope=test','-Dexec.args='+mode]
+            # Capacity challenges can mutate inner admission. Rebuild the current
+            # isolated core before adapter execution; a stale test-jar is not an oracle.
+            # Compile/package only here so the declared focal adapter assertion,
+            # not another core suite, observes the mutation. Full runs core tests.
+            prefix = b''
+            if mode in ('capacity', 'large'):
+                core = subprocess.run(core_command,cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+                prefix = core.stdout
+                if core.returncode:
+                    (logs/(label+'.log')).write_bytes(prefix)
+                    return core.returncode, prefix.decode()
             p = subprocess.run(command,cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-            out = p.stdout; code = p.returncode
+            out = prefix + p.stdout; code = p.returncode
             if mode == 'scope' and code == 0:
                 errors = scope_errors(root); out += ('\n'.join(errors)+'\n').encode(); code = int(bool(errors))
             (logs/(label+'.log')).write_bytes(out)
             return code,out.decode()
         records=[]
-        for ident, edits, mode, oracle in CASES:
+        for ident, edits, mode, oracle in cases:
             baseline_code,baseline = execute(ident+'-baseline',mode)
             if baseline_code: raise RuntimeError('production challenge baseline failed '+ident+'\n'+baseline)
             paths={p:(root/p).read_bytes() if (root/p).exists() else None for p,_,_ in edits}

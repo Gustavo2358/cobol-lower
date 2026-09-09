@@ -18,8 +18,8 @@ public final class AdmissionAdapterSuite {
     private AdmissionAdapterSuite() { }
     private static void check(boolean value, String message) { if (!value) throw new AssertionError(message); count++; }
     public static int run(byte[] golden) throws Exception {
-        var reader = new SpFileInput(new SpJsonDecoder.Limits(100_000, 64, 50_000));
-        var port = new EntryGobackAdmission(); var limits = new AdmitInput.Limits(100_000, 100);
+        var reader = new SpFileInput(new SpJsonDecoder.Limits(64));
+        var port = new EntryGobackAdmission(); var limits = new AdmitInput.Limits(100);
         int[] calls = {0};
         var driver = new FileAdmission(reader, (input, operationalLimits) -> { calls[0]++; return port.admit(input, operationalLimits); });
         var file = Files.createTempFile("lower-admission-", ".json");
@@ -40,9 +40,7 @@ public final class AdmissionAdapterSuite {
             Files.writeString(file, "{");
             check(driver.admit(file, limits) instanceof FileAdmission.PhysicalFailure && calls[0] == 2, "physical failure never calls semantic port");
             Files.write(file, golden);
-            var limited = new SpFileInput(new SpJsonDecoder.Limits(golden.length - 1, 64, 50_000)).read(file);
-            check(limited instanceof SpJsonDecoder.Rejected failure && failure.diagnostic().code() == SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, "oversized file never truncates to success");
-            check(new SpFileInput(new SpJsonDecoder.Limits(golden.length, 64, 50_000)).read(file) instanceof SpJsonDecoder.Decoded, "exact byte boundary accepted");
+            check(new SpFileInput(new SpJsonDecoder.Limits(64)).read(file) instanceof SpJsonDecoder.Decoded, "complete file accepted");
             Files.delete(file);
             check(reader.read(file) instanceof SpJsonDecoder.Rejected, "I/O failure explicit");
             check(actual.input().orElseThrow().equals(independent), "retained snapshot independent of closed/deleted resource");

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "validation_checkout": "/tmp/lower-size-limits-validation",
+  "tree_verification": "every final source/test/harness/resource file byte-identical to dedicated worktree before and after full",
+  "semantic_assertions": 203099,
+  "performance_ledger_assertions": 93,
+  "capacity_assertions": 11,
+  "ordinary_output_assertions": 165,
+  "harness_unit_tests": 142,
+  "challenge_counts": [
+    10,
+    3,
+    5,
+    9,
+    17,
+    9,
+    4
+  ],
+  "total_challenges": 57,
+  "log_sha256": "9cb33a891524c49587d744604106c205b412a9376646a3b9d1ec08e84bfc4b0e"
+}

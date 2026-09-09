@@ -184,10 +184,7 @@ public final class EntryGobackAdmission implements AdmitInput {
         Context(SpInput input, Limits limits, boolean unordered) { this.input = input; this.limits = limits; this.unordered = unordered; }
         DataFact data(DataId id) { references++; return data.get(id); }
         void touch() {
-            if (++entities > limits.maxEntities()) {
-                require(false, Rule.LIMIT, "input", null, "Entity visit limit exceeded; no partial admission");
-                throw new LimitReached();
-            }
+            entities++;
         }
         StatementFact lookup(StatementId id) { references++; return statements.get(id); }
         void require(boolean condition, Rule rule, String subject, Provenance provenance, String requirement) {

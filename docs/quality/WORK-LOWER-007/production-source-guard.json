@@ -1,0 +1,37 @@
+{
+  "source_hashes": {
+    "core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java": "88ca915cf8ae438d3f9ec2246d781a0688e9563111572d988492197abed13e0d",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarEvidence.java": "c077e1b13a057d79566920c0c6e7bb13036aa1b77734a20ad80db1a7f12e19bf",
+    "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+    "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java": "74a2b8677137766debc9bc21db2bdff8b6195c5d29e6451f212432615325f5b8",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarDataOrder.java": "14fce6a05268fecbb80ba4ae1f35639d2e4f2cc5a1425e46166ee92a7687085d",
+    "core/src/main/java/io/github/gustavo2358/lower/application/AirOutputValidation.java": "c53790aa7824c4515ed615eac862176a203d0703292835437aa42f7a231deef1",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarSequenceAssembler.java": "ee606cffcb2cb522f03325cf73ce67fbd9903eb1d6d28f90303e495ba1cce356",
+    "core/src/main/java/io/github/gustavo2358/lower/application/CobolLowerer.java": "23ca8310c0c7942d5f54e22af6fe7026907b14cd094dfc3d645bcda624c5a990",
+    "core/src/main/java/io/github/gustavo2358/lower/application/OutputAssessment.java": "fcfcca9aef96ff8af1e1cb438bae512fc786444329f9ee962fca30b143c31033",
+    "core/src/main/java/io/github/gustavo2358/lower/application/Admission.java": "f640a050cf63d035a41cfc3d6bb8ca40a10adc01dd9073691987384ee00c6ae5",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java": "ad530e34fbae0c91f113becd0fbc0586c87cbbdd6d3db4c55bc5a4f6c5ac7bb1",
+    "core/src/main/java/io/github/gustavo2358/lower/application/LoweringResult.java": "2fda6028d85ada07cd3b356b9159609b228202bc77617be7c51ff34c47238190",
+    "core/src/main/java/io/github/gustavo2358/lower/application/LowerInput.java": "45835520fe500b5479b30802f9bbbb846b335db680fc5591933bd0bf77672902",
+    "core/src/main/java/io/github/gustavo2358/lower/application/SourceOrigins.java": "fb649d7f62c451e88e36e0f3997f5f0d57612b40570e4773c396227ce9ef924f",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "core/src/main/java/io/github/gustavo2358/lower/application/ScalarDataTranslator.java": "caeeb1560380b47923c8068f05c712a4d44ab8fbc13e1765c4734ffb850f1986",
+    "core/src/main/java/io/github/gustavo2358/lower/application/LocalIds.java": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+    "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java": "a6c9722ecec2425595e20346b166da0be326e45e20a834bdcdd0300149e6b5d6",
+    "core/src/main/java/io/github/gustavo2358/lower/application/GobackHandler.java": "2e617f06043b712a664924659b482f24af2b7203e0325cf244a478f54cd770af",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/FileLowering.java": "3763c794dd4b3e92b29caac05cd19096e640d694629f031e858a9eba5f76162e",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Wire12.java": "082dd572b6ebf12b747d312b93e1c47ded84dbc75aa22a9e0b52e3d2153a4c4b",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/FileAdmission.java": "5ce4631bce4ee8373447cc6e01e8fcae502922b64e987742b23176655bcba0e5",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Wire.java": "8efd2c2f08864fe2939dc09748ccc011eaeddff0cfa39f482c843aa9392751ac",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java": "7982d7de03e4daf2c64535d990bc6b724c5d7dd04f535ebf3378dfb8ae7e79a3"
+  },
+  "allowed_changes": [
+    "core/src/main/java/io/github/gustavo2358/lower/application/AdmitInput.java",
+    "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli/CobolLower.java",
+    "adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli/ProductionLimits.java"
+  ]
+}

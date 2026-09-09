@@ -1,0 +1,12 @@
+{
+  "repository": "Gustavo2358/cobol-lower",
+  "original_checkout": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+  "branch": "feat/lower-scalar-move",
+  "head": "2329993ce61b33fd7105759e211a1861ca6cb217",
+  "origin_main_before_and_after_fetch": "50cc57d78ac319d4a86f9d72c4b50ce9d3403297",
+  "status": "clean",
+  "fetch": "exit 0; per-command ssh -F /dev/null; network escalation",
+  "task_worktree": "/home/gustavo/workspace/teste-e2e/cobol-lower-size-limits",
+  "task_branch": "fix/lower-remove-artificial-size-limits",
+  "siblings": "not modified"
+}

@@ -10,7 +10,7 @@ public final class PerformanceSuite {
     public static int run() {
         for (int n : new int[] {1, 64, 128, 1024, 2048}) {
             var input = ScaleInputs.create(n); var port = new EntryGobackAdmission();
-            var limits = new AdmitInput.Limits(1_000_000, 100); long started = System.nanoTime();
+            var limits = new AdmitInput.Limits(100); long started = System.nanoTime();
             var result = port.admit(input, limits); long elapsed = System.nanoTime() - started;
             check(result.status() == (n == 1 ? Admission.Status.ADMITTED : Admission.Status.UNSUPPORTED_SLICE), "plural inventory is unsupported, not a prefix");
             check(result.input().orElseThrow().equals(input) && result.input().orElseThrow().statements().size() == n, "entire observed inventory retained");
@@ -19,10 +19,8 @@ public final class PerformanceSuite {
             check(stats.referencesChecked() == n + 1L, "reference ledger N+1, no repeated scan");
             check(stats.provenanceComponents() == 3L * n + 3, "provenance ledger 3N+3");
             check(!result.diagnosticsTruncated() && result.diagnostics().size() == (n == 1 ? 0 : 1), "shape diagnostic does not hide occurrences");
-            var exact = port.admit(input, new AdmitInput.Limits(7L * n + 9, 100));
-            check(exact.equals(result), "exact entity boundary preserves result");
-            var limited = port.admit(input, new AdmitInput.Limits(7L * n + 8, 100));
-            check(limited.status() == Admission.Status.IMPLEMENTATION_LIMIT && limited.input().orElseThrow().equals(input), "entity limit cannot return partial success");
+            var repeated = port.admit(input, new AdmitInput.Limits(200));
+            check(repeated.equals(result), "diagnostic headroom does not alter complete traversal");
             var lowered = new EntryGobackLowerer().lower(input, LoweringSuite.OPTIONS);
             check(n == 1 ? lowered.status() == LoweringResult.Status.SUCCESS
                     : lowered.status() == LoweringResult.Status.UNSUPPORTED_SLICE && lowered.publication().isEmpty(), "scale never expands AIR profile");

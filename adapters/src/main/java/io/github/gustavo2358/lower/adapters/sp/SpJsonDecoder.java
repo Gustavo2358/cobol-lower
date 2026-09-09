@@ -24,9 +24,9 @@ import java.util.Objects;
 
 /** JSON transport only; success materializes facts, not semantic admission or AIR. */
 public final class SpJsonDecoder {
-    public record Limits(int maxBytes, int maxDepth, int maxNodes) {
+    public record Limits(int maxDepth) {
         public Limits {
-            if (maxBytes < 1 || maxDepth < 1 || maxNodes < 1) throw new IllegalArgumentException("positive limits required");
+            if (maxDepth < 1) throw new IllegalArgumentException("positive limits required");
         }
     }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
@@ -44,14 +44,12 @@ public final class SpJsonDecoder {
         public Measurement { Objects.requireNonNull(result); Objects.requireNonNull(statistics); }
     }
 
-    private final Limits limits;
     private final ObjectMapper mapper;
 
     public SpJsonDecoder(Limits limits) {
-        this.limits = Objects.requireNonNull(limits);
+        Objects.requireNonNull(limits);
         var factory = JsonFactory.builder().enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
-            .streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(limits.maxDepth())
-                .maxStringLength(limits.maxBytes()).build()).build();
+            .streamReadConstraints(new ShapeConstraints(limits.maxDepth())).build();
         mapper = JsonMapper.builder(factory).disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
             .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
             .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -76,7 +74,6 @@ public final class SpJsonDecoder {
 
     private Result decodePayload(byte[] bytes, Meter meter) {
         if (bytes == null) return reject(Code.INPUT_ERROR, "$");
-        if (bytes.length > limits.maxBytes()) return reject(Code.IMPLEMENTATION_LIMIT, "$");
         meter.bytes = bytes.length;
         try {
             // Reject non-UTF-8 encodings even if the JSON library can autodetect them.
@@ -87,7 +84,7 @@ public final class SpJsonDecoder {
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
             var pending = new ArrayDeque<JsonNode>(); pending.push(node);
             while (!pending.isEmpty()) {
-                if (++meter.nodes > limits.maxNodes()) return reject(Code.IMPLEMENTATION_LIMIT, "$");
+                meter.nodes++;
                 pending.pop().elements().forEachRemaining(pending::push);
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
@@ -162,6 +159,16 @@ public final class SpJsonDecoder {
                 }
             }
         }
+    }
+    /** Jackson 2.22 has no document/token cap by default. Keep nesting and lexical
+     * number/name guards, but strings are semantic values, not a capacity budget. */
+    private static final class ShapeConstraints extends StreamReadConstraints {
+        private static final long serialVersionUID = 1L;
+        ShapeConstraints(int depth) {
+            super(depth, DEFAULT_MAX_DOC_LEN, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN,
+                DEFAULT_MAX_NAME_LEN, DEFAULT_MAX_TOKEN_COUNT);
+        }
+        @Override public void validateStringLength(int length) { /* No artificial value-size gate. */ }
     }
     private static final class Meter { long bytes; long nodes; long physical; }
     private static final class PhysicalShape extends RuntimeException {

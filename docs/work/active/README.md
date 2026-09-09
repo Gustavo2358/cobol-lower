@@ -1,3 +1,3 @@
 # Trabalho ativo
 
-[WORK-LOWER-006](WORK-LOWER-006/work-item.yaml), Checkpoint 4C autorizado.
+[WORK-LOWER-007](WORK-LOWER-007/work-item.yaml), hardening de capacidade CP0 autorizado.

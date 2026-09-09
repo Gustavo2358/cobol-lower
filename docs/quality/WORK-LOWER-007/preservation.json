@@ -1,0 +1,19 @@
+{
+  "base": "50cc57d78ac319d4a86f9d72c4b50ce9d3403297",
+  "historical_and_fixture_files_checked": 481,
+  "bytes_equal": true,
+  "groups": [
+    "docs/quality/WORK-LOWER-001",
+    "docs/quality/WORK-LOWER-002",
+    "docs/quality/WORK-LOWER-003",
+    "docs/quality/WORK-LOWER-004",
+    "docs/quality/WORK-LOWER-005",
+    "docs/quality/WORK-LOWER-006",
+    "docs/work/active/WORK-LOWER-006",
+    "adapters/src/test/resources",
+    "docs/sources/sources.lock.json"
+  ],
+  "original_checkout_status": "clean",
+  "original_checkout_head": "2329993ce61b33fd7105759e211a1861ca6cb217",
+  "other_repositories": "No mutations by this task; parallel tasks own their independent changes"
+}
