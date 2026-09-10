@@ -31,3 +31,7 @@ Request changes são corrigidos sem ampliar escopo. Não mudar expected, invaria
 ## Fechamento
 
 Seguir o [lifecycle](work-item-protocol.md), deixando main limpa de active concluído. Commit de fechamento não representa merge. A promoção de conhecimento é verificável pelo mapa de links/IDs e pelos testes duráveis, não por copiar a tasklist inteira para history.
+
+## Documentary closeout audit
+
+A final `Work-Item-Closeout: <WORK-ID>` commit retains the unique `Checkpoint-Evidence` trailer and byte-identical certificate of its direct parent. The parent must already be certified and its required exact-head CI successful before preparing closure. The closeout changes only the five active-file deletions, its short history, registry/index/backlog and optional data-only closeout receipt. Production, tests, source locks, contracts and certificate bytes cannot change. CI proves this Git delta and the actual PR/head/base binding, then runs full on the current checkout in historical audit mode against the original certified parent. Verify-commit verifies the same binding; remote still checks the actual published closeout SHA. This does not grant execution authority to history or permit recertifying new production under a closed item. Initial CP0 null PR stays immutable; the history and remote audit bind the real PR. Merge uses the exact validated closeout HEAD.

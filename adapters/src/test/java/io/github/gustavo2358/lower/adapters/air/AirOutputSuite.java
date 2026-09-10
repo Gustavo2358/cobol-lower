@@ -153,16 +153,16 @@ public final class AirOutputSuite {
         String codecPath;
         try { limited.encode(publication); throw new AssertionError("limit precondition"); }
         catch (AirJsonException ex) {
-            check(ex.code() == AirJsonException.Code.IMPLEMENTATION_LIMIT, "real typed codec failure"); codecPath = ex.path();
+            check(ex.code() == AirJsonException.Code.RESOURCE_LIMIT, "real typed codec failure"); codecPath = ex.path();
         }
         Files.write(output, old);
         var result = run(new String[]{input.toString(), output.toString()}, new EntryGobackLowerer(), new AirFileOutput(limited, files));
-        failure(result, 5, "IMPLEMENTATION_LIMIT");
+        failure(result, 5, "RESOURCE_LIMIT");
         check(result.diagnostic().contains(codecPath), "codec path preserved");
         check(files.calls == 0, "encode completes before any physical publication");
         unchanged(output, old); noTemporary(dir);
         Files.delete(output);
-        failure(run(new String[]{input.toString(),output.toString()}, new EntryGobackLowerer(),new AirFileOutput(limited,files)),5,"IMPLEMENTATION_LIMIT");
+        failure(run(new String[]{input.toString(),output.toString()}, new EntryGobackLowerer(),new AirFileOutput(limited,files)),5,"RESOURCE_LIMIT");
         check(!Files.exists(output) && files.calls == 0, "codec failure without old file leaves nothing");
         Files.write(output, old);
         var interrupted = new AirFileOutput(new AirJson(), new AirFileOutput.FileOperations() {

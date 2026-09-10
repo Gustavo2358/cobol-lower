@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "production_semantic_changes": false,
+  "baseline_main": "fe7e6ef3762dc855f89a2495064bf1e954c0720a",
+  "resource_budget_expected": "RESOURCE_LIMIT; no successful Publication/output under exhausted opt-in budget",
+  "default_capacity_expected": "10k shared DATA success, complete 10000 Assigns/Return, one Object and Cell; bytes exceed old 16MiB codec cap; no local limit increase",
+  "canonical_expected": "CP3/scalar facts and bytes preserved; PROGA/Assign origin/PARTIAL unchanged",
+  "rationale": "Approved upstream air-java PR7 removes default caps and distinguishes operational limits; user expressly authorizes capacity requalification and harness synchronization."
+}

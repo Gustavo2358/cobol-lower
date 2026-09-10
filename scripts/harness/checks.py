@@ -176,7 +176,9 @@ def history_errors(root, registry):
                 raise ValueError("Git/backlog identity")
             record = read_data(root / item["evidence"])
             if (record["work_item"] != ident or record["checkpoint"] != final
-                    or record["branch"] != item["git_branch"] or record["pull_request"] != item["pull_request"]):
+                    or record["branch"] != item["git_branch"]
+                    or (record["pull_request"] != item["pull_request"]
+                        and not (record["checkpoint"] == "CP0" and record["pull_request"] is None and manifest["git"]["pull_request"] is None))):
                 raise ValueError("evidence identity")
             refs = [r for r in record["frozen_contract"]["references"] if r["path"] == item["manifest"]]
             if len(refs) != 1 or refs[0]["sha256"] != digest((root / item["manifest"]).read_bytes()):

@@ -42,7 +42,7 @@ public final class ProductionPathSuite {
         check(code == CobolLower.SUCCESS, "large SP success exit0: " + diagnostics.toString(StandardCharsets.UTF_8));
         check(Files.isRegularFile(destination), "successful production output exists");
         byte[] bytes = Files.readAllBytes(destination); var codec = new AirJson(); var publication = codec.decode(bytes);
-        check(bytes.length < 16 * 1024 * 1024, "success fits unchanged AirJson limit");
+        check(bytes.length < 16 * 1024 * 1024, "400 fixture byte size preserved");
         check(AirValidator.validate(publication).issues().isEmpty(), "large output shared validator");
         var unit = publication.units().getFirst(); var sequence = unit.sequences().getFirst();
         check(unit.objects().size() == 400 && publication.storage().size() == 400, "400 declaration Objects Cells");
@@ -70,12 +70,20 @@ public final class ProductionPathSuite {
         var source = directory.resolve("large.sp.json"); Files.write(source, fixture(true));
         var destination = directory.resolve("large.air.json"); byte[] sentinel = {42, 17}; Files.write(destination, sentinel);
         var diagnostics = new ByteArrayOutputStream(); int code = cli(source, destination, diagnostics);
-        check(code == CobolLower.CODEC && diagnostics.toString(StandardCharsets.UTF_8).contains("AIR codec IMPLEMENTATION_LIMIT"),
-            "10k first limit is shared AirJson: " + diagnostics.toString(StandardCharsets.UTF_8));
-        check(Arrays.equals(Files.readAllBytes(destination), sentinel), "10k codec limit preserves destination");
+        check(code == CobolLower.SUCCESS && diagnostics.size() == 0, "10k default codec success: " + diagnostics.toString(StandardCharsets.UTF_8));
+        byte[] bytes = Files.readAllBytes(destination);
+        check(bytes.length > 16 * 1024 * 1024, "10k exceeds former codec byte cap");
+        var codec = new AirJson(); var publication = codec.decode(bytes);
+        var unit = publication.units().getFirst(); var sequence = unit.sequences().getFirst();
+        check(unit.objects().size() == 1 && publication.storage().size() == 1, "10k one Object Cell preserved");
+        check(sequence.instructions().size() == 10_000 && sequence.instructions().stream().allMatch(Operations.Assign.class::isInstance)
+            && sequence.terminator() instanceof Operations.Return, "10k all Assigns and Return preserved");
+        check(AirValidator.validate(publication).isStructurallyValid(), "10k output validator success");
+        check(Arrays.equals(bytes, codec.encode(publication)), "10k shared codec canonical round trip");
         try (var files = Files.list(directory)) { check(files.noneMatch(p -> p.getFileName().toString().endsWith(".tmp")), "10k no temporary residue"); }
-        System.out.println("PRODUCTION_LIMIT_ORDER data=1 moves=10000 exit=" + code + " first_limit=AIR_JSON");
+        System.out.println("PRODUCTION_CAPACITY_PROBE data=1 moves=10000 exit=" + code + " air_bytes=" + bytes.length + " prior_debt=RESOLVED_BY_UPSTREAM_BASELINE");
     }
+
     private static void guards(Path directory) throws Exception {
         var path = directory.resolve("deep.sp.json");
         Files.writeString(path, "{\"nested\":" + "[".repeat(65) + "0" + "]".repeat(65) + "}");
@@ -83,8 +91,8 @@ public final class ProductionPathSuite {
         var diagnostics = new ByteArrayOutputStream();
         check(cli(path, destination, diagnostics) == CobolLower.INPUT && diagnostics.toString(StandardCharsets.UTF_8).contains("IMPLEMENTATION_LIMIT")
             && Arrays.equals(Files.readAllBytes(destination), new byte[]{37}), "depth rejection remains atomic");
-        check(CobolLower.INPUT_LIMITS.maxDepth() == 64 && AirJson.Limits.defaults().maximumDocumentBytes() == 16 * 1024 * 1024
-            && AirJson.Limits.defaults().maximumDepth() == 128, "depth and shared codec defaults unchanged");
+        check(CobolLower.INPUT_LIMITS.maxDepth() == 64 && AirJson.Limits.defaults().maximumDocumentBytes() == Integer.MAX_VALUE
+            && AirJson.Limits.defaults().maximumDepth() == Integer.MAX_VALUE, "SP depth guard retained; approved shared codec defaults");
     }
     public static int run() throws Exception { return execute(Boolean.getBoolean("lower.performance") ? "all" : "ordinary"); }
     private static int execute(String mode) throws Exception {

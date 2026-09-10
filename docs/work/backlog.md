@@ -24,3 +24,7 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 | [BACKLOG-LOWER-018](backlog/BACKLOG-LOWER-018.md) | Reduce peak-memory amplification across SP and AIR transport | `planned` / NOT STARTED |
 
 A saída AIR em arquivo está mergeada no 2A de BACKLOG-LOWER-003 (PR #4). A integração em memória com CFG (BACKLOG-LOWER-004) não precisa esperar esse codec. A composição Maven futura está em BACKLOG-LOWER-015. Não inventar datas de entrega por item.
+
+## Sincronização pós-CP5 autorizada
+
+[WORK-LOWER-009](history/WORK-LOWER-009.md) COMPLETED local: sincronizou baselines existentes; PR10 aguarda CI final/merge; não inicia capacidades futuras nem CP6.
