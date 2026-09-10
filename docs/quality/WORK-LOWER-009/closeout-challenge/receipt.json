@@ -1,0 +1,18 @@
+{
+  "id": "CLOSEOUT-PRODUCTION-GUARD",
+  "mutation": "disable immutable-parent diff allowlist in isolated copy",
+  "expected_oracle": "test_product_change_rejected",
+  "baseline_exit_code": 0,
+  "observed_exit_code": 1,
+  "failure_reason": "AssertionError: RuntimeError not raised",
+  "baseline_digest": "1201d3cf2bcdd1b63644bd9b9a792e20775f72598f164623f43d4f24a2a598a0",
+  "restored_digest": "1201d3cf2bcdd1b63644bd9b9a792e20775f72598f164623f43d4f24a2a598a0",
+  "restoration_status": "RESTORED",
+  "green_exit_code": 0,
+  "green_command": "python3 -B scripts/harness/tests/test_closeout.py Closeout.test_product_change_rejected -v",
+  "logs": {
+    "baseline": "46072f4ab44219c90c5c08491742a7f1abe97681eb23a17ec7df2b03f3781b8a",
+    "red": "efc8e079c4c7a36a28b1ed6d721023ba5f6bd564f9f909facbe3745588d60564",
+    "restored": "95012a0e96deb8788687d09ce36029665e1db9aa812814000378f4c002810378"
+  }
+}

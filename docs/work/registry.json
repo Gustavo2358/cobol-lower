@@ -33,6 +33,17 @@
       "git_branch": "fix/ci-initial-cp0-merge",
       "pull_request": null,
       "backlog_ids": []
+    },
+    {
+      "id": "WORK-LOWER-009",
+      "status": "active",
+      "path": "docs/work/active/WORK-LOWER-009",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "chore/cp6-baseline-sync",
+      "pull_request": null,
+      "backlog_ids": []
     }
   ],
   "proposals": [],
@@ -209,7 +220,7 @@
   "backlog": [
     {
       "id": "BACKLOG-LOWER-001",
-      "title": "Primeiro slice Entry/GOBACK → AIR Return",
+      "title": "Primeiro slice Entry/GOBACK \u2192 AIR Return",
       "status": "completed",
       "phase": "foundation",
       "dependencies": [],
@@ -218,7 +229,7 @@
     },
     {
       "id": "BACKLOG-LOWER-002",
-      "title": "Sequenciamento e inventários executáveis maiores",
+      "title": "Sequenciamento e invent\u00e1rios execut\u00e1veis maiores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -229,7 +240,7 @@
     },
     {
       "id": "BACKLOG-LOWER-003",
-      "title": "Adapter AIR JSON de saída e prova interoperável",
+      "title": "Adapter AIR JSON de sa\u00edda e prova interoper\u00e1vel",
       "status": "completed",
       "phase": "transport",
       "dependencies": [
@@ -240,7 +251,7 @@
     },
     {
       "id": "BACKLOG-LOWER-004",
-      "title": "Primeira integração com analysis-cfg",
+      "title": "Primeira integra\u00e7\u00e3o com analysis-cfg",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -262,7 +273,7 @@
     },
     {
       "id": "BACKLOG-LOWER-006",
-      "title": "MOVE preciso e normalização de valores",
+      "title": "MOVE preciso e normaliza\u00e7\u00e3o de valores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -284,7 +295,7 @@
     },
     {
       "id": "BACKLOG-LOWER-008",
-      "title": "CALL e contrato por site de interação",
+      "title": "CALL e contrato por site de intera\u00e7\u00e3o",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -317,7 +328,7 @@
     },
     {
       "id": "BACKLOG-LOWER-011",
-      "title": "EVALUATE/SEARCH e seleção",
+      "title": "EVALUATE/SEARCH e sele\u00e7\u00e3o",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -328,7 +339,7 @@
     },
     {
       "id": "BACKLOG-LOWER-012",
-      "title": "Outros terminais e transferências",
+      "title": "Outros terminais e transfer\u00eancias",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -361,7 +372,7 @@
     },
     {
       "id": "BACKLOG-LOWER-015",
-      "title": "Adapter de integração em memória e composição Maven",
+      "title": "Adapter de integra\u00e7\u00e3o em mem\u00f3ria e composi\u00e7\u00e3o Maven",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -372,7 +383,7 @@
     },
     {
       "id": "BACKLOG-LOWER-016",
-      "title": "Evolução do harness e conformidade declarada",
+      "title": "Evolu\u00e7\u00e3o do harness e conformidade declarada",
       "status": "candidate",
       "phase": "harness",
       "dependencies": [],

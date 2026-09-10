@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "2815e805fd3a9ef4762a39ab9435260fc76da0e8",
+      "commit": "8722945cc4cd2052c6091533f6ee6989278aa2f8",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "1.2.0",
@@ -18,17 +18,17 @@
         "docs/evals/checkpoint-4a.md",
         "src/test/resources/cobol/semantic/AIR-MOVE.cbl"
       ],
-      "evidence_level": "merge_commit_verified_read_only_for_4C",
+      "evidence_level": "post_cp5_compatible_main_snapshot_verified_2026_09_10",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/docs/domain/cobol-semantic-product.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/docs/domain/scalar-text-move.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/docs/evals/checkpoint-4a.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/2815e805fd3a9ef4762a39ab9435260fc76da0e8/src/test/resources/cobol/semantic/AIR-MOVE.cbl"
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/domain/cobol-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/domain/scalar-text-move.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/evals/checkpoint-4a.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/test/resources/cobol/semantic/AIR-MOVE.cbl"
       ],
-      "observed_on": "2026-09-08"
+      "observed_on": "2026-09-10"
     },
     {
       "id": "SRC-HARNESS",
@@ -57,7 +57,7 @@
     {
       "id": "SRC-AIR",
       "repository": "Gustavo2358/analysis-ir",
-      "commit": "122ce54e1b9ef9b00646f93ece409ca8b63bc933",
+      "commit": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
       "role": "normative_semantics",
       "semantic_version": "2.0.0",
       "paths": [
@@ -71,7 +71,7 @@
         "bindings/revisao-json-v1.md",
         "bindings/json-v1.md"
       ],
-      "evidence_level": "normative_files_and_binding_reviewed_in_conversation; ref_and_reconciliation_handoff_rechecked_during_package_creation",
+      "evidence_level": "post_cp5_compatible_main_snapshot_verified_2026_09_10",
       "json_binding": {
         "path": "bindings/json-v1.md",
         "version": "1.0.0",
@@ -79,21 +79,22 @@
       },
       "repository_url": "https://github.com/Gustavo2358/analysis-ir",
       "file_urls": [
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/01-modelo-e-identidades.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/02-tipos-valores-e-operandos.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/03-memoria-e-aliases.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/04-operacoes.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/05-controle-e-invocacoes.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/especificacao/06-incompletude-e-proveniencia.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/conformidade/01-invariantes.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/bindings/revisao-json-v1.md",
-        "https://github.com/Gustavo2358/analysis-ir/blob/122ce54e1b9ef9b00646f93ece409ca8b63bc933/bindings/json-v1.md"
-      ]
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/01-modelo-e-identidades.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/02-tipos-valores-e-operandos.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/03-memoria-e-aliases.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/04-operacoes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/05-controle-e-invocacoes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/especificacao/06-incompletude-e-proveniencia.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/conformidade/01-invariantes.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/bindings/revisao-json-v1.md",
+        "https://github.com/Gustavo2358/analysis-ir/blob/51b4d9a8ae0364232bd97103cd73a77e1a34996c/bindings/json-v1.md"
+      ],
+      "observed_on": "2026-09-10"
     },
     {
       "id": "SRC-AIR-JAVA",
       "repository": "Gustavo2358/air-java",
-      "commit": "ce530a7e17ab12b23c48f29425f503ff920b09fb",
+      "commit": "3bafe3978f0f392e842038ad5628e85dfd91d00d",
       "role": "shared_model_validator_and_codec_not_normative_spec",
       "maven": {
         "group_id": "io.github.gustavo2358",
@@ -120,29 +121,29 @@
         "air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
         "air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java"
       ],
-      "evidence_level": "merge_commit_verified_read_only_for_4C",
+      "evidence_level": "post_cp5_compatible_main_snapshot_verified_2026_09_10",
       "runtime_conformance_executed_for_this_package": false,
       "repository_url": "https://github.com/Gustavo2358/air-java",
       "file_urls": [
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/README.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/ARCHITECTURE.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/docs/sources.lock.json",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/docs/reconciliation-air-2.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/docs/implementation-status.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/examples/MinimalPublication.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-json/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/docs/engineering/air-json.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/docs/quality/air-json-scalar-assign.md",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
-        "https://github.com/Gustavo2358/air-java/blob/ce530a7e17ab12b23c48f29425f503ff920b09fb/air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java"
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/README.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/ARCHITECTURE.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/sources.lock.json",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/reconciliation-air-2.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/implementation-status.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/examples/MinimalPublication.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-json/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/engineering/air-json.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/quality/air-json-scalar-assign.md",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
+        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java"
       ],
-      "observed_on": "2026-09-08",
+      "observed_on": "2026-09-10",
       "modules": {
         "parent": {
           "path": "pom.xml",
@@ -231,5 +232,5 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "docs_only; no runtime tests or upstream builds performed for this package"
+  "implementation_state": "post-CP5 baseline synchronization; production unchanged; execution evidence in WORK-LOWER-009"
 }

@@ -1,0 +1,15 @@
+test_product_change_rejected (__main__.Closeout.test_product_change_rejected) ... FAIL
+
+======================================================================
+FAIL: test_product_change_rejected (__main__.Closeout.test_product_change_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/closeout-challenge-uqu2kpas/scripts/harness/tests/test_closeout.py", line 40, in test_product_change_rejected
+    with self.assertRaisesRegex(RuntimeError,'CLOSEOUT forbidden change'):self.select(r,h)
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.055s
+
+FAILED (failures=1)

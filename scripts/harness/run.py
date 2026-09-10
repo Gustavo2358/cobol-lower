@@ -13,6 +13,7 @@ from production_challenge import scope_errors
 from checks import certificate_errors, digest, document_errors, read_data, remote_errors, execution_authority
 from git_checks import candidate_errors, evidence_path, git, preflight
 from full_checks import execute_full, performance_counts
+from closeout import closeout_target
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -94,8 +95,8 @@ def semantic(extra=()):
     production_counts = re.findall(r"^LOWER_PRODUCTION_TESTS=([0-9]+)$", output, re.M)
     if len(production_counts) != 1 or int(production_counts[0]) <= 0 or "PRODUCTION_SUCCESS_PROBE data=400 moves=400" not in output:
         raise RuntimeError("production path probe absent/zero")
-    if "-Dlower.performance=true" in extra and "PRODUCTION_LIMIT_ORDER data=1 moves=10000" not in output:
-        raise RuntimeError("production limit-order probe absent")
+    if "-Dlower.performance=true" in extra and "PRODUCTION_CAPACITY_PROBE data=1 moves=10000" not in output:
+        raise RuntimeError("production capacity probe absent")
     if "-Dlower.performance=true" in extra:
         capacity = re.findall(r"^LOWER_CAPACITY_TESTS=([0-9]+)$", output, re.M)
         if len(capacity) != 1 or int(capacity[0]) <= 0 or "CAPACITY_DETERMINISM=PASS" not in output:
@@ -268,6 +269,16 @@ def ci_target(sha, event):
         initial_pr = record["checkpoint"] == "CP0" and record["pull_request"] is None
         if (not initial_pr and record["pull_request"] != pr["number"]) or record["branch"] != pr["head"]["ref"] or json.loads(git(ROOT, "show", sha + ":" + path)) != record:
             raise RuntimeError("CI merge/evidence identity mismatch")
+    closed_parent = closeout_target(ROOT, certified)
+    if closed_parent is not None:
+        closure_registry = json.loads(git(ROOT, "show", certified + ":docs/work/registry.json"))
+        closed = next(x for x in closure_registry["history"] if x["id"] == record["work_item"])
+        links = gh("api", f"repos/{record['repository']}/commits/{certified}/pulls")
+        links = [p for p in links if p["head"]["sha"] == certified and p["head"]["ref"] == record["branch"]
+                 and p["base"]["ref"] == "main" and p["base"]["repo"]["full_name"] == record["repository"]]
+        if len(links) != 1 or links[0]["number"] != closed["pull_request"]:
+            raise RuntimeError("CLOSEOUT remote PR binding")
+        certified, mode = closed_parent, "historical"
     return record, certified, mode
 
 
@@ -312,6 +323,8 @@ def main():
         record = json.loads(git(ROOT, "show", args.commit + ":" + args.evidence))
     elif needs_record:
         record = read_data(ROOT / args.evidence)
+    audit_commit = (closeout_target(ROOT, args.commit) or args.commit) if needs_record and args.commit else args.commit
+    audit_mode = "historical" if audit_commit != args.commit else args.mode
     if args.gate == "bootstrap":
         bootstrap()
     elif args.gate == "docs":
@@ -326,7 +339,7 @@ def main():
     elif args.gate == "performance":
         performance()
     elif args.gate == "full":
-        full(record, args.commit, mode=args.mode)
+        full(record, audit_commit, mode=audit_mode)
     elif args.gate == "challenge":
         challenge()
     elif args.gate == "challenge-return":
@@ -334,7 +347,7 @@ def main():
     elif args.gate == "harness-tests":
         run([sys.executable, "-m", "unittest", "discover", "-s", "scripts/harness/tests", "-v"])
     elif args.gate == "git":
-        git_gate(record, args.commit, mode=args.mode)
+        git_gate(record, audit_commit, mode=audit_mode)
     elif args.gate in ("certify", "verify-commit"):
         if args.gate == "certify":
             if args.mode != "execution":
@@ -343,12 +356,12 @@ def main():
         if args.gate == "verify-commit" and not args.commit:
             raise RuntimeError("--commit required")
         fail_on(document_errors(ROOT) + certificate_errors(ROOT, record)
-                + candidate_errors(ROOT, record, args.commit))
+                + candidate_errors(ROOT, record, audit_commit))
     elif args.gate == "remote":
         if not args.commit:
             raise RuntimeError("--commit required")
-        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, args.commit))
-        remote(record, args.commit, mode=args.mode)
+        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, audit_commit))
+        remote(record, args.commit, mode=audit_mode)
     elif args.gate == "reconcile":
         pr = check_pr(record, args.commit, mode="historical")
         registry = read_data(ROOT / "docs/work/registry.json")

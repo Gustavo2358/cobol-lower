@@ -1,3 +1,9 @@
+# Trabalho de sincronização pós-CP5
+
+[WORK-LOWER-009](active/WORK-LOWER-009/work-item.yaml): CP0, pins/provenance/harness, sem alteração produtiva. [Estado](active/WORK-LOWER-009/state.md).
+
+## Contexto recebido preservado
+
 # Trabalho atual
 
 [WORK-LOWER-008](active/WORK-LOWER-008/work-item.yaml): correção da auditoria CI

@@ -87,7 +87,7 @@ public final class LoweringSuite {
         check(obligation.validation().issues().stream().anyMatch(x -> x.kind() == ValidationIssue.Kind.SEMANTIC_OBLIGATION), "semantic obligation preserved not proved");
         var lowValidator = new EntryGobackLowerer().lower(input, new LowerInput.Options(OPTIONS.admission(), 1_000_000, new ValidationOptions(128, 1, 100)));
         check(lowValidator.status() == LoweringResult.Status.VALIDATION_INCOMPLETE && lowValidator.publication().isEmpty(), "real validation limit never success");
-        check(lowValidator.validation().orElseThrow().issues().stream().anyMatch(x -> x.kind() == ValidationIssue.Kind.VALIDATION_LIMIT), "real validation limit issue preserved");
+        check(lowValidator.validation().orElseThrow().issues().stream().anyMatch(x -> x.kind() == ValidationIssue.Kind.RESOURCE_LIMIT), "real operational resource issue preserved");
         check(lower(null).status() == LoweringResult.Status.INVALID_INPUT && lower(null).publication().isEmpty(), "in-memory input always validated");
         revisionAndEvidence(input, p);
         return count;

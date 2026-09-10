@@ -10,7 +10,7 @@ import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-/** Shared codec bytes and atomic failure at the production default, through real CLI composition. */
+/** Shared codec bytes and atomic failure under explicit operational budgets, through real CLI composition. */
 final class ScalarOutputSuite {
     private static int checks;
     private static void check(boolean b, String why) { if (!b) throw new AssertionError("SCALAR_OUTPUT " + why); checks++; }
@@ -30,22 +30,22 @@ final class ScalarOutputSuite {
                 int code = CobolLower.run(new String[]{input.toString(), output.toString()}, err);
                 check(code == 0 && Arrays.equals(bytes, Files.readAllBytes(output)), "CLI bytes exactly shared AirJson");
             }
-            // Ordinary semantic suite: proof of the 16 MiB production limit without increasing codec/CLI defaults.
+            // Preserve the historical 16 MiB negative as an explicit budget; upstream defaults no longer impose it.
             var large = ScalarSuite.success(ScalarInputs.create(1, 2500));
             var files = new CountingFiles();
-            var outputAdapter = new AirFileOutput(new AirJson(), files);
+            var outputAdapter = new AirFileOutput(new AirJson(new AirJson.Limits(16 * 1024 * 1024, 128), io.github.gustavo2358.air.validation.ValidationOptions.defaults()), files);
             var fixed = new FileLowering(new SpFileInput(CobolLower.INPUT_LIMITS), (ignored, options) -> large);
             diagnostics.reset();
             try (var err = new PrintStream(diagnostics, true, StandardCharsets.UTF_8)) {
                 int code = CobolLower.run(new String[]{input.toString(), output.toString()}, err, fixed, ScalarSuite.OPTIONS, outputAdapter);
-                check(code == CobolLower.CODEC && diagnostics.toString(StandardCharsets.UTF_8).contains("AIR codec IMPLEMENTATION_LIMIT"), "default codec overflow exit5 typed failure");
+                check(code == CobolLower.CODEC && diagnostics.toString(StandardCharsets.UTF_8).contains("AIR codec RESOURCE_LIMIT"), "explicit codec budget exit5 typed failure");
             }
             check(files.calls == 0 && Arrays.equals(bytes, Files.readAllBytes(output)), "encode limit before temp preserves old destination");
             var fresh = dir.resolve("fresh.air.json");
-            try { outputAdapter.write(large.publication().orElseThrow(), fresh); throw new AssertionError("must exceed shared default"); }
-            catch (AirJsonException ex) { check(ex.code() == AirJsonException.Code.IMPLEMENTATION_LIMIT && !Files.exists(fresh) && files.calls == 0, "no fresh partial file on codec limit"); }
+            try { outputAdapter.write(large.publication().orElseThrow(), fresh); throw new AssertionError("must exceed explicit shared codec budget"); }
+            catch (AirJsonException ex) { check(ex.code() == AirJsonException.Code.RESOURCE_LIMIT && !Files.exists(fresh) && files.calls == 0, "no fresh partial file on codec limit"); }
             try (var contents = Files.list(dir)) { check(contents.count() == 1, "no temp output residue"); }
-            check(AirJson.Limits.defaults().maximumDocumentBytes() == 16 * 1024 * 1024 && AirJson.Limits.defaults().maximumDepth() == 128, "default 16 MiB depth128 unchanged");
+            check(AirJson.Limits.defaults().maximumDocumentBytes() == Integer.MAX_VALUE && AirJson.Limits.defaults().maximumDepth() == Integer.MAX_VALUE, "approved upstream defaults have no artificial document/depth cap");
         } finally {
             try (var paths = Files.walk(dir)) { for (var path : paths.sorted(Comparator.reverseOrder()).toList()) Files.delete(path); }
         }

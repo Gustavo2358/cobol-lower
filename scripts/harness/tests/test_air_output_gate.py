@@ -28,11 +28,11 @@ class AirOutputGate(unittest.TestCase):
     def test_production_limit_order_is_mandatory_in_performance(self):
         output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
-            with self.assertRaisesRegex(RuntimeError,'production limit-order probe absent'):
+            with self.assertRaisesRegex(RuntimeError,'production capacity probe absent'):
                 harness.semantic(('-Dlower.performance=true',))
     def test_capacity_proof_is_mandatory_in_performance(self):
         prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
-                  'PRODUCTION_SUCCESS_PROBE data=400 moves=400\nPRODUCTION_LIMIT_ORDER data=1 moves=10000\n')
+                  'PRODUCTION_SUCCESS_PROBE data=400 moves=400\nPRODUCTION_CAPACITY_PROBE data=1 moves=10000\n')
         for marker in ('', 'LOWER_CAPACITY_TESTS=0\n', 'LOWER_CAPACITY_TESTS=1\nLOWER_CAPACITY_TESTS=1\n', 'LOWER_CAPACITY_TESTS=1\n'):
             with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=prefix+marker):
                 with self.assertRaisesRegex(RuntimeError,'capacity proof absent/zero/duplicate'):
