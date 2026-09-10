@@ -26,6 +26,15 @@ O workflow `checkpoint` recebe push em todas as branches (`**`), incluindo main.
 
 ## Estado de execução e enforcement
 
+Na auditoria de merge, um certificado CP0 emitido antes da criação da PR pode
+manter `pull_request: null`. O vínculo é estabelecido pela PR única efetivamente
+mergeada obtida da API, com SHA do merge, base/repositório, ancestralidade do head,
+branch e evidence idêntica já verificados. PR explícita divergente ou null fora
+de CP0 falha. O certificado original não é alterado e a auditoria permanece
+histórica, sem conceder autorização de execução. `test_ci_bootstrap.py` constrói
+históricos Git reais e controla apenas as respostas da API; `ci_bootstrap_challenge.py`
+é obrigatório em `challenge/full/CI`, com seis mutações, restauração e segundo GREEN.
+
 Enforcement: SPECIFIED_NOT_IMPLEMENTED → IMPLEMENTED_UNVERIFIED → AUTOMATED_VERIFIED, somente com executor real e evidência positivo/negativo. Cada execução possui status PASS/FAIL/NOT_RUN/BLOCKED/NOT_APPLICABLE, SHA e escopo. NOT_APPLICABLE exige razão contratual e não pode mascarar gate obrigatório ausente.
 
 O pacote foi verificado por um checker temporário de documentação durante sua criação; isso não instala G-DOCS no futuro checkout. O primeiro checkpoint deve implementar o gate local e refazer seus contracasos, não copiar um resultado PASS deste ZIP.

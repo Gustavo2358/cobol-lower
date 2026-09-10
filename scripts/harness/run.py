@@ -134,6 +134,7 @@ def challenge():
     run([sys.executable, "scripts/harness/scalar_challenge.py"])
     run([sys.executable, "scripts/harness/production_challenge.py"])
     run([sys.executable, "scripts/harness/capacity_challenge.py"])
+    run([sys.executable, "scripts/harness/ci_bootstrap_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):
@@ -262,7 +263,10 @@ def ci_target(sha, event):
     if mode == "execution" and record["branch"] != branch:
         raise RuntimeError("CI branch/evidence mismatch")
     if mode == "historical":
-        if record["pull_request"] != pr["number"] or record["branch"] != pr["head"]["ref"] or json.loads(git(ROOT, "show", sha + ":" + path)) != record:
+        # The first CP0 can precede PR creation. Its binding is established here
+        # by the unique merged PR, exact merge SHA, ancestry, branch and evidence.
+        initial_pr = record["checkpoint"] == "CP0" and record["pull_request"] is None
+        if (not initial_pr and record["pull_request"] != pr["number"]) or record["branch"] != pr["head"]["ref"] or json.loads(git(ROOT, "show", sha + ":" + path)) != record:
             raise RuntimeError("CI merge/evidence identity mismatch")
     return record, certified, mode
 

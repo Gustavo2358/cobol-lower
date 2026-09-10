@@ -1,0 +1,12 @@
+{
+  "repository": "Gustavo2358/cobol-lower",
+  "original_branch": "feat/lower-scalar-move",
+  "original_head": "2329993ce61b33fd7105759e211a1861ca6cb217",
+  "original_status": "clean",
+  "prior_worktree_branch": "fix/lower-remove-artificial-size-limits",
+  "prior_worktree_head": "0c4cc7838deccc0323e3650669df350d263489c1",
+  "prior_worktree_status": "clean",
+  "origin_main_before_and_after_fetch": "937a81a23a7c908ed18124b3e8b7adc980ba0235",
+  "branch": "fix/ci-initial-cp0-merge",
+  "fetch": "exit 0; ssh -F /dev/null; refs only"
+}

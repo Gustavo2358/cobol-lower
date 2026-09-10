@@ -1,0 +1,84 @@
+schema_version: 1
+id: WORK-LOWER-008
+title: Audit merged initial CP0 with independently proven PR identity
+status: active
+risk: high
+goal: Apply the investigated CP0 merge-selector fix, preserve identity checks and
+  historical certificates, publish a new PR for human review.
+authorization:
+  state: granted
+  scope: Focused harness correction, durable tests, policy alignment, evidence, commit/push/new
+    PR; no merge
+  execution_mode: single-checkpoint
+  authority: 'Explicit user request 2026-09-09 in task 01a0881c-f3be-72f1-8ce6-553614c2d1d7:
+    aplique o patch e abra o novo PR.'
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids: []
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/sources/sources.lock.json
+related_domain_rules: []
+related_decisions: []
+related_invariants:
+- INV-LWR-001
+- INV-LWR-024
+evals:
+- EVAL-LWR-001
+source_scope:
+- scripts/harness/run.py
+test_scope:
+- scripts/harness/tests/test_ci_bootstrap.py
+- scripts/harness/ci_bootstrap_challenge.py
+docs_scope:
+- README.md
+- docs/engineering/gates.md
+- docs/engineering/work-item-protocol.md
+- docs/work/active/WORK-LOWER-008
+- docs/work/active/README.md
+- docs/work/index.md
+- docs/work/registry.json
+- docs/quality/WORK-LOWER-008
+must_not_change:
+- All Java sources/tests/resources, POMs, source lock, AIR dependencies and production
+  semantics
+- Historical quality evidence and work packages WORK-LOWER-001 through WORK-LOWER-007
+- Other repositories/checkouts; CP5/W2, CFG/dataflow, new lowering features or memory/transport
+  work
+- Workflow identity, required gates, explicit wrong-PR rejection, unique merged PR,
+  SHA/base/repository/branch/ancestry/evidence checks
+- No merge, auto-merge, reset, clean, stash, rebase, amend, force push or rewriting
+  old certificates
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Prove RED, apply minimal selector fix, preserve security checks and pass full/CI
+  depends_on: []
+  gates: *id001
+  evals:
+  - EVAL-LWR-001
+  status: active
+git:
+  branch: fix/ci-initial-cp0-merge
+  pull_request: null
+  one_pr_per_work_item: true
+  merge_authorized: false
+  suggested_branch: fix/ci-initial-cp0-merge

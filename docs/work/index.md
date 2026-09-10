@@ -1,5 +1,14 @@
 # Trabalho atual
 
+[WORK-LOWER-008](active/WORK-LOWER-008/work-item.yaml): correção da auditoria CI
+do CP0 inicial após merge. [Estado](active/WORK-LOWER-008/state.md).
+
+## Contexto anterior preservado
+
+PR8 foi mergeada em 937a81a; WORK-LOWER-007 permanece byte-idêntico ao pacote
+recebido. A reconciliação do registro histórico é separada desta correção do
+seletor CI e não concede autoridade de execução.
+
 [WORK-LOWER-007](active/WORK-LOWER-007/work-item.yaml): remoção dos limites artificiais
 de entrada/admissão, CP0. [Estado](active/WORK-LOWER-007/state.md).
 

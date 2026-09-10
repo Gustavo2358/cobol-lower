@@ -22,6 +22,17 @@
       "git_branch": "fix/lower-remove-artificial-size-limits",
       "pull_request": null,
       "backlog_ids": []
+    },
+    {
+      "id": "WORK-LOWER-008",
+      "status": "active",
+      "path": "docs/work/active/WORK-LOWER-008",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "fix/ci-initial-cp0-merge",
+      "pull_request": null,
+      "backlog_ids": []
     }
   ],
   "proposals": [],

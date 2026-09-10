@@ -1,3 +1,3 @@
 # Trabalho ativo
 
-[WORK-LOWER-007](WORK-LOWER-007/work-item.yaml), hardening de capacidade CP0 autorizado.
+[WORK-LOWER-008](WORK-LOWER-008/work-item.yaml), correção CI do CP0 inicial após merge.
