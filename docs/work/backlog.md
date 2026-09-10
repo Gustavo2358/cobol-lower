@@ -27,4 +27,4 @@ A saída AIR em arquivo está mergeada no 2A de BACKLOG-LOWER-003 (PR #4). A int
 
 ## Sincronização pós-CP5 autorizada
 
-[WORK-LOWER-009](active/WORK-LOWER-009/work-item.yaml) sincroniza baselines existentes; não inicia capacidades futuras nem CP6.
+[WORK-LOWER-009](history/WORK-LOWER-009.md) COMPLETED local: sincronizou baselines existentes; PR10 aguarda CI final/merge; não inicia capacidades futuras nem CP6.

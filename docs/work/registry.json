@@ -33,17 +33,6 @@
       "git_branch": "fix/ci-initial-cp0-merge",
       "pull_request": null,
       "backlog_ids": []
-    },
-    {
-      "id": "WORK-LOWER-009",
-      "status": "active",
-      "path": "docs/work/active/WORK-LOWER-009",
-      "authorized_checkpoints": [
-        "CP0"
-      ],
-      "git_branch": "chore/cp6-baseline-sync",
-      "pull_request": null,
-      "backlog_ids": []
     }
   ],
   "proposals": [],
@@ -215,6 +204,21 @@
         "merged_at": "2026-09-08T11:06:59Z",
         "observed_at": "2026-09-08T16:48:53.450014+00:00"
       }
+    },
+    {
+      "id": "WORK-LOWER-009",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-009.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "chore/cp6-baseline-sync",
+      "pull_request": 10,
+      "backlog_ids": [],
+      "manifest": "docs/quality/WORK-LOWER-009/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-009/CP0.json",
+      "review_status": "pending_human",
+      "merge_status": "open_not_merged"
     }
   ],
   "backlog": [

@@ -1,6 +1,6 @@
 # Trabalho de sincronização pós-CP5
 
-[WORK-LOWER-009](active/WORK-LOWER-009/work-item.yaml): CP0, pins/provenance/harness, sem alteração produtiva. [Estado](active/WORK-LOWER-009/state.md).
+[WORK-LOWER-009](history/WORK-LOWER-009.md): COMPLETED local; PR10 e CI final/merge remoto pendentes. Pins/provenance/harness, sem alteração produtiva. [Estado](history/WORK-LOWER-009.md).
 
 ## Contexto recebido preservado
 
