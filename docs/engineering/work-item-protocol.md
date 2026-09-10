@@ -52,7 +52,13 @@ Exigir work item ou escopo documental autorizado; demonstrar a lacuna com um con
 
 Para `not_recorded`, review_commit/review_url são null e reviews é uma lista vazia observada;
 G-GIT reconsulta essa ausência e o head/merge. Isso não concede aprovação nem execução.
-O manifesto congelado anterior à criação do PR pode ter PR null: o certificado final e o
-registro histórico precisam concordar no PR real. Evidência histórica não é reescrita para
+O manifesto e o certificado inicial CP0 anteriores à criação da PR podem ter PR null.
+Certificados emitidos com PR já conhecida registram seu número real. Na seleção da
+auditoria CI após merge, o CP0 inicial pode ser vinculado pela PR única comprovada
+na API, SHA do merge, base/repositório, ancestralidade do head, branch e evidence
+idêntica. PR explícita contraditória e null fora de CP0 continuam inválidos. Essa
+exceção não altera o certificado histórico nem concede execução; também não faz
+reconciliação automática do registry. O registro histórico continua exigindo o PR
+real e os vínculos certificados próprios da reconciliação. Evidência histórica não é reescrita para
 mover links: G-DOCS resolve links locais ausentes de documentos quality byte-idênticos ao
 head histórico na mesma revisão Git, inclusive anchors. Links correntes continuam estritos.

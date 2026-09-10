@@ -1,0 +1,17 @@
+checkpoint	Full first-slice gates and restored challenge	﻿2026-09-09T23:18:28.8735155Z ##[group]Run python3 scripts/harness/run.py ci --commit "$GITHUB_SHA"
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8735709Z [36;1mpython3 scripts/harness/run.py ci --commit "$GITHUB_SHA"[0m
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8772945Z shell: /usr/bin/bash -e {0}
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8773203Z env:
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8773440Z   LOWER_BUILD_ROOT: /tmp/lower-build-34416118687-2
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8776356Z   GH_TOKEN: ***
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8776736Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8777234Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8777856Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8778287Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8778710Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8779101Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8779478Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8780152Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:28.8780479Z ##[endgroup]
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:29.5347223Z FAIL CI merge/evidence identity mismatch
+checkpoint	Full first-slice gates and restored challenge	2026-09-09T23:18:29.5524570Z ##[error]Process completed with exit code 1.

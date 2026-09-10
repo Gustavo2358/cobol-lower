@@ -1,0 +1,4 @@
+{
+  "scripts/harness/tests/test_ci_bootstrap.py": "96c5f364b5b71bab04c3c3e5de8cbc66081d4a715a762aedd9367ba76ffe04ae",
+  "scripts/harness/ci_bootstrap_challenge.py": "7872339620bad6d2668e16ec865d7291119bb31da12aa6e464131f64315d1fc8"
+}

@@ -1,7 +1,7 @@
 # cobol-lower
 
 Checkpoint 4C: SP 1.2.0 → DATA escalar + MOVE FULL_IDENTITY + GOBACK → AIR JSON.
-[Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-007/work-item.yaml).
+[Contrato e limites](docs/domain/scalar-text-move.md), [work item](docs/work/active/WORK-LOWER-008/work-item.yaml).
 CP3 1.1.0 preservado. CLI usa o shared codec (16 MiB/depth128); falhas de encode
 são exit5 sem output parcial. SP válido suportado não possui teto de bytes, nós ou visitas de admissão.
 A proteção estrutural de profundidade 64 permanece. O teto AirJson continua limitando grandes saídas. Sem CFG/dataflow/CALL.
@@ -106,7 +106,7 @@ PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex min
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
 WORK-LOWER-001–005 estão reconciliados após merges confirmados. O trabalho atual é
-[WORK-LOWER-007](docs/work/active/WORK-LOWER-007/work-item.yaml), remoção dos limites artificiais de entrada/admissão.
+[WORK-LOWER-008](docs/work/active/WORK-LOWER-008/work-item.yaml), correção da auditoria CI do CP0 inicial após merge.
 PR para review humano; sem merge/auto-merge ou 4D/4E.
 
 IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro de

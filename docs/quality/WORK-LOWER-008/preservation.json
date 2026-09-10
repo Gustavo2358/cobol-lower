@@ -1,0 +1,22 @@
+{
+  "base": "937a81a23a7c908ed18124b3e8b7adc980ba0235",
+  "groups": [
+    "core",
+    "adapters",
+    "pom.xml",
+    ".github/workflows/checkpoint.yml",
+    "docs/sources/sources.lock.json",
+    "docs/quality/WORK-LOWER-001",
+    "docs/quality/WORK-LOWER-002",
+    "docs/quality/WORK-LOWER-003",
+    "docs/quality/WORK-LOWER-004",
+    "docs/quality/WORK-LOWER-005",
+    "docs/quality/WORK-LOWER-006",
+    "docs/quality/WORK-LOWER-007",
+    "docs/work/active/WORK-LOWER-006",
+    "docs/work/active/WORK-LOWER-007"
+  ],
+  "files_checked": 751,
+  "all_bytes_equal": true,
+  "new_oracles_unchanged_since_red": true
+}

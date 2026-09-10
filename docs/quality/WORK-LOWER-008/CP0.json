@@ -1,0 +1,554 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-008",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "fix/ci-initial-cp0-merge",
+  "pull_request": null,
+  "base_commit": "937a81a23a7c908ed18124b3e8b7adc980ba0235",
+  "reviewed_head": "937a81a23a7c908ed18124b3e8b7adc980ba0235",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component docs)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component architecture)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component semantic)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 203099,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component performance)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 93,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component git)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "harness-tests",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component harness-tests)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 161,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "challenge",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json (component challenge)",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 63,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-008/CP0.json",
+      "cwd": "/tmp/lower-ci-bootstrap-validation",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/full-final.log.gz"
+    },
+    {
+      "gate": "bootstrap",
+      "required": false,
+      "command": "python3 scripts/harness/run.py bootstrap",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/bootstrap.log.gz"
+    },
+    {
+      "gate": "initial-red",
+      "required": false,
+      "command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_initial_cp0_selects_historical_head -v (before patch; intended assertion RED)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "FAIL",
+      "exit_code": 1,
+      "test_count": 1,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/initial-red.log.gz"
+    },
+    {
+      "gate": "focal-green",
+      "required": false,
+      "command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 19,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/focal-green.log.gz"
+    },
+    {
+      "gate": "focal-challenge",
+      "required": false,
+      "command": "python3 -B scripts/harness/ci_bootstrap_challenge.py",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 6,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/focal-challenge.log.gz"
+    },
+    {
+      "gate": "actual-merge-audit",
+      "required": false,
+      "command": "ci_target(937a81a, real main push context) then git_gate(0c4cc78, mode=historical); live PR8 API and real Git; full not implied",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/actual-merge-audit.log.gz"
+    },
+    {
+      "gate": "docs-initial-state",
+      "required": false,
+      "command": "python3 scripts/harness/run.py docs (initial state omitted literal single-checkpoint)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "FAIL",
+      "exit_code": 1,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/docs-first.log.gz"
+    },
+    {
+      "gate": "docs-corrected",
+      "required": false,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Java21.0.12.1/Maven3.9.16/Python3.14; isolated LOWER_BUILD_ROOT=/tmp/lower-ci-bootstrap-build; locked AIR ce530a7; MAVEN_OPTS=-Xmx3g; byte-identical standalone clone",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/docs-second.log.gz"
+    },
+    {
+      "gate": "docs-final",
+      "required": false,
+      "command": "python3 scripts/harness/run.py docs (final evidence and state)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower-ci-bootstrap",
+      "environment": "Python3.14",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-008/logs/docs-final.log.gz"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "old-null-comparison",
+      "mutation": "initial_pr = record[\"checkpoint\"] == \"CP0\" and record[\"pull_request\"] is None -> initial_pr = False",
+      "expected_oracle": "CI_BOOTSTRAP initial CP0 selects historical head",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP initial CP0 selects historical head",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_initial_cp0_selects_historical_head -v (isolated)",
+      "baseline_log_sha256": "bc1e20de4ce326853cb05a3ac607b6c7a345f1df8b230ec53a680aeb235cfa70",
+      "red_log_sha256": "6bb8e0fedc369460f0bd925f921e3ee72c4a6b0319697d628ea3dddf6f117181",
+      "second_green_log_sha256": "d09a95c3f276ba0d0a973bca9ae60ee2b6489dec210134e2e956555e099f3b6c"
+    },
+    {
+      "id": "null-beyond-cp0",
+      "mutation": "initial_pr = record[\"checkpoint\"] == \"CP0\" and record[\"pull_request\"] is None -> initial_pr = record[\"pull_request\"] is None",
+      "expected_oracle": "CI_BOOTSTRAP null later checkpoint rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP null later checkpoint rejected",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_null_later_checkpoint_rejected -v (isolated)",
+      "baseline_log_sha256": "244267041a59e72580fa7c3ca417ba94b2fc5dc9e65b5f3344ea8af04dc0e673",
+      "red_log_sha256": "e07e30536ccc13757841fa668e0d0268a907fd1af1da35d8357a1538a5f16a79",
+      "second_green_log_sha256": "244267041a59e72580fa7c3ca417ba94b2fc5dc9e65b5f3344ea8af04dc0e673"
+    },
+    {
+      "id": "wrong-explicit-pr",
+      "mutation": "(not initial_pr and record[\"pull_request\"] != pr[\"number\"]) -> False",
+      "expected_oracle": "CI_BOOTSTRAP explicit wrong PR rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP explicit wrong PR rejected",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_explicit_wrong_pr_rejected -v (isolated)",
+      "baseline_log_sha256": "093262b67735b3d4cb85360852722e846e5f7ad56bf43e6080266ab6be94add9",
+      "red_log_sha256": "31cd870ef8674e4c38ae531dc38dd64a4dd2ee2ae89a14c21c769f9f17a82a0b",
+      "second_green_log_sha256": "168d0a450b22d2ea48e7d8194eabc2f328a161e31c943304e3d3e42693d1fb3f"
+    },
+    {
+      "id": "wrong-branch",
+      "mutation": "record[\"branch\"] != pr[\"head\"][\"ref\"] -> False",
+      "expected_oracle": "CI_BOOTSTRAP wrong branch rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP wrong branch rejected",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_wrong_branch_rejected -v (isolated)",
+      "baseline_log_sha256": "f2641a247d4030b64dc271bf3a1b0f4cfcf5bf68cf8f05f0cdcb28b0add606c8",
+      "red_log_sha256": "c35929bc6dbfb621faf392121daac9f9056d95eeb0ee0682064f467a31afc076",
+      "second_green_log_sha256": "c965de0fbfca4f5eddc9c148084d169210379c77ae127efdf2f05c852197da37"
+    },
+    {
+      "id": "altered-evidence",
+      "mutation": "json.loads(git(ROOT, \"show\", sha + \":\" + path)) != record -> False",
+      "expected_oracle": "CI_BOOTSTRAP altered merge evidence rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP altered merge evidence rejected",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_altered_merge_evidence_rejected -v (isolated)",
+      "baseline_log_sha256": "9691601422cef383fcf4c701c834399f9e0a19c24abfd4b90a5ad4a0655cda78",
+      "red_log_sha256": "015b3d718a1132b1a624cac67589c7a4d73a7c6573297fce627e31cde233d88a",
+      "second_green_log_sha256": "9691601422cef383fcf4c701c834399f9e0a19c24abfd4b90a5ad4a0655cda78"
+    },
+    {
+      "id": "missing-ancestry",
+      "mutation": "git(ROOT, \"merge-base\", \"--is-ancestor\", certified, sha) -> None # skipped ancestry",
+      "expected_oracle": "CI_BOOTSTRAP unrelated head rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP unrelated head rejected",
+      "baseline_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "restored_digest": "090de9e7f8fab611a84816b21d1def3e32eb89d0b44685fa385ac02167c75e3a",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_unrelated_head_rejected -v (isolated)",
+      "baseline_log_sha256": "c98c2a1d064805f0868c5bf05ddeb12c88b0715d0b5f297d62c91122c8f6d475",
+      "red_log_sha256": "8b00bbddb4441b9485ac921ae7fc26364199bd1eed2097626fdafff4c16aa91a",
+      "second_green_log_sha256": "a7d6a2d5faa24791ad962cabddeaf28b6a352c37a424097880e731991a749d37"
+    }
+  ],
+  "falsification_fields": [
+    "id",
+    "mutation",
+    "expected_oracle",
+    "observed_exit_code",
+    "failure_reason",
+    "restored_digest",
+    "green_command",
+    "green_exit_code",
+    "baseline_digest",
+    "baseline_exit_code",
+    "restoration_status"
+  ],
+  "review": {
+    "status": "PASS",
+    "kind": "self-review",
+    "reviewer_context": "Implementing Codex, same context; independent or human approval not claimed",
+    "evidence": [
+      "docs/quality/WORK-LOWER-008/review.md"
+    ],
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "not_verified",
+  "limitations": [
+    "No runtime/Java/schema/dependency/workflow change. The old failed GitHub run is preserved; a rerun of its old SHA still uses the old selector.",
+    "Historical WORK-LOWER-006/007 registration reconciliation remains separate; no old package/certificate was rewritten or reused as authorization.",
+    "Full legacy harness fixtures require a standalone .git directory; local full used a byte-identical isolated clone. No required gate skipped.",
+    "Exact final SHA and terminal remote CI receipt are post-push PR/handoff evidence; merge and auto-merge are not authorized."
+  ],
+  "note": "Draft CP0 evidence; initial certificate precedes PR creation; exact SHA/remote receipt published in PR without rewriting the certificate.",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-008/work-item.yaml",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "3b2b84b92c0febde8e33471bf4a01d27b17451b87404975312e01d2d214bb47c",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-008/CP0.json",
+    "docs/work/active/WORK-LOWER-008/state.md"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": ".github/workflows/checkpoint.yml",
+        "sha256": "c3e3f4071aef4645e6cc9a10802c265714d477d1ba93191a9ed984531aff9c2d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "8b539bf70f6a1f118800b23905153ca4ba32a825db4eee69f05721fd9f869bd4",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "ef0a3843dbf705ac20565356e2455d793bb89aa15da1a8c3b2d164e9824b9178",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "1cb8b93732b5bfeb51399db80d84895e15d25dc252fb0cdc66894b81852877bd",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "7d4183af3be50ff844e0b095b032e79fe2c81fcd2fb6b8ac7a6f6b99390ded37",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "881c15fca31ebf01951df60da38d5a532cc5f23815b954b293c30b871c21cd80",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "1ca1ac60c284fd947353310e755c6e8708e112546cd8a0360123232f4ff785f8",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-008/CP0-manifest.yaml",
+        "sha256": "821ce2c710d5ef80c8fff6009df765414b101b3813317d8c19c914be0c304811",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "93ccc3773b32f9a49c0a3deb850c9919024253453d3738928ddf17f412b2b0df",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-008/eval.md",
+        "sha256": "54d5bddd7e3359b1b288ef973c5f536deaa1e7cd8c8207d9b1894c35a35539ca",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-008/plan.md",
+        "sha256": "e0c826742c1e35cc0e0edfb4a0fcc484bb63424fbb0a0b7c4c02894f0daca720",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-008/spec.md",
+        "sha256": "36c2e91fcce907e5168f88e536aa8c1c1da371ad5741b87302840bbe62b824b4",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-008/work-item.yaml",
+        "sha256": "821ce2c710d5ef80c8fff6009df765414b101b3813317d8c19c914be0c304811",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "4ab6562e672ecab195f53ae74c2ea8fed2063dfcccb7e882eabda82727bfe761",
+        "git_revision": null,
+        "usage": "reference_only"
+      },
+      {
+        "path": "scripts/harness/ci_bootstrap_challenge.py",
+        "sha256": "7872339620bad6d2668e16ec865d7291119bb31da12aa6e464131f64315d1fc8",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/tests/test_ci_bootstrap.py",
+        "sha256": "96c5f364b5b71bab04c3c3e5de8cbc66081d4a715a762aedd9367ba76ffe04ae",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "reference_fields": [
+      "path",
+      "sha256",
+      "git_revision",
+      "usage"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 3600
+  },
+  "execution_fields": [
+    "gate",
+    "required",
+    "command",
+    "cwd",
+    "environment",
+    "status",
+    "exit_code",
+    "test_count",
+    "log_reference"
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": "WORK-LOWER-007 plus established harness and lower guarantees; no reused execution authority",
+      "guarantees": "751 product/test/pin/workflow/historical files byte-identical; 161 harness tests and all 63 challenges executed and restored; semantic/complexity/large-input/output regressions retained; actual previously failing PR8 merge selected and historical certificate validated without editing it.",
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "regression_fields": [
+    "previous_checkpoint",
+    "guarantees",
+    "execution_references"
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "scope": "pre_commit",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true
+  },
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ]
+}
