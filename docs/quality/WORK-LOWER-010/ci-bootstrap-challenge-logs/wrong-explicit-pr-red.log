@@ -1,0 +1,18 @@
+test_explicit_wrong_pr_rejected (__main__.CiBootstrap.test_explicit_wrong_pr_rejected) ... FAIL
+
+======================================================================
+FAIL: test_explicit_wrong_pr_rejected (__main__.CiBootstrap.test_explicit_wrong_pr_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-5f9x9ups/scripts/harness/tests/test_ci_bootstrap.py", line 90, in test_explicit_wrong_pr_rejected
+    self.rejected(self.fixture({'pull_request': 8}), 'explicit wrong PR rejected', 'merge/evidence identity')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-5f9x9ups/scripts/harness/tests/test_ci_bootstrap.py", line 71, in rejected
+    self.fail('CI_BOOTSTRAP ' + why)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP explicit wrong PR rejected
+
+----------------------------------------------------------------------
+Ran 1 test in 0.041s
+
+FAILED (failures=1)

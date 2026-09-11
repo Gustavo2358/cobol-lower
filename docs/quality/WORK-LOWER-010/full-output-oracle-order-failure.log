@@ -1,0 +1,1549 @@
+FULL_COMPONENT_PASS=docs
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] cobol-lower                                                        [pom]
+[INFO] cobol-lower-core                                                   [jar]
+[INFO] cobol-lower-adapters                                               [jar]
+[INFO] 
+[INFO] -----------------< io.github.gustavo2358:cobol-lower >------------------
+[INFO] Building cobol-lower 0.1.0-SNAPSHOT                                [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT                           [2/3]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/core/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (boundary-contract-suite) @ cobol-lower-core ---
+ok 1 - manual AIR accepted by real validator
+ok 2 - AIR 2.0.0
+ok 3 - one unit
+ok 4 - available body
+ok 5 - one entry and sequence
+ok 6 - entry label closes
+ok 7 - closed zero parameters
+ok 8 - closed zero results
+ok 9 - no common instructions
+ok 10 - expected Return, never Halt
+ok 11 - empty Return
+ok 12 - real validator rejects dangling label
+ok 13 - boundary must preserve INVALID_IR for dangling label
+ok 14 - boundary preserves complete result and issues
+ok 15 - profile fixture contains a real semantic obligation
+ok 16 - semantic obligations remain visible
+ok 17 - Halt can be valid AIR but is not the frozen Return shape
+ok 18 - publication immutable
+ok 19 - independent construction deterministic
+ok 20 - nonzero executed assertions
+LOWER_CALL_TESTS=623
+LOCAL_ID_CARDINALITY=100000 elapsed_ms=334
+LOCAL_ID_LONG_UTF16=1000000 streamed_bytes=4000169 max_buffer=256 elapsed_ms=40
+LOCAL_ID_PUBLIC_PORT_HANDLE=statement:2147483647 unit_key=100000 filename=100000 status=SUCCESS
+LOCAL_ID_TESTS=200362
+COMPACT_ID_TESTS=1678
+lower 1 - admitted input must produce SUCCESS: SUCCESS
+lower 2 - entire source evidence retained
+lower 3 - AIR 2 one unit
+lower 4 - available singular shape
+lower 5 - typed GOBACK must be Return, never Halt
+lower 6 - no return values
+lower 7 - closed known zero parameters
+lower 8 - closed known zero results
+lower 9 - total typed correlation
+lower 10 - entry identity correlation
+lower 11 - start correlation uses published reference
+lower 12 - start label join closes
+lower 13 - Return ID and provenance correlation
+lower 14 - alternative entry inventory stays PARTIAL
+lower 15 - alternate gap visible in AIR coverage
+lower 16 - entry and statement coverage retained
+lower 17 - local control exact
+lower 18 - no global strengthening STORAGE
+lower 19 - dimension reason present STORAGE
+lower 20 - no global strengthening EFFECTS
+lower 21 - dimension reason present EFFECTS
+lower 22 - no global strengthening VALUES
+lower 23 - dimension reason present VALUES
+lower 24 - no global strengthening DEPENDENCIES
+lower 25 - dimension reason present DEPENDENCIES
+lower 26 - zero DATA maps no storage declarations
+lower 27 - no unproved AIR profile claim
+lower 28 - complete real checker report preserved
+lower 29 - real checker GREEN
+lower 30 - independent construction deterministic
+lower 31 - operational metadata excluded from identity
+lower 32 - admitted input must produce SUCCESS: SUCCESS
+lower 33 - entire source evidence retained
+lower 34 - AIR 2 one unit
+lower 35 - available singular shape
+lower 36 - typed GOBACK must be Return, never Halt
+lower 37 - no return values
+lower 38 - closed known zero parameters
+lower 39 - closed known zero results
+lower 40 - total typed correlation
+lower 41 - entry identity correlation
+lower 42 - start correlation uses published reference
+lower 43 - start label join closes
+lower 44 - Return ID and provenance correlation
+lower 45 - alternative entry inventory stays PARTIAL
+lower 46 - alternate gap visible in AIR coverage
+lower 47 - entry and statement coverage retained
+lower 48 - local control exact
+lower 49 - no global strengthening STORAGE
+lower 50 - dimension reason present STORAGE
+lower 51 - no global strengthening EFFECTS
+lower 52 - dimension reason present EFFECTS
+lower 53 - no global strengthening VALUES
+lower 54 - dimension reason present VALUES
+lower 55 - no global strengthening DEPENDENCIES
+lower 56 - dimension reason present DEPENDENCIES
+lower 57 - zero DATA maps no storage declarations
+lower 58 - no unproved AIR profile claim
+lower 59 - complete real checker report preserved
+lower 60 - real checker GREEN
+lower 61 - revision namespace distinguishes unit and handles
+lower 62 - admitted input must produce SUCCESS: SUCCESS
+lower 63 - entire source evidence retained
+lower 64 - AIR 2 one unit
+lower 65 - available singular shape
+lower 66 - typed GOBACK must be Return, never Halt
+lower 67 - no return values
+lower 68 - closed known zero parameters
+lower 69 - closed known zero results
+lower 70 - total typed correlation
+lower 71 - entry identity correlation
+lower 72 - start correlation uses published reference
+lower 73 - start label join closes
+lower 74 - Return ID and provenance correlation
+lower 75 - alternative entry inventory stays PARTIAL
+lower 76 - alternate gap visible in AIR coverage
+lower 77 - entry and statement coverage retained
+lower 78 - local control exact
+lower 79 - no global strengthening STORAGE
+lower 80 - dimension reason present STORAGE
+lower 81 - no global strengthening EFFECTS
+lower 82 - dimension reason present EFFECTS
+lower 83 - no global strengthening VALUES
+lower 84 - dimension reason present VALUES
+lower 85 - no global strengthening DEPENDENCIES
+lower 86 - dimension reason present DEPENDENCIES
+lower 87 - zero DATA maps no storage declarations
+lower 88 - no unproved AIR profile claim
+lower 89 - complete real checker report preserved
+lower 90 - real checker GREEN
+lower 91 - revision namespace distinguishes unit and handles
+lower 92 - admitted input must produce SUCCESS: SUCCESS
+lower 93 - entire source evidence retained
+lower 94 - AIR 2 one unit
+lower 95 - available singular shape
+lower 96 - typed GOBACK must be Return, never Halt
+lower 97 - no return values
+lower 98 - closed known zero parameters
+lower 99 - closed known zero results
+lower 100 - total typed correlation
+lower 101 - entry identity correlation
+lower 102 - start correlation uses published reference
+lower 103 - start label join closes
+lower 104 - Return ID and provenance correlation
+lower 105 - alternative entry inventory stays PARTIAL
+lower 106 - alternate gap visible in AIR coverage
+lower 107 - entry and statement coverage retained
+lower 108 - local control exact
+lower 109 - no global strengthening STORAGE
+lower 110 - dimension reason present STORAGE
+lower 111 - no global strengthening EFFECTS
+lower 112 - dimension reason present EFFECTS
+lower 113 - no global strengthening VALUES
+lower 114 - dimension reason present VALUES
+lower 115 - no global strengthening DEPENDENCIES
+lower 116 - dimension reason present DEPENDENCIES
+lower 117 - zero DATA maps no storage declarations
+lower 118 - no unproved AIR profile claim
+lower 119 - complete real checker report preserved
+lower 120 - real checker GREEN
+lower 121 - revision namespace distinguishes unit and handles
+lower 122 - exact published GOBACK original coordinates
+lower 123 - explicit SP coordinate conventions
+lower 124 - golden exact without include
+lower 125 - auxiliary sequence origin derived
+lower 126 - entry and GOBACK distinct origins
+lower 127 - identity limit never publishes prefix
+lower 128 - exact identity bound succeeds
+lower 129 - invalid AIR never success
+lower 130 - invalid issues preserved
+lower 131 - semantic obligation preserved not proved
+lower 132 - real validation limit never success
+lower 133 - real operational resource issue preserved
+lower 134 - in-memory input always validated
+lower 135 - identity includes rule and semantic versions (independent XXH3-128 vector)
+lower 136 - admitted input must produce SUCCESS: SUCCESS
+lower 137 - entire source evidence retained
+lower 138 - AIR 2 one unit
+lower 139 - available singular shape
+lower 140 - typed GOBACK must be Return, never Halt
+lower 141 - no return values
+lower 142 - closed known zero parameters
+lower 143 - closed known zero results
+lower 144 - total typed correlation
+lower 145 - entry identity correlation
+lower 146 - start correlation uses published reference
+lower 147 - start label join closes
+lower 148 - Return ID and provenance correlation
+lower 149 - alternative entry inventory stays PARTIAL
+lower 150 - alternate gap visible in AIR coverage
+lower 151 - entry and statement coverage retained
+lower 152 - local control exact
+lower 153 - no global strengthening STORAGE
+lower 154 - dimension reason present STORAGE
+lower 155 - no global strengthening EFFECTS
+lower 156 - dimension reason present EFFECTS
+lower 157 - no global strengthening VALUES
+lower 158 - dimension reason present VALUES
+lower 159 - no global strengthening DEPENDENCIES
+lower 160 - dimension reason present DEPENDENCIES
+lower 161 - zero DATA maps no storage declarations
+lower 162 - no unproved AIR profile claim
+lower 163 - complete real checker report preserved
+lower 164 - real checker GREEN
+lower 165 - same unit new policy revision changes PublicationId
+lower 166 - admitted input must produce SUCCESS: SUCCESS
+lower 167 - entire source evidence retained
+lower 168 - AIR 2 one unit
+lower 169 - available singular shape
+lower 170 - typed GOBACK must be Return, never Halt
+lower 171 - no return values
+lower 172 - closed known zero parameters
+lower 173 - closed known zero results
+lower 174 - total typed correlation
+lower 175 - entry identity correlation
+lower 176 - start correlation uses published reference
+lower 177 - start label join closes
+lower 178 - Return ID and provenance correlation
+lower 179 - alternative entry inventory stays PARTIAL
+lower 180 - alternate gap visible in AIR coverage
+lower 181 - entry and statement coverage retained
+lower 182 - local control exact
+lower 183 - no global strengthening STORAGE
+lower 184 - dimension reason present STORAGE
+lower 185 - no global strengthening EFFECTS
+lower 186 - dimension reason present EFFECTS
+lower 187 - no global strengthening VALUES
+lower 188 - dimension reason present VALUES
+lower 189 - no global strengthening DEPENDENCIES
+lower 190 - dimension reason present DEPENDENCIES
+lower 191 - zero DATA maps no storage declarations
+lower 192 - no unproved AIR profile claim
+lower 193 - complete real checker report preserved
+lower 194 - real checker GREEN
+lower 195 - same unit new structural fact changes PublicationId
+lower 196 - admitted input must produce SUCCESS: SUCCESS
+lower 197 - entire source evidence retained
+lower 198 - AIR 2 one unit
+lower 199 - available singular shape
+lower 200 - typed GOBACK must be Return, never Halt
+lower 201 - no return values
+lower 202 - closed known zero parameters
+lower 203 - closed known zero results
+lower 204 - total typed correlation
+lower 205 - entry identity correlation
+lower 206 - start correlation uses published reference
+lower 207 - start label join closes
+lower 208 - Return ID and provenance correlation
+lower 209 - alternative entry inventory stays PARTIAL
+lower 210 - alternate gap visible in AIR coverage
+lower 211 - entry and statement coverage retained
+lower 212 - local control exact
+lower 213 - no global strengthening STORAGE
+lower 214 - dimension reason present STORAGE
+lower 215 - no global strengthening EFFECTS
+lower 216 - dimension reason present EFFECTS
+lower 217 - no global strengthening VALUES
+lower 218 - dimension reason present VALUES
+lower 219 - no global strengthening DEPENDENCIES
+lower 220 - dimension reason present DEPENDENCIES
+lower 221 - zero DATA maps no storage declarations
+lower 222 - no unproved AIR profile claim
+lower 223 - complete real checker report preserved
+lower 224 - real checker GREEN
+lower 225 - readiness scope is revision evidence not dropped
+lower 226 - admitted input must produce SUCCESS: SUCCESS
+lower 227 - entire source evidence retained
+lower 228 - AIR 2 one unit
+lower 229 - available singular shape
+lower 230 - typed GOBACK must be Return, never Halt
+lower 231 - no return values
+lower 232 - closed known zero parameters
+lower 233 - closed known zero results
+lower 234 - total typed correlation
+lower 235 - entry identity correlation
+lower 236 - start correlation uses published reference
+lower 237 - start label join closes
+lower 238 - Return ID and provenance correlation
+lower 239 - alternative entry inventory stays PARTIAL
+lower 240 - alternate gap visible in AIR coverage
+lower 241 - entry and statement coverage retained
+lower 242 - local control exact
+lower 243 - no global strengthening STORAGE
+lower 244 - dimension reason present STORAGE
+lower 245 - no global strengthening EFFECTS
+lower 246 - dimension reason present EFFECTS
+lower 247 - no global strengthening VALUES
+lower 248 - dimension reason present VALUES
+lower 249 - no global strengthening DEPENDENCIES
+lower 250 - dimension reason present DEPENDENCIES
+lower 251 - zero DATA maps no storage declarations
+lower 252 - no unproved AIR profile claim
+lower 253 - complete real checker report preserved
+lower 254 - real checker GREEN
+lower 255 - source provenance participates in revision
+lower 256 - original and expanded roles both preserved
+lower 257 - unrepresentable coordinates do not fabricate span or exactness
+lower 258 - include chain order retained without invented site columns
+lower 259 - logical source artifact not transport or fabricated digest
+lower 260 - provenance limitations explicitly reported
+lower 261 - raw include lines and coordinates retained
+lower 262 - admitted input must produce SUCCESS: SUCCESS
+lower 263 - entire source evidence retained
+lower 264 - AIR 2 one unit
+lower 265 - available singular shape
+lower 266 - typed GOBACK must be Return, never Halt
+lower 267 - no return values
+lower 268 - closed known zero parameters
+lower 269 - closed known zero results
+lower 270 - total typed correlation
+lower 271 - entry identity correlation
+lower 272 - start correlation uses published reference
+lower 273 - start label join closes
+lower 274 - Return ID and provenance correlation
+lower 275 - alternative entry inventory stays PARTIAL
+lower 276 - alternate gap visible in AIR coverage
+lower 277 - entry and statement coverage retained
+lower 278 - local control exact
+lower 279 - no global strengthening STORAGE
+lower 280 - dimension reason present STORAGE
+lower 281 - no global strengthening EFFECTS
+lower 282 - dimension reason present EFFECTS
+lower 283 - no global strengthening VALUES
+lower 284 - dimension reason present VALUES
+lower 285 - no global strengthening DEPENDENCIES
+lower 286 - dimension reason present DEPENDENCIES
+lower 287 - zero DATA maps no storage declarations
+lower 288 - no unproved AIR profile claim
+lower 289 - complete real checker report preserved
+lower 290 - real checker GREEN
+lower 291 - source provenance participates in revision
+lower 292 - original and expanded roles both preserved
+lower 293 - unrepresentable coordinates do not fabricate span or exactness
+lower 294 - include chain order retained without invented site columns
+lower 295 - logical source artifact not transport or fabricated digest
+lower 296 - provenance limitations explicitly reported
+lower 297 - raw include lines and coordinates retained
+lower 298 - length framed identity resists delimiter collision
+lower 299 - dangling start rejected before AIR
+lower 300 - same semantic admission and diagnostics in lower port
+lower 301 - larger input never lowered as selected prefix
+lower 302 - correlation immutable
+LOWER_TESTS=203444
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- jar:3.4.2:test-jar (independent-test-fixtures) @ cobol-lower-core ---
+[INFO] 
+[INFO] -------------< io.github.gustavo2358:cobol-lower-adapters >-------------
+[INFO] Building cobol-lower-adapters 0.1.0-SNAPSHOT                       [3/3]
+[INFO]   from adapters/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-adapters ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/adapters/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-adapters ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-adapters ---
+[INFO] Copying 56 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-adapters ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-adapters ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (decoder-contract-suite) @ cobol-lower-adapters ---
+SCALAR_PHYSICAL lines=60012 sp_bytes=5339 air_bytes=32237
+SCALAR_AIR bytes=32138 sha256=dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788 publication=77ae4cc3ed75332c64011efce81c431b
+CALL_PLACEMENT_CHALLENGE=I-04; byte-exact restoration; second GREEN
+LOWER_CALL_INTEGRATION_TESTS=153
+LOWER_TESTS=431
+[INFO] 
+[INFO] --- exec:3.5.0:java (air-output-suite) @ cobol-lower-adapters ---
+LOCAL_ID_BIJECTION=20 id_occurrences=163 old_air_bytes=15720
+COMPACT_AIR_BYTES=13827
+PRODUCTION_SUCCESS_PROBE data=400 moves=400 sp_bytes=1071738 air_bytes=7616219 exit=0
+LOWER_PRODUCTION_TESTS=11
+LOWER_AIR_OUTPUT_TESTS=173
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-adapters ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] cobol-lower ........................................ SUCCESS [  0.001 s]
+[INFO] cobol-lower-core ................................... SUCCESS [  1.406 s]
+[INFO] cobol-lower-adapters ............................... SUCCESS [  3.416 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.908 s
+[INFO] Finished at: 2026-09-11T14:49:38-03:00
+[INFO] ------------------------------------------------------------------------
+SEMANTIC_TEST_COUNT=203875
+FULL_COMPONENT_PASS=semantic
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] cobol-lower                                                        [pom]
+[INFO] cobol-lower-core                                                   [jar]
+[INFO] cobol-lower-adapters                                               [jar]
+[INFO] 
+[INFO] -----------------< io.github.gustavo2358:cobol-lower >------------------
+[INFO] Building cobol-lower 0.1.0-SNAPSHOT                                [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT                           [2/3]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/core/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (boundary-contract-suite) @ cobol-lower-core ---
+ok 1 - manual AIR accepted by real validator
+ok 2 - AIR 2.0.0
+ok 3 - one unit
+ok 4 - available body
+ok 5 - one entry and sequence
+ok 6 - entry label closes
+ok 7 - closed zero parameters
+ok 8 - closed zero results
+ok 9 - no common instructions
+ok 10 - expected Return, never Halt
+ok 11 - empty Return
+ok 12 - real validator rejects dangling label
+ok 13 - boundary must preserve INVALID_IR for dangling label
+ok 14 - boundary preserves complete result and issues
+ok 15 - profile fixture contains a real semantic obligation
+ok 16 - semantic obligations remain visible
+ok 17 - Halt can be valid AIR but is not the frozen Return shape
+ok 18 - publication immutable
+ok 19 - independent construction deterministic
+ok 20 - nonzero executed assertions
+LOWER_CALL_TESTS=623
+LOCAL_ID_CARDINALITY=100000 elapsed_ms=444
+LOCAL_ID_LONG_UTF16=1000000 streamed_bytes=4000169 max_buffer=256 elapsed_ms=39
+LOCAL_ID_PUBLIC_PORT_HANDLE=statement:2147483647 unit_key=100000 filename=100000 status=SUCCESS
+LOCAL_ID_TESTS=200362
+COMPACT_ID_TESTS=1678
+lower 1 - admitted input must produce SUCCESS: SUCCESS
+lower 2 - entire source evidence retained
+lower 3 - AIR 2 one unit
+lower 4 - available singular shape
+lower 5 - typed GOBACK must be Return, never Halt
+lower 6 - no return values
+lower 7 - closed known zero parameters
+lower 8 - closed known zero results
+lower 9 - total typed correlation
+lower 10 - entry identity correlation
+lower 11 - start correlation uses published reference
+lower 12 - start label join closes
+lower 13 - Return ID and provenance correlation
+lower 14 - alternative entry inventory stays PARTIAL
+lower 15 - alternate gap visible in AIR coverage
+lower 16 - entry and statement coverage retained
+lower 17 - local control exact
+lower 18 - no global strengthening STORAGE
+lower 19 - dimension reason present STORAGE
+lower 20 - no global strengthening EFFECTS
+lower 21 - dimension reason present EFFECTS
+lower 22 - no global strengthening VALUES
+lower 23 - dimension reason present VALUES
+lower 24 - no global strengthening DEPENDENCIES
+lower 25 - dimension reason present DEPENDENCIES
+lower 26 - zero DATA maps no storage declarations
+lower 27 - no unproved AIR profile claim
+lower 28 - complete real checker report preserved
+lower 29 - real checker GREEN
+lower 30 - independent construction deterministic
+lower 31 - operational metadata excluded from identity
+lower 32 - admitted input must produce SUCCESS: SUCCESS
+lower 33 - entire source evidence retained
+lower 34 - AIR 2 one unit
+lower 35 - available singular shape
+lower 36 - typed GOBACK must be Return, never Halt
+lower 37 - no return values
+lower 38 - closed known zero parameters
+lower 39 - closed known zero results
+lower 40 - total typed correlation
+lower 41 - entry identity correlation
+lower 42 - start correlation uses published reference
+lower 43 - start label join closes
+lower 44 - Return ID and provenance correlation
+lower 45 - alternative entry inventory stays PARTIAL
+lower 46 - alternate gap visible in AIR coverage
+lower 47 - entry and statement coverage retained
+lower 48 - local control exact
+lower 49 - no global strengthening STORAGE
+lower 50 - dimension reason present STORAGE
+lower 51 - no global strengthening EFFECTS
+lower 52 - dimension reason present EFFECTS
+lower 53 - no global strengthening VALUES
+lower 54 - dimension reason present VALUES
+lower 55 - no global strengthening DEPENDENCIES
+lower 56 - dimension reason present DEPENDENCIES
+lower 57 - zero DATA maps no storage declarations
+lower 58 - no unproved AIR profile claim
+lower 59 - complete real checker report preserved
+lower 60 - real checker GREEN
+lower 61 - revision namespace distinguishes unit and handles
+lower 62 - admitted input must produce SUCCESS: SUCCESS
+lower 63 - entire source evidence retained
+lower 64 - AIR 2 one unit
+lower 65 - available singular shape
+lower 66 - typed GOBACK must be Return, never Halt
+lower 67 - no return values
+lower 68 - closed known zero parameters
+lower 69 - closed known zero results
+lower 70 - total typed correlation
+lower 71 - entry identity correlation
+lower 72 - start correlation uses published reference
+lower 73 - start label join closes
+lower 74 - Return ID and provenance correlation
+lower 75 - alternative entry inventory stays PARTIAL
+lower 76 - alternate gap visible in AIR coverage
+lower 77 - entry and statement coverage retained
+lower 78 - local control exact
+lower 79 - no global strengthening STORAGE
+lower 80 - dimension reason present STORAGE
+lower 81 - no global strengthening EFFECTS
+lower 82 - dimension reason present EFFECTS
+lower 83 - no global strengthening VALUES
+lower 84 - dimension reason present VALUES
+lower 85 - no global strengthening DEPENDENCIES
+lower 86 - dimension reason present DEPENDENCIES
+lower 87 - zero DATA maps no storage declarations
+lower 88 - no unproved AIR profile claim
+lower 89 - complete real checker report preserved
+lower 90 - real checker GREEN
+lower 91 - revision namespace distinguishes unit and handles
+lower 92 - admitted input must produce SUCCESS: SUCCESS
+lower 93 - entire source evidence retained
+lower 94 - AIR 2 one unit
+lower 95 - available singular shape
+lower 96 - typed GOBACK must be Return, never Halt
+lower 97 - no return values
+lower 98 - closed known zero parameters
+lower 99 - closed known zero results
+lower 100 - total typed correlation
+lower 101 - entry identity correlation
+lower 102 - start correlation uses published reference
+lower 103 - start label join closes
+lower 104 - Return ID and provenance correlation
+lower 105 - alternative entry inventory stays PARTIAL
+lower 106 - alternate gap visible in AIR coverage
+lower 107 - entry and statement coverage retained
+lower 108 - local control exact
+lower 109 - no global strengthening STORAGE
+lower 110 - dimension reason present STORAGE
+lower 111 - no global strengthening EFFECTS
+lower 112 - dimension reason present EFFECTS
+lower 113 - no global strengthening VALUES
+lower 114 - dimension reason present VALUES
+lower 115 - no global strengthening DEPENDENCIES
+lower 116 - dimension reason present DEPENDENCIES
+lower 117 - zero DATA maps no storage declarations
+lower 118 - no unproved AIR profile claim
+lower 119 - complete real checker report preserved
+lower 120 - real checker GREEN
+lower 121 - revision namespace distinguishes unit and handles
+lower 122 - exact published GOBACK original coordinates
+lower 123 - explicit SP coordinate conventions
+lower 124 - golden exact without include
+lower 125 - auxiliary sequence origin derived
+lower 126 - entry and GOBACK distinct origins
+lower 127 - identity limit never publishes prefix
+lower 128 - exact identity bound succeeds
+lower 129 - invalid AIR never success
+lower 130 - invalid issues preserved
+lower 131 - semantic obligation preserved not proved
+lower 132 - real validation limit never success
+lower 133 - real operational resource issue preserved
+lower 134 - in-memory input always validated
+lower 135 - identity includes rule and semantic versions (independent XXH3-128 vector)
+lower 136 - admitted input must produce SUCCESS: SUCCESS
+lower 137 - entire source evidence retained
+lower 138 - AIR 2 one unit
+lower 139 - available singular shape
+lower 140 - typed GOBACK must be Return, never Halt
+lower 141 - no return values
+lower 142 - closed known zero parameters
+lower 143 - closed known zero results
+lower 144 - total typed correlation
+lower 145 - entry identity correlation
+lower 146 - start correlation uses published reference
+lower 147 - start label join closes
+lower 148 - Return ID and provenance correlation
+lower 149 - alternative entry inventory stays PARTIAL
+lower 150 - alternate gap visible in AIR coverage
+lower 151 - entry and statement coverage retained
+lower 152 - local control exact
+lower 153 - no global strengthening STORAGE
+lower 154 - dimension reason present STORAGE
+lower 155 - no global strengthening EFFECTS
+lower 156 - dimension reason present EFFECTS
+lower 157 - no global strengthening VALUES
+lower 158 - dimension reason present VALUES
+lower 159 - no global strengthening DEPENDENCIES
+lower 160 - dimension reason present DEPENDENCIES
+lower 161 - zero DATA maps no storage declarations
+lower 162 - no unproved AIR profile claim
+lower 163 - complete real checker report preserved
+lower 164 - real checker GREEN
+lower 165 - same unit new policy revision changes PublicationId
+lower 166 - admitted input must produce SUCCESS: SUCCESS
+lower 167 - entire source evidence retained
+lower 168 - AIR 2 one unit
+lower 169 - available singular shape
+lower 170 - typed GOBACK must be Return, never Halt
+lower 171 - no return values
+lower 172 - closed known zero parameters
+lower 173 - closed known zero results
+lower 174 - total typed correlation
+lower 175 - entry identity correlation
+lower 176 - start correlation uses published reference
+lower 177 - start label join closes
+lower 178 - Return ID and provenance correlation
+lower 179 - alternative entry inventory stays PARTIAL
+lower 180 - alternate gap visible in AIR coverage
+lower 181 - entry and statement coverage retained
+lower 182 - local control exact
+lower 183 - no global strengthening STORAGE
+lower 184 - dimension reason present STORAGE
+lower 185 - no global strengthening EFFECTS
+lower 186 - dimension reason present EFFECTS
+lower 187 - no global strengthening VALUES
+lower 188 - dimension reason present VALUES
+lower 189 - no global strengthening DEPENDENCIES
+lower 190 - dimension reason present DEPENDENCIES
+lower 191 - zero DATA maps no storage declarations
+lower 192 - no unproved AIR profile claim
+lower 193 - complete real checker report preserved
+lower 194 - real checker GREEN
+lower 195 - same unit new structural fact changes PublicationId
+lower 196 - admitted input must produce SUCCESS: SUCCESS
+lower 197 - entire source evidence retained
+lower 198 - AIR 2 one unit
+lower 199 - available singular shape
+lower 200 - typed GOBACK must be Return, never Halt
+lower 201 - no return values
+lower 202 - closed known zero parameters
+lower 203 - closed known zero results
+lower 204 - total typed correlation
+lower 205 - entry identity correlation
+lower 206 - start correlation uses published reference
+lower 207 - start label join closes
+lower 208 - Return ID and provenance correlation
+lower 209 - alternative entry inventory stays PARTIAL
+lower 210 - alternate gap visible in AIR coverage
+lower 211 - entry and statement coverage retained
+lower 212 - local control exact
+lower 213 - no global strengthening STORAGE
+lower 214 - dimension reason present STORAGE
+lower 215 - no global strengthening EFFECTS
+lower 216 - dimension reason present EFFECTS
+lower 217 - no global strengthening VALUES
+lower 218 - dimension reason present VALUES
+lower 219 - no global strengthening DEPENDENCIES
+lower 220 - dimension reason present DEPENDENCIES
+lower 221 - zero DATA maps no storage declarations
+lower 222 - no unproved AIR profile claim
+lower 223 - complete real checker report preserved
+lower 224 - real checker GREEN
+lower 225 - readiness scope is revision evidence not dropped
+lower 226 - admitted input must produce SUCCESS: SUCCESS
+lower 227 - entire source evidence retained
+lower 228 - AIR 2 one unit
+lower 229 - available singular shape
+lower 230 - typed GOBACK must be Return, never Halt
+lower 231 - no return values
+lower 232 - closed known zero parameters
+lower 233 - closed known zero results
+lower 234 - total typed correlation
+lower 235 - entry identity correlation
+lower 236 - start correlation uses published reference
+lower 237 - start label join closes
+lower 238 - Return ID and provenance correlation
+lower 239 - alternative entry inventory stays PARTIAL
+lower 240 - alternate gap visible in AIR coverage
+lower 241 - entry and statement coverage retained
+lower 242 - local control exact
+lower 243 - no global strengthening STORAGE
+lower 244 - dimension reason present STORAGE
+lower 245 - no global strengthening EFFECTS
+lower 246 - dimension reason present EFFECTS
+lower 247 - no global strengthening VALUES
+lower 248 - dimension reason present VALUES
+lower 249 - no global strengthening DEPENDENCIES
+lower 250 - dimension reason present DEPENDENCIES
+lower 251 - zero DATA maps no storage declarations
+lower 252 - no unproved AIR profile claim
+lower 253 - complete real checker report preserved
+lower 254 - real checker GREEN
+lower 255 - source provenance participates in revision
+lower 256 - original and expanded roles both preserved
+lower 257 - unrepresentable coordinates do not fabricate span or exactness
+lower 258 - include chain order retained without invented site columns
+lower 259 - logical source artifact not transport or fabricated digest
+lower 260 - provenance limitations explicitly reported
+lower 261 - raw include lines and coordinates retained
+lower 262 - admitted input must produce SUCCESS: SUCCESS
+lower 263 - entire source evidence retained
+lower 264 - AIR 2 one unit
+lower 265 - available singular shape
+lower 266 - typed GOBACK must be Return, never Halt
+lower 267 - no return values
+lower 268 - closed known zero parameters
+lower 269 - closed known zero results
+lower 270 - total typed correlation
+lower 271 - entry identity correlation
+lower 272 - start correlation uses published reference
+lower 273 - start label join closes
+lower 274 - Return ID and provenance correlation
+lower 275 - alternative entry inventory stays PARTIAL
+lower 276 - alternate gap visible in AIR coverage
+lower 277 - entry and statement coverage retained
+lower 278 - local control exact
+lower 279 - no global strengthening STORAGE
+lower 280 - dimension reason present STORAGE
+lower 281 - no global strengthening EFFECTS
+lower 282 - dimension reason present EFFECTS
+lower 283 - no global strengthening VALUES
+lower 284 - dimension reason present VALUES
+lower 285 - no global strengthening DEPENDENCIES
+lower 286 - dimension reason present DEPENDENCIES
+lower 287 - zero DATA maps no storage declarations
+lower 288 - no unproved AIR profile claim
+lower 289 - complete real checker report preserved
+lower 290 - real checker GREEN
+lower 291 - source provenance participates in revision
+lower 292 - original and expanded roles both preserved
+lower 293 - unrepresentable coordinates do not fabricate span or exactness
+lower 294 - include chain order retained without invented site columns
+lower 295 - logical source artifact not transport or fabricated digest
+lower 296 - provenance limitations explicitly reported
+lower 297 - raw include lines and coordinates retained
+lower 298 - length framed identity resists delimiter collision
+lower 299 - dangling start rejected before AIR
+lower 300 - same semantic admission and diagnostics in lower port
+lower 301 - larger input never lowered as selected prefix
+lower 302 - correlation immutable
+PERFORMANCE_CORE n=1 visits=16 references=2 provenance=6 elapsed_ns=57474 java=21.0.12.1 os=Linux heap_used=66946496
+PERFORMANCE_CORE n=64 visits=457 references=65 provenance=195 elapsed_ns=323497 java=21.0.12.1 os=Linux heap_used=66946496
+PERFORMANCE_CORE n=128 visits=905 references=129 provenance=387 elapsed_ns=771528 java=21.0.12.1 os=Linux heap_used=67274376
+PERFORMANCE_CORE n=1024 visits=7177 references=1025 provenance=3075 elapsed_ns=4153967 java=21.0.12.1 os=Linux heap_used=69819608
+PERFORMANCE_CORE n=2048 visits=14345 references=2049 provenance=6147 elapsed_ns=3343348 java=21.0.12.1 os=Linux heap_used=73237952
+SCALAR_SCALE data=1000 moves=1000 objects=1000 cells=1000 assigns=1000 visits=24016 references=7003 elapsed_nanos=225614437
+SCALAR_SCALE data=2000 moves=2000 objects=2000 cells=2000 assigns=2000 visits=48016 references=14003 elapsed_nanos=260693412
+SCALAR_SCALE data=1 moves=10000 objects=1 cells=1 assigns=10000 visits=190021 references=70003 elapsed_nanos=804024290
+CALL_SCALE n=500 visits=13533 references=3509
+CALL_SCALE n=1000 visits=27033 references=7009
+LOWER_TESTS=203500
+LOWER_PERFORMANCE_TESTS=56
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- jar:3.4.2:test-jar (independent-test-fixtures) @ cobol-lower-core ---
+[INFO] 
+[INFO] -------------< io.github.gustavo2358:cobol-lower-adapters >-------------
+[INFO] Building cobol-lower-adapters 0.1.0-SNAPSHOT                       [3/3]
+[INFO]   from adapters/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-adapters ---
+[INFO] skip non existing resourceDirectory /home/gustavo/workspace/teste-e2e/cobol-lower/adapters/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-adapters ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-adapters ---
+[INFO] Copying 56 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-adapters ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-adapters ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (decoder-contract-suite) @ cobol-lower-adapters ---
+SCALAR_PHYSICAL lines=60012 sp_bytes=5339 air_bytes=32237
+SCALAR_AIR bytes=32138 sha256=dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788 publication=77ae4cc3ed75332c64011efce81c431b
+CALL_PLACEMENT_CHALLENGE=I-04; byte-exact restoration; second GREEN
+LOWER_CALL_INTEGRATION_TESTS=153
+PERFORMANCE_DECODER n=1 bytes=2663 nodes=119 physical=117 elapsed_ns=7039907 java=21.0.12.1 os=Linux heap_used=57921984
+PERFORMANCE_DECODER n=64 bytes=50267 nodes=2450 physical=2322 elapsed_ns=14569752 java=21.0.12.1 os=Linux heap_used=66310592
+PERFORMANCE_DECODER n=128 bytes=98738 nodes=4818 physical=4562 elapsed_ns=22294219 java=21.0.12.1 os=Linux heap_used=82039232
+PERFORMANCE_DECODER n=1024 bytes=778877 nodes=37970 physical=35922 elapsed_ns=112177322 java=21.0.12.1 os=Linux heap_used=203674048
+PERFORMANCE_DECODER n=2048 bytes=1559165 nodes=75858 physical=71762 elapsed_ns=153989719 java=21.0.12.1 os=Linux heap_used=119630128
+LOWER_TESTS=471
+LOWER_PERFORMANCE_TESTS=40
+[INFO] 
+[INFO] --- exec:3.5.0:java (air-output-suite) @ cobol-lower-adapters ---
+LOCAL_ID_BIJECTION=20 id_occurrences=163 old_air_bytes=15720
+COMPACT_AIR_BYTES=13827
+SCALAR_AIR_SCALE data=250 moves=250 objects=250 cells=250 assigns=250 bytes=4766996 elapsed_nanos=383917331
+SCALAR_AIR_SCALE data=500 moves=500 objects=500 cells=500 assigns=500 bytes=9521746 elapsed_nanos=459917288
+SCALAR_AIR_SCALE data=1 moves=1000 objects=1 cells=1 assigns=1000 bytes=11212321
+PRODUCTION_SUCCESS_PROBE data=400 moves=400 sp_bytes=1071738 air_bytes=7616219 exit=0
+PRODUCTION_MEASUREMENT sp_bytes=18809400 nodes=1050154 physical_values=1030152 entities=190021
+PRODUCTION_CAPACITY_PROBE data=1 moves=10000 exit=0 air_bytes=112117041 prior_debt=RESOLVED_BY_UPSTREAM_BASELINE
+CAPACITY_SP moves=20000 bytes=38179536 nodes=2100154 container_depth=7 sha256=202ce49d1a632ab2997bd8d9beb0300c4c81bfd6935e0cdfa64a564a844f3a3e
+CAPACITY_AIR moves=20000 data=1 statements=20001 operands=40000 entities=380021 references=140003 origins=240013 publication=66cf27c9e8562a9a8d46624b2412d512 shared_validator=PASS relational_oracle=PASS
+CAPACITY_AIR moves=20000 data=1 statements=20001 operands=40000 entities=380021 references=140003 origins=240013 publication=66cf27c9e8562a9a8d46624b2412d512 shared_validator=PASS relational_oracle=PASS
+CAPACITY_DETERMINISM=PASS complete Publication equality; no AIR codec override
+LOWER_CAPACITY_TESTS=11
+CAPACITY_STRING bytes=33559606 chars=33554433 PASS
+LOWER_PRODUCTION_TESTS=24
+LOWER_AIR_OUTPUT_TESTS=190
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-adapters ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] cobol-lower ........................................ SUCCESS [  0.002 s]
+[INFO] cobol-lower-core ................................... SUCCESS [  3.066 s]
+[INFO] cobol-lower-adapters ............................... SUCCESS [ 32.049 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  35.198 s
+[INFO] Finished at: 2026-09-11T14:50:14-03:00
+[INFO] ------------------------------------------------------------------------
+SEMANTIC_TEST_COUNT=203971
+PERFORMANCE_TEST_COUNT=96
+FULL_COMPONENT_PASS=performance
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.8.1:tree (default-cli) @ cobol-lower-core ---
+[INFO] Wrote dependency tree to: /home/gustavo/workspace/teste-e2e/cobol-lower/core/target/dependency-tree.json
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.636 s
+[INFO] Finished at: 2026-09-11T14:50:16-03:00
+[INFO] ------------------------------------------------------------------------
+FULL_COMPONENT_PASS=architecture
+PR_INITIAL_CREATION_PENDING: only before the first certified commit
+FULL_COMPONENT_PASS=git
+test_call_suites_cannot_be_skipped (test_air_output_gate.AirOutputGate.test_call_suites_cannot_be_skipped) ... ok
+test_capacity_proof_is_mandatory_in_performance (test_air_output_gate.AirOutputGate.test_capacity_proof_is_mandatory_in_performance) ... ok
+test_core_codec_maven_is_forbidden (test_air_output_gate.AirOutputGate.test_core_codec_maven_is_forbidden) ... ok
+test_core_codec_source_is_forbidden (test_air_output_gate.AirOutputGate.test_core_codec_source_is_forbidden) ... ok
+test_missing_zero_or_duplicate_suite_rejected (test_air_output_gate.AirOutputGate.test_missing_zero_or_duplicate_suite_rejected) ... ok
+test_output_suite_present (test_air_output_gate.AirOutputGate.test_output_suite_present) ... ok
+test_production_limit_order_is_mandatory_in_performance (test_air_output_gate.AirOutputGate.test_production_limit_order_is_mandatory_in_performance) ... ok
+test_production_probe_is_mandatory (test_air_output_gate.AirOutputGate.test_production_probe_is_mandatory) ... ok
+test_w1b_tree_receipt_must_match_pin (test_air_output_gate.AirOutputGate.test_w1b_tree_receipt_must_match_pin) ... ok
+test_copied_codec_ownership (test_air_output_gate.OutputOwnership.test_copied_codec_ownership) ... ok
+test_shaded_and_bundled_codec (test_air_output_gate.OutputOwnership.test_shaded_and_bundled_codec) ... ok
+test_shared_codec_cannot_be_test_only (test_air_output_gate.OutputOwnership.test_shared_codec_cannot_be_test_only) ... ok
+test_class_retention_annotation (test_architecture.Architecture.test_class_retention_annotation) ... ok
+test_compiled_api_and_internal_use (test_architecture.Architecture.test_compiled_api_and_internal_use) ... ok
+test_dependency_tree (test_architecture.Architecture.test_dependency_tree) ... ok
+test_hash4j_dependency_is_pinned (test_architecture.Architecture.test_hash4j_dependency_is_pinned) ... ok
+test_identity_hash_vocabulary (test_architecture.Architecture.test_identity_hash_vocabulary) ... ok
+test_shared_vocabulary (test_architecture.Architecture.test_shared_vocabulary) ... ok
+test_source_counterexamples (test_architecture.Architecture.test_source_counterexamples) ... ok
+test_baseline_not_green (test_certificate.Certification.test_baseline_not_green) ... ok
+test_controlled_complete_record (test_certificate.Certification.test_controlled_complete_record) ... ok
+test_duplicate_review_identity (test_certificate.Certification.test_duplicate_review_identity) ... ok
+test_false_independent_review (test_certificate.Certification.test_false_independent_review) ... ok
+test_freeze_incomplete (test_certificate.Certification.test_freeze_incomplete) ... ok
+test_freeze_normative_reference_removed (test_certificate.Certification.test_freeze_normative_reference_removed) ... ok
+test_gate_absent (test_certificate.Certification.test_gate_absent) ... ok
+test_gate_set_cannot_shrink (test_certificate.Certification.test_gate_set_cannot_shrink) ... ok
+test_missing_log (test_certificate.Certification.test_missing_log) ... ok
+test_regression_absent (test_certificate.Certification.test_regression_absent) ... ok
+test_regression_missing_semantic (test_certificate.Certification.test_regression_missing_semantic) ... ok
+test_required_null_field_missing (test_certificate.Certification.test_required_null_field_missing) ... ok
+test_required_result_not_success (test_certificate.Certification.test_required_result_not_success) ... ok
+test_restoration_digest (test_certificate.Certification.test_restoration_digest) ... ok
+test_second_green_missing (test_certificate.Certification.test_second_green_missing) ... ok
+test_specified_gate_is_not_pass (test_certificate.Certification.test_specified_gate_is_not_pass) ... ok
+test_unrestored (test_certificate.Certification.test_unrestored) ... ok
+test_wrong_review_reference (test_certificate.Certification.test_wrong_review_reference) ... ok
+test_zero_tests (test_certificate.Certification.test_zero_tests) ... ok
+test_active_completed (test_checks.Documents.test_active_completed) ... ok
+test_advance_without_dependency (test_checks.Documents.test_advance_without_dependency) ... ok
+test_baseline (test_checks.Documents.test_baseline) ... ok
+test_broken_anchor (test_checks.Documents.test_broken_anchor) ... ok
+test_broken_link (test_checks.Documents.test_broken_link) ... ok
+test_current_not_authorized (test_checks.Documents.test_current_not_authorized) ... ok
+test_default_mode_multiple (test_checks.Documents.test_default_mode_multiple) ... ok
+test_duplicate_work (test_checks.Documents.test_duplicate_work) ... ok
+test_empty_authorization (test_checks.Documents.test_empty_authorization) ... ok
+test_external_scope (test_checks.Documents.test_external_scope) ... ok
+test_invariant_missing (test_checks.Documents.test_invariant_missing) ... ok
+test_missing_authority (test_checks.Documents.test_missing_authority) ... ok
+test_nonexistent_checkpoint (test_checks.Documents.test_nonexistent_checkpoint) ... ok
+test_required_read_missing (test_checks.Documents.test_required_read_missing) ... ok
+test_scope_without_planned (test_checks.Documents.test_scope_without_planned) ... ok
+test_source_hash (test_checks.Documents.test_source_hash) ... ok
+test_source_revision (test_checks.Documents.test_source_revision) ... ok
+test_correct_sha_success (test_checks.Remote.test_correct_sha_success) ... ok
+test_missing (test_checks.Remote.test_missing) ... ok
+test_no_push (test_checks.Remote.test_no_push) ... ok
+test_non_success_states (test_checks.Remote.test_non_success_states) ... ok
+test_old_sha (test_checks.Remote.test_old_sha) ... ok
+test_wrong_producer (test_checks.Remote.test_wrong_producer) ... ok
+test_altered_merge_evidence_rejected (test_ci_bootstrap.CiBootstrap.test_altered_merge_evidence_rejected) ... ok
+test_ambiguous_merged_pr_rejected (test_ci_bootstrap.CiBootstrap.test_ambiguous_merged_pr_rejected) ... ok
+test_branch_execution_keeps_exact_head (test_ci_bootstrap.CiBootstrap.test_branch_execution_keeps_exact_head) ... ok
+test_explicit_matching_pr_accepted (test_ci_bootstrap.CiBootstrap.test_explicit_matching_pr_accepted) ... ok
+test_explicit_wrong_pr_rejected (test_ci_bootstrap.CiBootstrap.test_explicit_wrong_pr_rejected) ... ok
+test_initial_cp0_selects_historical_head (test_ci_bootstrap.CiBootstrap.test_initial_cp0_selects_historical_head) ... ok
+test_invalid_event_ref_rejected (test_ci_bootstrap.CiBootstrap.test_invalid_event_ref_rejected) ... ok
+test_known_pr_later_checkpoint_accepted (test_ci_bootstrap.CiBootstrap.test_known_pr_later_checkpoint_accepted) ... ok
+test_merged_pr_still_rejects_execution (test_ci_bootstrap.CiBootstrap.test_merged_pr_still_rejects_execution) ... ok
+test_missing_merged_pr_rejected (test_ci_bootstrap.CiBootstrap.test_missing_merged_pr_rejected) ... ok
+test_null_later_checkpoint_rejected (test_ci_bootstrap.CiBootstrap.test_null_later_checkpoint_rejected) ... ok
+test_unmerged_pr_rejected (test_ci_bootstrap.CiBootstrap.test_unmerged_pr_rejected) ... ok
+test_unrelated_head_rejected (test_ci_bootstrap.CiBootstrap.test_unrelated_head_rejected) ... ok
+test_wrong_base_branch_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_base_branch_rejected) ... ok
+test_wrong_base_repository_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_base_repository_rejected) ... ok
+test_wrong_branch_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_branch_rejected) ... ok
+test_wrong_event_sha_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_event_sha_rejected) ... ok
+test_wrong_merge_sha_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_merge_sha_rejected) ... ok
+test_wrong_repository_rejected (test_ci_bootstrap.CiBootstrap.test_wrong_repository_rejected) ... ok
+test_arbitrary_document_change_rejected (test_closeout.Closeout.test_arbitrary_document_change_rejected) ... ok
+test_certificate_change_rejected (test_closeout.Closeout.test_certificate_change_rejected) ... ok
+test_closeout_selects_certified_parent_for_historical_audit (test_closeout.Closeout.test_closeout_selects_certified_parent_for_historical_audit) ... ok
+test_contract_change_rejected (test_closeout.Closeout.test_contract_change_rejected) ... ok
+test_merged_closeout_still_audits_certified_parent (test_closeout.Closeout.test_merged_closeout_still_audits_certified_parent) ... ok
+test_normal_head_keeps_execution_mode (test_closeout.Closeout.test_normal_head_keeps_execution_mode) ... ok
+test_product_change_rejected (test_closeout.Closeout.test_product_change_rejected) ... ok
+test_source_lock_change_rejected (test_closeout.Closeout.test_source_lock_change_rejected) ... ok
+test_unrelated_registry_change_rejected (test_closeout.Closeout.test_unrelated_registry_change_rejected) ... ok
+test_unrelated_work_rejected (test_closeout.Closeout.test_unrelated_work_rejected) ... ok
+test_work_still_active_rejected (test_closeout.Closeout.test_work_still_active_rejected) ... ok
+test_wrong_remote_pr_rejected (test_closeout.Closeout.test_wrong_remote_pr_rejected) ... ok
+test_active_resolution_and_old_baseline (test_closure.Closure.test_active_resolution_and_old_baseline) ... ok
+test_arbitrary_history_does_not_authorize_code (test_closure.Closure.test_arbitrary_history_does_not_authorize_code) ... ok
+test_backlog_not_closed (test_closure.Closure.test_backlog_not_closed) ... ok
+test_closed_baseline (test_closure.Closure.test_closed_baseline) ... ok
+test_closed_resolution (test_closure.Closure.test_closed_resolution) ... ok
+test_dependency_receipt_missing (test_closure.Closure.test_dependency_receipt_missing) ... ok
+test_duplicate_registration (test_closure.Closure.test_duplicate_registration) ... ok
+test_external_manifest (test_closure.Closure.test_external_manifest) ... ok
+test_failed_certificate_is_not_certifiable (test_closure.Closure.test_failed_certificate_is_not_certifiable) ... ok
+test_final_checkpoint_not_authorized (test_closure.Closure.test_final_checkpoint_not_authorized) ... ok
+test_git_mismatch (test_closure.Closure.test_git_mismatch) ... ok
+test_index_missing (test_closure.Closure.test_index_missing) ... ok
+test_missing_authority (test_closure.Closure.test_missing_authority) ... ok
+test_missing_evidence (test_closure.Closure.test_missing_evidence) ... ok
+test_missing_registration_no_fallback (test_closure.Closure.test_missing_registration_no_fallback) ... ok
+test_unregistered_active_copy (test_closure.Closure.test_unregistered_active_copy) ... ok
+test_explicit_v2_unmerged_remediation_positive (test_execution_authority.ExecutionAuthority.test_explicit_v2_unmerged_remediation_positive) ... ok
+test_history_without_explicit_remediation_does_not_authorize (test_execution_authority.ExecutionAuthority.test_history_without_explicit_remediation_does_not_authorize) ... ok
+test_merged_v2_remediation_is_not_execution_authority (test_execution_authority.ExecutionAuthority.test_merged_v2_remediation_is_not_execution_authority) ... ok
+test_absent_zero_and_incomplete_performance_suites (test_full.Full.test_absent_zero_and_incomplete_performance_suites) ... ok
+test_all_required_components_once (test_full.Full.test_all_required_components_once) ... SEMANTIC_TEST_COUNT=2
+SEMANTIC_TEST_COUNT=2
+FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+ok
+test_cannot_shrink_or_expand_required_set (test_full.Full.test_cannot_shrink_or_expand_required_set) ... ok
+test_failed_leaf_propagates (test_full.Full.test_failed_leaf_propagates) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+ok
+test_full_wiring_does_not_substitute_a_leaf (test_full.Full.test_full_wiring_does_not_substitute_a_leaf) ... FULL_COMPONENT_PASS=docs
+FULL_COMPONENT_PASS=semantic
+FULL_COMPONENT_PASS=performance
+FULL_COMPONENT_PASS=architecture
+FULL_COMPONENT_PASS=git
+FULL_COMPONENT_PASS=harness-tests
+FULL_COMPONENT_PASS=challenge
+ok
+test_local_git_keeps_branch_preflight (test_full.Full.test_local_git_keeps_branch_preflight) ... ok
+test_missing_runner (test_full.Full.test_missing_runner) ... ok
+test_published_git_cannot_bypass_certificate (test_full.Full.test_published_git_cannot_bypass_certificate) ... ok
+test_published_git_rejects_uncertified_record (test_full.Full.test_published_git_rejects_uncertified_record) ... ok
+test_published_git_rejects_wrong_head_and_dirty (test_full.Full.test_published_git_rejects_wrong_head_and_dirty) ... ok
+test_published_git_requires_exact_clean_head (test_full.Full.test_published_git_requires_exact_clean_head) ... ok
+test_real_nonzero_performance_suites (test_full.Full.test_real_nonzero_performance_suites) ... ok
+test_commit_missing_evidence (test_git.GitIdentity.test_commit_missing_evidence) ... fatal: path 'docs/quality/WORK-LOWER-001/CP0.json' does not exist in '5def5a329cf5ca9db5a5dc7fafaea81e4f010c86'
+ok
+test_complete_candidate (test_git.GitIdentity.test_complete_candidate) ... ok
+test_evidence_not_the_committed_record (test_git.GitIdentity.test_evidence_not_the_committed_record) ... ok
+test_extra_exclusion (test_git.GitIdentity.test_extra_exclusion) ... ok
+test_frozen_bytes (test_git.GitIdentity.test_frozen_bytes) ... ok
+test_missing_revision (test_git.GitIdentity.test_missing_revision) ... fatal: path 'contract.md' exists on disk, but not in 'ffffffffffffffffffffffffffffffffffffffff'
+ok
+test_missing_trailer (test_git.GitIdentity.test_missing_trailer) ... ok
+test_published_commit (test_git.GitIdentity.test_published_commit) ... ok
+test_select_current_checkpoint_trailer (test_git.GitIdentity.test_select_current_checkpoint_trailer) ... ok
+test_select_rejects_missing_trailer (test_git.GitIdentity.test_select_rejects_missing_trailer) ... ok
+test_select_rejects_unsafe_and_duplicate_trailers (test_git.GitIdentity.test_select_rejects_unsafe_and_duplicate_trailers) ... ok
+test_unstaged (test_git.GitIdentity.test_unstaged) ... ok
+test_untracked (test_git.GitIdentity.test_untracked) ... ok
+test_wrong_digest (test_git.GitIdentity.test_wrong_digest) ... ok
+test_immutable_oracle_candidate_and_committed_bytes (test_human_review.FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes) ... ok
+test_reference_only_may_change (test_human_review.FreezeCandidate.test_reference_only_may_change) ... ok
+test_usage_missing_or_unknown_rejected_v2 (test_human_review.FreezeCandidate.test_usage_missing_or_unknown_rejected_v2) ... ok
+test_execution_merged_rejected (test_human_review.RemoteLifecycle.test_execution_merged_rejected) ... ok
+test_execution_open_positive (test_human_review.RemoteLifecycle.test_execution_open_positive) ... ok
+test_historical_gate_is_read_only_and_requires_certificate (test_human_review.RemoteLifecycle.test_historical_gate_is_read_only_and_requires_certificate) ... ok
+test_historical_merged_positive (test_human_review.RemoteLifecycle.test_historical_merged_positive) ... ok
+test_reconciliation_pending_open_and_stale_open_after_merge (test_human_review.RemoteLifecycle.test_reconciliation_pending_open_and_stale_open_after_merge) ... ok
+test_reconciliation_reviewed_open_and_merged (test_human_review.RemoteLifecycle.test_reconciliation_reviewed_open_and_merged) ... ok
+test_review_of_other_sha_not_current_approval (test_human_review.RemoteLifecycle.test_review_of_other_sha_not_current_approval) ... ok
+test_wrong_sha_success_still_rejected (test_human_review.RemoteLifecycle.test_wrong_sha_success_still_rejected) ... ok
+test_active_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_active_rejects_self_consistent_wrong_receipt) ... ok
+test_dependency_wrong_checkpoint_identity (test_human_review.ReviewDocuments.test_dependency_wrong_checkpoint_identity) ... ok
+test_history_never_authorizes_execution (test_human_review.ReviewDocuments.test_history_never_authorizes_execution) ... ok
+test_history_rejects_self_consistent_wrong_receipt (test_human_review.ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt) ... ok
+test_legacy_schema_is_auditable_but_not_new_execution_authority (test_human_review.ReviewDocuments.test_legacy_schema_is_auditable_but_not_new_execution_authority) ... ok
+test_merged_history_cannot_authorize_even_remediation (test_human_review.ReviewDocuments.test_merged_history_cannot_authorize_even_remediation) ... ok
+test_no_git_or_invalid_candidate_is_not_success (test_human_review.ReviewDocuments.test_no_git_or_invalid_candidate_is_not_success) ... ok
+test_receipt_matching_certified_commit_positive (test_human_review.ReviewDocuments.test_receipt_matching_certified_commit_positive) ... ok
+test_receipt_wrong_pr_rejected (test_human_review.ReviewDocuments.test_receipt_wrong_pr_rejected) ... ok
+test_resolver_positive_and_wrong_identity (test_human_review.ReviewDocuments.test_resolver_positive_and_wrong_identity) ... ok
+test_reviewed_merged_history_valid_read_only (test_human_review.ReviewDocuments.test_reviewed_merged_history_valid_read_only) ... ok
+test_reviewed_open_history_valid (test_human_review.ReviewDocuments.test_reviewed_open_history_valid) ... ok
+test_ci_wrong_event_sha_rejected (test_human_review.WorkflowPolicy.test_ci_wrong_event_sha_rejected) ... ok
+test_main_missing_ambiguous_or_wrong_merge_sha_rejected (test_human_review.WorkflowPolicy.test_main_missing_ambiguous_or_wrong_merge_sha_rejected) ... ok
+test_main_uses_proven_pr_head_as_read_only (test_human_review.WorkflowPolicy.test_main_uses_proven_pr_head_as_read_only) ... ok
+test_new_work_branch_uses_own_evidence_without_first_branch_name (test_human_review.WorkflowPolicy.test_new_work_branch_uses_own_evidence_without_first_branch_name) ... ok
+test_push_policy_covers_new_work_branch_and_main (test_human_review.WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main) ... ok
+test_required_check_identity_remains_explicit (test_human_review.WorkflowPolicy.test_required_check_identity_remains_explicit) ... ok
+test_missing_current_link_resolves_only_unchanged_historical_evidence (test_output_lifecycle.HistoricalLinks.test_missing_current_link_resolves_only_unchanged_historical_evidence) ... ok
+test_absent_review_needs_complete_honest_observation (test_output_lifecycle.OutputLifecycle.test_absent_review_needs_complete_honest_observation) ... ok
+test_actual_merge_without_recorded_review (test_output_lifecycle.OutputLifecycle.test_actual_merge_without_recorded_review) ... ok
+test_remote_observation_is_checked_against_actual_metadata (test_output_lifecycle.OutputLifecycle.test_remote_observation_is_checked_against_actual_metadata) ... ok
+test_complete_controlled_remediation (test_remediation_certificate.RemediationCertificate.test_complete_controlled_remediation) ... ok
+test_normative_contract_and_grant_cannot_disappear (test_remediation_certificate.RemediationCertificate.test_normative_contract_and_grant_cannot_disappear) ... ok
+test_not_cp6_and_no_gate_shrink (test_remediation_certificate.RemediationCertificate.test_not_cp6_and_no_gate_shrink) ... ok
+test_recovery_sha_and_path_cannot_come_from_receipt (test_remediation_certificate.RemediationCertificate.test_recovery_sha_and_path_cannot_come_from_receipt) ... ok
+test_source_lock_cannot_be_reference_only (test_remediation_certificate.RemediationCertificate.test_source_lock_cannot_be_reference_only) ... ok
+
+----------------------------------------------------------------------
+Ran 175 tests in 33.225s
+
+OK
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "OPEN", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": null}
+{"number": 2, "url": "https://github.com/Gustavo2358/cobol-lower/pull/2", "state": "MERGED", "headRefOid": "5a00a152d3c05793dad825c16226867c493ee31b", "headRefName": "feat/first-entry-goback-slice", "baseRefName": "main", "isDraft": false, "autoMergeRequest": null, "reviewDecision": "APPROVED", "mergeCommit": {"oid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+FULL_COMPONENT_PASS=harness-tests
+{"id": "DOC-LINK", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LINK README.md: missing.md"], "baseline_digest": "ab9fad5643c89020ff7630101077411ead5d080fd48fe0ee86c9dfc110748b3e"}
+{"id": "DOC-LINK", "restoration_status": "RESTORED", "restored_digest": "ab9fad5643c89020ff7630101077411ead5d080fd48fe0ee86c9dfc110748b3e", "green_exit_code": 0}
+{"id": "DOC-INVARIANT", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["INVARIANT EVAL-LWR-001: INV-LWR-999"], "baseline_digest": "ff3012b592345a07db18845b79490765b6ad6864eeed7315767120de22422aa2"}
+{"id": "DOC-INVARIANT", "restoration_status": "RESTORED", "restored_digest": "ff3012b592345a07db18845b79490765b6ad6864eeed7315767120de22422aa2", "green_exit_code": 0}
+{"id": "DOC-HISTORY-AUTH", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: final checkpoint authorization"], "baseline_digest": "a073dab203b93715bfc8f2c09a2aaebe0001d30b9bbab9ff0641ea89345741ed"}
+{"id": "DOC-HISTORY-AUTH", "restoration_status": "RESTORED", "restored_digest": "a073dab203b93715bfc8f2c09a2aaebe0001d30b9bbab9ff0641ea89345741ed", "green_exit_code": 0}
+{"id": "DOC-HISTORY-GIT", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-001: historical remote observation incoherent"], "baseline_digest": "a073dab203b93715bfc8f2c09a2aaebe0001d30b9bbab9ff0641ea89345741ed"}
+{"id": "DOC-HISTORY-GIT", "restoration_status": "RESTORED", "restored_digest": "a073dab203b93715bfc8f2c09a2aaebe0001d30b9bbab9ff0641ea89345741ed", "green_exit_code": 0}
+{"id": "DOC-HISTORY-TRUST", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LINK docs/quality/WORK-LOWER-002/CP0-review.md: ../../work/active/WORK-LOWER-002/spec.md", "HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-999: 'review_status'", "UNAUTHORIZED_IMPLEMENTATION docs-only"], "baseline_digest": "88be6009ead85638da02fe62bc6db8b2502e57eb63b6f553247ff2203555f1f8"}
+{"id": "DOC-HISTORY-TRUST", "restoration_status": "RESTORED", "restored_digest": "88be6009ead85638da02fe62bc6db8b2502e57eb63b6f553247ff2203555f1f8", "green_exit_code": 0}
+{"id": "DOC-ACTIVE-COMPLETED", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["LIFECYCLE active WORK-LOWER-001: completed", "REGISTRY WORK-LOWER-001"], "baseline_digest": "2daa5c634aede07bea6adeda9a787486bfa9309804f5cf2c10318b7e0aa32017"}
+{"id": "DOC-ACTIVE-COMPLETED", "restoration_status": "RESTORED", "restored_digest": "2daa5c634aede07bea6adeda9a787486bfa9309804f5cf2c10318b7e0aa32017", "green_exit_code": 0}
+{"id": "DOC-MUST-READ", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["MUST_READ WORK-LOWER-001: docs/missing.md"], "baseline_digest": "2daa5c634aede07bea6adeda9a787486bfa9309804f5cf2c10318b7e0aa32017"}
+{"id": "DOC-MUST-READ", "restoration_status": "RESTORED", "restored_digest": "2daa5c634aede07bea6adeda9a787486bfa9309804f5cf2c10318b7e0aa32017", "green_exit_code": 0}
+{"id": "ARCH-PATH-API-BYTECODE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation", "ARCH_API forbidden signature"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-API-BYTECODE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-INTERNAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_BYTECODE forbidden type/member/annotation"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-INTERNAL", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+{"id": "ARCH-PATH-SOURCE", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": ["ARCH_SOURCE forbidden dependency"], "baseline_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1"}
+{"id": "ARCH-PATH-SOURCE", "restoration_status": "RESTORED", "restored_digest": "1dd4a771b9cbfd3a52efe05969e1ca018ba7601f916f0d03163285369d1093b1", "green_exit_code": 0}
+PASS CHALLENGE: 10 restored falsifications and second GREEN
+{"id": "RETURN-HALT", "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)", "expected_oracle": "typed GOBACK must be Return, never Halt", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt", "baseline_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2", "restored_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "9fffab9f63abbf498f259a18629c06c3f44df1b4179320bd041651503228807c", "red_output_sha256": "94328ab7129ecf3f0b293bcbe0eaa8aac1144b06a8b4da054c9545d48f7bd8a8", "restored_output_sha256": "4e8ed05ec54b95e81385d09c1edc11c19fcce5ce5ebd9468b0efb1c205eb72bc", "baseline_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"], "restored_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"]}
+{"id": "OPEN-COMPLETE", "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE", "expected_oracle": "alternative entry inventory stays PARTIAL", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL", "baseline_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2", "restored_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "2e0f552e390acfb414e1a7ae104cd365b2da5cb60ba03c19fd8c1cb2c8bde131", "red_output_sha256": "ccfd652a820f53e6c7f88b14dc2ed3b5dc1eb530906a7b70520a368b2e409e1e", "restored_output_sha256": "8597e38dda2fbb47b09314fc63c770ab3be78ed8cddd70b804aed49c65c1c416", "baseline_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"], "restored_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"]}
+{"id": "INDEX-SCAN", "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }", "expected_oracle": "reference ledger N+1, no repeated scan", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan", "baseline_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82", "restored_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82", "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py performance (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "d57f8c8e4a4fe013d2efe84d43f331fddc708a1349148645185a4f6a6434e686", "red_output_sha256": "12320a6cbc5939bd012f310389032996ce690b387737c4313de4f91db581ce7a", "restored_output_sha256": "9baee30bb6b47da31bdbb303c655d94180cd042685ecd95870cfd002183c6b95", "baseline_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"], "restored_counts": ["SEMANTIC_TEST_COUNT=203971", "PERFORMANCE_TEST_COUNT=96"]}
+PASS SEMANTIC CHALLENGE: 3 restored falsifications and second GREEN
+{"id": "R1-A-RECEIPT", "mutation": "remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], expected, receipt) -> remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], receipt[\"pushed_sha\"], receipt)", "expected_oracle": "ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "AssertionError: ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt", "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "digest_scope": "scripts/harness/checks.py", "restoration_status": "RESTORED", "green_exit_code": 0, "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt -v (isolated copy)", "baseline_output_sha256": "3bde8c375723e0e7c908f2626428af60df863c64e59e0814b5c8f32450286405", "red_output_sha256": "b8a349cb91a5d4c0617138e40e11f3476b8fa35f60b13433939629e7274c0826", "restored_output_sha256": "57afdea9920efff0b7a98237d7646351f0f160012d788161e3c65347fe0ae2db"}
+{"id": "R1-B-ORACLE", "mutation": "if usage == \"candidate_immutable\": -> if False and usage == \"candidate_immutable\":", "expected_oracle": "FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "AssertionError: FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes", "baseline_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1", "restored_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1", "digest_scope": "scripts/harness/git_checks.py", "restoration_status": "RESTORED", "green_exit_code": 0, "green_command": "python3 -B scripts/harness/tests/test_human_review.py FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes -v (isolated copy)", "baseline_output_sha256": "08b24803b9f552e22ce0f9c7a17c91c3b7af4da7e949a27503ec129e4bf8a05b", "red_output_sha256": "3314b9171bf3326cd67576562ca631be6627b41376d5ffb96decfabd59c9c40f", "restored_output_sha256": "db53ea1de49bc97a31bda6fc3f6fbef70af3620850b7245c6bf20eee29cef51a"}
+{"id": "R1-C-AUTHORITY", "mutation": "if for_execution: -> if False and for_execution:", "expected_oracle": "ReviewDocuments.test_history_never_authorizes_execution", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "AssertionError: ReviewDocuments.test_history_never_authorizes_execution", "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "digest_scope": "scripts/harness/checks.py", "restoration_status": "RESTORED", "green_exit_code": 0, "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_never_authorizes_execution -v (isolated copy)", "baseline_output_sha256": "f9daf6350381c79778013b59ede01ea86c37dbcfdcbbdf366b5d1cad31cd85ea", "red_output_sha256": "e6b10e9a2bc77a52446d6881b45b31cd5c20df487c472dcba690acc215258091", "restored_output_sha256": "d7f128f77ddc8b55b0696be665287e64258ae3ff0e910e3ddc274d08165b8584"}
+{"id": "R1-D-WORKFLOW", "mutation": "branches: ['**'] -> branches: ['feat/first-entry-goback-slice']", "expected_oracle": "WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "AssertionError: WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main", "baseline_digest": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0", "restored_digest": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0", "digest_scope": ".github/workflows/checkpoint.yml", "restoration_status": "RESTORED", "green_exit_code": 0, "green_command": "python3 -B scripts/harness/tests/test_human_review.py WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main -v (isolated copy)", "baseline_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca", "red_output_sha256": "e027accbada5df91f5988a41f712f0833cccc5213b32d833f4f02bf37a421a59", "restored_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca"}
+{"id": "R1-E-SHA", "mutation": "and c.get(\"head_sha\") == sha -> and True", "expected_oracle": "RemoteLifecycle.test_wrong_sha_success_still_rejected", "baseline_exit_code": 0, "observed_exit_code": 1, "failure_reason": "AssertionError: RemoteLifecycle.test_wrong_sha_success_still_rejected", "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f", "digest_scope": "scripts/harness/checks.py", "restoration_status": "RESTORED", "green_exit_code": 0, "green_command": "python3 -B scripts/harness/tests/test_human_review.py RemoteLifecycle.test_wrong_sha_success_still_rejected -v (isolated copy)", "baseline_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812", "red_output_sha256": "1f1c8e30cbc080b805f6d28015f2b10b557c94f1cb39cbcf1aecc239bece8241", "restored_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812"}
+PASS REVIEW CHALLENGE: 5 restored falsifications and second GREEN
+{"id": "AIR-JACKSON", "mutation": "codec.encode(publication) -> new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)", "expected_oracle": "ARCH_AIR_OUTPUT JSON library", "observed_exit_code": 1, "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-1vizuyjd/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java", "baseline_exit_code": 0, "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d", "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py semantic; focal boundary (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "d3eb55b713ce5674b81d6328514d092d943c108445d248f276e5f1824bf9a5c3", "red_output_sha256": "c52335729b96c284a28cd5206b3d9d872f728d946a93aaaa4842767101f6f433", "restored_output_sha256": "d5770de8e2203e5f506d9ed02b43a4cb32d9086a3add2d27c6e944a9da34488b"}
+{"id": "AIR-NEWLINE", "mutation": "files.write(temporary, bytes); -> files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + \"\\n\").getBytes(java.nio.charset.StandardCharsets.UTF_8));", "expected_oracle": "exact shared codec bytes", "observed_exit_code": 1, "failure_reason": "java.lang.AssertionError: AIR_OUTPUT exact shared codec bytes", "baseline_exit_code": 0, "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d", "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d", "restoration_status": "RESTORED", "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)", "green_exit_code": 0, "baseline_output_sha256": "a393b9c20ec6671e51f3c4d20c5b8103aa0e3e8dd9c9c900ca9c134ce8a6185d", "red_output_sha256": "9f85b56f09a635021f74a4602ce46d58dff9c113550ac80fe59605f74cf4e716", "restored_output_sha256": "e04c4abed3d73b9b73d552930a412d96a9c6fadc72c386e8114f18311816683a"}
+Traceback (most recent call last):
+  File "/home/gustavo/workspace/teste-e2e/cobol-lower/scripts/harness/output_challenge.py", line 77, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/home/gustavo/workspace/teste-e2e/cobol-lower/scripts/harness/output_challenge.py", line 70, in main
+    raise RuntimeError('invalid challenge '+ident+'\n'+out)
+RuntimeError: invalid challenge NON-SUCCESS-WRITES
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] cobol-lower                                                        [pom]
+[INFO] cobol-lower-core                                                   [jar]
+[INFO] cobol-lower-adapters                                               [jar]
+[INFO] 
+[INFO] -----------------< io.github.gustavo2358:cobol-lower >------------------
+[INFO] Building cobol-lower 0.1.0-SNAPSHOT                                [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT                           [2/3]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /tmp/lower-output-challenge-1vizuyjd/core/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /tmp/lower-output-challenge-1vizuyjd/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (boundary-contract-suite) @ cobol-lower-core ---
+ok 1 - manual AIR accepted by real validator
+ok 2 - AIR 2.0.0
+ok 3 - one unit
+ok 4 - available body
+ok 5 - one entry and sequence
+ok 6 - entry label closes
+ok 7 - closed zero parameters
+ok 8 - closed zero results
+ok 9 - no common instructions
+ok 10 - expected Return, never Halt
+ok 11 - empty Return
+ok 12 - real validator rejects dangling label
+ok 13 - boundary must preserve INVALID_IR for dangling label
+ok 14 - boundary preserves complete result and issues
+ok 15 - profile fixture contains a real semantic obligation
+ok 16 - semantic obligations remain visible
+ok 17 - Halt can be valid AIR but is not the frozen Return shape
+ok 18 - publication immutable
+ok 19 - independent construction deterministic
+ok 20 - nonzero executed assertions
+LOWER_CALL_TESTS=623
+LOCAL_ID_CARDINALITY=100000 elapsed_ms=395
+LOCAL_ID_LONG_UTF16=1000000 streamed_bytes=4000169 max_buffer=256 elapsed_ms=37
+LOCAL_ID_PUBLIC_PORT_HANDLE=statement:2147483647 unit_key=100000 filename=100000 status=SUCCESS
+LOCAL_ID_TESTS=200362
+COMPACT_ID_TESTS=1678
+lower 1 - admitted input must produce SUCCESS: SUCCESS
+lower 2 - entire source evidence retained
+lower 3 - AIR 2 one unit
+lower 4 - available singular shape
+lower 5 - typed GOBACK must be Return, never Halt
+lower 6 - no return values
+lower 7 - closed known zero parameters
+lower 8 - closed known zero results
+lower 9 - total typed correlation
+lower 10 - entry identity correlation
+lower 11 - start correlation uses published reference
+lower 12 - start label join closes
+lower 13 - Return ID and provenance correlation
+lower 14 - alternative entry inventory stays PARTIAL
+lower 15 - alternate gap visible in AIR coverage
+lower 16 - entry and statement coverage retained
+lower 17 - local control exact
+lower 18 - no global strengthening STORAGE
+lower 19 - dimension reason present STORAGE
+lower 20 - no global strengthening EFFECTS
+lower 21 - dimension reason present EFFECTS
+lower 22 - no global strengthening VALUES
+lower 23 - dimension reason present VALUES
+lower 24 - no global strengthening DEPENDENCIES
+lower 25 - dimension reason present DEPENDENCIES
+lower 26 - zero DATA maps no storage declarations
+lower 27 - no unproved AIR profile claim
+lower 28 - complete real checker report preserved
+lower 29 - real checker GREEN
+lower 30 - independent construction deterministic
+lower 31 - operational metadata excluded from identity
+lower 32 - admitted input must produce SUCCESS: SUCCESS
+lower 33 - entire source evidence retained
+lower 34 - AIR 2 one unit
+lower 35 - available singular shape
+lower 36 - typed GOBACK must be Return, never Halt
+lower 37 - no return values
+lower 38 - closed known zero parameters
+lower 39 - closed known zero results
+lower 40 - total typed correlation
+lower 41 - entry identity correlation
+lower 42 - start correlation uses published reference
+lower 43 - start label join closes
+lower 44 - Return ID and provenance correlation
+lower 45 - alternative entry inventory stays PARTIAL
+lower 46 - alternate gap visible in AIR coverage
+lower 47 - entry and statement coverage retained
+lower 48 - local control exact
+lower 49 - no global strengthening STORAGE
+lower 50 - dimension reason present STORAGE
+lower 51 - no global strengthening EFFECTS
+lower 52 - dimension reason present EFFECTS
+lower 53 - no global strengthening VALUES
+lower 54 - dimension reason present VALUES
+lower 55 - no global strengthening DEPENDENCIES
+lower 56 - dimension reason present DEPENDENCIES
+lower 57 - zero DATA maps no storage declarations
+lower 58 - no unproved AIR profile claim
+lower 59 - complete real checker report preserved
+lower 60 - real checker GREEN
+lower 61 - revision namespace distinguishes unit and handles
+lower 62 - admitted input must produce SUCCESS: SUCCESS
+lower 63 - entire source evidence retained
+lower 64 - AIR 2 one unit
+lower 65 - available singular shape
+lower 66 - typed GOBACK must be Return, never Halt
+lower 67 - no return values
+lower 68 - closed known zero parameters
+lower 69 - closed known zero results
+lower 70 - total typed correlation
+lower 71 - entry identity correlation
+lower 72 - start correlation uses published reference
+lower 73 - start label join closes
+lower 74 - Return ID and provenance correlation
+lower 75 - alternative entry inventory stays PARTIAL
+lower 76 - alternate gap visible in AIR coverage
+lower 77 - entry and statement coverage retained
+lower 78 - local control exact
+lower 79 - no global strengthening STORAGE
+lower 80 - dimension reason present STORAGE
+lower 81 - no global strengthening EFFECTS
+lower 82 - dimension reason present EFFECTS
+lower 83 - no global strengthening VALUES
+lower 84 - dimension reason present VALUES
+lower 85 - no global strengthening DEPENDENCIES
+lower 86 - dimension reason present DEPENDENCIES
+lower 87 - zero DATA maps no storage declarations
+lower 88 - no unproved AIR profile claim
+lower 89 - complete real checker report preserved
+lower 90 - real checker GREEN
+lower 91 - revision namespace distinguishes unit and handles
+lower 92 - admitted input must produce SUCCESS: SUCCESS
+lower 93 - entire source evidence retained
+lower 94 - AIR 2 one unit
+lower 95 - available singular shape
+lower 96 - typed GOBACK must be Return, never Halt
+lower 97 - no return values
+lower 98 - closed known zero parameters
+lower 99 - closed known zero results
+lower 100 - total typed correlation
+lower 101 - entry identity correlation
+lower 102 - start correlation uses published reference
+lower 103 - start label join closes
+lower 104 - Return ID and provenance correlation
+lower 105 - alternative entry inventory stays PARTIAL
+lower 106 - alternate gap visible in AIR coverage
+lower 107 - entry and statement coverage retained
+lower 108 - local control exact
+lower 109 - no global strengthening STORAGE
+lower 110 - dimension reason present STORAGE
+lower 111 - no global strengthening EFFECTS
+lower 112 - dimension reason present EFFECTS
+lower 113 - no global strengthening VALUES
+lower 114 - dimension reason present VALUES
+lower 115 - no global strengthening DEPENDENCIES
+lower 116 - dimension reason present DEPENDENCIES
+lower 117 - zero DATA maps no storage declarations
+lower 118 - no unproved AIR profile claim
+lower 119 - complete real checker report preserved
+lower 120 - real checker GREEN
+lower 121 - revision namespace distinguishes unit and handles
+lower 122 - exact published GOBACK original coordinates
+lower 123 - explicit SP coordinate conventions
+lower 124 - golden exact without include
+lower 125 - auxiliary sequence origin derived
+lower 126 - entry and GOBACK distinct origins
+lower 127 - identity limit never publishes prefix
+lower 128 - exact identity bound succeeds
+lower 129 - invalid AIR never success
+lower 130 - invalid issues preserved
+lower 131 - semantic obligation preserved not proved
+lower 132 - real validation limit never success
+lower 133 - real operational resource issue preserved
+lower 134 - in-memory input always validated
+lower 135 - identity includes rule and semantic versions (independent XXH3-128 vector)
+lower 136 - admitted input must produce SUCCESS: SUCCESS
+lower 137 - entire source evidence retained
+lower 138 - AIR 2 one unit
+lower 139 - available singular shape
+lower 140 - typed GOBACK must be Return, never Halt
+lower 141 - no return values
+lower 142 - closed known zero parameters
+lower 143 - closed known zero results
+lower 144 - total typed correlation
+lower 145 - entry identity correlation
+lower 146 - start correlation uses published reference
+lower 147 - start label join closes
+lower 148 - Return ID and provenance correlation
+lower 149 - alternative entry inventory stays PARTIAL
+lower 150 - alternate gap visible in AIR coverage
+lower 151 - entry and statement coverage retained
+lower 152 - local control exact
+lower 153 - no global strengthening STORAGE
+lower 154 - dimension reason present STORAGE
+lower 155 - no global strengthening EFFECTS
+lower 156 - dimension reason present EFFECTS
+lower 157 - no global strengthening VALUES
+lower 158 - dimension reason present VALUES
+lower 159 - no global strengthening DEPENDENCIES
+lower 160 - dimension reason present DEPENDENCIES
+lower 161 - zero DATA maps no storage declarations
+lower 162 - no unproved AIR profile claim
+lower 163 - complete real checker report preserved
+lower 164 - real checker GREEN
+lower 165 - same unit new policy revision changes PublicationId
+lower 166 - admitted input must produce SUCCESS: SUCCESS
+lower 167 - entire source evidence retained
+lower 168 - AIR 2 one unit
+lower 169 - available singular shape
+lower 170 - typed GOBACK must be Return, never Halt
+lower 171 - no return values
+lower 172 - closed known zero parameters
+lower 173 - closed known zero results
+lower 174 - total typed correlation
+lower 175 - entry identity correlation
+lower 176 - start correlation uses published reference
+lower 177 - start label join closes
+lower 178 - Return ID and provenance correlation
+lower 179 - alternative entry inventory stays PARTIAL
+lower 180 - alternate gap visible in AIR coverage
+lower 181 - entry and statement coverage retained
+lower 182 - local control exact
+lower 183 - no global strengthening STORAGE
+lower 184 - dimension reason present STORAGE
+lower 185 - no global strengthening EFFECTS
+lower 186 - dimension reason present EFFECTS
+lower 187 - no global strengthening VALUES
+lower 188 - dimension reason present VALUES
+lower 189 - no global strengthening DEPENDENCIES
+lower 190 - dimension reason present DEPENDENCIES
+lower 191 - zero DATA maps no storage declarations
+lower 192 - no unproved AIR profile claim
+lower 193 - complete real checker report preserved
+lower 194 - real checker GREEN
+lower 195 - same unit new structural fact changes PublicationId
+lower 196 - admitted input must produce SUCCESS: SUCCESS
+lower 197 - entire source evidence retained
+lower 198 - AIR 2 one unit
+lower 199 - available singular shape
+lower 200 - typed GOBACK must be Return, never Halt
+lower 201 - no return values
+lower 202 - closed known zero parameters
+lower 203 - closed known zero results
+lower 204 - total typed correlation
+lower 205 - entry identity correlation
+lower 206 - start correlation uses published reference
+lower 207 - start label join closes
+lower 208 - Return ID and provenance correlation
+lower 209 - alternative entry inventory stays PARTIAL
+lower 210 - alternate gap visible in AIR coverage
+lower 211 - entry and statement coverage retained
+lower 212 - local control exact
+lower 213 - no global strengthening STORAGE
+lower 214 - dimension reason present STORAGE
+lower 215 - no global strengthening EFFECTS
+lower 216 - dimension reason present EFFECTS
+lower 217 - no global strengthening VALUES
+lower 218 - dimension reason present VALUES
+lower 219 - no global strengthening DEPENDENCIES
+lower 220 - dimension reason present DEPENDENCIES
+lower 221 - zero DATA maps no storage declarations
+lower 222 - no unproved AIR profile claim
+lower 223 - complete real checker report preserved
+lower 224 - real checker GREEN
+lower 225 - readiness scope is revision evidence not dropped
+lower 226 - admitted input must produce SUCCESS: SUCCESS
+lower 227 - entire source evidence retained
+lower 228 - AIR 2 one unit
+lower 229 - available singular shape
+lower 230 - typed GOBACK must be Return, never Halt
+lower 231 - no return values
+lower 232 - closed known zero parameters
+lower 233 - closed known zero results
+lower 234 - total typed correlation
+lower 235 - entry identity correlation
+lower 236 - start correlation uses published reference
+lower 237 - start label join closes
+lower 238 - Return ID and provenance correlation
+lower 239 - alternative entry inventory stays PARTIAL
+lower 240 - alternate gap visible in AIR coverage
+lower 241 - entry and statement coverage retained
+lower 242 - local control exact
+lower 243 - no global strengthening STORAGE
+lower 244 - dimension reason present STORAGE
+lower 245 - no global strengthening EFFECTS
+lower 246 - dimension reason present EFFECTS
+lower 247 - no global strengthening VALUES
+lower 248 - dimension reason present VALUES
+lower 249 - no global strengthening DEPENDENCIES
+lower 250 - dimension reason present DEPENDENCIES
+lower 251 - zero DATA maps no storage declarations
+lower 252 - no unproved AIR profile claim
+lower 253 - complete real checker report preserved
+lower 254 - real checker GREEN
+lower 255 - source provenance participates in revision
+lower 256 - original and expanded roles both preserved
+lower 257 - unrepresentable coordinates do not fabricate span or exactness
+lower 258 - include chain order retained without invented site columns
+lower 259 - logical source artifact not transport or fabricated digest
+lower 260 - provenance limitations explicitly reported
+lower 261 - raw include lines and coordinates retained
+lower 262 - admitted input must produce SUCCESS: SUCCESS
+lower 263 - entire source evidence retained
+lower 264 - AIR 2 one unit
+lower 265 - available singular shape
+lower 266 - typed GOBACK must be Return, never Halt
+lower 267 - no return values
+lower 268 - closed known zero parameters
+lower 269 - closed known zero results
+lower 270 - total typed correlation
+lower 271 - entry identity correlation
+lower 272 - start correlation uses published reference
+lower 273 - start label join closes
+lower 274 - Return ID and provenance correlation
+lower 275 - alternative entry inventory stays PARTIAL
+lower 276 - alternate gap visible in AIR coverage
+lower 277 - entry and statement coverage retained
+lower 278 - local control exact
+lower 279 - no global strengthening STORAGE
+lower 280 - dimension reason present STORAGE
+lower 281 - no global strengthening EFFECTS
+lower 282 - dimension reason present EFFECTS
+lower 283 - no global strengthening VALUES
+lower 284 - dimension reason present VALUES
+lower 285 - no global strengthening DEPENDENCIES
+lower 286 - dimension reason present DEPENDENCIES
+lower 287 - zero DATA maps no storage declarations
+lower 288 - no unproved AIR profile claim
+lower 289 - complete real checker report preserved
+lower 290 - real checker GREEN
+lower 291 - source provenance participates in revision
+lower 292 - original and expanded roles both preserved
+lower 293 - unrepresentable coordinates do not fabricate span or exactness
+lower 294 - include chain order retained without invented site columns
+lower 295 - logical source artifact not transport or fabricated digest
+lower 296 - provenance limitations explicitly reported
+lower 297 - raw include lines and coordinates retained
+lower 298 - length framed identity resists delimiter collision
+lower 299 - dangling start rejected before AIR
+lower 300 - same semantic admission and diagnostics in lower port
+lower 301 - larger input never lowered as selected prefix
+lower 302 - correlation immutable
+LOWER_TESTS=203444
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ cobol-lower-core ---
+[INFO] 
+[INFO] --- jar:3.4.2:test-jar (independent-test-fixtures) @ cobol-lower-core ---
+[INFO] 
+[INFO] -------------< io.github.gustavo2358:cobol-lower-adapters >-------------
+[INFO] Building cobol-lower-adapters 0.1.0-SNAPSHOT                       [3/3]
+[INFO]   from adapters/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-adapters ---
+[INFO] skip non existing resourceDirectory /tmp/lower-output-challenge-1vizuyjd/adapters/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-adapters ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 11 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-adapters ---
+[INFO] Copying 56 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-adapters ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 13 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ cobol-lower-adapters ---
+[INFO] 
+[INFO] --- exec:3.5.0:java (decoder-contract-suite) @ cobol-lower-adapters ---
+SCALAR_PHYSICAL lines=60012 sp_bytes=5339 air_bytes=32237
+SCALAR_AIR bytes=32138 sha256=dd3bb4819282e609a97937ea01b7e202786e2c2d9ba9c8a1821a8b982eeb8788 publication=77ae4cc3ed75332c64011efce81c431b
+[WARNING] 
+java.util.NoSuchElementException: No value present
+    at java.util.Optional.orElseThrow (Optional.java:377)
+    at io.github.gustavo2358.lower.adapters.cli.CobolLower.run (CobolLower.java:43)
+    at io.github.gustavo2358.lower.adapters.cli.CobolLower.run (CobolLower.java:27)
+    at io.github.gustavo2358.lower.adapters.testing.CallIntegrationSuite.cli (CallIntegrationSuite.java:139)
+    at io.github.gustavo2358.lower.adapters.testing.CallIntegrationSuite.run (CallIntegrationSuite.java:151)
+    at io.github.gustavo2358.lower.adapters.testing.DecoderSuite.main (DecoderSuite.java:168)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doMain (ExecJavaMojo.java:375)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:364)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:286)
+    at java.lang.Thread.run (Thread.java:1583)
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for cobol-lower 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] cobol-lower ........................................ SUCCESS [  0.001 s]
+[INFO] cobol-lower-core ................................... SUCCESS [  1.359 s]
+[INFO] cobol-lower-adapters ............................... FAILURE [  1.847 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.281 s
+[INFO] Finished at: 2026-09-11T14:56:36-03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.0:java (decoder-contract-suite) on project cobol-lower-adapters: An exception occurred while executing the Java class. No value present -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :cobol-lower-adapters
+FAIL command exit 1: ['mvn', '-B', '-ntp', '-Dmaven.repo.local=/tmp/cp6-w1c/m2', 'verify']
+
+FAIL command exit 1: ['/usr/bin/python3', 'scripts/harness/output_challenge.py']

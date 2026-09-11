@@ -22,6 +22,8 @@ public final class ScalarMoveAdmission implements AdmitInput {
             var operands = new HashSet<OperandId>();
             for (var statement : input.statements()) if (statement instanceof MoveFact m) {
                 c.touch(); var h = m.header();
+                c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(), Rule.PROFILE_FACT,
+                    h.id().handle(), h.provenance(), "FITTED_TEXT iff textAdjustment present");
                 for (var id : List.of(m.source().id(), m.target().id())) {
                     c.require(id.statement().equals(h.id()) && validOperand(id) && operands.add(id), Rule.IDENTITY,
                             id.handle(), h.provenance(), "Unique operand occurrence owned by its statement");

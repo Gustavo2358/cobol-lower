@@ -6,29 +6,31 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "8722945cc4cd2052c6091533f6ee6989278aa2f8",
+      "commit": "53d774026a1e4bcd969c7783a1d277aaa87b5f2f",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
-      "contract_version": "1.2.0",
+      "contract_version": "1.3.0",
       "paths": [
         "docs/domain/cobol-semantic-product.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
         "src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
         "docs/domain/scalar-text-move.md",
         "docs/evals/checkpoint-4a.md",
-        "src/test/resources/cobol/semantic/AIR-MOVE.cbl"
+        "src/test/resources/cobol/semantic/AIR-MOVE.cbl",
+        "docs/domain/call-semantic-product.md"
       ],
-      "evidence_level": "post_cp5_compatible_main_snapshot_verified_2026_09_10",
+      "evidence_level": "CP6 real merged authority verified remotely before W1C",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/domain/cobol-semantic-product.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/domain/scalar-text-move.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/docs/evals/checkpoint-4a.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/8722945cc4cd2052c6091533f6ee6989278aa2f8/src/test/resources/cobol/semantic/AIR-MOVE.cbl"
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/docs/domain/cobol-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/docs/domain/scalar-text-move.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/docs/evals/checkpoint-4a.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/src/test/resources/cobol/semantic/AIR-MOVE.cbl",
+        "https://github.com/Gustavo2358/proleap-poc/blob/53d774026a1e4bcd969c7783a1d277aaa87b5f2f/docs/domain/call-semantic-product.md"
       ],
-      "observed_on": "2026-09-10"
+      "observed_on": "2026-09-11"
     },
     {
       "id": "SRC-HARNESS",
@@ -94,7 +96,7 @@
     {
       "id": "SRC-AIR-JAVA",
       "repository": "Gustavo2358/air-java",
-      "commit": "3bafe3978f0f392e842038ad5628e85dfd91d00d",
+      "commit": "2a37f5e980ba25fdc79614a66030a84d8bf5b8c9",
       "role": "shared_model_validator_and_codec_not_normative_spec",
       "maven": {
         "group_id": "io.github.gustavo2358",
@@ -119,31 +121,33 @@
         "docs/engineering/air-json.md",
         "docs/quality/air-json-scalar-assign.md",
         "air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
-        "air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java"
+        "air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java",
+        "docs/quality/cp6-w1b-invoke.md"
       ],
-      "evidence_level": "post_cp5_compatible_main_snapshot_verified_2026_09_10",
+      "evidence_level": "CP6 real merged authority verified remotely before W1C",
       "runtime_conformance_executed_for_this_package": false,
       "repository_url": "https://github.com/Gustavo2358/air-java",
       "file_urls": [
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/README.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/ARCHITECTURE.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/sources.lock.json",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/reconciliation-air-2.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/implementation-status.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/examples/MinimalPublication.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-json/pom.xml",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/engineering/air-json.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/docs/quality/air-json-scalar-assign.md",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
-        "https://github.com/Gustavo2358/air-java/blob/3bafe3978f0f392e842038ad5628e85dfd91d00d/air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java"
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/README.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/ARCHITECTURE.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/sources.lock.json",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/reconciliation-air-2.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/implementation-status.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/src/main/java/io/github/gustavo2358/air/model/Publication.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/src/main/java/io/github/gustavo2358/air/model/Operations.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/src/main/java/io/github/gustavo2358/air/validation/AirValidator.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/examples/MinimalPublication.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-json/pom.xml",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-json/src/main/java/io/github/gustavo2358/air/json/AirJson.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/engineering/air-json.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/quality/air-json-scalar-assign.md",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/src/main/java/io/github/gustavo2358/air/model/Memory.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/air-model/src/main/java/io/github/gustavo2358/air/model/Operand.java",
+        "https://github.com/Gustavo2358/air-java/blob/2a37f5e980ba25fdc79614a66030a84d8bf5b8c9/docs/quality/cp6-w1b-invoke.md"
       ],
-      "observed_on": "2026-09-10",
+      "observed_on": "2026-09-11",
       "modules": {
         "parent": {
           "path": "pom.xml",
@@ -164,7 +168,8 @@
             "version": "0.1.0-SNAPSHOT"
           }
         }
-      }
+      },
+      "tree": "8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8"
     },
     {
       "id": "SRC-CFG",
@@ -232,5 +237,5 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "post-CP5 baseline synchronization; production unchanged; execution evidence in WORK-LOWER-009"
+  "implementation_state": "CP6 W1C current production contract SP 1.3.0; W1A and W1B real merges pinned"
 }

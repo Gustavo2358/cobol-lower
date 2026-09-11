@@ -17,3 +17,7 @@ O AIR JSON binding é uma candidata fixável por commit. Primeiro slice em memó
 ## Mudança após review
 
 Evidência vale para SHA específico. Alterar mapping, schema, profile, oracle, gate ou source lock após approve requer review do delta. Históricos podem explicar decisões anteriores; fontes atuais não devem ser alteradas apenas para fazer testes antigos passarem.
+
+## INTERNAL-CONTRACT-DEV-001
+
+CP6 W1C consumes the single current production contract SP 1.3.0 and the real W1B merge. Existing 1.1/1.2 decoders remain simple closed wire readers; no compatibility layer, negotiation, downgrade or parallel semantic lowerer by version. This is coordinated internal development authorized on 2026-09-11.

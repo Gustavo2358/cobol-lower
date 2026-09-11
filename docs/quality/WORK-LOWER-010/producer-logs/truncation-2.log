@@ -1,0 +1,9 @@
+2026-09-11T14:45:02.521-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=bac7e2e6-c69f-4474-91ae-0db619e10376 source=truncation.cbl programUnit=none event=analysis_started phase=ANALYSIS output=/tmp/cp6-w1c/real-e2e/truncation-2
+2026-09-11T14:45:03.215-03:00 level=WARN logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=bac7e2e6-c69f-4474-91ae-0db619e10376 source=truncation.cbl programUnit=CALLER event=analysis_degraded phase=REFERENCE_RESOLUTION gaps=1 blockingReasons=[DYNAMIC_CALL_TARGET_VALUE_UNKNOWN] reason=RESOLUTION_GAPS fallback=RESULT_PUBLISHED_WITH_GAPS impact=DEPENDENCY_ANALYSIS_NOT_READY statusCounts={RESOLVED=2, AMBIGUOUS=0, EXTERNAL_OBSERVED=0, UNSUPPORTED=0, UNRESOLVED=0}
+Generated /tmp/cp6-w1c/real-e2e/truncation-2/index.html, /tmp/cp6-w1c/real-e2e/truncation-2/ast.html, /tmp/cp6-w1c/real-e2e/truncation-2/symbols.html and /tmp/cp6-w1c/real-e2e/truncation-2/resolution.html
+Source: truncation.cbl
+Parse tree: 81 nodes | 45 tokens | depth 15
+AST: 17 nodes | depth 5 | literal-target CALLs 0
+Symbols: 2 declarations | 8 scopes | 0 diagnostics | parser errors 0
+Reference binding: 2 entries | 1 gaps | dependency analysis ready: false
+2026-09-11T14:45:03.216-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=bac7e2e6-c69f-4474-91ae-0db619e10376 source=truncation.cbl programUnit=CALLER event=analysis_completed phase=ANALYSIS elapsedMs=710 programUnits=1 references=2 gaps=1 dependencyAnalysisReady=false output=/tmp/cp6-w1c/real-e2e/truncation-2

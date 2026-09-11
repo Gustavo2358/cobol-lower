@@ -17,7 +17,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, OtherStatement { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, OtherStatement { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -157,7 +157,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum LogicalDomain { TEXT }
     public enum StorageClass { WORKING_STORAGE }
     public enum DeclarationScope { LOCAL }
-    public enum CopySemantics { FULL_IDENTITY, UNAVAILABLE }
+    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, UNAVAILABLE }
     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
     public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
     public enum OperandRole { READ, WRITE, CALL_TARGET }
@@ -174,8 +174,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) {
         public LiteralSource { Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
     }
-    public record Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected) {
-        public Binding { Objects.requireNonNull(status); candidates = List.copyOf(candidates); Objects.requireNonNull(selected); }
+    public enum ResolutionReason { UNIQUE_VISIBLE_DECLARATION, QUALIFIED_HIERARCHY_MATCH, MULTIPLE_VALID_CANDIDATES,
+        DECLARATION_NOT_FOUND, INPUT_INCOMPLETE, UNSUPPORTED_GRAMMAR_FORM, UNSUPPORTED_DIALECT_OPTION, INVALID_NAMESPACE_FOR_CONTEXT }
+    public record Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected,
+                          Optional<ResolutionReason> reason, List<String> candidateNames) {
+        public Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected) {
+            this(status, candidates, selected, Optional.empty(), List.of());
+        }
+        public Binding { Objects.requireNonNull(status); candidates = List.copyOf(candidates); Objects.requireNonNull(selected);
+            Objects.requireNonNull(reason); candidateNames = List.copyOf(candidateNames); }
     }
     public record WholeItemAccess(DataId data) {
         public WholeItemAccess { Objects.requireNonNull(data); }
@@ -186,8 +193,47 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
         public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }
     }
-    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) implements StatementFact {
-        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); }
+    public enum TextAdjustmentRule { RIGHT_PAD_SPACE }
+    public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, LogicalValue result, Provenance provenance) {
+        public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
+    }
+    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics,
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) implements StatementFact {
+        public MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
+            this(header, source, target, copySemantics, normalContinuation, Optional.empty());
+        }
+        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+    }
+
+    public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }
+    public enum RuntimeTargetKnowledge { UNKNOWN }
+    public enum ClausePresence { ABSENT, PRESENT, UNKNOWN }
+    public enum CallEffects { UNKNOWN }
+    public enum CallOutcomes { OPEN }
+    public sealed interface CallTarget permits LiteralCallTarget, DataCallTarget {
+        OperandId id(); Provenance provenance();
+    }
+    public record LiteralCallTarget(OperandId id, String text, String writtenText, Optional<LogicalValue> logicalValue,
+                                    Provenance provenance) implements CallTarget {
+        public LiteralCallTarget { Objects.requireNonNull(id); Objects.requireNonNull(text); Objects.requireNonNull(writtenText);
+            Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
+    }
+    public record DataCallTarget(DataReference reference) implements CallTarget {
+        public DataCallTarget { Objects.requireNonNull(reference); }
+        @Override public OperandId id() { return reference.id(); }
+        @Override public Provenance provenance() { return reference.provenance(); }
+    }
+    public record CallSurface(ClausePresence using, Optional<Integer> argumentCount, ClausePresence returning,
+                              ClausePresence onException, ClausePresence notOnException, ClausePresence onOverflow) {
+        public CallSurface { Objects.requireNonNull(using); Objects.requireNonNull(argumentCount); Objects.requireNonNull(returning);
+            Objects.requireNonNull(onException); Objects.requireNonNull(notOnException); Objects.requireNonNull(onOverflow); }
+    }
+    public record CallFact(StatementHeader header, CallSyntax syntax, CallTarget target, RuntimeTargetKnowledge runtimeTarget,
+                           String runtimeUncertaintyCode, NormalContinuation normalContinuation, CallSurface surface,
+                           CallEffects effects, CallOutcomes outcomes) implements StatementFact {
+        public CallFact { Objects.requireNonNull(header); Objects.requireNonNull(syntax); Objects.requireNonNull(target);
+            Objects.requireNonNull(runtimeTarget); Objects.requireNonNull(runtimeUncertaintyCode); Objects.requireNonNull(normalContinuation);
+            Objects.requireNonNull(surface); Objects.requireNonNull(effects); Objects.requireNonNull(outcomes); }
     }
 
     public record OtherStatement(StatementHeader header, Variant variant) implements StatementFact {

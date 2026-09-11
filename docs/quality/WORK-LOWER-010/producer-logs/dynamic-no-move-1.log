@@ -1,0 +1,9 @@
+2026-09-11T14:44:23.954-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=72512c97-c9fa-49c8-8de5-fd4115f1b5b7 source=dynamic-no-move.cbl programUnit=none event=analysis_started phase=ANALYSIS output=/tmp/cp6-w1c/real-e2e/dynamic-no-move-1
+2026-09-11T14:44:24.645-03:00 level=WARN logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=72512c97-c9fa-49c8-8de5-fd4115f1b5b7 source=dynamic-no-move.cbl programUnit=CALLER event=analysis_degraded phase=REFERENCE_RESOLUTION gaps=1 blockingReasons=[DYNAMIC_CALL_TARGET_VALUE_UNKNOWN] reason=RESOLUTION_GAPS fallback=RESULT_PUBLISHED_WITH_GAPS impact=DEPENDENCY_ANALYSIS_NOT_READY statusCounts={UNSUPPORTED=0, AMBIGUOUS=0, RESOLVED=1, UNRESOLVED=0, EXTERNAL_OBSERVED=0}
+Generated /tmp/cp6-w1c/real-e2e/dynamic-no-move-1/index.html, /tmp/cp6-w1c/real-e2e/dynamic-no-move-1/ast.html, /tmp/cp6-w1c/real-e2e/dynamic-no-move-1/symbols.html and /tmp/cp6-w1c/real-e2e/dynamic-no-move-1/resolution.html
+Source: dynamic-no-move.cbl
+Parse tree: 65 nodes | 37 tokens | depth 14
+AST: 13 nodes | depth 5 | literal-target CALLs 0
+Symbols: 2 declarations | 8 scopes | 0 diagnostics | parser errors 0
+Reference binding: 1 entries | 1 gaps | dependency analysis ready: false
+2026-09-11T14:44:24.646-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=72512c97-c9fa-49c8-8de5-fd4115f1b5b7 source=dynamic-no-move.cbl programUnit=CALLER event=analysis_completed phase=ANALYSIS elapsedMs=706 programUnits=1 references=1 gaps=1 dependencyAnalysisReady=false output=/tmp/cp6-w1c/real-e2e/dynamic-no-move-1

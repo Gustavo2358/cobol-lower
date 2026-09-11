@@ -1,0 +1,18 @@
+test_unrelated_head_rejected (__main__.CiBootstrap.test_unrelated_head_rejected) ... FAIL
+
+======================================================================
+FAIL: test_unrelated_head_rejected (__main__.CiBootstrap.test_unrelated_head_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-5f9x9ups/scripts/harness/tests/test_ci_bootstrap.py", line 145, in test_unrelated_head_rejected
+    self.rejected(fixture, 'unrelated head rejected', '--is-ancestor')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-5f9x9ups/scripts/harness/tests/test_ci_bootstrap.py", line 71, in rejected
+    self.fail('CI_BOOTSTRAP ' + why)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP unrelated head rejected
+
+----------------------------------------------------------------------
+Ran 1 test in 0.043s
+
+FAILED (failures=1)

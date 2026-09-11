@@ -210,6 +210,7 @@ public final class AirOutputSuite {
         assertions += ScalarOutputSuite.run();
         int production = ProductionPathSuite.run(); assertions += production;
         System.out.println("LOWER_PRODUCTION_TESTS=" + production);
+        assertions += CallAtomicitySuite.run();
         System.out.println("LOWER_AIR_OUTPUT_TESTS=" + assertions);
     }
 }

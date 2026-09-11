@@ -13,3 +13,5 @@
 Os documentos locais definem a política do lowerer; não substituem as especificações upstream fixadas. Cada regra tem origem registrada em [fontes](../sources/index.md).
 
 [DATA/MOVE escalar](scalar-text-move.md): Checkpoint 4C.
+
+[CALL literal/DATA + fitted MOVE](call-lowering.md): CP6 W1C, SP 1.3.0.

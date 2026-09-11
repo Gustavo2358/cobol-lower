@@ -1,6 +1,7 @@
 # BACKLOG-LOWER-008 — CALL e contrato por site de interação
 
-**Estado:** `needs_discovery`. **Fase:** `capability`. **Autorização:** não concedida.
+**Estado:** `in_progress`. **Fase:** `capability`. **Autorização:** implementação
+da primeira slice CP6 W1C em [WORK-LOWER-010](../active/WORK-LOWER-010/work-item.yaml).
 
 ## Problema e objetivo observável
 
@@ -28,8 +29,13 @@ Resolver nomes dinâmicos, calcular resumo de efeitos ou inventar contrato de ch
 
 ## Checkpoints e handoff
 
-Nenhum work item promovido. Ao promover, delimitar um resultado por checkpoint, escopo e testes. Não iniciar itens dependentes por terminar este. Documentar descoberta upstream na primeira fronteira afetada; não editar outro repo.
+WORK-LOWER-010/CP0 promove apenas CALL literal/DATA sem argumentos/results/handlers
+com continuação normal para GOBACK. Não iniciar itens dependentes por terminar
+este. W1D/W2 não autorizados; irmãos somente read-only.
 
 ## Evidência atual
 
-Planejamento documental somente. Sem commit de implementação, CI, benchmark ou aprovação remota atribuídos a este item.
+[Evidência W1C](../../quality/WORK-LOWER-010/CP0.json) e
+[guia de RED/GREEN/E2E](../../quality/WORK-LOWER-010/evidence-guide.md).
+Implementação aguarda review humano; esta promoção não certifica CALL geral,
+resolução dinâmica ou contrato externo conhecido.

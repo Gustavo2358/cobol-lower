@@ -56,3 +56,11 @@ CobolLowerer faz dispatch de dois profiles. ScalarMoveAdmission produz índices/
 ScalarDataTranslator e ScalarSequenceAssembler compõem MoveHandler/GobackHandler,
 com assembly e validação compartilhada antes do resultado em memória.
 [Contrato escalar](docs/domain/scalar-text-move.md). CLI usa essa mesma porta.
+
+## CP6 W1C
+
+O dispatch tipado CALL precede o profile escalar. CallAdmission compartilha os índices
+de entrada; CallLowerer reutiliza tradução de DATA, MOVE e origens. InvokeHandler
+e CallSequenceAssembler produzem duas sequências com continuação SP explícita.
+Wire13/Materialize continuam em adapters. Core conhece somente SpInput e modelo/
+validator AIR; codec continua exclusivo de adapters. [Contrato CALL](docs/domain/call-lowering.md).

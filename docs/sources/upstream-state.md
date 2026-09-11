@@ -37,3 +37,13 @@ Pin normativo 122ce54e1b9ef9b00646f93ece409ca8b63bc933 intacto.
 ## Baseline sincronizado pós-CP5 — WORK-LOWER-009
 
 Input SP: `8722945cc4cd2052c6091533f6ee6989278aa2f8`; norma: `51b4d9a8ae0364232bd97103cd73a77e1a34996c`; biblioteca/codec: `3bafe3978f0f392e842038ad5628e85dfd91d00d` (PR8 mergeado). A [matriz](../quality/WORK-LOWER-009/upstream-deltas.json) prova ancestralidade. O writer SP, fixture e contrato escalar permanecem byte-identical; W5 já executou esse produtor. Especificação/conformidade/binding normativos inalterados. Air-java muda capacidade/taxonomia por PR7; PR8 só repina norma. Harness usa RESOURCE_LIMIT e budgets explícitos, requalificando 10k sob defaults aprovados. Produção lower/POM/fixtures não mudam. Referências históricas de inspiração/consumer context no lock permanecem históricas.
+
+## CP6 W1C — autoridades em 2026-09-11
+
+W1A merge fixo `53d774026a1e4bcd969c7783a1d277aaa87b5f2f`, SP1.3.0. W1B PR9
+confirmado MERGED antes da branch: merge `2a37f5e980ba25fdc79614a66030a84d8bf5b8c9`,
+tree `8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8`, também main observada na consulta.
+Norma AIR permanece `51b4d9a8ae0364232bd97103cd73a77e1a34996c`. O bootstrap
+constrói model/codec desse merge em Maven repo isolado e vincula SHA/tree/digests
+ao source lock. Produtor real é executado em checkout isolado do W1A.
+[Contrato](../domain/call-lowering.md), [certificado](../quality/WORK-LOWER-010/CP0.json).

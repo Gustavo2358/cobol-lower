@@ -1,0 +1,10 @@
+2026-09-11T14:44:39.330-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=da5fddaf-a899-47ae-b139-084fb131a206 source=incomplete.cbl programUnit=none event=analysis_started phase=ANALYSIS output=/tmp/cp6-w1c/real-e2e/incomplete-1
+2026-09-11T14:44:39.432-03:00 level=WARN logger=i.g.g.c.PreprocessorEngine thread=main runId=da5fddaf-a899-47ae-b139-084fb131a206 source=incomplete.cbl programUnit=none event=copy_unresolved source=incomplete.cbl phase=PREPROCESSING count=1 reason=NOT_FOUND fallback=KEEP_UNRESOLVED_PLACEHOLDER impact=ANALYSIS_INCOMPLETE
+2026-09-11T14:44:40.002-03:00 level=WARN logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=da5fddaf-a899-47ae-b139-084fb131a206 source=incomplete.cbl programUnit=CALLER event=analysis_degraded phase=REFERENCE_RESOLUTION gaps=2 blockingReasons=[UNRESOLVED_COPY, DYNAMIC_CALL_TARGET_VALUE_UNKNOWN] reason=RESOLUTION_GAPS fallback=RESULT_PUBLISHED_WITH_GAPS impact=DEPENDENCY_ANALYSIS_NOT_READY statusCounts={AMBIGUOUS=0, RESOLVED=1, UNRESOLVED=0, UNSUPPORTED=0, EXTERNAL_OBSERVED=0}
+Generated /tmp/cp6-w1c/real-e2e/incomplete-1/index.html, /tmp/cp6-w1c/real-e2e/incomplete-1/ast.html, /tmp/cp6-w1c/real-e2e/incomplete-1/symbols.html and /tmp/cp6-w1c/real-e2e/incomplete-1/resolution.html
+Source: incomplete.cbl
+Parse tree: 65 nodes | 40 tokens | depth 14
+AST: 13 nodes | depth 5 | literal-target CALLs 0
+Symbols: 2 declarations | 8 scopes | 0 diagnostics | parser errors 0
+Reference binding: 1 entries | 2 gaps | dependency analysis ready: false
+2026-09-11T14:44:40.003-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=da5fddaf-a899-47ae-b139-084fb131a206 source=incomplete.cbl programUnit=CALLER event=analysis_completed phase=ANALYSIS elapsedMs=688 programUnits=1 references=1 gaps=2 dependencyAnalysisReady=false output=/tmp/cp6-w1c/real-e2e/incomplete-1

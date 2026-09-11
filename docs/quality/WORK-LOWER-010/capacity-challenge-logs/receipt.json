@@ -1,0 +1,94 @@
+[
+  {
+    "id": "file-32mib",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+        "byte[] bytes = input.readAllBytes();",
+        "byte[] bytes = input.readAllBytes(); if (bytes.length > 32 * 1024 * 1024) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+      ]
+    ],
+    "expected_oracle": "CAPACITY supported SP decodes",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ file byte limit]]",
+    "baseline_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+    "restored_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated capacity production challenge; pinned m2",
+    "baseline_log_sha256": "5950c0a7184c5351ff2d9fc2d552d163185e23fb45df2dd7747c64462fc72bbe",
+    "red_log_sha256": "075bd3ea343df37c9b3d65b8ffb0a55aa7e865d47b8c6b14027664ed46c416ac",
+    "second_green_log_sha256": "cd36b7c28fd0c7b58edf16b2c8aa0de4acbcc0def8a0f05576590aee44753f26",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "decoder-32mib",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+        "meter.bytes = bytes.length;",
+        "if (bytes.length > 32 * 1024 * 1024) return reject(Code.IMPLEMENTATION_LIMIT, \"$ byte limit\"); meter.bytes = bytes.length;"
+      ]
+    ],
+    "expected_oracle": "CAPACITY supported SP decodes",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ byte limit]]",
+    "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated capacity production challenge; pinned m2",
+    "baseline_log_sha256": "a2a4c05c74becc2cee5e25d7b936e55d7c250896a890b872691f599fcde6d8a5",
+    "red_log_sha256": "814a4004ed2c3308bfe074f275241648964e8f31b6625f2e6401736881f0e880",
+    "second_green_log_sha256": "2f34050cdb7666c19854624ecb0d131840cd0a076d637d57e59d85903d1fe97d",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "nodes-1500000",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+        "meter.nodes++;",
+        "if (++meter.nodes > 1_500_000) return reject(Code.IMPLEMENTATION_LIMIT, \"$ node limit\");"
+      ]
+    ],
+    "expected_oracle": "CAPACITY supported SP decodes",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ node limit]]",
+    "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated capacity production challenge; pinned m2",
+    "baseline_log_sha256": "07212fe699269decabeb7f36a8bc3b90131373786742c33e2df7b02a1cfd6b78",
+    "red_log_sha256": "de9997220389aa89199e61405b0997718a7b6525ec2afc65f3f020265c2d5ada",
+    "second_green_log_sha256": "df03de10b9bb3e9ea2d48e9a0f398f3e465105c939650111c99ac573d1db631d",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "visits-250000",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+        "entities++;",
+        "if (++entities > 250_000) throw new LimitReached();"
+      ]
+    ],
+    "expected_oracle": "CAPACITY supported SP lowers",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CAPACITY supported SP lowers: IMPLEMENTATION_LIMIT []",
+    "baseline_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+    "restored_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated capacity production challenge; pinned m2",
+    "baseline_log_sha256": "39fd9f73051fe8e7fa93c00c2191f3ef88996586b36f083f3e9df46994c445be",
+    "red_log_sha256": "9e4c2cf2d189a37b8ca7bc69404cb1fda5ad901a9792ebe5b2c170d4821edee4",
+    "second_green_log_sha256": "37f33f3c4d55628c487a3afb0414139d003245a9a88032933ef40c05ce1039bc",
+    "kind": "compiled semantic/gate"
+  }
+]

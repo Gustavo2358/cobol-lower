@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.AssertionError: CP6 revision includes literal CALL target
+	at io.github.gustavo2358.lower.testing.CallOracle.check(CallOracle.java:15)
+	at io.github.gustavo2358.lower.testing.CallSuite.run(CallSuite.java:34)
+	at io.github.gustavo2358.lower.testing.CallSuite.main(CallSuite.java:69)

@@ -38,7 +38,7 @@ def scope_errors(root):
     registry = root/'docs/work/registry.json'
     if not registry.exists(): return []
     active = {w['id'] for w in json.loads(registry.read_text())['active']}
-    work = next((w for w in ('WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
+    work = next((w for w in ('WORK-LOWER-010', 'WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
     if work is None: return []
     guard = json.loads((root/'docs/quality'/work/'production-source-guard.json').read_text())
     expected = guard['source_hashes']; errors = []

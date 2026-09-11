@@ -1,0 +1,364 @@
+[
+  {
+    "id": "program-point-successor",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+        "current = move.normalContinuation().statement().orElseThrow();",
+        "current = input.statements().stream().filter(s -> s.header().programPoint() > move.header().programPoint()).min(java.util.Comparator.comparingInt(s -> s.header().programPoint())).map(s -> s.header().id()).orElse(move.header().id());"
+      ]
+    ],
+    "expected_oracle": "SCALAR reject unavailable dangling cyclic continuation",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR reject unavailable dangling cyclic continuation",
+    "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "dba0f673ef2b87b44e99111377537c8fb7617c2c50da6dce4d17543c68df97dc",
+    "second_green_log_sha256": "d44c2816899f224e25ba1e2bd73ce98f075b8525011ac1108a8b129b80c0f838"
+  },
+  {
+    "id": "ignore-full-identity",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+        "m.copySemantics() == CopySemantics.FULL_IDENTITY",
+        "true"
+      ]
+    ],
+    "expected_oracle": "SCALAR reject FULL_IDENTITY absent",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR reject FULL_IDENTITY absent",
+    "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "67efc82d434f218840f1898b9654a07811db4edb8a2c7b157572aebb82a45504",
+    "second_green_log_sha256": "4cc156051dcb3ba04b4f5a3b53b29eed6bbfa54694c256470412607122503f6e"
+  },
+  {
+    "id": "invent-whole-access",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java",
+        "Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance);",
+        "Objects.requireNonNull(wholeItemAccess); wholeItemAccess = wholeItemAccess.or(() -> binding.selected().map(WholeItemAccess::new)); Objects.requireNonNull(provenance);"
+      ]
+    ],
+    "expected_oracle": "SCALAR reject wholeItemAccess absent",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR reject wholeItemAccess absent",
+    "baseline_digest": "97a2eb1bf61ed28df140e9d54224073c6fe78a7bcb191902fb013d851a700e03",
+    "restored_digest": "97a2eb1bf61ed28df140e9d54224073c6fe78a7bcb191902fb013d851a700e03",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "84b43372587ec6b3157c9368b994ef7a9b0fe8bba3936872f9979235222b6786",
+    "second_green_log_sha256": "46f020f6fce3b77656cc93a56193e8b54ce892f8740299f1eec986b5e7e245c1"
+  },
+  {
+    "id": "ignore-selected-mismatch",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+        "b.selected().equals(Optional.of(data.id()))",
+        "true"
+      ]
+    ],
+    "expected_oracle": "SCALAR reject selected wholeItem mismatch",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR reject selected wholeItem mismatch",
+    "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "39f7102d8a4bf5bac8a9df09999ff62b4e9dc4b8b1efbb37678089569744231f",
+    "second_green_log_sha256": "df012e676cd1bdeb828c88979924e2a8741977e08dad9f065e4b396389a278d0"
+  },
+  {
+    "id": "object-per-reference",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+        "ScalarDataTranslator.translate(plan.data(),",
+        "ScalarDataTranslator.translate(plan.moves().stream().map(m -> plan.data().stream().filter(d -> d.id().equals(m.target().binding().selected().orElseThrow())).findFirst().orElseThrow()).toList(),"
+      ]
+    ],
+    "expected_oracle": "SCALAR one Object per declaration",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR one Object per declaration",
+    "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "4b7360781872036b5e02630f5abbe1b7644d4b9a4b6124136d88e248c6bf42be",
+    "second_green_log_sha256": "971b4857e8713ca9aec42354b25bc22fccfd2bc5cdaab5744f8ebde9a4a2f29d"
+  },
+  {
+    "id": "cell-per-move",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+        "List.of(body), data.storage(),",
+        "List.of(body), java.util.Collections.nCopies(plan.moves().size(), data.storage().getFirst()),"
+      ]
+    ],
+    "expected_oracle": "SCALAR precise input must lower",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR precise input must lower: OUTPUT_INVALID []",
+    "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "0371c92584beec88d8452057a6719ed10d94370c94aef5779267ee695decdb80",
+    "second_green_log_sha256": "85b8217e101ff22a6dfe98def415de584975351768e11482a9e2bee652978fb1"
+  },
+  {
+    "id": "name-join",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarSequenceAssembler.java",
+        "var target = data.index().get(move.target().wholeItemAccess().orElseThrow().data());",
+        "var target = data.index().values().stream().filter(link -> data.objects().stream().anyMatch(o -> o.id().equals(link.object()) && o.displayName().equals(data.objects().getFirst().displayName()))).findFirst().orElseThrow();"
+      ]
+    ],
+    "expected_oracle": "SCALAR destination by DataId, never name",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR destination by DataId, never name",
+    "baseline_digest": "ee606cffcb2cb522f03325cf73ce67fbd9903eb1d6d28f90303e495ba1cce356",
+    "restored_digest": "ee606cffcb2cb522f03325cf73ce67fbd9903eb1d6d28f90303e495ba1cce356",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "5c3a1f398e4c54edf4c00e0e7dcccab1ec46641838ba0b84e28e82e35421d25b",
+    "second_green_log_sha256": "52daf08bb34385d05ba0d928cc8b8fe45448f8ad9717b111db41c7e267a48ea8"
+  },
+  {
+    "id": "write-as-read",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+        "Operand.Role.VALUE_WRITE",
+        "Operand.Role.VALUE_READ"
+      ]
+    ],
+    "expected_oracle": "SCALAR precise input must lower: OUTPUT_INVALID",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR precise input must lower: OUTPUT_INVALID []",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "9b844b2bd218815441b3609c487f8e908f4a30f4ce60977cca2e569e4eb84a1a",
+    "second_green_log_sha256": "d1d82b028b0247f24c62d224ee8eefd9b826cd7911b623f0d85a74fd947b1e57"
+  },
+  {
+    "id": "literal-as-unknown",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+        "new Expressions.Literal(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin),\n            new Values.TextValue(move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())))",
+        "new Expressions.Unknown(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin), Types.known(Types.Builtin.TEXT), List.of(), Scopes.NoMemory.INSTANCE, new UncertaintyId(unit.publication(), ids.id(\"uncertainty\", \"scalar-entry-inventory\", unit.localId(), \"0\")))"
+      ]
+    ],
+    "expected_oracle": "SCALAR literal exact logical text, never UNKNOWN",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR literal exact logical text, never UNKNOWN",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "be232cf3f87969e3e1274b93f7dc0fb5446c10f656106f485f59e295cea00678",
+    "second_green_log_sha256": "1f2169f9cb210102cd7b0507ac76ae603d5e799931708b89218ece4e87a46198"
+  },
+  {
+    "id": "drop-data-link",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+        "List.copyOf(data.index().values()), operands",
+        "List.of(), operands"
+      ]
+    ],
+    "expected_oracle": "SCALAR DATA correlation complete",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR DATA correlation complete",
+    "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "99f49102f4f03aa2ff21a0e77d534d1d2baf6d7e68947704ec7a2daac6d59b7c",
+    "second_green_log_sha256": "88f5b8a8c5d36ab12cf7ee3cd70cb2a1a1987e0e57aafe8c0e8968cbe2ec4121"
+  },
+  {
+    "id": "lose-literal-provenance",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+        "move.source().id().handle(), move.source().provenance()",
+        "move.source().id().handle(), move.header().provenance()"
+      ]
+    ],
+    "expected_oracle": "SCALAR literal provenance preserved",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR literal provenance preserved",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "172d61722d04d907a986c2518b15ca053d02b119271775295eb3801bc4e63fcd",
+    "second_green_log_sha256": "83dee42d4c35fa1d38ca57b05b292ef0456d520e4a1a24a19e79ea06f163954e"
+  },
+  {
+    "id": "lose-target-provenance",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+        "move.target().id().handle(), move.target().provenance()",
+        "move.target().id().handle(), move.header().provenance()"
+      ]
+    ],
+    "expected_oracle": "SCALAR target provenance preserved",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR target provenance preserved",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "817348aa4a7a6dd43a42012b9e2e9fa77b6284d626f4cd551810c5e999ed073c",
+    "second_green_log_sha256": "944335cbad0b437f763eaef5a66f0ad86ca078faeebc31e4c33f8aa72c0789d6"
+  },
+  {
+    "id": "goback-halt",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/GobackHandler.java",
+        "static Operations.Return translate",
+        "static Terminator translate"
+      ],
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/GobackHandler.java",
+        "new Operations.Return(header, List.of())",
+        "new Operations.Halt(header, Operations.HaltKind.NORMAL)"
+      ]
+    ],
+    "expected_oracle": "SCALAR GOBACK Return never Halt",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR GOBACK Return never Halt",
+    "baseline_digest": "2e617f06043b712a664924659b482f24af2b7203e0325cf244a478f54cd770af",
+    "restored_digest": "2e617f06043b712a664924659b482f24af2b7203e0325cf244a478f54cd770af",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "c3598741428143e4e506c9ed6959558d5bba12cd21636bbae920850af99c60bf",
+    "second_green_log_sha256": "56faea1059a0c9c5d8dfaf560f46b4f229997cdad1e7d62ba9cf399fe9037a12"
+  },
+  {
+    "id": "two-sequences",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+        "List.of(entry), List.of(sequence),",
+        "List.of(entry), List.of(sequence, new Sequence(new LabelId(unit, \"extra-label\"), List.of(), new Operations.Return(new Operations.Header(new OperationId(unit, \"extra-return\"), sequence.terminator().header().origin(), sequence.terminator().header().coverage(), sequence.terminator().header().precision(), sequence.terminator().header().uncertainties()), List.of()), sequence.origin())),"
+      ]
+    ],
+    "expected_oracle": "SCALAR one Sequence for linear chain",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR one Sequence for linear chain",
+    "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "016341f49dffaca06933f4860b21b95ba764556a2e7b68afc1f8c58d63e3af13",
+    "second_green_log_sha256": "b47705fbe10bc6d51609d2f7b553fa1d00c480de86dc3765304dbeadb74e3fc0"
+  },
+  {
+    "id": "revision-missing-value",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+        "e.word(value.value());",
+        "e.word(\"ignored\");"
+      ]
+    ],
+    "expected_oracle": "SCALAR new logical value in PublicationId",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR new logical value in PublicationId",
+    "baseline_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+    "restored_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "7c5a82ca10ec18c5501552ebf68efc554dcda1d636f3a1c27512ac90fc2f3db8",
+    "second_green_log_sha256": "de0223b819638ee32db207e80cbd11408c260573b9316217600b4f3c7b6758b5"
+  },
+  {
+    "id": "expanded-local-id",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/LocalIds.java",
+        "return digest;",
+        "return CanonicalRevision.token(namespace + \"/\" + role + \"/\" + owner + \"/\" + key);"
+      ]
+    ],
+    "expected_oracle": "SCALAR compact ObjectId",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR compact ObjectId",
+    "baseline_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+    "restored_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "066a4d02729d577a6d2ddc2eedbd9cc87b80471af6a327b69f88cddd2094ff02",
+    "second_green_log_sha256": "41b81ccf2d6680653434b39ef03710d292b3768e854066d08970ec067dbe59ef"
+  },
+  {
+    "id": "scalar-index-scan",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+        "StatementFact lookup(StatementId id) { references++; return statements.get(id); }",
+        "StatementFact lookup(StatementId id) { for (var item : statements.entrySet()) { references++; if (item.getKey().equals(id)) return item.getValue(); } return null; }"
+      ]
+    ],
+    "expected_oracle": "SCALAR scalar reference ledger 7N+3 no scans",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR scalar reference ledger 7N+3 no scans",
+    "baseline_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+    "restored_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+    "restoration_status": "RESTORED",
+    "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+    "green_exit_code": 0,
+    "red_log_sha256": "a1c56a7a05f011d83c37006cf68579f3e54068a290d50ede0fa7758124fd2aa4",
+    "second_green_log_sha256": "cb844bdb00a049b9bcdad903dbf87fa33ae73adcdf0191871abd1b0d6d10fb8e"
+  }
+]

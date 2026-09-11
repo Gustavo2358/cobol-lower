@@ -1,6 +1,6 @@
 # Matriz bilateral e rota de evolução
 
-**Status:** somente Entry/GOBACK mínimo implementado em WORK-LOWER-001; demais linhas são plano, não autorização. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
+**Status:** Entry/GOBACK e DATA/MOVE escalar implementados; CALL W1C implementado sob review humano em WORK-LOWER-010. Demais capacidades são plano, não autorização. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
 
 | Capability | Entrada indispensável | Target/objetivo | Limite atual / próximo pré-requisito |
 | --- | --- | --- | --- |
@@ -31,3 +31,10 @@ Não foi congelado um planner universal de CFG, SSA, basic blocks máximos ou um
 
 [scalar-text-move@1](scalar-text-move.md) acrescenta DATA escalar e MOVE FULL_IDENTITY
 com cadeia explícita até GOBACK. Não habilita MOVE geral, IF ou CALL.
+
+## CP6 W1C
+
+[CALL literal/DATA](call-lowering.md) acrescenta Invoke neutro, continuação normal
+explícita para GOBACK e consumo FITTED_TEXT publicado. Runtime target/name policy,
+efeitos e saídas não normais permanecem abertos. Não promove IF, argumentos,
+handlers, CFG ou resolução de dependências.

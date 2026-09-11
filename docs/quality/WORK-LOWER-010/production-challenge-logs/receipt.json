@@ -1,0 +1,214 @@
+[
+  {
+    "id": "literal-value-coherence",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+        "if (!source.value().equals(logical.value()))",
+        "if (false && !source.value().equals(logical.value()))"
+      ]
+    ],
+    "expected_oracle": "literal normalized value mismatch",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR_WIRE strict physical rejection literal normalized value mismatch",
+    "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated coherence production challenge; pinned m2",
+    "baseline_log_sha256": "b770fd7ff3c87df32fb3ffa211f073cea3285c3e2abce91e745522601a830d47",
+    "red_log_sha256": "23d591f10f72e3e4cb8a777fbbe7746e362c3e3770b5839bdae59298050dce36",
+    "second_green_log_sha256": "1efa5e33ccdd54bd806d0a8036b57b7208639d947814cd473eec5a7b36450da2",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "literal-codepoints",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+        "logical.logicalExtent() != logical.value().codePointCount(0, logical.value().length())",
+        "false"
+      ]
+    ],
+    "expected_oracle": "literal code point extent mismatch",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: SCALAR_WIRE strict physical rejection literal code point extent mismatch",
+    "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated coherence production challenge; pinned m2",
+    "baseline_log_sha256": "cdeb1bf1e71f8692c3f498a2e22786baeae3d881718a2012d1446c95930a7975",
+    "red_log_sha256": "36068d4b7fcdf572f9ff9c41b60d1d3933502f30353dcc9f2203f035b11e34a9",
+    "second_green_log_sha256": "162db686e8681bc89d1cb15d330b35e63541e215c4e599aef23ec9f8469080f2",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "old-production-bytes",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+        "byte[] bytes = input.readAllBytes();",
+        "byte[] bytes = input.readAllBytes(); if (bytes.length > 100_000) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+      ]
+    ],
+    "expected_oracle": "large SP success exit0",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: PRODUCTION large SP success exit0: SP IMPLEMENTATION_LIMIT physical $ file byte limit",
+    "baseline_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+    "restored_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated success production challenge; pinned m2",
+    "baseline_log_sha256": "05c709e7598ea61c66d8586bdb19e54f8973f706da3cf45eb8a828f7463b6ea5",
+    "red_log_sha256": "4d6b76bdc3d4749dc478770f4ec764b9f902b81c3bedd897493c21b724b2c0df",
+    "second_green_log_sha256": "1e641f7f8df7e85d30ff1bbebae53db81ab78718b05ff15b456cac8719ee9a89",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "old-production-nodes",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+        "meter.nodes++;",
+        "if (++meter.nodes > 50_000) return reject(Code.IMPLEMENTATION_LIMIT, \"$\");"
+      ]
+    ],
+    "expected_oracle": "large SP success exit0",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: PRODUCTION large SP success exit0: SP IMPLEMENTATION_LIMIT physical $",
+    "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated success production challenge; pinned m2",
+    "baseline_log_sha256": "921e871797fb694fbb03a5a99ec88c54191614d4fde6c09d7633acc44a13e572",
+    "red_log_sha256": "109283c8ad07d477cd6dd3bd5dbc06e124972f351d2f68b9418bb0b7ec52e953",
+    "second_green_log_sha256": "a1ebdf4892a6719a5b0167ba23b52937266d1153c94be8b844e7d0a892967c6c",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "old-production-entities",
+    "mutation": [
+      [
+        "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+        "entities++;",
+        "if (++entities > 100_000) throw new LimitReached();"
+      ]
+    ],
+    "expected_oracle": "10k lowering passes production admission",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: PRODUCTION 10k lowering passes production admission: IMPLEMENTATION_LIMIT",
+    "baseline_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+    "restored_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated large production challenge; pinned m2",
+    "baseline_log_sha256": "67e3890ecdd87b88baeed35bb4f7f738e551e3e28eee52ac378aa484ceffe648",
+    "red_log_sha256": "3d0217d9bbec59fc827d12d836faa35e3676bf4aba3923c1e0eadbed8cc0356f",
+    "second_green_log_sha256": "8cc9855bbf88dc99538eb3a6c6bbf4a13f48175a4f9efaaf42860a29d6c36ed3",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "remove-production-probe",
+    "mutation": [
+      [
+        "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java",
+        "int production = ProductionPathSuite.run();",
+        "int production = 1;"
+      ]
+    ],
+    "expected_oracle": "production path probe absent/zero",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "FAIL production path probe absent/zero",
+    "baseline_digest": "9714272c89017481d5ca8e69054676ccfda35a3843965e726cec6151ed7c9588",
+    "restored_digest": "9714272c89017481d5ca8e69054676ccfda35a3843965e726cec6151ed7c9588",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated semantic production challenge; pinned m2",
+    "baseline_log_sha256": "9a70986abb535dfc21c6ce942aa90d6c7433b0ec689a32d1f2b33e1c1bfd27e8",
+    "red_log_sha256": "00b64bb5659c96571a82f8f4fc495fa5a59dce3894f800991c3df02ead22c514",
+    "second_green_log_sha256": "016faf79423f07a238437979afc2cabd7e56faff2a96449f1e10d1772d2670a4",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "input-failure-as-expected",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+        "byte[] bytes = input.readAllBytes();",
+        "byte[] bytes = input.readAllBytes(); if (bytes.length > 100_000) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+      ],
+      [
+        "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/ProductionPathSuite.java",
+        "check(code == CobolLower.SUCCESS,",
+        "check(code == CobolLower.INPUT,"
+      ]
+    ],
+    "expected_oracle": "successful production output exists",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: PRODUCTION successful production output exists",
+    "baseline_digest": "7d78a43b9b0ae6152fe1ed98e6aa5f7e21c3b5f48f2eb4fcbe6997290f3ee7ee",
+    "restored_digest": "7d78a43b9b0ae6152fe1ed98e6aa5f7e21c3b5f48f2eb4fcbe6997290f3ee7ee",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated success production challenge; pinned m2",
+    "baseline_log_sha256": "90832aa1b7d92c217c02d1ce5f76764e887d84fce95f6e6cb8bbabd0d15509ec",
+    "red_log_sha256": "404167195989305c6601abc36a80d34bec9d8ee465d78b6a12f159db555292a6",
+    "second_green_log_sha256": "949240477f7be84e55a62d868d0f01a179893a2226df083831f85d836cd3b097",
+    "kind": "compiled semantic/gate"
+  },
+  {
+    "id": "raise-air-limit",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+        "this(new AirJson(), new FileOperations());",
+        "this(new AirJson(new AirJson.Limits(512 * 1024 * 1024, 128), io.github.gustavo2358.air.validation.ValidationOptions.defaults()), new FileOperations());"
+      ]
+    ],
+    "expected_oracle": "PRODUCTION_SCOPE immutable transport/core",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "PRODUCTION_SCOPE immutable transport/core adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+    "baseline_digest": "9148d624336a0d3658007341d0c12885e23c48f90780067c13eb7fb91baf78ba",
+    "restored_digest": "9148d624336a0d3658007341d0c12885e23c48f90780067c13eb7fb91baf78ba",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated scope production challenge; pinned m2",
+    "baseline_log_sha256": "0f29ccc65b48635110e635117515dfc623d7887848690a62e4640d11071abfab",
+    "red_log_sha256": "62c2a0773efc20c793fd81be2711d15c7de3ac63f5fc143b972adbcd57f30df6",
+    "second_green_log_sha256": "6a93c7df3360af03b7e7fad5138ed473df1b10e0cc10b9728b0ce88f2f73df98",
+    "kind": "scope/diff guard after compilation"
+  },
+  {
+    "id": "new-streaming-codec",
+    "mutation": [
+      [
+        "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/StreamingSpReader.java",
+        null,
+        "package io.github.gustavo2358.lower.adapters.sp; final class StreamingSpReader {}\n"
+      ]
+    ],
+    "expected_oracle": "PRODUCTION_SCOPE unexpected source",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "PRODUCTION_SCOPE unexpected source adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/StreamingSpReader.java",
+    "baseline_digest": "20ad4f0a5fb49d9aaf1697fe0b8e85416bb628ae3e23157828ce0c572f91b554",
+    "restored_digest": "20ad4f0a5fb49d9aaf1697fe0b8e85416bb628ae3e23157828ce0c572f91b554",
+    "restoration_status": "RESTORED",
+    "green_exit_code": 0,
+    "green_command": "compiled isolated scope production challenge; pinned m2",
+    "baseline_log_sha256": "d1743a6ffb80ce3f04c237ba6bd9b7cd783555b11ae87fff7f9de3abc62691ae",
+    "red_log_sha256": "8255109fbedc3a0e0d56d4d17c5427378bb18987e0946fc7a3336d6b2af0a33d",
+    "second_green_log_sha256": "b2a2c7659ab7e5c23ca6e4de3d92dd09880b0155976546cdbc94baa761a866fc",
+    "kind": "scope/diff guard after compilation"
+  }
+]

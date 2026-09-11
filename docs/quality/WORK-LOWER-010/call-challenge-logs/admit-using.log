@@ -1,0 +1,5 @@
+Exception in thread "main" java.lang.AssertionError: CP6 USING: SUCCESS
+	at io.github.gustavo2358.lower.testing.CallOracle.check(CallOracle.java:15)
+	at io.github.gustavo2358.lower.testing.CallSuite.rejected(CallSuite.java:56)
+	at io.github.gustavo2358.lower.testing.CallSuite.run(CallSuite.java:42)
+	at io.github.gustavo2358.lower.testing.CallSuite.main(CallSuite.java:69)

@@ -1,0 +1,3 @@
+# Raw execution evidence must retain logger whitespace and exact patch bytes.
+*.log -text -whitespace
+*.patch -text -whitespace

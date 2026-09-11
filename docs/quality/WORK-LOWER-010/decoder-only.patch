@@ -1,0 +1,208 @@
+diff --git a/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java b/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java
+index c845cee..7fadb15 100644
+--- a/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java
++++ b/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/Materialize.java
+@@ -44,6 +44,60 @@ final class Materialize {
+             case Wire12.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+         };
+     }
++    static SpInput input(Wire13.Document d) {
++        var unit = unitKey(d.unit(), null);
++        return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
++            var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
++            return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
++                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar);
++        }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
++            d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit));
++    }
++    private static StatementFact statement(Wire13.StatementDocument value, UnitKey unit) {
++        var h = statementHeader(value.header(), unit);
++        return switch (value) {
++            case Wire13.GobackDocument v -> new GobackFact(h, v.exit(), v.localContinuation());
++            case Wire13.MoveDocument v -> {
++                var source = v.source(); var target = v.target(); var binding = target.binding(); var next = v.normalContinuation();
++                yield new MoveFact(h, new LiteralSource(new OperandId(h.id(), source.id()), source.kind(),
++                    Optional.ofNullable(source.logicalValue()).map(t -> new LogicalValue(t.logicalDomain(), t.value(), t.logicalExtent())), provenance(source.provenance(), unit)),
++                    new DataReference(new OperandId(h.id(), target.id()), target.role(),
++                        new Binding(switch (binding.status()) {
++                            case RESOLVED -> ResolutionStatus.RESOLVED; case AMBIGUOUS -> ResolutionStatus.AMBIGUOUS;
++                            case UNRESOLVED -> ResolutionStatus.UNRESOLVED; case INPUT_MISSING -> ResolutionStatus.INPUT_MISSING;
++                        }, binding.candidates().stream().map(c -> new DataId(unit, c.id())).toList(),
++                            Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())), binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
++                        Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit)),
++                    v.copySemantics(), continuation(next, unit), Optional.ofNullable(v.textAdjustment()).map(a -> new TextAdjustment(a.rule(), a.receiverExtent(), logical(a.result()), provenance(a.provenance(), unit))));
++            }
++            case Wire13.CallDocument v -> {
++                CallTarget target = switch (v.target()) {
++                    case Wire13.DataTargetDocument d -> new DataCallTarget(reference(d.reference(), h.id(), unit));
++                    case Wire13.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(), l.id()), l.text(), l.writtenText(),
++                        Optional.ofNullable(l.logicalValue()).map(Materialize::logical), provenance(l.provenance(), unit));
++                };
++                var s = v.surface();
++                yield new CallFact(h, v.syntax(), target, v.runtimeTarget(), v.runtimeUncertaintyCode(), continuation(v.normalContinuation(), unit),
++                    new CallSurface(s.using(), Optional.ofNullable(s.argumentCount()), s.returning(), s.onException(), s.notOnException(), s.onOverflow()), v.effects(), v.outcomes());
++            }
++            case Wire13.IfDocument v -> new OtherStatement(h, Variant.IF);
++            case Wire13.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
++        };
++    }
++    private static LogicalValue logical(Wire13.LogicalDocument value) {
++        return new LogicalValue(value.logicalDomain(), value.value(), value.logicalExtent());
++    }
++    private static NormalContinuation continuation(Wire13.ContinuationDocument next, UnitKey unit) {
++        return new NormalContinuation(next.availability(), Optional.ofNullable(next.statement()).map(id -> new StatementId(unit, id)), provenance(next.provenance(), unit));
++    }
++    private static DataReference reference(Wire13.ReferenceDocument target, StatementId statement, UnitKey unit) {
++        var binding = target.binding();
++        return new DataReference(new OperandId(statement, target.id()), target.role(),
++            new Binding(ResolutionStatus.valueOf(binding.status().name()), binding.candidates().stream().map(c -> new DataId(unit, c.id())).toList(),
++                Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())),
++                binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
++            Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit));
++    }
+     private static StatementFact statement(Wire.StatementDocument value, UnitKey unit) {
+         return switch (value) {
+             case Wire.GobackFactDocument v -> gobackFact(v, unit);
+diff --git a/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java b/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java
+index 8ad357e..a190cb6 100644
+--- a/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java
++++ b/adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java
+@@ -99,6 +99,10 @@ public final class SpJsonDecoder {
+                     var wire = mapper.treeToValue(node, Wire12.Document.class);
+                     requirePhysical(wire, "$", meter); requireCoherent12(wire); input = Materialize.input(wire);
+                 }
++                case "1.3.0" -> {
++                    var wire = mapper.treeToValue(node, Wire13.Document.class);
++                    requirePhysical(wire, "$", meter); requireCoherent13(wire); input = Materialize.input(wire);
++                }
+                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
+             }
+             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
+@@ -127,6 +131,8 @@ public final class SpJsonDecoder {
+         }
+         for (int i = 0; i < wire.statements().size(); i++) {
+             if (!(wire.statements().get(i) instanceof Wire12.MoveDocument move)) continue;
++            if (move.copySemantics() == SpInput.CopySemantics.FITTED_TEXT)
++                throw new PhysicalShape("$/statements/" + i + "/copySemantics (1.2)");
+             var source = move.source(); var logical = source.logicalValue();
+             if (logical == null) continue;
+             if (source.kind() != SpInput.LiteralKind.ALPHANUMERIC)
+@@ -139,6 +145,28 @@ public final class SpJsonDecoder {
+         }
+     }
+ 
++    private static void requireCoherent13(Wire13.Document wire) {
++        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
++            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
++        for (var statement : wire.statements()) {
++            if (statement instanceof Wire13.MoveDocument m && m.source().logicalValue() != null) {
++                var value = m.source().logicalValue();
++                if (m.source().kind() != SpInput.LiteralKind.ALPHANUMERIC || !m.source().value().equals(value.value()))
++                    throw new PhysicalShape("$/statements/source/logicalValue");
++                logical13(value);
++            }
++            if (statement instanceof Wire13.MoveDocument m && m.textAdjustment() != null) logical13(m.textAdjustment().result());
++            if (statement instanceof Wire13.CallDocument c && c.target() instanceof Wire13.LiteralTargetDocument l && l.logicalValue() != null) {
++                logical13(l.logicalValue());
++                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
++            }
++        }
++    }
++    private static void logical13(Wire13.LogicalDocument value) {
++        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
++            throw new PhysicalShape("$/logicalValue/logicalExtent");
++    }
++
+     private static Rejected reject(Code code, String location) {
+         return new Rejected(new Diagnostic(code, "physical", location));
+     }
+diff --git a/core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java b/core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java
+index 2691e92..f3d834d 100644
+--- a/core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java
++++ b/core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java
+@@ -17,7 +17,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
+         Objects.requireNonNull(entryInventory, "entryInventory");
+     }
+     /** Typed consumed variants; unsupported occurrences remain explicit. */
+-    public sealed interface StatementFact permits GobackFact, MoveFact, OtherStatement { StatementHeader header(); }
++    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, OtherStatement { StatementHeader header(); }
+ 
+     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
+     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
+@@ -157,7 +157,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
+     public enum LogicalDomain { TEXT }
+     public enum StorageClass { WORKING_STORAGE }
+     public enum DeclarationScope { LOCAL }
+-    public enum CopySemantics { FULL_IDENTITY, UNAVAILABLE }
++    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, UNAVAILABLE }
+     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
+     public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
+     public enum OperandRole { READ, WRITE, CALL_TARGET }
+@@ -174,8 +174,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
+     public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) {
+         public LiteralSource { Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
+     }
+-    public record Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected) {
+-        public Binding { Objects.requireNonNull(status); candidates = List.copyOf(candidates); Objects.requireNonNull(selected); }
++    public enum ResolutionReason { UNIQUE_VISIBLE_DECLARATION, QUALIFIED_HIERARCHY_MATCH, MULTIPLE_VALID_CANDIDATES,
++        DECLARATION_NOT_FOUND, INPUT_INCOMPLETE, UNSUPPORTED_GRAMMAR_FORM, UNSUPPORTED_DIALECT_OPTION, INVALID_NAMESPACE_FOR_CONTEXT }
++    public record Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected,
++                          Optional<ResolutionReason> reason, List<String> candidateNames) {
++        public Binding(ResolutionStatus status, List<DataId> candidates, Optional<DataId> selected) {
++            this(status, candidates, selected, Optional.empty(), List.of());
++        }
++        public Binding { Objects.requireNonNull(status); candidates = List.copyOf(candidates); Objects.requireNonNull(selected);
++            Objects.requireNonNull(reason); candidateNames = List.copyOf(candidateNames); }
+     }
+     public record WholeItemAccess(DataId data) {
+         public WholeItemAccess { Objects.requireNonNull(data); }
+@@ -186,8 +193,47 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
+     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
+         public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }
+     }
+-    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) implements StatementFact {
+-        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); }
++    public enum TextAdjustmentRule { RIGHT_PAD_SPACE }
++    public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, LogicalValue result, Provenance provenance) {
++        public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
++    }
++    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics,
++                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) implements StatementFact {
++        public MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
++            this(header, source, target, copySemantics, normalContinuation, Optional.empty());
++        }
++        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
++    }
++
++    public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }
++    public enum RuntimeTargetKnowledge { UNKNOWN }
++    public enum ClausePresence { ABSENT, PRESENT, UNKNOWN }
++    public enum CallEffects { UNKNOWN }
++    public enum CallOutcomes { OPEN }
++    public sealed interface CallTarget permits LiteralCallTarget, DataCallTarget {
++        OperandId id(); Provenance provenance();
++    }
++    public record LiteralCallTarget(OperandId id, String text, String writtenText, Optional<LogicalValue> logicalValue,
++                                    Provenance provenance) implements CallTarget {
++        public LiteralCallTarget { Objects.requireNonNull(id); Objects.requireNonNull(text); Objects.requireNonNull(writtenText);
++            Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
++    }
++    public record DataCallTarget(DataReference reference) implements CallTarget {
++        public DataCallTarget { Objects.requireNonNull(reference); }
++        @Override public OperandId id() { return reference.id(); }
++        @Override public Provenance provenance() { return reference.provenance(); }
++    }
++    public record CallSurface(ClausePresence using, Optional<Integer> argumentCount, ClausePresence returning,
++                              ClausePresence onException, ClausePresence notOnException, ClausePresence onOverflow) {
++        public CallSurface { Objects.requireNonNull(using); Objects.requireNonNull(argumentCount); Objects.requireNonNull(returning);
++            Objects.requireNonNull(onException); Objects.requireNonNull(notOnException); Objects.requireNonNull(onOverflow); }
++    }
++    public record CallFact(StatementHeader header, CallSyntax syntax, CallTarget target, RuntimeTargetKnowledge runtimeTarget,
++                           String runtimeUncertaintyCode, NormalContinuation normalContinuation, CallSurface surface,
++                           CallEffects effects, CallOutcomes outcomes) implements StatementFact {
++        public CallFact { Objects.requireNonNull(header); Objects.requireNonNull(syntax); Objects.requireNonNull(target);
++            Objects.requireNonNull(runtimeTarget); Objects.requireNonNull(runtimeUncertaintyCode); Objects.requireNonNull(normalContinuation);
++            Objects.requireNonNull(surface); Objects.requireNonNull(effects); Objects.requireNonNull(outcomes); }
+     }
+ 
+     public record OtherStatement(StatementHeader header, Variant variant) implements StatementFact {
