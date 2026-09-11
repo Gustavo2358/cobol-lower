@@ -12,26 +12,53 @@ import run as harness
 from architecture import source_errors, dependency_errors, output_boundary_errors
 
 class AirOutputGate(unittest.TestCase):
+    def test_w1b_tree_receipt_must_match_pin(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory)
+            jar = build/'m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar'
+            codec = jar.parents[2]/'air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar'
+            jar.parent.mkdir(parents=True); codec.parent.mkdir(parents=True)
+            jar.write_bytes(b'model'); codec.write_bytes(b'codec')
+            pin = dict(commit='a'*40, tree='b'*40)
+            receipt = dict(commit=pin['commit'], source_tree=pin['tree'], jar_sha256=harness.digest(jar.read_bytes()),
+                           codec_sha256=harness.digest(codec.read_bytes()),
+                           source_lock_sha256=harness.digest((ROOT/'docs/sources/sources.lock.json').read_bytes()))
+            with patch.object(harness, 'build_root', return_value=build), patch.object(harness, 'source', return_value=pin), patch.object(harness, 'read_data', return_value=receipt):
+                self.assertEqual(jar, harness.verify_dependency())
+                receipt['source_tree'] = 'c'*40
+                with self.assertRaisesRegex(RuntimeError, 'source tree differs'):
+                    harness.verify_dependency()
+                del receipt['source_tree']
+                with self.assertRaisesRegex(RuntimeError, 'source tree differs'):
+                    harness.verify_dependency()
+    def test_call_suites_cannot_be_skipped(self):
+        prefix = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\n'
+        for name in ('LOWER_CALL_TESTS', 'LOWER_CALL_INTEGRATION_TESTS'):
+            other = 'LOWER_CALL_INTEGRATION_TESTS' if name == 'LOWER_CALL_TESTS' else 'LOWER_CALL_TESTS'
+            for marker in ('', name + '=0\n', name + '=1\n' + name + '=1\n'):
+                with self.subTest(name=name, marker=marker), patch.object(harness, 'verify_dependency'), patch.object(harness, 'maven', return_value=[]), patch.object(harness, 'run', return_value=prefix + other + '=1\n' + marker):
+                    with self.assertRaisesRegex(RuntimeError, 'CALL tests absent/zero/duplicate: ' + name):
+                        harness.semantic()
     def test_missing_zero_or_duplicate_suite_rejected(self):
-        for marker in ('', 'LOWER_AIR_OUTPUT_TESTS=0\n', 'LOWER_AIR_OUTPUT_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\n'):
+        for marker in ('', 'LOWER_AIR_OUTPUT_TESTS=0\n', 'LOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\n'):
             with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\n'+marker):
                 with self.assertRaisesRegex(RuntimeError,'AIR output tests absent/zero/duplicate'):
                     harness.semantic()
     def test_output_suite_present(self):
-        with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'):
+        with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'):
             harness.semantic()
     def test_production_probe_is_mandatory(self):
-        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\n'
+        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\n'
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
             with self.assertRaisesRegex(RuntimeError,'production path probe absent/zero'):
                 harness.semantic()
     def test_production_limit_order_is_mandatory_in_performance(self):
-        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'
+        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
             with self.assertRaisesRegex(RuntimeError,'production capacity probe absent'):
                 harness.semantic(('-Dlower.performance=true',))
     def test_capacity_proof_is_mandatory_in_performance(self):
-        prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
+        prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
                   'PRODUCTION_SUCCESS_PROBE data=400 moves=400\nPRODUCTION_CAPACITY_PROBE data=1 moves=10000\n')
         for marker in ('', 'LOWER_CAPACITY_TESTS=0\n', 'LOWER_CAPACITY_TESTS=1\nLOWER_CAPACITY_TESTS=1\n', 'LOWER_CAPACITY_TESTS=1\n'):
             with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=prefix+marker):

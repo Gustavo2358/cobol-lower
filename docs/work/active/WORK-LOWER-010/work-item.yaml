@@ -1,0 +1,99 @@
+schema_version: 1
+id: WORK-LOWER-010
+title: CP6 W1C — lower Semantic Product CALL to AIR Invoke
+status: active
+risk: high
+goal: Consume SP 1.3.0, fitted text MOVE and one literal/data CALL with explicit normal
+  GOBACK continuation; emit neutral AIR Invoke and canonical AIR JSON.
+authorization:
+  state: granted
+  scope: implementation; CP6 W1C only, internally CP0; cobol-lower product/tests/docs/pins/harness;
+    real upstream execution read-only; commit, push, Draft PR, exact-head CI; no merge
+  execution_mode: single-checkpoint
+  authority: Explicit user request 2026-09-11, pasted CP6 W1C authorization and continuation;
+    W1B PR9 MERGED confirmed before branch creation.
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids:
+- BACKLOG-LOWER-008
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- docs/engineering/semantic-analysis-policy.md
+- docs/engineering/research-and-evidence.md
+- docs/domain/first-slice-entry-goback.md
+- docs/domain/identity-and-provenance.md
+- docs/sources/sources.lock.json
+- docs/architecture/extensibility.md
+- docs/engineering/change-control.md
+- docs/evals/fixtures.md
+- docs/domain/scalar-text-move.md
+- docs/domain/semantic-input-contract.md
+- docs/domain/validation-and-results.md
+related_domain_rules: []
+related_decisions: []
+related_invariants:
+- INV-LWR-007
+- INV-LWR-017
+- INV-LWR-021
+evals: &id002
+- EVAL-LWR-007
+- EVAL-LWR-015
+- EVAL-LWR-018
+source_scope:
+- core/src/main/java
+- adapters/src/main/java
+test_scope:
+- core/src/test
+- adapters/src/test
+- core/pom.xml
+- adapters/pom.xml
+- scripts/harness
+- .github/workflows/checkpoint.yml
+docs_scope:
+- README.md
+- ARCHITECTURE.md
+- docs/domain
+- docs/engineering/change-control.md
+- docs/sources/sources.lock.json
+- docs/sources/upstream-state.md
+- docs/evals
+- docs/work
+- docs/quality/WORK-LOWER-010
+must_not_change:
+- Sibling repositories and aggregate root; historical evidence and fixtures
+- No SP compatibility architecture, runtime-name interpretation, previous-MOVE tracing,
+  PossibleValues, CFG or dependency product
+- AIR normative/model/validator/codec and Maven coordinates
+- W1D/W2 not authorized; no merge/auto-merge/reset/clean/stash/force push
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Implement CP6 W1C, verify and open Draft PR for human review; W1D not started
+  depends_on: []
+  gates: *id001
+  evals: *id002
+  status: active
+git:
+  branch: feat/cp6-w1c-call-lowering
+  pull_request: 11
+  one_pr_per_work_item: true
+  merge_authorized: false
+  suggested_branch: feat/cp6-w1c-call-lowering

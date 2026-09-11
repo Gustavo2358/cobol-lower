@@ -1,0 +1,9 @@
+2026-09-11T14:44:28.580-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=5123e076-b8e8-4bff-ba96-1b1350c51b79 source=dynamic-x5.cbl programUnit=none event=analysis_started phase=ANALYSIS output=/tmp/cp6-w1c/real-e2e/dynamic-x5-2
+2026-09-11T14:44:29.262-03:00 level=WARN logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=5123e076-b8e8-4bff-ba96-1b1350c51b79 source=dynamic-x5.cbl programUnit=CALLER event=analysis_degraded phase=REFERENCE_RESOLUTION gaps=1 blockingReasons=[DYNAMIC_CALL_TARGET_VALUE_UNKNOWN] reason=RESOLUTION_GAPS fallback=RESULT_PUBLISHED_WITH_GAPS impact=DEPENDENCY_ANALYSIS_NOT_READY statusCounts={RESOLVED=2, UNRESOLVED=0, UNSUPPORTED=0, EXTERNAL_OBSERVED=0, AMBIGUOUS=0}
+Generated /tmp/cp6-w1c/real-e2e/dynamic-x5-2/index.html, /tmp/cp6-w1c/real-e2e/dynamic-x5-2/ast.html, /tmp/cp6-w1c/real-e2e/dynamic-x5-2/symbols.html and /tmp/cp6-w1c/real-e2e/dynamic-x5-2/resolution.html
+Source: dynamic-x5.cbl
+Parse tree: 81 nodes | 45 tokens | depth 15
+AST: 17 nodes | depth 5 | literal-target CALLs 0
+Symbols: 2 declarations | 8 scopes | 0 diagnostics | parser errors 0
+Reference binding: 2 entries | 1 gaps | dependency analysis ready: false
+2026-09-11T14:44:29.263-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=5123e076-b8e8-4bff-ba96-1b1350c51b79 source=dynamic-x5.cbl programUnit=CALLER event=analysis_completed phase=ANALYSIS elapsedMs=697 programUnits=1 references=2 gaps=1 dependencyAnalysisReady=false output=/tmp/cp6-w1c/real-e2e/dynamic-x5-2

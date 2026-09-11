@@ -43,6 +43,10 @@ final class CanonicalRevision {
             e.word(target.wholeItemAccess().orElseThrow().data().handle()); e.symbol(m.copySemantics());
             e.symbol(m.normalContinuation().availability()); e.statementId(m.normalContinuation().statement().orElseThrow());
             e.provenance(m.normalContinuation().provenance());
+            m.textAdjustment().ifPresent(a -> {
+                e.word("FITTED_TEXT"); e.symbol(a.rule()); e.number(a.receiverExtent());
+                e.word(a.result().value()); e.number(a.result().logicalExtent()); e.provenance(a.provenance());
+            });
         });
         e.word("GOBACK"); e.scalarHeader(terminal.header()); e.symbol(terminal.exit()); e.symbol(terminal.localContinuation());
         var entry = input.entryInventory().entries().getFirst();
@@ -52,6 +56,32 @@ final class CanonicalRevision {
         e.symbol(input.entryInventory().status()); e.symbol(input.entryInventory().scope());
         e.list(input.entryInventory().gapCodes(), e::word);
         e.list(input.gaps(), g -> { e.statementId(g.statement()); e.symbol(g.scope()); e.word(g.code()); e.word(g.detail()); e.provenance(g.provenance()); });
+        return Optional.of(e.finish());
+    }
+    static Optional<String> call(SpInput input, CallAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision();
+        e.word("cp6-call@1/AIR2/SP1.3/xxh3-128-v1/"); e.word(LocalIds.POLICY);
+        // Domain-separated fixed-size fingerprint of the shared DATA/MOVE/entry/return facts.
+        e.word(scalar(input, plan.data(), plan.moves(), plan.terminal().orElseThrow(), maximum).orElseThrow());
+        var call = plan.call().orElseThrow(); e.scalarHeader(call.header()); e.symbol(call.syntax());
+        e.word(call.target().id().handle()); e.provenance(call.target().provenance());
+        switch (call.target()) {
+            case LiteralCallTarget l -> {
+                e.word("LITERAL"); e.word(l.text()); e.word(l.writtenText());
+                var v = l.logicalValue().orElseThrow(); e.symbol(v.logicalDomain()); e.word(v.value()); e.number(v.logicalExtent());
+            }
+            case DataCallTarget d -> {
+                e.word("DATA"); var r = d.reference(); e.symbol(r.role()); var b = r.binding(); e.symbol(b.status());
+                e.list(b.candidates(), id -> e.word(id.handle())); e.optional(b.selected(), id -> e.word(id.handle()));
+                e.optional(b.reason(), e::symbol); e.list(b.candidateNames(), e::word);
+                e.word(r.wholeItemAccess().orElseThrow().data().handle());
+            }
+        }
+        var next = call.normalContinuation(); e.symbol(next.availability()); e.statementId(next.statement().orElseThrow()); e.provenance(next.provenance());
+        var surface = call.surface(); e.symbol(surface.using()); e.optional(surface.argumentCount(), e::number); e.symbol(surface.returning());
+        e.symbol(surface.onException()); e.symbol(surface.notOnException()); e.symbol(surface.onOverflow());
+        e.symbol(call.runtimeTarget()); e.word(call.runtimeUncertaintyCode()); e.symbol(call.effects()); e.symbol(call.outcomes());
         return Optional.of(e.finish());
     }
     private void scalarHeader(StatementHeader h) { statementId(h.id()); provenance(h.provenance()); symbol(h.coverage()); }

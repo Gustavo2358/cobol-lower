@@ -1,0 +1,5 @@
+Exception in thread "main" java.lang.AssertionError: CP6 raw fitted/identity assigned text
+	at io.github.gustavo2358.lower.testing.CallOracle.check(CallOracle.java:15)
+	at io.github.gustavo2358.lower.testing.CallOracle.inspect(CallOracle.java:73)
+	at io.github.gustavo2358.lower.testing.CallSuite.run(CallSuite.java:17)
+	at io.github.gustavo2358.lower.testing.CallSuite.main(CallSuite.java:69)

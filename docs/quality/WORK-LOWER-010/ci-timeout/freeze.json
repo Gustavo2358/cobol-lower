@@ -1,0 +1,9 @@
+{
+  "initial_commit": "989637a7fd840f43aaf04abce299c839b82fcb55",
+  "checkpoint": "CP0",
+  "contract_sha256": "1b10a1becaebecae25bbfc2e77073ce5d6c942437e915a1d4688be8b2a576e61",
+  "initial_certificate_sha256": "9ee6a8b163be95d24a1ada4846d24612de83de2e24e2e0f416fbfa13a9a202d7",
+  "original_workflow_sha256": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0",
+  "remote_wait_limit_seconds": 3600,
+  "new_job_timeout_minutes": 45
+}

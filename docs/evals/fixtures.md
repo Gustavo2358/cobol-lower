@@ -23,3 +23,11 @@ Escrever manualmente o alvo AIR e as relações relevantes. A comparação deve 
 ## Distribuição
 
 Não depender de nome fixo de pasta irmã ou cwd oculto. Fixtures locais têm paths relativos de teste; checkout externo é explicitamente configurado. Não copiar corpus confidencial. Atualizar digest/manifesto/expected em commit explicado quando mudar baseline.
+
+## CP6 W1C
+
+`adapters/src/test/resources/sp/cp6/` contém fontes COBOL e SP1.3 capturados do
+W1A fixo; `scripts/harness/w1c_e2e.py` verifica duas execuções byte-idênticas sem
+injeção de CALL. CallInputs é a porta em memória, CallOracle é o oracle relacional
+independente; CallIntegrationSuite cobre decoder, negativos, CLI, validator e
+codec W1B. [Contrato e limites](../domain/call-lowering.md).

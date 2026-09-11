@@ -1,0 +1,949 @@
+{
+  "producer_sha": "53d774026a1e4bcd969c7783a1d277aaa87b5f2f",
+  "producer_tree": "a43f0fc4ef8a227d47f012b9fcb4e410842ffcc0",
+  "cases": [
+    {
+      "fixture": "ambiguous",
+      "source_sha256": "036ab36d0f82d5cb28d96cb3bb93356f3bd1018ee8638a612934c67b0a0e01d3",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "b02727c794fb27e1a3d9cc2c9ccfc56887d8eefd9991b80e693f5a92fc7f3d56",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "ambiguous.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/ambiguous-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "b02727c794fb27e1a3d9cc2c9ccfc56887d8eefd9991b80e693f5a92fc7f3d56",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "ambiguous.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/ambiguous-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "dynamic-no-move",
+      "source_sha256": "4d038880fb2931a9ef98af18172eb74a89a1b4f305637a1f646eb1806acf347c",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "e8154804671967305eed214b64c7a3be44a3e441426688635d2442221d3375cc",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-no-move.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-no-move-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "e8154804671967305eed214b64c7a3be44a3e441426688635d2442221d3375cc",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-no-move.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-no-move-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "dynamic-other",
+      "source_sha256": "1076c85389443190b12cc049301a5f308cb2a7d84afa91ae9d1005e7b4976af3",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "772a3c855c305d2bf6e924167813e4373242083f66c3554927d1d0d4644248dc",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-other.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-other-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "772a3c855c305d2bf6e924167813e4373242083f66c3554927d1d0d4644248dc",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-other.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-other-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "dynamic-x5",
+      "source_sha256": "c20dd9a39508fc3b3078df372a7cbe081b2ec34873fc2f3624cfdd29b7be0d78",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "8fb581903bd815fa22a6f9cdaa336444c88dc8c83ba2bffc3046a5aed362f790",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-x5.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-x5-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "8fb581903bd815fa22a6f9cdaa336444c88dc8c83ba2bffc3046a5aed362f790",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-x5.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-x5-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "dynamic-x8",
+      "source_sha256": "e322e5af1ec7dd4380bded9a44329b10e82c0dcc851ad18e61807f8475847725",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "e45c6fe191c6e9be4b35da793663fc908b0b600c848a236d797170e286614010",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-x8.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-x8-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "e45c6fe191c6e9be4b35da793663fc908b0b600c848a236d797170e286614010",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "dynamic-x8.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/dynamic-x8-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "evaluate",
+      "source_sha256": "0a33022010a3287d3b272fa19e25ac5e0fa62bb6354d4a9c36e9569445ef3bae",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "fda8789f80f4b56a5ff8ec0f498ce2fa1176d94760e50ecaf72ebbbb2e7b4aff",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "evaluate.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/evaluate-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "fda8789f80f4b56a5ff8ec0f498ce2fa1176d94760e50ecaf72ebbbb2e7b4aff",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "evaluate.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/evaluate-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "goto",
+      "source_sha256": "67fd4fcee6aa8df23b1c95f3477cadc12ff239ff50723d7adb52186886ee08bc",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "abf584ef625c96b3180df69dedb07f8a55a1d539babab0c972735c8fb635c957",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "goto.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/goto-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "abf584ef625c96b3180df69dedb07f8a55a1d539babab0c972735c8fb635c957",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "goto.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/goto-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "if",
+      "source_sha256": "4deee1bac7ed9d575bce5999ea21b86148fc8eb27bc49b3ed09b545058b5bbc7",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "cd79dda8ebfd8b5eade6c61935c5f9110fdb1a383243c1ee60b2955533c8e669",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "if.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/if-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "cd79dda8ebfd8b5eade6c61935c5f9110fdb1a383243c1ee60b2955533c8e669",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "if.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/if-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "incomplete",
+      "source_sha256": "a4a1bfa6e2647f3acff64788d9a6bd1eff2dd8ea351936e3496e3126eca427bd",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "69456c2d497dbf683bf9b1ad48f16f2743080a95a0a2f7871291d70f9a50d49e",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "incomplete.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/incomplete-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "69456c2d497dbf683bf9b1ad48f16f2743080a95a0a2f7871291d70f9a50d49e",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "incomplete.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/incomplete-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "literal-raw",
+      "source_sha256": "6a48ce9846a2ed52e92bd727703258b81f620e17b5c69cd02e2cfeed3ca1678e",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "3bf8081cc97798703a578205a3a9197481c3f59f5a3abf1008c74a3fc546ae97",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "literal-raw.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/literal-raw-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "3bf8081cc97798703a578205a3a9197481c3f59f5a3abf1008c74a3fc546ae97",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "literal-raw.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/literal-raw-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "literal",
+      "source_sha256": "dde454f21d80fb95b5653fbb4166de61e05c6f4a457362328f24dd69adc239b9",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "e88bb1029fd184e3dabefd28bf37cdea99193630a9f5caeeebc1bd00e56870a1",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "literal.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/literal-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "e88bb1029fd184e3dabefd28bf37cdea99193630a9f5caeeebc1bd00e56870a1",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "literal.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/literal-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "no-continuation",
+      "source_sha256": "efc28dca6c49b647364cd5d2e83c9b4ad0c34c38987845ca67e90b65a0c8204c",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "aebcb9e9f6efac3d3f4d1b4826e47b5f14f5031b4c122a268145597eca5ae00a",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "no-continuation.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/no-continuation-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "aebcb9e9f6efac3d3f4d1b4826e47b5f14f5031b4c122a268145597eca5ae00a",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "no-continuation.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/no-continuation-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "not-on-exception",
+      "source_sha256": "cc02f67c99ab4d913c183e903f47a17c66b92624bdddc967a8ae855cb350cd97",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "4a1e6ded6bde1302b9bb4e233e3f9168f853f2a0f17ad334f026a78fc1c738b2",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "not-on-exception.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/not-on-exception-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "4a1e6ded6bde1302b9bb4e233e3f9168f853f2a0f17ad334f026a78fc1c738b2",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "not-on-exception.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/not-on-exception-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "on-exception",
+      "source_sha256": "74ab43d92bca23f70f79e045befa8cbb7c4f9d6f94dc5d2f4e348db9dcd92e16",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "5c0fe11e903a1779e4f3cc55c2c19297ffe84755df4ed22984fa14dda4da2122",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "on-exception.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/on-exception-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "5c0fe11e903a1779e4f3cc55c2c19297ffe84755df4ed22984fa14dda4da2122",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "on-exception.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/on-exception-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "on-overflow",
+      "source_sha256": "d97a6c07c994bb1c35ea1f74edead1cd6e09ac54d80bbe642aa09fdc549ee09b",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "71a16d10de24ce373815d86c6398a0b563eeb52dc2debce146315fe5473cc6df",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "on-overflow.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/on-overflow-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "71a16d10de24ce373815d86c6398a0b563eeb52dc2debce146315fe5473cc6df",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "on-overflow.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/on-overflow-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "perform",
+      "source_sha256": "5ae80a9466d21d855b2fe52180f9f8f1134ed67d2dbf9d7528f10e9533df8e55",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "67493034dbc9019380076364574b95b517afeaec3acb6fd7d8bcce99f1da77d7",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "perform.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/perform-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "67493034dbc9019380076364574b95b517afeaec3acb6fd7d8bcce99f1da77d7",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "perform.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/perform-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "refmod",
+      "source_sha256": "b3f7458a1c0b0bf1a909b10d5013400ccf8dafb341b37584b796fecf4d79b985",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "6c871cdb39ca061abcacb64b9499150f466ff28cd387a279744d3d21238b8cf7",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "refmod.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/refmod-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "6c871cdb39ca061abcacb64b9499150f466ff28cd387a279744d3d21238b8cf7",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "refmod.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/refmod-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "returning",
+      "source_sha256": "5e141743f835758d5ca83615a8af8b11ee9afb58e83c91c9c65eff12d9bb1090",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "4251b8b4dd0680381cfae0c37a7db524ed3da910f466fe22e5d40640c5eb2f99",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "returning.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/returning-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "4251b8b4dd0680381cfae0c37a7db524ed3da910f466fe22e5d40640c5eb2f99",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "returning.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/returning-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "subscript",
+      "source_sha256": "c6a26b7f16a6d3244e7821e816b66a9b1576c86ca8879b69736c8bda9d489672",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "550f63a9bb066ed889f3114227ddc777a8053ed9ae8a06c5467e830168fdd90f",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "subscript.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/subscript-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "550f63a9bb066ed889f3114227ddc777a8053ed9ae8a06c5467e830168fdd90f",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "subscript.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/subscript-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "truncation",
+      "source_sha256": "aeb927f0cee9ecebd36cd9ef0f51588f054510bad3eafedc920515668d1044bd",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "ccf2d0df31d3ba35e4317ffafed5ed4ec74b4dbbe1d5ecd6b9cdf56db8534ebb",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "truncation.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/truncation-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "ccf2d0df31d3ba35e4317ffafed5ed4ec74b4dbbe1d5ecd6b9cdf56db8534ebb",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "truncation.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/truncation-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "two-data",
+      "source_sha256": "7637b6e2dd8c27ecde2384a7d04ac89cdcb62730d820fc7824360f7277dce73e",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "171298abea9d4dfe295bc377e2f6eb2949d85aa0313c008f43e54ad1fbc91dad",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "two-data.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/two-data-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "171298abea9d4dfe295bc377e2f6eb2949d85aa0313c008f43e54ad1fbc91dad",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "two-data.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/two-data-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "unresolved",
+      "source_sha256": "d17a292dfaa1c4f1aaae490bfc94b61cd2d792d7ed6156894b159fa7d15c9869",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "092561f84e646ea42366320a17bb1568a7e24d6749ec870854db9aecc18a29dd",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "unresolved.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/unresolved-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "092561f84e646ea42366320a17bb1568a7e24d6749ec870854db9aecc18a29dd",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "unresolved.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/unresolved-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "fixture": "using",
+      "source_sha256": "acf515568d8488fd9ac481c9ad55fbbf9f6c2aa4aaec2dfdd3a25ae0a6712e47",
+      "runs": [
+        {
+          "run": 1,
+          "exit": 0,
+          "sp_sha256": "23def3c4b1b52f02a675f02832235e4f80516064261564825b9b01a831602baf",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "using.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/using-1"
+          ]
+        },
+        {
+          "run": 2,
+          "exit": 0,
+          "sp_sha256": "23def3c4b1b52f02a675f02832235e4f80516064261564825b9b01a831602baf",
+          "command": [
+            "java",
+            "-cp",
+            "/tmp/cp6-w1c/proleap-poc/target/classes:/tmp/cp6-w1c/m2/org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar:/tmp/cp6-w1c/m2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar:/tmp/cp6-w1c/m2/ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar:/tmp/cp6-w1c/m2/com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar",
+            "io.github.gustavo2358.cobolexplorer.ExplorerMain",
+            "--source",
+            "using.cbl",
+            "--copybooks",
+            "/tmp/cp6-w1c/proleap-poc/corpus/cpy",
+            "--output",
+            "/tmp/cp6-w1c/producer-capture/using-2"
+          ]
+        }
+      ],
+      "deterministic": true
+    }
+  ]
+}

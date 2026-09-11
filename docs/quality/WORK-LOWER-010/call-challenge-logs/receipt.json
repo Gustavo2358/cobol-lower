@@ -1,0 +1,249 @@
+[
+  {
+    "id": "dynamic-to-literal",
+    "mutation": [
+      "InvokeHandler.java",
+      "new Interactions.ComputedTarget(\"program\", \"cobol.program\", read, namePolicy, targetOrigin)",
+      "new Interactions.LiteralTarget(\"program\", \"cobol.program\", \"PROGA\", namePolicy, targetOrigin)"
+    ],
+    "expected_oracle": "dynamic target remains computed",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 dynamic target remains computed",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "ba86f6f597ed9fddbdb95aaf571e6a5fdb53c611b1b4aa0f9bb4427986e66e7f",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "wrong-object",
+    "mutation": [
+      "InvokeHandler.java",
+      "var object = data.get(reference.wholeItemAccess().orElseThrow().data()).object();",
+      "var object = data.values().stream().reduce((a, b) -> b).orElseThrow().object();"
+    ],
+    "expected_oracle": "target ObjectId follows selected DATA",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 target ObjectId follows selected DATA",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "cb024bda2e41519af375306d7c2517056e893add6f84b01cf2d6cc3aa8e8b0ed",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "erase-x8-padding",
+    "mutation": [
+      "MoveHandler.java",
+      "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())",
+      "move.source().logicalValue().orElseThrow().value()"
+    ],
+    "expected_oracle": "raw fitted/identity assigned text",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 raw fitted/identity assigned text",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "ce8cca9b5d932b33c3569cecda6cca3cc0083150685c4be441b949a7ac6a38b1",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "invent-x5-padding",
+    "mutation": [
+      "MoveHandler.java",
+      "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())",
+      "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value() + \"   \")"
+    ],
+    "expected_oracle": "raw fitted/identity assigned text",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 raw fitted/identity assigned text",
+    "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "ce8cca9b5d932b33c3569cecda6cca3cc0083150685c4be441b949a7ac6a38b1",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "wrong-normal-label",
+    "mutation": [
+      "CallSequenceAssembler.java",
+      "data.index(), successor, continuation, unit,",
+      "data.index(), label, continuation, unit,"
+    ],
+    "expected_oracle": "explicit normal destination",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 explicit normal destination",
+    "baseline_digest": "d20e113748c50e78512c68b77ca67ce366ab9d573126aaf5571d9bfe00eacf1a",
+    "restored_digest": "d20e113748c50e78512c68b77ca67ce366ab9d573126aaf5571d9bfe00eacf1a",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "85b8dd2c3547d4749548f08a84723fe57e816d264f39b4bec45f0a9d2e4a5249",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "pure-effects",
+    "mutation": [
+      "InvokeHandler.java",
+      "new Interactions.ForeignEffects(memory, memory, List.of())",
+      "new Interactions.ForeignEffects(Scopes.NoMemory.INSTANCE, Scopes.NoMemory.INSTANCE, List.of())"
+    ],
+    "expected_oracle": "conservative memory effects",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 conservative memory effects",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "0463af15c458fff24a14e4bac41dd7ae41d6e6e1a39c1f5fd713d2a113661fda",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "closed-outcomes",
+    "mutation": [
+      "InvokeHandler.java",
+      "new Scopes.WithinControl(new Scopes.AllControl(unit.publication()))",
+      "Scopes.NoControl.INSTANCE"
+    ],
+    "expected_oracle": "open all-control remainder",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 open all-control remainder",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "e58c3f51800b3f79a018e0a8a3be96be112064ef166b2ff3595e66cd7701427b",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "invented-contract",
+    "mutation": [
+      "InvokeHandler.java",
+      "new Interactions.UnknownContract(contract)",
+      "new Interactions.KnownContract(new Interactions.ContractRef(\"invented\", \"1\", List.of(origin)))"
+    ],
+    "expected_oracle": "unknown contract",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 unknown contract",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "96d535c9a4aa6d15be2215d8efffb3cd1aea7f13f5cd3a2bee21fccb2f40e5f4",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "name-canonicalization",
+    "mutation": [
+      "InvokeHandler.java",
+      "literal.logicalValue().orElseThrow().value(), namePolicy",
+      "literal.logicalValue().orElseThrow().value().strip(), namePolicy"
+    ],
+    "expected_oracle": "literal raw logical text and namespace",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 literal raw logical text and namespace",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "f5da43f9119f0d73e319627bff45a9fcbca960f9c7590338b178a2b525026704",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "exact-name-policy",
+    "mutation": [
+      "InvokeHandler.java",
+      "new Interactions.UnknownName(name)",
+      "Interactions.ExactName.INSTANCE"
+    ],
+    "expected_oracle": "unknown runtime name policy",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 unknown runtime name policy",
+    "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "798760a141973facc4e7884ddc7cbc0a8e92238f8b661d8ca034ed695fc8d289",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "admit-using",
+    "mutation": [
+      "CallAdmission.java",
+      "s.using() == ClausePresence.ABSENT && s.returning()",
+      "true && s.returning()"
+    ],
+    "expected_oracle": "USING: SUCCESS",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 USING: SUCCESS",
+    "baseline_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+    "restored_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "8c1d83ead2869c3c60ea161ef5fc1d1496543828a2165db0de39712062942fc3",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "admit-ambiguous",
+    "mutation": [
+      "CallAdmission.java",
+      "if (call.target() instanceof DataCallTarget d) admitReference(d.reference(), OperandRole.CALL_TARGET, h, c);",
+      "if (call.target() instanceof DataCallTarget d) { /* missing admission */ }"
+    ],
+    "expected_oracle": "ambiguous target",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 ambiguous target",
+    "baseline_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+    "restored_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "0d1988e7b30675cb042a2d5657f3faf073b7eaffb8b12f262829834347b4b43f",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  },
+  {
+    "id": "ignore-call-revision",
+    "mutation": [
+      "CanonicalRevision.java",
+      "e.word(\"LITERAL\"); e.word(l.text()); e.word(l.writtenText());",
+      "e.word(\"LITERAL\"); e.word(\"ignored\"); e.word(\"ignored\");"
+    ],
+    "expected_oracle": "revision includes literal CALL target",
+    "baseline_exit_code": 0,
+    "observed_exit_code": 1,
+    "failure_reason": "java.lang.AssertionError: CP6 revision includes literal CALL target",
+    "baseline_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+    "restored_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+    "restoration_status": "RESTORED",
+    "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+    "green_exit_code": 0,
+    "red_log_sha256": "e1196e19ccb63f88fdf63c00666c2c7b3b583346a539f90c840a6268ebd59f31",
+    "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+  }
+]

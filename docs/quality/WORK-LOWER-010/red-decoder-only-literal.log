@@ -1,0 +1,5 @@
+Decoded real SP1.3; typed CALL=1; lowering=UNSUPPORTED_SLICE; publication=false
+Diagnostic[rule=PROFILE_SHAPE, phase=ADMISSION, severity=ERROR, unit=Optional[UnitKey[compilationUnitId=LITERAL.CBL, structuralPath=[0], canonicalProgramName=CALLER]], subject=inventory, provenance=Optional.empty, requirement=minimal-entry-goback@1 requires zero DATA, one entry and one statement; no filtering]
+Diagnostic[rule=PROFILE_SHAPE, phase=ADMISSION, severity=ERROR, unit=Optional[UnitKey[compilationUnitId=LITERAL.CBL, structuralPath=[0], canonicalProgramName=CALLER]], subject=statement:0, provenance=Optional[Provenance[expanded=Location[file=<preprocessed>, startLine=4, startColumn=4, endLine=4, endColumn=15], original=Location[file=literal.cbl, startLine=4, startColumn=11, endLine=4, endColumn=22], includeChain=[], exact=true]], requirement=Only a typed root GOBACK is supported]
+
+exit=0

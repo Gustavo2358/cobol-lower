@@ -63,6 +63,7 @@ def bootstrap():
     jar = build_root() / "m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar"
     codec = jar.parents[2] / "air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar"
     provenance = dict(repository=src["repository"], commit=src["commit"], jar_sha256=digest(jar.read_bytes()),
+                      source_tree=git(path, "rev-parse", "HEAD^{tree}").decode().strip(),
                       codec_sha256=digest(codec.read_bytes()),
                       source_lock_sha256=digest((ROOT / "docs/sources/sources.lock.json").read_bytes()),
                       java=version.strip())
@@ -76,6 +77,8 @@ def verify_dependency():
     jar = build_root() / "m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar"
     if provenance["commit"] != source()["commit"] or provenance["jar_sha256"] != digest(jar.read_bytes()) or provenance["source_lock_sha256"] != digest((ROOT / "docs/sources/sources.lock.json").read_bytes()):
         raise RuntimeError("unproven or changed air-java artifact")
+    if source().get("tree") is not None and provenance.get("source_tree") != source()["tree"]:
+        raise RuntimeError("air-java source tree differs from pinned merge")
     codec = jar.parents[2] / "air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar"
     if provenance.get("codec_sha256") != digest(codec.read_bytes()):
         raise RuntimeError("unproven or changed air-json artifact")
@@ -92,6 +95,10 @@ def semantic(extra=()):
     output_counts = [int(n) for n in re.findall(r"^LOWER_AIR_OUTPUT_TESTS=([0-9]+)$", output, re.M)]
     if len(output_counts) != 1 or output_counts[0] <= 0:
         raise RuntimeError("AIR output tests absent/zero/duplicate")
+    for marker in ("LOWER_CALL_TESTS", "LOWER_CALL_INTEGRATION_TESTS"):
+        call_counts = re.findall(r"^" + marker + r"=([0-9]+)$", output, re.M)
+        if len(call_counts) != 1 or int(call_counts[0]) <= 0:
+            raise RuntimeError("CALL tests absent/zero/duplicate: " + marker)
     production_counts = re.findall(r"^LOWER_PRODUCTION_TESTS=([0-9]+)$", output, re.M)
     if len(production_counts) != 1 or int(production_counts[0]) <= 0 or "PRODUCTION_SUCCESS_PROBE data=400 moves=400" not in output:
         raise RuntimeError("production path probe absent/zero")
@@ -136,6 +143,7 @@ def challenge():
     run([sys.executable, "scripts/harness/production_challenge.py"])
     run([sys.executable, "scripts/harness/capacity_challenge.py"])
     run([sys.executable, "scripts/harness/ci_bootstrap_challenge.py"])
+    run([sys.executable, "scripts/harness/call_challenge.py"])
 
 
 def full(record, commit=None, mode="execution"):

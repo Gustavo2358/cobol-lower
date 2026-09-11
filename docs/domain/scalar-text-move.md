@@ -97,3 +97,11 @@ com defaults de produção e falha somente no codec AirJson conhecido. D1/D2
 ficam em [BACKLOG-LOWER-017](../work/backlog/BACKLOG-LOWER-017.md) e
 [BACKLOG-LOWER-018](../work/backlog/BACKLOG-LOWER-018.md), planned/NOT STARTED.
 NOT IMPLEMENTED IN 4C. NOT A CLAIM OF LARGE-PROGRAM E2E READINESS.
+
+## Extensão CP6 W1C
+
+O contrato corrente SP1.3 acrescenta FITTED_TEXT com prova publicada. No
+[profile CALL](call-lowering.md), MoveHandler consome o resultado ajustado bruto
+e registra origem derivada. O profile scalar-text-move@1 continua FULL_IDENTITY;
+a admissão CALL seleciona a capacidade adicional e a montagem de duas sequências.
+A coerência copy/adjustment é validada também em memória.

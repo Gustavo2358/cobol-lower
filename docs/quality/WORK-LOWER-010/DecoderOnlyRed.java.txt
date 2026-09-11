@@ -1,0 +1,18 @@
+import java.nio.file.*;
+import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
+import io.github.gustavo2358.lower.adapters.cli.CobolLower;
+import io.github.gustavo2358.lower.application.*;
+import io.github.gustavo2358.lower.domain.SpInput;
+public class DecoderOnlyRed {
+ public static void main(String[] args) throws Exception {
+  var decoded = new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(Files.readAllBytes(Path.of(args[0])));
+  if (!(decoded instanceof SpJsonDecoder.Decoded d)) throw new AssertionError(decoded);
+  long calls=d.input().statements().stream().filter(SpInput.CallFact.class::isInstance).count();
+  if(calls!=1) throw new AssertionError("CALL fact not preserved");
+  var result=new CobolLowerer().lower(d.input(), CobolLower.OPTIONS);
+  System.out.println("Decoded real SP1.3; typed CALL="+calls+"; lowering="+result.status()+"; publication="+result.publication().isPresent());
+  result.admission().diagnostics().forEach(System.out::println);
+  if(result.status()!=LoweringResult.Status.UNSUPPORTED_SLICE || result.publication().isPresent()) throw new AssertionError(result);
+  d.input().statements().stream().filter(SpInput.MoveFact.class::isInstance).map(SpInput.MoveFact.class::cast).forEach(m -> System.out.println("MOVE="+m.copySemantics()+"; adjustment="+m.textAdjustment()));
+ }
+}

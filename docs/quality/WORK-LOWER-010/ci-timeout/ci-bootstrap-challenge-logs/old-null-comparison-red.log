@@ -1,0 +1,28 @@
+test_initial_cp0_selects_historical_head (__main__.CiBootstrap.test_initial_cp0_selects_historical_head) ... FAIL
+
+======================================================================
+FAIL: test_initial_cp0_selects_historical_head (__main__.CiBootstrap.test_initial_cp0_selects_historical_head)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 77, in test_initial_cp0_selects_historical_head
+    record, certified, mode = fixture.select()
+                              ~~~~~~~~~~~~~~^^
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 56, in select
+    return harness.ci_target(self.merge, self.event if event is None else event)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/run.py", line 279, in ci_target
+    raise RuntimeError("CI merge/evidence identity mismatch")
+RuntimeError: CI merge/evidence identity mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 79, in test_initial_cp0_selects_historical_head
+    self.fail('CI_BOOTSTRAP initial CP0 selects historical head: ' + str(error))
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP initial CP0 selects historical head: CI merge/evidence identity mismatch
+
+----------------------------------------------------------------------
+Ran 1 test in 0.040s
+
+FAILED (failures=1)

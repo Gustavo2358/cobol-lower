@@ -1,0 +1,18 @@
+test_null_later_checkpoint_rejected (__main__.CiBootstrap.test_null_later_checkpoint_rejected) ... FAIL
+
+======================================================================
+FAIL: test_null_later_checkpoint_rejected (__main__.CiBootstrap.test_null_later_checkpoint_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 93, in test_null_later_checkpoint_rejected
+    self.rejected(self.fixture({'checkpoint': 'CP1'}), 'null later checkpoint rejected', 'merge/evidence identity')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 71, in rejected
+    self.fail('CI_BOOTSTRAP ' + why)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP null later checkpoint rejected
+
+----------------------------------------------------------------------
+Ran 1 test in 0.041s
+
+FAILED (failures=1)

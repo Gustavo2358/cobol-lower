@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CALLER.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-PGM PIC X(8).
+       01 WS-OTHER PIC X(8).
+       PROCEDURE DIVISION.
+           MOVE 'PROGA' TO WS-PGM.
+           CALL WS-PGM.
+           GOBACK.

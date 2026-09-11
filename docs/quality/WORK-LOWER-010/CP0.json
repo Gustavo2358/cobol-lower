@@ -1,0 +1,2257 @@
+{
+  "schema_version": 2,
+  "template": false,
+  "work_item": "WORK-LOWER-010",
+  "checkpoint": "CP0",
+  "repository": "Gustavo2358/cobol-lower",
+  "branch": "feat/cp6-w1c-call-lowering",
+  "pull_request": 11,
+  "base_commit": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+  "reviewed_head": "989637a7fd840f43aaf04abce299c839b82fcb55",
+  "upstream_sources_lock": "docs/sources/sources.lock.json",
+  "executions": [
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical docs component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical architecture component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical semantic component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 203875,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical performance component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 96,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical full component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (canonical git component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "bootstrap",
+      "required": false,
+      "command": "python3 scripts/harness/run.py bootstrap",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/bootstrap.log"
+    },
+    {
+      "gate": "fast",
+      "required": false,
+      "command": "python3 scripts/harness/run.py fast",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/fast.log"
+    },
+    {
+      "gate": "semantic",
+      "required": false,
+      "command": "mvn -Dmaven.repo.local=/tmp/cp6-w1c/m2 clean verify",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 203875,
+      "log_reference": "docs/quality/WORK-LOWER-010/maven-clean-verify.log"
+    },
+    {
+      "gate": "semantic",
+      "required": false,
+      "command": "python3 scripts/harness/w1c_e2e.py --producer /tmp/cp6-w1c/proleap-poc --m2 /tmp/cp6-w1c/m2 --out /tmp/cp6-w1c/real-e2e --lower",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 4,
+      "log_reference": "docs/quality/WORK-LOWER-010/real-e2e.log"
+    },
+    {
+      "gate": "harness-tests",
+      "required": false,
+      "command": "python3 -m unittest discover -s scripts/harness/tests -v (inside full)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 175,
+      "log_reference": "docs/quality/WORK-LOWER-010/full.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/post-stage-docs.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-010/CP0.json",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated Maven m2 and exact W1B source/artifact receipt",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/post-stage-git.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical docs component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "architecture",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical architecture component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "semantic",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical semantic component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 203875,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "performance",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical performance component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 96,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "full",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical full component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical git component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "harness-tests",
+      "required": false,
+      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical harness-tests component)",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": 175,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
+    },
+    {
+      "gate": "docs",
+      "required": true,
+      "command": "python3 scripts/harness/run.py docs",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/post-full-docs.log"
+    },
+    {
+      "gate": "git",
+      "required": true,
+      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-010/CP0.json",
+      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
+      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
+      "status": "PASS",
+      "exit_code": 0,
+      "test_count": null,
+      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/post-full-git.log"
+    }
+  ],
+  "not_executed": [],
+  "falsifications": [
+    {
+      "id": "RETURN-HALT",
+      "mutation": "new Operations.Return(header, List.of()) -> new Operations.Halt(header, Operations.HaltKind.NORMAL)",
+      "expected_oracle": "typed GOBACK must be Return, never Halt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 typed GOBACK must be Return, never Halt",
+      "baseline_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "restored_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "5de990221ca87ab30d8f61b95186f45bad2ca4aba7e98282913de1c6eab33cdf",
+      "red_output_sha256": "9935443d04ad2559f5632c709f3b7bacd7355adbf580e35a23dae0db14573830",
+      "restored_output_sha256": "62d7978329d02cd313eef0c40c28024108a8906a7b7ea9b0008972958cab41f9",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ]
+    },
+    {
+      "id": "OPEN-COMPLETE",
+      "mutation": "Evidence.InventoryStatus.PARTIAL -> Evidence.InventoryStatus.COMPLETE",
+      "expected_oracle": "alternative entry inventory stays PARTIAL",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP3 alternative entry inventory stays PARTIAL",
+      "baseline_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "restored_digest": "a0f47b78d428ba66eed85f74606a8eecdad22e3388e744ca85811f430a6ebff2",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackLowerer.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "25487f7a3c7fc43011b9dcd4b6e77154f96821788f62af1fa403402bb9217457",
+      "red_output_sha256": "93eaa4853d3e650062f0daed8490aa89dbd84491a09bcac7fa0fffaf1b81dc97",
+      "restored_output_sha256": "6b6437e03138cf55db2f8238d3cb07a53ed9eb6e346d25a7444cf28c1f0e16fa",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ]
+    },
+    {
+      "id": "INDEX-SCAN",
+      "mutation": "StatementFact lookup(StatementId id) { references++; return statements.get(id); } -> StatementFact lookup(StatementId id) { for (var candidate : statements.entrySet()) { references++; if (candidate.getKey().equals(id)) return candidate.getValue(); } return null; }",
+      "expected_oracle": "reference ledger N+1, no repeated scan",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP4 performance reference ledger N+1, no repeated scan",
+      "baseline_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+      "restored_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+      "digest_scope": "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "61e958ab30871d310d5a0be89eba85d09271231a52e59eb65e5ee73eaff7c586",
+      "red_output_sha256": "09f295cd274305cf5162cc9a593c998473b15ce591748759dfc331857ce04a58",
+      "restored_output_sha256": "542be2ea8e9e112795df5ae82e6f9105aeb2d40e4074b6c442c674dd4ada4aa1",
+      "baseline_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ],
+      "restored_counts": [
+        "SEMANTIC_TEST_COUNT=203971",
+        "PERFORMANCE_TEST_COUNT=96"
+      ]
+    },
+    {
+      "id": "R1-A-RECEIPT",
+      "mutation": "remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], expected, receipt) -> remote_errors(certificate[\"frozen_contract\"][\"required_remote_checks\"], receipt[\"pushed_sha\"], receipt)",
+      "expected_oracle": "ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt",
+      "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt -v (isolated copy)",
+      "baseline_output_sha256": "adc0ddacf0f18ac6574eeae2db5063631614bc583ef64bf110a33c2465ddb8e7",
+      "red_output_sha256": "d58530dc6bef5f9c4305b29e9b9042610bb37d2955f74151d6c6bae57a75a147",
+      "restored_output_sha256": "f73181bcb8caf03af6be9a358da174d7d095b6d2e713c9d43fe46226938230c4"
+    },
+    {
+      "id": "R1-B-ORACLE",
+      "mutation": "if usage == \"candidate_immutable\": -> if False and usage == \"candidate_immutable\":",
+      "expected_oracle": "FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes",
+      "baseline_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1",
+      "restored_digest": "9016e4668322016423778aeb7ad69a1456eb4ffe6491a963af492ba8725a2be1",
+      "digest_scope": "scripts/harness/git_checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes -v (isolated copy)",
+      "baseline_output_sha256": "4c95bd1bd092f1b2e4b1b1c1473f80102e2626e1c68da0823853061217b1064e",
+      "red_output_sha256": "c2d9e76ee2d0ac7b812b81b2ea9a9967f78518526a39acf6eed2bedb90c76ddf",
+      "restored_output_sha256": "32f493328fa7079d6b47f9933d2b073e1fd010a4d412623b0efd49d7c4081284"
+    },
+    {
+      "id": "R1-C-AUTHORITY",
+      "mutation": "if for_execution: -> if False and for_execution:",
+      "expected_oracle": "ReviewDocuments.test_history_never_authorizes_execution",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: ReviewDocuments.test_history_never_authorizes_execution",
+      "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_never_authorizes_execution -v (isolated copy)",
+      "baseline_output_sha256": "89cb88a1eed6bb344a1e17f17c39e60fc83131fd960be5f6eb4b882d98e970aa",
+      "red_output_sha256": "846d0a89c0fd01f43712631fd9fe007ae0ed295529dc3ffb3aa8053e1492b037",
+      "restored_output_sha256": "19b80105ea5711db300cd340e812198ee75426e0394dcd2882c3496d4a0a51de"
+    },
+    {
+      "id": "R1-D-WORKFLOW",
+      "mutation": "branches: ['**'] -> branches: ['feat/first-entry-goback-slice']",
+      "expected_oracle": "WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main",
+      "baseline_digest": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
+      "restored_digest": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
+      "digest_scope": ".github/workflows/checkpoint.yml",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main -v (isolated copy)",
+      "baseline_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca",
+      "red_output_sha256": "da22b1a65c51fbfc466d6027dfb8a41c3bab323b5819ed2249a8df4c308ad545",
+      "restored_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca"
+    },
+    {
+      "id": "R1-E-SHA",
+      "mutation": "and c.get(\"head_sha\") == sha -> and True",
+      "expected_oracle": "RemoteLifecycle.test_wrong_sha_success_still_rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: RemoteLifecycle.test_wrong_sha_success_still_rejected",
+      "baseline_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "restored_digest": "82bd3699843ed0ecf1542cd144606dfd1bceb5c1f159c838e7db72a35a30650f",
+      "digest_scope": "scripts/harness/checks.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_human_review.py RemoteLifecycle.test_wrong_sha_success_still_rejected -v (isolated copy)",
+      "baseline_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812",
+      "red_output_sha256": "6eb317b711f6c124919ff2523cf5a88e90d3286981a7a559715ae44b2bc813d3",
+      "restored_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812"
+    },
+    {
+      "id": "AIR-JACKSON",
+      "mutation": "codec.encode(publication) -> new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)",
+      "expected_oracle": "ARCH_AIR_OUTPUT JSON library",
+      "observed_exit_code": 1,
+      "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-amt1nrn4/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal boundary (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "d1973e0a670db9bb47d5f8f949d3fd60df1692bab5b87bbc7ae25079a4bd24ab",
+      "red_output_sha256": "cffa5addbdc00a13f18742edf80aa8a26757ebb03aa5815db2f2cced7a77af75",
+      "restored_output_sha256": "a22059687792a2e4ee9f271277ad9645001c82e1cc23a15a36c6f35b0515730b"
+    },
+    {
+      "id": "AIR-NEWLINE",
+      "mutation": "files.write(temporary, bytes); -> files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + \"\\n\").getBytes(java.nio.charset.StandardCharsets.UTF_8));",
+      "expected_oracle": "exact shared codec bytes",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT exact shared codec bytes",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "c46b5db00a8581f705665be56bc9b6cff44c03de4ccdc97584918d568091b0fd",
+      "red_output_sha256": "ac73a75c37a75f460b216527439f02438c80eaa172ca92cba075d0258ec609ed",
+      "restored_output_sha256": "5d9017f1de87cf92ebdd08971d453c4e046ac997067945d9fd2dea718f5496a2"
+    },
+    {
+      "id": "NON-SUCCESS-WRITES",
+      "mutation": "err.println(\"Lowering \" + result.status()); -> try { output.write(new CobolLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }\n            catch (IOException ex) { throw new IllegalStateException(ex); }\n            err.println(\"Lowering \" + result.status());",
+      "expected_oracle": "non-SUCCESS never invokes physical output",
+      "observed_exit_code": 1,
+      "failure_reason": "Exception in thread \"main\" java.lang.AssertionError: AIR_OUTPUT non-SUCCESS never invokes physical output",
+      "baseline_exit_code": 0,
+      "baseline_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restored_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal output (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "a3ff28f37aa702fda8e5bdb210172113deafd0b1001bc317d3ce49dabd4e0ae0",
+      "red_output_sha256": "8d01dd70b0293c08850287030a9324d7c19a4355943fd19e3437d3670b11aab8",
+      "restored_output_sha256": "68b1e5fae91891bdd76c4515e3a320180b489062e1249a7c540a9da41361de9f"
+    },
+    {
+      "id": "LOWERING-EXIT-ZERO",
+      "mutation": "return LOWERING; -> return SUCCESS;",
+      "expected_oracle": "expected exit 4",
+      "observed_exit_code": 1,
+      "failure_reason": "Exception in thread \"main\" java.lang.AssertionError: AIR_OUTPUT expected exit 4, got Execution[code=0, diagnostic=Lowering INVALID_INPUT",
+      "baseline_exit_code": 0,
+      "baseline_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restored_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal output (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "700e4d00be89a3b5493eedf0ce8dcdb7ed61ac1616e2aad21fba50554602eaf9",
+      "red_output_sha256": "7554053ef6414928653e38654b3a28cb9ea5b10372c63a00124301e369282d57",
+      "restored_output_sha256": "b3880a4f39ccd1ea9dd8949de6965173fa8cc62cadc370ca39a3cbd23aa10a39"
+    },
+    {
+      "id": "CODEC-EXIT-ZERO",
+      "mutation": "return CODEC; -> return SUCCESS;",
+      "expected_oracle": "expected exit 5",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT expected exit 5, got Execution[code=0, diagnostic=AIR codec RESOURCE_LIMIT $: Output byte limit exceeded",
+      "baseline_exit_code": 0,
+      "baseline_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restored_digest": "cd076a74f28972878fb5d3f95f722ef506e92a338fdf2585dbf32ca2c6b2520a",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "effdbb2130700970acc3a5d878a42c497832dd9cab0879462424977c23712eff",
+      "red_output_sha256": "49e7512ff3f866e0ab38e07bea8ce35e01d788dd486e6a31960e588133d28ff0",
+      "restored_output_sha256": "6c935a071ca6c1ffe71eb43c5f5e87359370f873c734174f4e6fdbed9430c617"
+    },
+    {
+      "id": "CORE-CODEC",
+      "mutation": "</dependencies> -> <dependency><groupId>io.github.gustavo2358</groupId><artifactId>air-json</artifactId></dependency></dependencies>",
+      "expected_oracle": "ARCH_DEPENDENCY",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL ARCH_DEPENDENCY ('io.github.gustavo2358', 'air-json', '0.1.0-SNAPSHOT')",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f458f5bfdc296cff14799178890267fa974684936568e7b0be48034b56efbf6b",
+      "restored_digest": "f458f5bfdc296cff14799178890267fa974684936568e7b0be48034b56efbf6b",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal architecture (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "b56b08c1cfe055d47bdc2c763b357577a6be0abd5f0ea7980bc8b3fd5a88acb6",
+      "red_output_sha256": "5949ed0a440c7d7f9f5b3cdebeeb682e336ffbe3acf3c48ea97248b15f17a69e",
+      "restored_output_sha256": "c3c7a9ae9baa92b8e9c245075b1d0f59beaa26da6ad0ffe896b0a82f7d6970f1"
+    },
+    {
+      "id": "SUITE-REMOVED",
+      "mutation": "<execution><id>air-output-suite</id> -> remove execution",
+      "expected_oracle": "AIR output tests absent/zero/duplicate",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL AIR output tests absent/zero/duplicate",
+      "baseline_exit_code": 0,
+      "baseline_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restored_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "d24458ee901ca6155f0255ba812e5397d34926e110dbf7591af345d781f6440c",
+      "red_output_sha256": "f2f48981c3591119ebf17411d6efaa77538d9209126a1e7e782683dcb708d4a7",
+      "restored_output_sha256": "2ce4bf745e0278e9239f8318937d64cc7006d74c2a6ec7175235ec33af911da3"
+    },
+    {
+      "id": "SUITE-SKIPPED",
+      "mutation": "<mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass> -> <skip>true</skip><mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass>",
+      "expected_oracle": "AIR output tests absent/zero/duplicate",
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL AIR output tests absent/zero/duplicate",
+      "baseline_exit_code": 0,
+      "baseline_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restored_digest": "15f07ac8c8f091863027a013d63c1796b656d4862bafb46383642c8c7893f7b8",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "52906b879e69c9dbc94ce2932f3aa21d1c08d2d4f542c8229abeba1c48e1a430",
+      "red_output_sha256": "a42d4d6574771cfc7a0ee19cc996aed03c34dc5c984457e9740fee535c906757",
+      "restored_output_sha256": "1c7509b9e6936c853ab0e0cd91fce34c1f75e15739fb0db96ffd7a2029e843ff"
+    },
+    {
+      "id": "OUTPUT-BEFORE-ENCODE",
+      "mutation": "byte[] bytes = codec.encode(publication);\n        Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent()); -> Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());\n        byte[] bytes = codec.encode(publication);",
+      "expected_oracle": "encode completes before any physical publication",
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: AIR_OUTPUT encode completes before any physical publication",
+      "baseline_exit_code": 0,
+      "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
+      "restoration_status": "RESTORED",
+      "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
+      "green_exit_code": 0,
+      "baseline_output_sha256": "edde8c12767e1bad051fc29fc61e4bcdf35e90e405d0060828bb780e95284da8",
+      "red_output_sha256": "32b1de5bfe8a144ac0c67e95903b2ba03f634c5599c582bcecf8e078483498e9",
+      "restored_output_sha256": "d394499e69ddb6caf99e4c617c1061025fe472e01119a19c9d1bfd718d471665"
+    },
+    {
+      "id": "program-point-successor",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+          "current = move.normalContinuation().statement().orElseThrow();",
+          "current = input.statements().stream().filter(s -> s.header().programPoint() > move.header().programPoint()).min(java.util.Comparator.comparingInt(s -> s.header().programPoint())).map(s -> s.header().id()).orElse(move.header().id());"
+        ]
+      ],
+      "expected_oracle": "SCALAR reject unavailable dangling cyclic continuation",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR reject unavailable dangling cyclic continuation",
+      "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "e1f507c41369d706703008b0547b97bc92c7dbbbf5ebe17f18ae8f11f3fe9752",
+      "second_green_log_sha256": "526fc2611f8e54b9d7d867c406d028772b14784af5434e087b23b1f7f73d472f"
+    },
+    {
+      "id": "ignore-full-identity",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+          "m.copySemantics() == CopySemantics.FULL_IDENTITY",
+          "true"
+        ]
+      ],
+      "expected_oracle": "SCALAR reject FULL_IDENTITY absent",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR reject FULL_IDENTITY absent",
+      "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "523650fa5a6aabae519f38a49f8cfbc86041509ac833f6283bd223ba44526a4e",
+      "second_green_log_sha256": "896d9c7fef48f66cacc6e167f03f4c332b150c2ce641aca6168681bf5fdda082"
+    },
+    {
+      "id": "invent-whole-access",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/domain/SpInput.java",
+          "Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance);",
+          "Objects.requireNonNull(wholeItemAccess); wholeItemAccess = wholeItemAccess.or(() -> binding.selected().map(WholeItemAccess::new)); Objects.requireNonNull(provenance);"
+        ]
+      ],
+      "expected_oracle": "SCALAR reject wholeItemAccess absent",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR reject wholeItemAccess absent",
+      "baseline_digest": "97a2eb1bf61ed28df140e9d54224073c6fe78a7bcb191902fb013d851a700e03",
+      "restored_digest": "97a2eb1bf61ed28df140e9d54224073c6fe78a7bcb191902fb013d851a700e03",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "748578a7380fc2b31f252afe9b94d283eaec97a333c5f0893117df3e4ccec25a",
+      "second_green_log_sha256": "2f7b2801192ebcbda520ac2d30930b2766aa4ab416540d71bb5de5d60a1b36b7"
+    },
+    {
+      "id": "ignore-selected-mismatch",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveAdmission.java",
+          "b.selected().equals(Optional.of(data.id()))",
+          "true"
+        ]
+      ],
+      "expected_oracle": "SCALAR reject selected wholeItem mismatch",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR reject selected wholeItem mismatch",
+      "baseline_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restored_digest": "6d0f74cda355f12f6e50f955d53d4680cfd4f16ca5a648c50087376db705f0e7",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "f324d2f10017f25eec6c4ad1a012586acad54a753e26a9b6f1e1966a71579b05",
+      "second_green_log_sha256": "1516ad2bf870597dd1e41ab8fb5b8308869f5f5794d97f72f1a057056cbc7c2d"
+    },
+    {
+      "id": "object-per-reference",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+          "ScalarDataTranslator.translate(plan.data(),",
+          "ScalarDataTranslator.translate(plan.moves().stream().map(m -> plan.data().stream().filter(d -> d.id().equals(m.target().binding().selected().orElseThrow())).findFirst().orElseThrow()).toList(),"
+        ]
+      ],
+      "expected_oracle": "SCALAR one Object per declaration",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR one Object per declaration",
+      "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "bd1a1adbb0e35dd16be34b860ea231a7c0016afbbbd2d8b262d1dce7435a6abe",
+      "second_green_log_sha256": "f5ce88ab3b97e55e441692ed874af1dc8dfba0fd5cd758909b6bf777cc67cbdc"
+    },
+    {
+      "id": "cell-per-move",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+          "List.of(body), data.storage(),",
+          "List.of(body), java.util.Collections.nCopies(plan.moves().size(), data.storage().getFirst()),"
+        ]
+      ],
+      "expected_oracle": "SCALAR precise input must lower",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR precise input must lower: OUTPUT_INVALID []",
+      "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "1bd117eb494ffdf9ab103cb4f6c9b7511089858af4586c834aca425b3ebab907",
+      "second_green_log_sha256": "5ddc2b9014548e4721ee8c336011cad4728c4b2739a3e9547ef8f954c87842ac"
+    },
+    {
+      "id": "name-join",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarSequenceAssembler.java",
+          "var target = data.index().get(move.target().wholeItemAccess().orElseThrow().data());",
+          "var target = data.index().values().stream().filter(link -> data.objects().stream().anyMatch(o -> o.id().equals(link.object()) && o.displayName().equals(data.objects().getFirst().displayName()))).findFirst().orElseThrow();"
+        ]
+      ],
+      "expected_oracle": "SCALAR destination by DataId, never name",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR destination by DataId, never name",
+      "baseline_digest": "ee606cffcb2cb522f03325cf73ce67fbd9903eb1d6d28f90303e495ba1cce356",
+      "restored_digest": "ee606cffcb2cb522f03325cf73ce67fbd9903eb1d6d28f90303e495ba1cce356",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "de3fc4b6f641c67421d6bf77db04abbacd8b79f41e035d8047f94a8f60713e6b",
+      "second_green_log_sha256": "a146594c66338a448ec36d9ab1c2c109c66dc9079167330db970edda40c807bd"
+    },
+    {
+      "id": "write-as-read",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+          "Operand.Role.VALUE_WRITE",
+          "Operand.Role.VALUE_READ"
+        ]
+      ],
+      "expected_oracle": "SCALAR precise input must lower: OUTPUT_INVALID",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR precise input must lower: OUTPUT_INVALID []",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "58fb7b98ece0f0816147c796955cdf3efb82842ebf9ee97ffab1d663daece219",
+      "second_green_log_sha256": "d1dc64b878ec7a595bc1f823de738bce837d82b2ddce5e8c621e39a62a13fcaf"
+    },
+    {
+      "id": "literal-as-unknown",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+          "new Expressions.Literal(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin),\n            new Values.TextValue(move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())))",
+          "new Expressions.Unknown(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin), Types.known(Types.Builtin.TEXT), List.of(), Scopes.NoMemory.INSTANCE, new UncertaintyId(unit.publication(), ids.id(\"uncertainty\", \"scalar-entry-inventory\", unit.localId(), \"0\")))"
+        ]
+      ],
+      "expected_oracle": "SCALAR literal exact logical text, never UNKNOWN",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR literal exact logical text, never UNKNOWN",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "fe1828cfbb2c64b726671a9de724b0ec6de06d0387fe122f01b3640a5edf87fd",
+      "second_green_log_sha256": "520d63bf098766a77729c3f2251c66b58fd1b481cef30a97e5735e34921ba3e2"
+    },
+    {
+      "id": "drop-data-link",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+          "List.copyOf(data.index().values()), operands",
+          "List.of(), operands"
+        ]
+      ],
+      "expected_oracle": "SCALAR DATA correlation complete",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR DATA correlation complete",
+      "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "91d247d082de7fedd5841ff20b1fb1577b9aad1fde3d7e99eee034d3706800af",
+      "second_green_log_sha256": "84a3ee4992f06b96edd8bd54eaaec12799c6aff1cc351c952127bed248db35cc"
+    },
+    {
+      "id": "lose-literal-provenance",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+          "move.source().id().handle(), move.source().provenance()",
+          "move.source().id().handle(), move.header().provenance()"
+        ]
+      ],
+      "expected_oracle": "SCALAR literal provenance preserved",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR literal provenance preserved",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "84e6e330635dc07502c64977384ea953a8b7e6f9101e04610444de19ad402846",
+      "second_green_log_sha256": "b1d7fac5cf90f9c09df34f533a7913f3a4488aad871cbae715792c86ee3c1b76"
+    },
+    {
+      "id": "lose-target-provenance",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/MoveHandler.java",
+          "move.target().id().handle(), move.target().provenance()",
+          "move.target().id().handle(), move.header().provenance()"
+        ]
+      ],
+      "expected_oracle": "SCALAR target provenance preserved",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR target provenance preserved",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "7be66cd3b9b9aae583fc6f73af218693c6bad8ba9be193c2ef038b69515c165c",
+      "second_green_log_sha256": "19fee1daed3a9fd895e0fad164bac886b8d516fe5124a944e556e586878a287b"
+    },
+    {
+      "id": "goback-halt",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/GobackHandler.java",
+          "static Operations.Return translate",
+          "static Terminator translate"
+        ],
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/GobackHandler.java",
+          "new Operations.Return(header, List.of())",
+          "new Operations.Halt(header, Operations.HaltKind.NORMAL)"
+        ]
+      ],
+      "expected_oracle": "SCALAR GOBACK Return never Halt",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR GOBACK Return never Halt",
+      "baseline_digest": "2e617f06043b712a664924659b482f24af2b7203e0325cf244a478f54cd770af",
+      "restored_digest": "2e617f06043b712a664924659b482f24af2b7203e0325cf244a478f54cd770af",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "05830537a54f0455652fab0b6ff02fe0997d6aba5524943c885965836c390a18",
+      "second_green_log_sha256": "767c3d81ac36e341a3591009eeb677214307390fa0fc767f2b56c26077ab9028"
+    },
+    {
+      "id": "two-sequences",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/ScalarMoveLowerer.java",
+          "List.of(entry), List.of(sequence),",
+          "List.of(entry), List.of(sequence, new Sequence(new LabelId(unit, \"extra-label\"), List.of(), new Operations.Return(new Operations.Header(new OperationId(unit, \"extra-return\"), sequence.terminator().header().origin(), sequence.terminator().header().coverage(), sequence.terminator().header().precision(), sequence.terminator().header().uncertainties()), List.of()), sequence.origin())),"
+        ]
+      ],
+      "expected_oracle": "SCALAR one Sequence for linear chain",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR one Sequence for linear chain",
+      "baseline_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restored_digest": "bdaaf91fb66f38eb9e865b089c5b1ef60c8ac9e2b37aaf6871f5d2fddf8b9537",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "d8c424a84e58ad84ef8d010550907c8bfeeff839adb4a24f7fc94e4d043426e2",
+      "second_green_log_sha256": "029ff7d73f8a36a687ef7cfea45dec8f00b586a313587c15d17cc678b908d4df"
+    },
+    {
+      "id": "revision-missing-value",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/CanonicalRevision.java",
+          "e.word(value.value());",
+          "e.word(\"ignored\");"
+        ]
+      ],
+      "expected_oracle": "SCALAR new logical value in PublicationId",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR new logical value in PublicationId",
+      "baseline_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+      "restored_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "9c3d7c0b5947b8ada8c2609fcda16f9c905747ed9d03c8425eef6801b8dc91fc",
+      "second_green_log_sha256": "b0416ffe8e3a0cf514de0857f08205ae72c5fb3ac0d00b3d31c139f16768589e"
+    },
+    {
+      "id": "expanded-local-id",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/LocalIds.java",
+          "return digest;",
+          "return CanonicalRevision.token(namespace + \"/\" + role + \"/\" + owner + \"/\" + key);"
+        ]
+      ],
+      "expected_oracle": "SCALAR compact ObjectId",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR compact ObjectId",
+      "baseline_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+      "restored_digest": "b94e310854f480ac23f713c22b9dafca19b19cd0f27bd89d8e5debbee328c65f",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "1caca645fba5cc7ac54635efa8f9403ebfd5423df6f58e67660da82158729d29",
+      "second_green_log_sha256": "5de572cb1109ac0b5df41c35b92cea07259a3c34c82daa60bf94eff224695cf1"
+    },
+    {
+      "id": "scalar-index-scan",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+          "StatementFact lookup(StatementId id) { references++; return statements.get(id); }",
+          "StatementFact lookup(StatementId id) { for (var item : statements.entrySet()) { references++; if (item.getKey().equals(id)) return item.getValue(); } return null; }"
+        ]
+      ],
+      "expected_oracle": "SCALAR scalar reference ledger 7N+3 no scans",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR scalar reference ledger 7N+3 no scans",
+      "baseline_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+      "restored_digest": "819e5481e99b0363a48b534d5c8099503206b7f1dad6cbde399c29fc8c096c82",
+      "restoration_status": "RESTORED",
+      "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
+      "green_exit_code": 0,
+      "red_log_sha256": "52c5d218d9057f7fa47a55ca1550333ceca0ba24879b87303cef1a29e8738c50",
+      "second_green_log_sha256": "8b1d3c416eb880e4d4dfff33c6d9c7db62d9c74f5dab7676dc5767768206b627"
+    },
+    {
+      "id": "literal-value-coherence",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+          "if (!source.value().equals(logical.value()))",
+          "if (false && !source.value().equals(logical.value()))"
+        ]
+      ],
+      "expected_oracle": "literal normalized value mismatch",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR_WIRE strict physical rejection literal normalized value mismatch",
+      "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated coherence production challenge; pinned m2",
+      "baseline_log_sha256": "f1581efe97af4d1105d1ced607ccc38f79e749472a70ee2bfab6ee9a9ed75c65",
+      "red_log_sha256": "e740c87bee09406f3db4dfe7086a6e05e9446de119bfffa5dd83f0bd41fc0551",
+      "second_green_log_sha256": "977e6a00c3caf89ebb1bd86210337a57dc99bde8bb9ce98fb1c35a4bb7b968f4",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "literal-codepoints",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+          "logical.logicalExtent() != logical.value().codePointCount(0, logical.value().length())",
+          "false"
+        ]
+      ],
+      "expected_oracle": "literal code point extent mismatch",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: SCALAR_WIRE strict physical rejection literal code point extent mismatch",
+      "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated coherence production challenge; pinned m2",
+      "baseline_log_sha256": "83f73858be52ffc85857ab576d7522924627a001937bdc4a077b2d3b8cea7fc2",
+      "red_log_sha256": "bfca703644b34a53c528e19ba817868cf8e22dcb037e6b4d62a95652e6df97f1",
+      "second_green_log_sha256": "0b4bef534037e96af8bc13c0a48edc532b77a35281c1746b043579e6ae8ed4b2",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "old-production-bytes",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+          "byte[] bytes = input.readAllBytes();",
+          "byte[] bytes = input.readAllBytes(); if (bytes.length > 100_000) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+        ]
+      ],
+      "expected_oracle": "large SP success exit0",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: PRODUCTION large SP success exit0: SP IMPLEMENTATION_LIMIT physical $ file byte limit",
+      "baseline_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+      "restored_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated success production challenge; pinned m2",
+      "baseline_log_sha256": "aca2c2e08e6f2dcaf73a4bf12d7d28d464e23992e8b35dbda374d7ca5b48e8ba",
+      "red_log_sha256": "6e2131d67cb754e1cafb8906033c0031901078784dcfb5e5a74a1e65e79a1301",
+      "second_green_log_sha256": "a115a32b21527e327e98bbb5100ae1afc886605132903afae8f598b6c8e65876",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "old-production-nodes",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+          "meter.nodes++;",
+          "if (++meter.nodes > 50_000) return reject(Code.IMPLEMENTATION_LIMIT, \"$\");"
+        ]
+      ],
+      "expected_oracle": "large SP success exit0",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: PRODUCTION large SP success exit0: SP IMPLEMENTATION_LIMIT physical $",
+      "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated success production challenge; pinned m2",
+      "baseline_log_sha256": "6f9ab8269d4466c1769e014e9ae432f6c7dfa514bae03e74cbd924f19967c893",
+      "red_log_sha256": "06724064e975d98009f3ee2cc9d1f3fe2bf6fa0a5af8c5ab86a091ae93b4eeb3",
+      "second_green_log_sha256": "6e655e75ef1935c884a612805f4c41e0f6d6a36b1f98f52639ab0ac616ff44f1",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "old-production-entities",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+          "entities++;",
+          "if (++entities > 100_000) throw new LimitReached();"
+        ]
+      ],
+      "expected_oracle": "10k lowering passes production admission",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: PRODUCTION 10k lowering passes production admission: IMPLEMENTATION_LIMIT",
+      "baseline_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+      "restored_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated large production challenge; pinned m2",
+      "baseline_log_sha256": "9da80ed9e75afce32c086896bbbfe24bce0dc788ec17b2050c4a4a8108f2d8e9",
+      "red_log_sha256": "6e02158f0e59ae833fdd51662c97c63df86a0ceb7c4953ff527afae3a571f289",
+      "second_green_log_sha256": "110bf3d54d5253fead431c26130cdecec12e0481ea6c322eae3a7a4e36e87ed3",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "remove-production-probe",
+      "mutation": [
+        [
+          "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/AirOutputSuite.java",
+          "int production = ProductionPathSuite.run();",
+          "int production = 1;"
+        ]
+      ],
+      "expected_oracle": "production path probe absent/zero",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "FAIL production path probe absent/zero",
+      "baseline_digest": "9714272c89017481d5ca8e69054676ccfda35a3843965e726cec6151ed7c9588",
+      "restored_digest": "9714272c89017481d5ca8e69054676ccfda35a3843965e726cec6151ed7c9588",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated semantic production challenge; pinned m2",
+      "baseline_log_sha256": "8be4dddd127ba9707c6f3c03283f09fa44fdb88a59e589637295481f95cfe049",
+      "red_log_sha256": "c44eb87596ee4e2425c0e05110ae52a0d870fd82e16b3623eed0ceb6096fdfde",
+      "second_green_log_sha256": "36cb7490f5e4a1365ea37ae24c0c9eadaf4a61fb5b7006c829e6ea0d3bc7bffa",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "input-failure-as-expected",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+          "byte[] bytes = input.readAllBytes();",
+          "byte[] bytes = input.readAllBytes(); if (bytes.length > 100_000) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+        ],
+        [
+          "adapters/src/test/java/io/github/gustavo2358/lower/adapters/air/ProductionPathSuite.java",
+          "check(code == CobolLower.SUCCESS,",
+          "check(code == CobolLower.INPUT,"
+        ]
+      ],
+      "expected_oracle": "successful production output exists",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: PRODUCTION successful production output exists",
+      "baseline_digest": "7d78a43b9b0ae6152fe1ed98e6aa5f7e21c3b5f48f2eb4fcbe6997290f3ee7ee",
+      "restored_digest": "7d78a43b9b0ae6152fe1ed98e6aa5f7e21c3b5f48f2eb4fcbe6997290f3ee7ee",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated success production challenge; pinned m2",
+      "baseline_log_sha256": "24ad11522d675b46438a5c94ec41abb4890049f97d593e7f04216dea92b03f75",
+      "red_log_sha256": "aa18961518657def9bd8b53e724e7da96cf6a2ec8d4a878b85a554b24a9e08f2",
+      "second_green_log_sha256": "0dae1e800726704311a148d4d58e614d39ff89543bf37f49c58c697caad8a6b2",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "raise-air-limit",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+          "this(new AirJson(), new FileOperations());",
+          "this(new AirJson(new AirJson.Limits(512 * 1024 * 1024, 128), io.github.gustavo2358.air.validation.ValidationOptions.defaults()), new FileOperations());"
+        ]
+      ],
+      "expected_oracle": "PRODUCTION_SCOPE immutable transport/core",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "PRODUCTION_SCOPE immutable transport/core adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+      "baseline_digest": "9148d624336a0d3658007341d0c12885e23c48f90780067c13eb7fb91baf78ba",
+      "restored_digest": "9148d624336a0d3658007341d0c12885e23c48f90780067c13eb7fb91baf78ba",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated scope production challenge; pinned m2",
+      "baseline_log_sha256": "c33b13271267c41ce86374574dea2608f0c285a6a69837bf8a3cd3944516a9b4",
+      "red_log_sha256": "c7bf7013f944a0e120e551ac0dbbe621e33cfc57a9b2d5536be8898eeb2eaf2d",
+      "second_green_log_sha256": "ec5c9c57254d91acda5645abde8cd2e3239bf86a4fc0bf17e814ac9191f7f7b3",
+      "kind": "scope/diff guard after compilation"
+    },
+    {
+      "id": "new-streaming-codec",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/StreamingSpReader.java",
+          null,
+          "package io.github.gustavo2358.lower.adapters.sp; final class StreamingSpReader {}\n"
+        ]
+      ],
+      "expected_oracle": "PRODUCTION_SCOPE unexpected source",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "PRODUCTION_SCOPE unexpected source adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/StreamingSpReader.java",
+      "baseline_digest": "20ad4f0a5fb49d9aaf1697fe0b8e85416bb628ae3e23157828ce0c572f91b554",
+      "restored_digest": "20ad4f0a5fb49d9aaf1697fe0b8e85416bb628ae3e23157828ce0c572f91b554",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated scope production challenge; pinned m2",
+      "baseline_log_sha256": "d79320376a5ad6b5b796481178a9ede75c3f4a0cd535c9f9383054ec367a79b0",
+      "red_log_sha256": "dcdfb2c66f90fa551750036e161b31914271ae178bce5b2b2d90a09900f4505f",
+      "second_green_log_sha256": "61c147a7a2f3a8cc12ff43aac28eddcfb0fc8ae09e00d59ad39992a62d63ec23",
+      "kind": "scope/diff guard after compilation"
+    },
+    {
+      "id": "file-32mib",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpFileInput.java",
+          "byte[] bytes = input.readAllBytes();",
+          "byte[] bytes = input.readAllBytes(); if (bytes.length > 32 * 1024 * 1024) return new SpJsonDecoder.Rejected(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.IMPLEMENTATION_LIMIT, \"physical\", \"$ file byte limit\"));"
+        ]
+      ],
+      "expected_oracle": "CAPACITY supported SP decodes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ file byte limit]]",
+      "baseline_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+      "restored_digest": "3c4d482b65cb461fdcb3913013d20527cbcae5ba2b0817113bdd1a3124b95e62",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated capacity production challenge; pinned m2",
+      "baseline_log_sha256": "1fe461bfd9063c818472d082d83f6b9276a3b5be781dc8ec5e925384ffbb96b7",
+      "red_log_sha256": "38d8ef7f9447af90345e752f060254e53cc0bdd3de7cecad901102c27636dbb8",
+      "second_green_log_sha256": "6eb45a8a40da552b7914dacf14e09f5a7520f580db8ca9475600cbde6331e30f",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "decoder-32mib",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+          "meter.bytes = bytes.length;",
+          "if (bytes.length > 32 * 1024 * 1024) return reject(Code.IMPLEMENTATION_LIMIT, \"$ byte limit\"); meter.bytes = bytes.length;"
+        ]
+      ],
+      "expected_oracle": "CAPACITY supported SP decodes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ byte limit]]",
+      "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated capacity production challenge; pinned m2",
+      "baseline_log_sha256": "e17aa17dbed9c7e19ab427a30dc90115a4626fe8517f1a04a9a694c1cb2abd29",
+      "red_log_sha256": "d9cb9d5b1a1b8da1b4461e44f2c33b929691ea314f49f0dae900223572ab57de",
+      "second_green_log_sha256": "9a73733d3fb0b7f21b2c1d1b7d8e6dd5fa963f0bb1d856490e3417b822f69e96",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "nodes-1500000",
+      "mutation": [
+        [
+          "adapters/src/main/java/io/github/gustavo2358/lower/adapters/sp/SpJsonDecoder.java",
+          "meter.nodes++;",
+          "if (++meter.nodes > 1_500_000) return reject(Code.IMPLEMENTATION_LIMIT, \"$ node limit\");"
+        ]
+      ],
+      "expected_oracle": "CAPACITY supported SP decodes",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CAPACITY supported SP decodes: Rejected[diagnostic=Diagnostic[code=IMPLEMENTATION_LIMIT, phase=physical, location=$ node limit]]",
+      "baseline_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restored_digest": "4caf440c702b26f2205202b4754e573312efd6b390ca4ab0706bef3c877fb355",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated capacity production challenge; pinned m2",
+      "baseline_log_sha256": "fc0f6c995559258d46561874c01d85de56ed1529b6e642c97b5908ac248b6d9a",
+      "red_log_sha256": "f30ce829adf9e3dac5b466fd9d4ab7d9da883d46b40d7cd916e53d79149e34e3",
+      "second_green_log_sha256": "965f683d7dec4105fa3b4f4cc9ecf67898299ee952df5ed38ac1869be21d92e3",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "visits-250000",
+      "mutation": [
+        [
+          "core/src/main/java/io/github/gustavo2358/lower/application/EntryGobackAdmission.java",
+          "entities++;",
+          "if (++entities > 250_000) throw new LimitReached();"
+        ]
+      ],
+      "expected_oracle": "CAPACITY supported SP lowers",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CAPACITY supported SP lowers: IMPLEMENTATION_LIMIT []",
+      "baseline_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+      "restored_digest": "1088e1a0350a6086a5eb3c8cc8068f1769539bc18712515d80eaeb2a730733a6",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "compiled isolated capacity production challenge; pinned m2",
+      "baseline_log_sha256": "28500ce33c400dc22060fae961e2ae595047b6ba64ed64cb844c637aa367dcac",
+      "red_log_sha256": "62b61dc0550ae54147af255ae9d43d92c5c9ec0f7fc1744abbfc1af292274e56",
+      "second_green_log_sha256": "cb427b7a668dc57e0015e7775043d4a2a6f85e09a2ffcba96ff2c1f6e4f04782",
+      "kind": "compiled semantic/gate"
+    },
+    {
+      "id": "old-null-comparison",
+      "mutation": "initial_pr = record[\"checkpoint\"] == \"CP0\" and record[\"pull_request\"] is None -> initial_pr = False",
+      "expected_oracle": "CI_BOOTSTRAP initial CP0 selects historical head",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP initial CP0 selects historical head",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_initial_cp0_selects_historical_head -v (isolated)",
+      "baseline_log_sha256": "c315e1f74f286f83b924a01f45708894dbc34982b35d9f1ee334a5e2e5e8d644",
+      "red_log_sha256": "745bd2e563b7930f555c2c2fc7cff6eeac384a0382494ab7b455ff44ac316449",
+      "second_green_log_sha256": "c82d8c99ff20a02f32339e6e1bf91233885bf12b96b884b677383ccc6d3dea0a"
+    },
+    {
+      "id": "null-beyond-cp0",
+      "mutation": "initial_pr = record[\"checkpoint\"] == \"CP0\" and record[\"pull_request\"] is None -> initial_pr = record[\"pull_request\"] is None",
+      "expected_oracle": "CI_BOOTSTRAP null later checkpoint rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP null later checkpoint rejected",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_null_later_checkpoint_rejected -v (isolated)",
+      "baseline_log_sha256": "63f1f04ec9bdb14adf76ac88fb829641c2253c062d685eb7368fcd1b9912095b",
+      "red_log_sha256": "18abeab52f2f8f1bc254e3c24c1ebfafde9ecb90422f064d1244deb39533a9c3",
+      "second_green_log_sha256": "63f1f04ec9bdb14adf76ac88fb829641c2253c062d685eb7368fcd1b9912095b"
+    },
+    {
+      "id": "wrong-explicit-pr",
+      "mutation": "(not initial_pr and record[\"pull_request\"] != pr[\"number\"]) -> False",
+      "expected_oracle": "CI_BOOTSTRAP explicit wrong PR rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP explicit wrong PR rejected",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_explicit_wrong_pr_rejected -v (isolated)",
+      "baseline_log_sha256": "00e264b3a640b1ccff9b00d3b4f4fd31ccfcd3083d27c6148fc197654923b123",
+      "red_log_sha256": "fceba0eacb46660e1c0265dac0778a08317770cd449925c310b280dcf5a090cc",
+      "second_green_log_sha256": "00e264b3a640b1ccff9b00d3b4f4fd31ccfcd3083d27c6148fc197654923b123"
+    },
+    {
+      "id": "wrong-branch",
+      "mutation": "record[\"branch\"] != pr[\"head\"][\"ref\"] -> False",
+      "expected_oracle": "CI_BOOTSTRAP wrong branch rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP wrong branch rejected",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_wrong_branch_rejected -v (isolated)",
+      "baseline_log_sha256": "6040a08e71975f74df6bf7018c15b06d56f17a4ce488fa8755e5465391d99abd",
+      "red_log_sha256": "57f1ba4f0490c956b1cf3d10a4a54fe9d751257cd00ce66897bbd8df8d6fe0db",
+      "second_green_log_sha256": "a8cab98de48a4c6030cb5abaf605415122b56d4de58017ec7e1c3c9a1f87f363"
+    },
+    {
+      "id": "altered-evidence",
+      "mutation": "json.loads(git(ROOT, \"show\", sha + \":\" + path)) != record -> False",
+      "expected_oracle": "CI_BOOTSTRAP altered merge evidence rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP altered merge evidence rejected",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_altered_merge_evidence_rejected -v (isolated)",
+      "baseline_log_sha256": "6b1feb7e1e08e14d2244ffec9f0b346b55cbb67b8f3a8d974ae9d10c70213b1f",
+      "red_log_sha256": "772b2491301969956a7d9e0311572302cac6a946039c41f421119d5b68952a27",
+      "second_green_log_sha256": "240998e71813f8b89428987597c030a2d4b883d192c48c2936f3690a3af8714c"
+    },
+    {
+      "id": "missing-ancestry",
+      "mutation": "git(ROOT, \"merge-base\", \"--is-ancestor\", certified, sha) -> None # skipped ancestry",
+      "expected_oracle": "CI_BOOTSTRAP unrelated head rejected",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "AssertionError: CI_BOOTSTRAP unrelated head rejected",
+      "baseline_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "restored_digest": "fe69a9966f7bc39f62d1898ed0b4df19a6b4bb74dd3bd2e3685c45817089bbca",
+      "digest_scope": "scripts/harness/run.py",
+      "restoration_status": "RESTORED",
+      "green_exit_code": 0,
+      "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_unrelated_head_rejected -v (isolated)",
+      "baseline_log_sha256": "f8d22bd9377141febbc1eeab2bd992db36a2052baeee7c62411c0d3873feb242",
+      "red_log_sha256": "45df4d7ba86905c9054a49b50b5087460bb583105ffc04a9b0fdeba6e37776aa",
+      "second_green_log_sha256": "f2bb897db58a737e67739cbec880e50f8f49e95b243908c12dc315dfa719907c"
+    },
+    {
+      "id": "dynamic-to-literal",
+      "mutation": [
+        "InvokeHandler.java",
+        "new Interactions.ComputedTarget(\"program\", \"cobol.program\", read, namePolicy, targetOrigin)",
+        "new Interactions.LiteralTarget(\"program\", \"cobol.program\", \"PROGA\", namePolicy, targetOrigin)"
+      ],
+      "expected_oracle": "dynamic target remains computed",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 dynamic target remains computed",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "ba86f6f597ed9fddbdb95aaf571e6a5fdb53c611b1b4aa0f9bb4427986e66e7f",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "wrong-object",
+      "mutation": [
+        "InvokeHandler.java",
+        "var object = data.get(reference.wholeItemAccess().orElseThrow().data()).object();",
+        "var object = data.values().stream().reduce((a, b) -> b).orElseThrow().object();"
+      ],
+      "expected_oracle": "target ObjectId follows selected DATA",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 target ObjectId follows selected DATA",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "cb024bda2e41519af375306d7c2517056e893add6f84b01cf2d6cc3aa8e8b0ed",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "erase-x8-padding",
+      "mutation": [
+        "MoveHandler.java",
+        "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())",
+        "move.source().logicalValue().orElseThrow().value()"
+      ],
+      "expected_oracle": "raw fitted/identity assigned text",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 raw fitted/identity assigned text",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "ce8cca9b5d932b33c3569cecda6cca3cc0083150685c4be441b949a7ac6a38b1",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "invent-x5-padding",
+      "mutation": [
+        "MoveHandler.java",
+        "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())",
+        "move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value() + \"   \")"
+      ],
+      "expected_oracle": "raw fitted/identity assigned text",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 raw fitted/identity assigned text",
+      "baseline_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restored_digest": "2cd5b1452aedf60b243b7207687e448b0834b8373898a35e7632e5a46ec267a8",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "ce8cca9b5d932b33c3569cecda6cca3cc0083150685c4be441b949a7ac6a38b1",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "wrong-normal-label",
+      "mutation": [
+        "CallSequenceAssembler.java",
+        "data.index(), successor, continuation, unit,",
+        "data.index(), label, continuation, unit,"
+      ],
+      "expected_oracle": "explicit normal destination",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 explicit normal destination",
+      "baseline_digest": "d20e113748c50e78512c68b77ca67ce366ab9d573126aaf5571d9bfe00eacf1a",
+      "restored_digest": "d20e113748c50e78512c68b77ca67ce366ab9d573126aaf5571d9bfe00eacf1a",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "85b8dd2c3547d4749548f08a84723fe57e816d264f39b4bec45f0a9d2e4a5249",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "pure-effects",
+      "mutation": [
+        "InvokeHandler.java",
+        "new Interactions.ForeignEffects(memory, memory, List.of())",
+        "new Interactions.ForeignEffects(Scopes.NoMemory.INSTANCE, Scopes.NoMemory.INSTANCE, List.of())"
+      ],
+      "expected_oracle": "conservative memory effects",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 conservative memory effects",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "0463af15c458fff24a14e4bac41dd7ae41d6e6e1a39c1f5fd713d2a113661fda",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "closed-outcomes",
+      "mutation": [
+        "InvokeHandler.java",
+        "new Scopes.WithinControl(new Scopes.AllControl(unit.publication()))",
+        "Scopes.NoControl.INSTANCE"
+      ],
+      "expected_oracle": "open all-control remainder",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 open all-control remainder",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "e58c3f51800b3f79a018e0a8a3be96be112064ef166b2ff3595e66cd7701427b",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "invented-contract",
+      "mutation": [
+        "InvokeHandler.java",
+        "new Interactions.UnknownContract(contract)",
+        "new Interactions.KnownContract(new Interactions.ContractRef(\"invented\", \"1\", List.of(origin)))"
+      ],
+      "expected_oracle": "unknown contract",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 unknown contract",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "96d535c9a4aa6d15be2215d8efffb3cd1aea7f13f5cd3a2bee21fccb2f40e5f4",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "name-canonicalization",
+      "mutation": [
+        "InvokeHandler.java",
+        "literal.logicalValue().orElseThrow().value(), namePolicy",
+        "literal.logicalValue().orElseThrow().value().strip(), namePolicy"
+      ],
+      "expected_oracle": "literal raw logical text and namespace",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 literal raw logical text and namespace",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "f5da43f9119f0d73e319627bff45a9fcbca960f9c7590338b178a2b525026704",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "exact-name-policy",
+      "mutation": [
+        "InvokeHandler.java",
+        "new Interactions.UnknownName(name)",
+        "Interactions.ExactName.INSTANCE"
+      ],
+      "expected_oracle": "unknown runtime name policy",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 unknown runtime name policy",
+      "baseline_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restored_digest": "fa471f1e53eaf504d014bd46e7f2fdc23a050ef94415c5ee107e6bbab239c5ee",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "798760a141973facc4e7884ddc7cbc0a8e92238f8b661d8ca034ed695fc8d289",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "admit-using",
+      "mutation": [
+        "CallAdmission.java",
+        "s.using() == ClausePresence.ABSENT && s.returning()",
+        "true && s.returning()"
+      ],
+      "expected_oracle": "USING: SUCCESS",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 USING: SUCCESS",
+      "baseline_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+      "restored_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "8c1d83ead2869c3c60ea161ef5fc1d1496543828a2165db0de39712062942fc3",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "admit-ambiguous",
+      "mutation": [
+        "CallAdmission.java",
+        "if (call.target() instanceof DataCallTarget d) admitReference(d.reference(), OperandRole.CALL_TARGET, h, c);",
+        "if (call.target() instanceof DataCallTarget d) { /* missing admission */ }"
+      ],
+      "expected_oracle": "ambiguous target",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 ambiguous target",
+      "baseline_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+      "restored_digest": "05a7bc75849e12f73e9931a9e03685f163128bee5b4261b1fde01ffbeff11158",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "0d1988e7b30675cb042a2d5657f3faf073b7eaffb8b12f262829834347b4b43f",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    },
+    {
+      "id": "ignore-call-revision",
+      "mutation": [
+        "CanonicalRevision.java",
+        "e.word(\"LITERAL\"); e.word(l.text()); e.word(l.writtenText());",
+        "e.word(\"LITERAL\"); e.word(\"ignored\"); e.word(\"ignored\");"
+      ],
+      "expected_oracle": "revision includes literal CALL target",
+      "baseline_exit_code": 0,
+      "observed_exit_code": 1,
+      "failure_reason": "java.lang.AssertionError: CP6 revision includes literal CALL target",
+      "baseline_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+      "restored_digest": "b626cd9c7855a0868930c38c6f30bf4bb671c923d794987042bddf1033cd452b",
+      "restoration_status": "RESTORED",
+      "green_command": "javac --release 21 then CallSuite in isolated copy with exact pinned m2",
+      "green_exit_code": 0,
+      "red_log_sha256": "e1196e19ccb63f88fdf63c00666c2c7b3b583346a539f90c840a6268ebd59f31",
+      "second_green_log_sha256": "6579b2446cc672eef13175eecc9e48c9aa534ce66c1eda87a974fac7258fc381"
+    }
+  ],
+  "falsification_fields": [
+    "id",
+    "mutation",
+    "expected_oracle",
+    "observed_exit_code",
+    "failure_reason",
+    "restored_digest",
+    "green_command",
+    "green_exit_code",
+    "baseline_digest",
+    "baseline_exit_code",
+    "restoration_status"
+  ],
+  "review": {
+    "status": "PASS",
+    "evidence": [
+      "docs/quality/WORK-LOWER-010/review.md",
+      "docs/quality/WORK-LOWER-010/ci-timeout/review.md"
+    ],
+    "kind": "self-review",
+    "reviewer_context": "Implementing Codex, same context; no independent/human review claimed",
+    "candidate_reference": "#/candidate_diff_sha256"
+  },
+  "merge_status": "not_verified",
+  "limitations": [
+    "First slice: exactly one CALL, no USING/results/handlers/nonlinear control/refmod/subscript/truncation; all failures remain typed. Publication/Unit PARTIAL; I-56 remains a semantic obligation.",
+    "Dedicated transport/integration executors are SPECIFIED_NOT_IMPLEMENTED and not claimed PASS. Real integration was executed by semantic/full and exact W1A producer script.",
+    "Codec retains independent operational limits; N/2N and legacy capacity probes do not qualify general large-program E2E.",
+    "Certificate is pre-commit; exact HEAD/PR/push CI and synthetic merge receipts are recorded in PR/handoff after push without modifying this immutable candidate.",
+    "Historical ten documentary/architecture challenges emit paired records in full.log; complete compiled challenge receipts are included separately. Initial test/harness failures are preserved and explained in review.md.",
+    "Sibling production checkouts untouched. artefatos-e2e preexisting untracked checkpoint-4e/cp5 remain; no changes made there. W1D/W2 NOT_STARTED / NOT_AUTHORIZED.",
+    "Initial remote run 34633251413 at 989637a7fd840f43aaf04abce299c839b82fcb55 timed out after 30 minutes. The original certificate is preserved in that commit and ci-timeout/initial-certificate.json. This second certification is the same CP0 with a 45-minute operational job limit; final remote PASS still requires the newly published exact SHA."
+  ],
+  "note": "Second pre-commit certification of the SAME CP0 after operational CI timeout. Initial commit/certificate preserved byte-exact in Git and ci-timeout/initial-certificate.json. Original run TIMEOUT, not PASS. Current PR11 exists. Only workflow timeout and review metadata change; no next checkpoint.",
+  "execution_mode": "single-checkpoint",
+  "authorization_reference": "docs/work/active/WORK-LOWER-010/work-item.yaml",
+  "previous_certified_checkpoint": null,
+  "certified_commit": null,
+  "candidate_diff_sha256": "72750cb4ac874f4ba17fb2fd180f96a64f9513bf43cbcf3647ab9b43c4e885a2",
+  "candidate_exclusions": [
+    "docs/quality/WORK-LOWER-010/CP0.json",
+    "docs/work/active/WORK-LOWER-010/state.md"
+  ],
+  "frozen_contract": {
+    "references": [
+      {
+        "path": ".github/workflows/checkpoint.yml",
+        "sha256": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "91e2e404098a21592b4b33f52a57db968eeb7b42e971e7d9cb53b2382f1d591f",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "sha256": "8b539bf70f6a1f118800b23905153ca4ba32a825db4eee69f05721fd9f869bd4",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/CallIntegrationSuite.java",
+        "sha256": "d7f3bd7e020fab3d2f2ecc1d551c7526cf24032166c0c77e7a276228726ef76d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/ambiguous.cbl",
+        "sha256": "036ab36d0f82d5cb28d96cb3bb93356f3bd1018ee8638a612934c67b0a0e01d3",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/ambiguous.json",
+        "sha256": "b02727c794fb27e1a3d9cc2c9ccfc56887d8eefd9991b80e693f5a92fc7f3d56",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-no-move.cbl",
+        "sha256": "4d038880fb2931a9ef98af18172eb74a89a1b4f305637a1f646eb1806acf347c",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-no-move.json",
+        "sha256": "e8154804671967305eed214b64c7a3be44a3e441426688635d2442221d3375cc",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-other.cbl",
+        "sha256": "1076c85389443190b12cc049301a5f308cb2a7d84afa91ae9d1005e7b4976af3",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-other.json",
+        "sha256": "772a3c855c305d2bf6e924167813e4373242083f66c3554927d1d0d4644248dc",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-x5.cbl",
+        "sha256": "c20dd9a39508fc3b3078df372a7cbe081b2ec34873fc2f3624cfdd29b7be0d78",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-x5.json",
+        "sha256": "8fb581903bd815fa22a6f9cdaa336444c88dc8c83ba2bffc3046a5aed362f790",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-x8.cbl",
+        "sha256": "e322e5af1ec7dd4380bded9a44329b10e82c0dcc851ad18e61807f8475847725",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/dynamic-x8.json",
+        "sha256": "e45c6fe191c6e9be4b35da793663fc908b0b600c848a236d797170e286614010",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/evaluate.cbl",
+        "sha256": "0a33022010a3287d3b272fa19e25ac5e0fa62bb6354d4a9c36e9569445ef3bae",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/evaluate.json",
+        "sha256": "fda8789f80f4b56a5ff8ec0f498ce2fa1176d94760e50ecaf72ebbbb2e7b4aff",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/goto.cbl",
+        "sha256": "67fd4fcee6aa8df23b1c95f3477cadc12ff239ff50723d7adb52186886ee08bc",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/goto.json",
+        "sha256": "abf584ef625c96b3180df69dedb07f8a55a1d539babab0c972735c8fb635c957",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/if.cbl",
+        "sha256": "4deee1bac7ed9d575bce5999ea21b86148fc8eb27bc49b3ed09b545058b5bbc7",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/if.json",
+        "sha256": "cd79dda8ebfd8b5eade6c61935c5f9110fdb1a383243c1ee60b2955533c8e669",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/incomplete.cbl",
+        "sha256": "a4a1bfa6e2647f3acff64788d9a6bd1eff2dd8ea351936e3496e3126eca427bd",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/incomplete.json",
+        "sha256": "69456c2d497dbf683bf9b1ad48f16f2743080a95a0a2f7871291d70f9a50d49e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/literal-raw.cbl",
+        "sha256": "6a48ce9846a2ed52e92bd727703258b81f620e17b5c69cd02e2cfeed3ca1678e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/literal-raw.json",
+        "sha256": "3bf8081cc97798703a578205a3a9197481c3f59f5a3abf1008c74a3fc546ae97",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/literal.cbl",
+        "sha256": "dde454f21d80fb95b5653fbb4166de61e05c6f4a457362328f24dd69adc239b9",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/literal.json",
+        "sha256": "e88bb1029fd184e3dabefd28bf37cdea99193630a9f5caeeebc1bd00e56870a1",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/no-continuation.cbl",
+        "sha256": "efc28dca6c49b647364cd5d2e83c9b4ad0c34c38987845ca67e90b65a0c8204c",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/no-continuation.json",
+        "sha256": "aebcb9e9f6efac3d3f4d1b4826e47b5f14f5031b4c122a268145597eca5ae00a",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/not-on-exception.cbl",
+        "sha256": "cc02f67c99ab4d913c183e903f47a17c66b92624bdddc967a8ae855cb350cd97",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/not-on-exception.json",
+        "sha256": "4a1e6ded6bde1302b9bb4e233e3f9168f853f2a0f17ad334f026a78fc1c738b2",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/on-exception.cbl",
+        "sha256": "74ab43d92bca23f70f79e045befa8cbb7c4f9d6f94dc5d2f4e348db9dcd92e16",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/on-exception.json",
+        "sha256": "5c0fe11e903a1779e4f3cc55c2c19297ffe84755df4ed22984fa14dda4da2122",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/on-overflow.cbl",
+        "sha256": "d97a6c07c994bb1c35ea1f74edead1cd6e09ac54d80bbe642aa09fdc549ee09b",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/on-overflow.json",
+        "sha256": "71a16d10de24ce373815d86c6398a0b563eeb52dc2debce146315fe5473cc6df",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/perform.cbl",
+        "sha256": "5ae80a9466d21d855b2fe52180f9f8f1134ed67d2dbf9d7528f10e9533df8e55",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/perform.json",
+        "sha256": "67493034dbc9019380076364574b95b517afeaec3acb6fd7d8bcce99f1da77d7",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/refmod.cbl",
+        "sha256": "b3f7458a1c0b0bf1a909b10d5013400ccf8dafb341b37584b796fecf4d79b985",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/refmod.json",
+        "sha256": "6c871cdb39ca061abcacb64b9499150f466ff28cd387a279744d3d21238b8cf7",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/returning.cbl",
+        "sha256": "5e141743f835758d5ca83615a8af8b11ee9afb58e83c91c9c65eff12d9bb1090",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/returning.json",
+        "sha256": "4251b8b4dd0680381cfae0c37a7db524ed3da910f466fe22e5d40640c5eb2f99",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/subscript.cbl",
+        "sha256": "c6a26b7f16a6d3244e7821e816b66a9b1576c86ca8879b69736c8bda9d489672",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/subscript.json",
+        "sha256": "550f63a9bb066ed889f3114227ddc777a8053ed9ae8a06c5467e830168fdd90f",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/truncation.cbl",
+        "sha256": "aeb927f0cee9ecebd36cd9ef0f51588f054510bad3eafedc920515668d1044bd",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/truncation.json",
+        "sha256": "ccf2d0df31d3ba35e4317ffafed5ed4ec74b4dbbe1d5ecd6b9cdf56db8534ebb",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/two-data.cbl",
+        "sha256": "7637b6e2dd8c27ecde2384a7d04ac89cdcb62730d820fc7824360f7277dce73e",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/two-data.json",
+        "sha256": "171298abea9d4dfe295bc377e2f6eb2949d85aa0313c008f43e54ad1fbc91dad",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/unresolved.cbl",
+        "sha256": "d17a292dfaa1c4f1aaae490bfc94b61cd2d792d7ed6156894b159fa7d15c9869",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/unresolved.json",
+        "sha256": "092561f84e646ea42366320a17bb1568a7e24d6749ec870854db9aecc18a29dd",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/using.cbl",
+        "sha256": "acf515568d8488fd9ac481c9ad55fbbf9f6c2aa4aaec2dfdd3a25ae0a6712e47",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "adapters/src/test/resources/sp/cp6/using.json",
+        "sha256": "23def3c4b1b52f02a675f02832235e4f80516064261564825b9b01a831602baf",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/CallOracle.java",
+        "sha256": "e9ec98397203fa7f3efbe83ea0cdb844d5f05ff8901430a67238ee62e1d26068",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "core/src/test/java/io/github/gustavo2358/lower/testing/CallSuite.java",
+        "sha256": "a86b34d19c2056c6a7a163aedc2f946d54ceab5cfe8a845e6619ac72b1b6c2e6",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/architecture/extensibility.md",
+        "sha256": "36936435892d3619d8993562e1fd803f87eef9107af1e87ab398be7771b0d477",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/invariants.md",
+        "sha256": "3ceaec3d74781dc297eaf215e242aaaeb50622ff4980f315c36697444a9ef41d",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/architecture/ports-and-adapters.md",
+        "sha256": "ef0a3843dbf705ac20565356e2455d793bb89aa15da1a8c3b2d164e9824b9178",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/call-lowering.md",
+        "sha256": "2c9de000c8de74d04a30ff5deda45cf8ac77ee3235796d605b05ba91d25fbd1d",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/domain/first-slice-entry-goback.md",
+        "sha256": "d73d5c0c2e6f549b5bddac5e39e04c587035eb602648c328a926c18e357b7bfe",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/identity-and-provenance.md",
+        "sha256": "0c92988fa9ef4216e77e9d9a2b4aeb0da64f7d7607ae72004e42e913f82ada77",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/scalar-text-move.md",
+        "sha256": "81f2ba8e19fbf12420342b19a1c7e0e9f23b389321cecca2ac3ff95b82b02581",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/semantic-input-contract.md",
+        "sha256": "05216fc458a873b8a51d2b2f10962b09f47ce1d948e1309853c872c449dd41df",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/domain/validation-and-results.md",
+        "sha256": "2d91362b775678864b61552ae9be6c1ac4c090f7b70b7afc115155ec41b3ffb2",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/agent-session-protocol.md",
+        "sha256": "4b363966000d20a56fa0631a75936f99303c58f9c8ede8f889e722d92c3f1d33",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/change-control.md",
+        "sha256": "c676df8332b7af04c79e6e9658d63446b928752e38c170f9f527d7491ff98c8f",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/falsification.md",
+        "sha256": "ca1ddc206191ac3b8203b9f14584a40edd86c755182700160868f265f41692a2",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.json",
+        "sha256": "ab78bc28d3737c2e28d6974717bc844bc57b77669ff186a9a83710582ebae0f7",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/gates.md",
+        "sha256": "1cb8b93732b5bfeb51399db80d84895e15d25dc252fb0cdc66894b81852877bd",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/git-and-review.md",
+        "sha256": "0e93bb5beded3b610b3d8ba9688d9db296d57ac89f679d2e14554a6663c67dcf",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/performance.md",
+        "sha256": "8ef0fae1219ea12a7222b75fc1a2ff3547f22374923745e618b29d99fb7bda5a",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/research-and-evidence.md",
+        "sha256": "c137ab03af2bcc6974362b2e2e9588a6fa44fe6e4e71c760a0107af6ad22b878",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/semantic-analysis-policy.md",
+        "sha256": "5366cade540d0ac8994a7cd0255a7bee85d14801a5852bf3d1673d7fc0f1f1e7",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/testing.md",
+        "sha256": "5885af195a11322496df94b2e4227fb0d827b8e74c844c658a9e9981718e2565",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/engineering/work-item-protocol.md",
+        "sha256": "c9ab8a8a54dde7aba1f2269225a80dd5462460efa2b35f387f4690bc23faf8d2",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/catalog.md",
+        "sha256": "1ca1ac60c284fd947353310e755c6e8708e112546cd8a0360123232f4ff785f8",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/evals/fixtures.md",
+        "sha256": "36ff611956701afc0054e827df04df851dae9c2e17eb601337d691f16661f460",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-010/CP0-manifest.yaml",
+        "sha256": "6a0cf67369b0c158b9b8cfb72513c6156efd8a4b7ed5911ef007830d444759c4",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-010/ci-timeout/contract.md",
+        "sha256": "1b10a1becaebecae25bbfc2e77073ce5d6c942437e915a1d4688be8b2a576e61",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-010/ci-timeout/freeze.json",
+        "sha256": "957f2b82402829dd9ab33e6dff9a7e18c690bf94ae03fe3ce64f73f3d273478a",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-010/freeze.json",
+        "sha256": "82a16c97d2db62af9727a31cda2ddbc929afebe3084b5c050f3180526b2b1111",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/quality/WORK-LOWER-010/production-source-guard.json",
+        "sha256": "baa614d63a66882e63c7960dfcc5b82aa6e74ae71aed8b3032767e6411bc475c",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/sources/sources.lock.json",
+        "sha256": "0831523155c8e0419e9f9dc000d19e9d70d44b8d63cd0e6101e60e27db5294d7",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-010/eval.md",
+        "sha256": "4f6fa2e668830c02b1b63285055c383eb9b93d355570551587da8cbc6bc30a32",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-010/plan.md",
+        "sha256": "5fb0e182f32433aa314846ee6769fc4f71183f9ed31b2e98306c3a53758e20d3",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-010/spec.md",
+        "sha256": "05d766356a9699948c8e3906a7b44c6f1fa8de82cb9459cf8503c643db6b9d34",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/active/WORK-LOWER-010/work-item.yaml",
+        "sha256": "b2039ca13a0703835c782d7e48033ad5ece61d0aee6323fbd238f7f71aae8219",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "docs/work/index.md",
+        "sha256": "3ea98c30039ff39bfa3bd9c3f9c9db6c6c24e1f204a866278cf6ab3c2d13b77d",
+        "git_revision": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
+        "usage": "reference_only"
+      },
+      {
+        "path": "scripts/harness/call_challenge.py",
+        "sha256": "23c9df6da1b4c42fc6748b35a01591b80cb9615d1b09640847aa562519c8a8d4",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/output_challenge.py",
+        "sha256": "974a48016904009c5055c2a3cd9c590432af2f8f7d8abb1a7996c78c70069763",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/production_challenge.py",
+        "sha256": "bc1a632aeff9565fe8b7acb35d0fb988b65d08209ec68b1cf9d185a3a04e9a79",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      },
+      {
+        "path": "scripts/harness/w1c_e2e.py",
+        "sha256": "d6efae3412b82c24deecd816c6842e2d3be158b15d033f57380cf61df7e680b2",
+        "git_revision": null,
+        "usage": "candidate_immutable"
+      }
+    ],
+    "required_gates": [
+      "docs",
+      "architecture",
+      "semantic",
+      "performance",
+      "full",
+      "git"
+    ],
+    "reference_fields": [
+      "path",
+      "sha256",
+      "git_revision",
+      "usage"
+    ],
+    "required_remote_checks": [
+      {
+        "name": "checkpoint",
+        "workflow": ".github/workflows/checkpoint.yml",
+        "app_slug": "github-actions",
+        "event": "push"
+      }
+    ],
+    "remote_wait_limit_seconds": 3600
+  },
+  "execution_fields": [
+    "gate",
+    "required",
+    "command",
+    "cwd",
+    "environment",
+    "status",
+    "exit_code",
+    "test_count",
+    "log_reference"
+  ],
+  "regressions": [
+    {
+      "previous_checkpoint": "CP3/CP4C/CP5 established behavior and current W1C slice",
+      "guarantees": "Entry/GOBACK, scalar X5, output codec boundary, CLI atomicity, production/capacity probes and all restored challenges retained. No historical evidence rewritten. W1C CALL623 plus real SP153 local assertions; raw producer/CLI deterministic twice.",
+      "execution_references": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "previous_checkpoint": "Same CP0 initial local certificate at 989637a7fd840f43aaf04abce299c839b82fcb55; remote timeout, not a complete recovery point",
+      "guarantees": "Only operational workflow timeout and PR metadata changed. Full cumulative semantic/performance/architecture/Git/harness/challenges rerun with 175 harness tests and 76 restored mutations. Initial code, tests, source locks, fixtures and prior evidence remain byte-identical except the explicitly superseded current CP0 certificate.",
+      "execution_references": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    }
+  ],
+  "regression_fields": [
+    "previous_checkpoint",
+    "guarantees",
+    "execution_references"
+  ],
+  "blockers": [],
+  "certification": {
+    "status": "PASS",
+    "unresolved_findings": [],
+    "all_mutations_restored": true,
+    "required_results_pass": true,
+    "scope": "pre_commit"
+  },
+  "diff_options": [
+    "-c",
+    "core.quotePath=true",
+    "-c",
+    "diff.algorithm=myers",
+    "-c",
+    "diff.renames=false",
+    "diff",
+    "--cached",
+    "--binary",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--full-index",
+    "--no-color"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "Gustavo2358/air-java",
+  "commit": "2a37f5e980ba25fdc79614a66030a84d8bf5b8c9",
+  "jar_sha256": "bea96d84e7179af397ad692745aad8f9e40142d846467a8480c58167ea53fd0e",
+  "source_tree": "8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8",
+  "codec_sha256": "2621844e843ba1803454482c720aafb3ec3a8733893879769bc41968da1b156e",
+  "source_lock_sha256": "0831523155c8e0419e9f9dc000d19e9d70d44b8d63cd0e6101e60e27db5294d7",
+  "java": "openjdk version \"21.0.12.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)"
+}

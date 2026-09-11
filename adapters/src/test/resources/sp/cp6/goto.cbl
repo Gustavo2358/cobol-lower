@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CALLER.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-PGM PIC X(8).
+       PROCEDURE DIVISION.
+           GO TO DONE.
+           CALL WS-PGM.
+       DONE.
+           GOBACK.

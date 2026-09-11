@@ -1,0 +1,14 @@
+dynamic-to-literal: semantic RED, byte-exact restoration, second GREEN
+wrong-object: semantic RED, byte-exact restoration, second GREEN
+erase-x8-padding: semantic RED, byte-exact restoration, second GREEN
+invent-x5-padding: semantic RED, byte-exact restoration, second GREEN
+wrong-normal-label: semantic RED, byte-exact restoration, second GREEN
+pure-effects: semantic RED, byte-exact restoration, second GREEN
+closed-outcomes: semantic RED, byte-exact restoration, second GREEN
+invented-contract: semantic RED, byte-exact restoration, second GREEN
+name-canonicalization: semantic RED, byte-exact restoration, second GREEN
+exact-name-policy: semantic RED, byte-exact restoration, second GREEN
+admit-using: semantic RED, byte-exact restoration, second GREEN
+admit-ambiguous: semantic RED, byte-exact restoration, second GREEN
+ignore-call-revision: semantic RED, byte-exact restoration, second GREEN
+PASS CALL CHALLENGE: 13 compiled mutations

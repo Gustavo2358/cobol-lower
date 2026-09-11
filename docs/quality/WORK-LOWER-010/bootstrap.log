@@ -1,0 +1,430 @@
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)
+Maven home: /home/gustavo/.sdkman/candidates/maven/current
+Java version: 21.0.12.1, vendor: Eclipse Adoptium, runtime: /tmp/cp6-w1c/jdk21
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "7.0.0-31-generic", arch: "amd64", family: "unix"
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Analysis IR Java Parent                                            [pom]
+[INFO] Analysis IR Java Model                                             [jar]
+[INFO] Analysis IR JSON                                                   [jar]
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:air-java-parent >----------------
+[INFO] Building Analysis IR Java Parent 0.1.0-SNAPSHOT                    [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ air-java-parent ---
+[INFO] 
+[INFO] --- exec:3.5.0:exec (reactor-topology) @ air-java-parent ---
+PASS: reactor topology 0.1.0-SNAPSHOT; parent, air-model, air-json (1A codec)
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ air-java-parent ---
+[INFO] Installing /tmp/cp6-w1c/air-java/pom.xml to /tmp/cp6-w1c/m2/io/github/gustavo2358/air-java-parent/0.1.0-SNAPSHOT/air-java-parent-0.1.0-SNAPSHOT.pom
+[INFO] 
+[INFO] -------------------< io.github.gustavo2358:air-java >-------------------
+[INFO] Building Analysis IR Java Model 0.1.0-SNAPSHOT                     [2/3]
+[INFO]   from air-model/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ air-java ---
+[INFO] Deleting /tmp/cp6-w1c/air-java/air-model/target
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ air-java ---
+[INFO] skip non existing resourceDirectory /tmp/cp6-w1c/air-java/air-model/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ air-java ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 41 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ air-java ---
+[INFO] skip non existing resourceDirectory /tmp/cp6-w1c/air-java/air-model/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ air-java ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 3 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ air-java ---
+[INFO] 
+[INFO] --- exec:3.5.0:exec (air-contract-suite) @ air-java ---
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ air-java ---
+[INFO] Building jar: /tmp/cp6-w1c/air-java/air-model/target/air-java-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- help:3.5.1:effective-pom (effective-module) @ air-java ---
+[INFO] Effective-POM written to: /tmp/cp6-w1c/air-java/air-model/target/effective-pom.xml
+[INFO] 
+[INFO] --- dependency:3.8.1:tree (resolved-module) @ air-java ---
+[INFO] Wrote dependency tree to: /tmp/cp6-w1c/air-java/air-model/target/dependency-tree.json
+[INFO] 
+[INFO] --- exec:3.5.0:exec (compiled-module) @ air-java ---
+ok 1 - CORE-SIZE iterative semantic nesting
+ok 2 - CORE-SIZE retention continues validation
+CAPACITY dimension=objects n=32 status=STRUCTURALLY_VALID entities=70 operations=1 operands=0 queries=0
+CAPACITY dimension=sequences n=32 status=STRUCTURALLY_VALID entities=68 operations=32 operands=0 queries=0
+CAPACITY dimension=operations n=32 status=STRUCTURALLY_VALID entities=104 operations=33 operands=64 queries=32
+CAPACITY dimension=references n=32 status=STRUCTURALLY_VALID entities=6 operations=1 operands=0 queries=0
+CAPACITY dimension=objects n=64 status=STRUCTURALLY_VALID entities=134 operations=1 operands=0 queries=0
+CAPACITY dimension=sequences n=64 status=STRUCTURALLY_VALID entities=132 operations=64 operands=0 queries=0
+CAPACITY dimension=operations n=64 status=STRUCTURALLY_VALID entities=200 operations=65 operands=128 queries=64
+CAPACITY dimension=references n=64 status=STRUCTURALLY_VALID entities=6 operations=1 operands=0 queries=0
+CAPACITY dimension=objects n=128 status=STRUCTURALLY_VALID entities=262 operations=1 operands=0 queries=0
+CAPACITY dimension=sequences n=128 status=STRUCTURALLY_VALID entities=260 operations=128 operands=0 queries=0
+CAPACITY dimension=operations n=128 status=STRUCTURALLY_VALID entities=392 operations=129 operands=256 queries=128
+CAPACITY dimension=references n=128 status=STRUCTURALLY_VALID entities=6 operations=1 operands=0 queries=0
+ok 3 - CORE-SIZE independent cardinality series
+ok 4 - CORE-SIZE indexed reference lookup
+ok 5 - CORE-SIZE operational failure and counters
+ok 6 - CORE-SIZE omitted kinds retain classification
+ok 7 - CORE-SIZE recursive families use explicit frames
+ok 8 - semver parse
+ok 9 - bad semver rejected
+ok 10 - negative version rejected
+ok 11 - empty text retained
+ok 12 - unpaired surrogate rejected
+ok 13 - supplementary scalar accepted
+ok 14 - bytes input defensive copy
+ok 15 - bytes output defensive copy
+ok 16 - invalid octet rejected
+ok 17 - decimal semantic equality
+ok 18 - negative decimal scale rejected
+ok 19 - source end before start rejected
+ok 20 - minimal publication valid
+ok 21 - pure core has no JSON/frontend imports
+ok 22 - publication lists immutable
+ok 23 - constructor snapshots source list
+ok 24 - terminator required
+ok 25 - empty closed control is not divergence
+ok 26 - explicit divergence representable
+ok 27 - missing label rejected
+ok 28 - duplicate operation rejected
+ok 29 - foreign publication origin rejected
+ok 30 - dangling origin rejected
+ok 31 - origin cycle rejected
+ok 32 - alias cycle rejected
+ok 33 - unknown type declaration valid
+ok 34 - unknown type reason must be TYPE_UNKNOWN
+ok 35 - unknown type dangling reason rejected
+ok 36 - literal assign same known domain
+ok 37 - assign different concrete domains rejected
+ok 38 - unknown self-copy preserves sameDomain
+ok 39 - shared uncertainty is not domain equality
+ok 40 - exact alias proves unknown-domain copy
+ok 41 - scoped sameDomain permits copy
+ok 42 - unit scope permits local copy
+ok 43 - entry scope does not extend to body
+ok 44 - wrong operation scope rejected at use
+ok 45 - intersection narrows without losing valid site
+ok 46 - empty intersection never proves copy
+ok 47 - scope invocation on noninvoke rejected even unused
+ok 48 - unused proof dangling subject rejected
+ok 49 - sameDomain contradiction rejected
+ok 50 - contradiction through unknown intermediary rejected
+ok 51 - transitive scoped premises support copy
+ok 52 - unknown bool value permits branch
+ok 53 - unknown type is not boolean
+ok 54 - arithmetic rejects unknown type
+ok 55 - unknown value/type reasons stay distinct
+ok 56 - duplicate decimal dispatch keys rejected
+ok 57 - space padding accepted
+ok 58 - text slice out of bounds rejected
+ok 59 - text slice counts Unicode scalars
+ok 60 - empty closed choice rejected
+ok 61 - closed heterogeneous choice retains unknown type
+ok 62 - heterogeneous known choice rejected
+ok 63 - open choice does not invent known remainder domain
+ok 64 - opaque retains known reads
+ok 65 - opaque may have two known normal destinations
+ok 66 - opaque without uncertainty rejected
+ok 67 - computed target requires known text
+ok 68 - computed text unknown preserves dependency
+ok 69 - two normal invocation outcomes rejected
+ok 70 - return does not acquire implicit fallthrough
+ok 71 - local control capability required
+ok 72 - local resume modeled without stack execution
+ok 73 - indirect label universe is explicit
+ok 74 - label literal outside domain rejected
+ok 75 - unknown required extension is not silently accepted
+ok 76 - entry literal initialization is not zero default
+ok 77 - conflicting alias initial states rejected
+ok 78 - missing input differs from empty inventory
+ok 79 - validation resource limit observable
+ok 80 - incompatible AIR version is not accepted
+ok 81 - deterministic validation
+ok 82 - large scalar inventory is indexed once
+ok 83 - concurrent validation has no shared mutable state
+ok 84 - open universal choice-domain premise permits copy
+ok 85 - candidate-only proof does not cover open choice remainder
+ok 86 - universal choice proof cannot contradict concrete candidate
+ok 87 - proof for another occurrence does not prove open choice
+ok 88 - invocation-site sameDomain validates transmission
+ok 89 - transmission missing proof is rejected
+ok 90 - operation scope includes its own invocation boundary
+ok 91 - entry scope does not prove invocation transmission
+ok 92 - region view outside known extent rejected
+ok 93 - unknown codec does not erase known logical domain
+ok 94 - known codec and incompatible object domain rejected
+ok 95 - ASCII literal codec write checked
+ok 96 - ASCII codec rejects non-ASCII literal
+ok 97 - assign does not silently pad a fixed-size view
+ok 98 - calculated slice without private certificate yields incomplete validation
+ok 99 - diagnostic limit is never a successful validation
+ok 100 - large number of unit-scoped domain premises is reusable
+ok 101 - two independent constructions validate identically
+ok 102 - Publication has no contracts inventory
+ok 103 - legacy contract entity and id are absent
+ok 104 - ContractRef requires evidence
+ok 105 - ContractRef dangling evidence is rejected
+ok 106 - unknown contract requires CONTRACT_UNKNOWN
+ok 107 - external signature is materialized at invoke
+ok 108 - same contract authority does not merge invocation sites
+ok 109 - each same-authority invocation can be proven independently
+ok 110 - materialized contract truth remains a semantic obligation
+ok 111 - Target admits exactly internal literal computed
+ok 112 - ResourceTarget is absent
+ok 113 - internal target and matching entry signature are valid
+ok 114 - internal target may reference declared entry with unavailable body
+ok 115 - internal signature must identify exactly its target entry
+ok 116 - literal target and embedded external signature are valid
+ok 117 - computed target remains valid with known text abstraction
+ok 118 - ResourceId remains declarative rather than executable
+ok 119 - contract authority does not supply extension name policy
+ok 120 - disjoint_storage with two distinct bases is structurally valid
+ok 121 - disjoint_storage dangling base is rejected
+ok 122 - disjoint_storage duplicate base is rejected
+ok 123 - disjoint_storage singleton is rejected
+ok 124 - disjoint_storage has no selective scope
+ok 125 - different StorageIds do not invent domain independence
+ok 126 - disjoint_storage does not resolve type or alias facts
+ok 127 - private safety API is absent
+ok 128 - private proof pointer fields are absent
+ok 129 - unknown expression purity remains a semantic obligation
+ok 130 - removing safety tokens does not permit invalid slice bounds
+ok 131 - removing safety tokens does not permit invalid codec write
+ok 132 - extension equality without interpreted manifest is incomplete
+ok 133 - unknown_type at known position does not open arity
+ok 134 - parameter and result remainders are independent values
+ok 135 - open result remainder does not open closed parameter arity
+ok 136 - open result remainder independently admits unknown extra result
+ok 137 - open parameter remainder does not waive known-slot transmission
+ok 138 - open result remainder does not waive known-slot transmission
+ok 139 - sameDomain does not promote an argument to a required concrete type
+ok 140 - sameDomain does not promote a result destination to a required concrete type
+ok 141 - closed partial signature remains conservative under open value precision
+ok 142 - unknown passing mode remains a present parameter
+ok 143 - external signature cannot invent called-unit object binding
+ok 144 - mathematical signature position is not capped by int
+ok 145 - proof cannot reference an unmaterialized external position
+ok 146 - all invocation outcome kinds and open remainder are preserved
+ok 147 - InvocationOutcomes rejects duplicate exception tag
+ok 148 - InvocationOutcomes rejects duplicate catch-all
+ok 149 - outcome-specific effect keys are unique
+ok 150 - InvocationAlternative excludes jump return continue
+ok 151 - generic ControlEnvelope preserves jump and return
+ok 152 - continue is accepted only by common-operation fallback
+ok 153 - continue in opaque terminator is rejected
+ok 154 - empty closed invocation outcomes are not implicit divergence
+ok 155 - effect-only place occurrence is materialized once
+ok 156 - opaque result references one pre-existing occurrence
+ok 157 - Return has no entryScope component
+ok 158 - incompatible multi-entry return records limit without selecting entry
+ok 159 - compatible multi-entry return validates all entries
+ok 160 - open result remainder does not waive a known return slot
+ok 161 - open result remainder preserves a proven return slot
+ok 162 - ArtifactRelationId closes a valid relation
+ok 163 - artifact relation dangling destination is rejected
+ok 164 - artifact relation id cannot cross publication
+ok 165 - entry owner is checked
+ok 166 - sequence label owner is checked
+ok 167 - operation owner is checked
+ok 168 - object owner is checked
+ok 169 - operand owner is checked
+ok 170 - same localId in distinct identity domains does not collide
+ok 171 - entry-owned and operation-owned operand localIds do not collide
+ok 172 - completion port requires local-control capability
+ok 173 - completion port owner closes under local-control capability
+ok 174 - entry without label is valid only for unavailable body
+ok 175 - unavailable body cannot publish dangling entry label
+ok 176 - available body entry without label is rejected
+ok 177 - offset provenance survives without fabricated line columns
+ok 178 - coverage elimination uses rule and origin, not safety premise
+ok 179 - computed dependency name must be observed before owning operation
+PASS: 179 deterministic contract checks
+PASS: compiled module air-model; effective POM + resolved graph + 325 classfiles + JAR verified
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ air-java ---
+[INFO] Installing /tmp/cp6-w1c/air-java/air-model/pom.xml to /tmp/cp6-w1c/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.pom
+[INFO] Installing /tmp/cp6-w1c/air-java/air-model/target/air-java-0.1.0-SNAPSHOT.jar to /tmp/cp6-w1c/m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] -------------------< io.github.gustavo2358:air-json >-------------------
+[INFO] Building Analysis IR JSON 0.1.0-SNAPSHOT                           [3/3]
+[INFO]   from air-json/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ air-json ---
+[INFO] Deleting /tmp/cp6-w1c/air-java/air-json/target
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ air-json ---
+[INFO] skip non existing resourceDirectory /tmp/cp6-w1c/air-java/air-json/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ air-json ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 5 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ air-json ---
+[INFO] Copying 2 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ air-json ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 7 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ air-json ---
+[INFO] 
+[INFO] --- exec:3.5.0:exec (air-json-suite) @ air-json ---
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ air-json ---
+[INFO] Building jar: /tmp/cp6-w1c/air-java/air-json/target/air-json-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- help:3.5.1:effective-pom (effective-module) @ air-json ---
+[INFO] Effective-POM written to: /tmp/cp6-w1c/air-java/air-json/target/effective-pom.xml
+[INFO] 
+[INFO] --- dependency:3.8.1:tree (resolved-module) @ air-json ---
+[INFO] Wrote dependency tree to: /tmp/cp6-w1c/air-java/air-json/target/dependency-tree.json
+[INFO] 
+[INFO] --- exec:3.5.0:exec (compiled-module) @ air-json ---
+json-ok 1 - CORE-SIZE physical JSON stack and malformed distinction
+json-ok 2 - CORE-SIZE exact UTF-8 byte budgets
+CAPACITY dimension=json-objects n=16 bytes=42877 entities=54 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-operations n=16 bytes=51508 entities=69 operations=17 operands=32 queries=16 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-bytes n=16 bytes=16972 entities=2 operations=0 operands=0 queries=0 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-sequences n=16 bytes=43726 entities=54 operations=17 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-references n=16 bytes=14040 entities=24 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-objects n=32 bytes=73117 entities=86 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-operations n=32 bytes=90964 entities=117 operations=33 operands=64 queries=32 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-bytes n=32 bytes=33356 entities=2 operations=0 operands=0 queries=0 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-sequences n=32 bytes=74862 entities=86 operations=33 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-references n=32 bytes=14936 entities=24 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-objects n=64 bytes=133597 entities=150 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-operations n=64 bytes=169876 entities=213 operations=65 operands=128 queries=64 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-bytes n=64 bytes=66124 entities=2 operations=0 operands=0 queries=0 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-sequences n=64 bytes=137134 entities=150 operations=65 operands=2 queries=1 status=STRUCTURALLY_VALID
+CAPACITY dimension=json-references n=64 bytes=16728 entities=24 operations=2 operands=2 queries=1 status=STRUCTURALLY_VALID
+json-ok 3 - CORE-SIZE JSON independent cardinality series
+json-ok 4 - CORE-SIZE codec operational result remains explicit
+json-ok 5 - manual AIR oracle valid and complete
+json-ok 6 - zero known publication remains explicitly complete
+json-ok 7 - encode equals independent canonical golden
+json-ok 8 - decode equals independent complete Publication
+json-ok 9 - AIR round trip preserves every record and array
+json-ok 10 - JSON round trip canonical and deterministic
+json-ok 11 - property order whitespace and equivalent escapes recanonicalize
+json-ok 12 - PARTIAL and dimensional claims remain independent
+json-ok 13 - empty containers and closed signatures remain present
+json-ok 14 - provenance null approximate and include chains round trip
+json-ok 15 - arbitrary natural coordinates beyond primitive ranges
+json-ok 16 - Unicode scalar text and canonical escaping
+json-ok 17 - canonical property ordering uses Unicode scalars
+json-ok 18 - producer codes reason text and source names are opaque
+json-ok 19 - array permutations preserve physical inventory order
+json-ok 20 - BOM rejected
+json-ok 21 - invalid UTF-8 rejected without replacement
+json-ok 22 - trailing garbage second document and non-JSON whitespace rejected
+json-ok 23 - array string null boolean and empty document roots rejected
+json-ok 24 - duplicate property rejected at every object depth
+json-ok 25 - escaped duplicate key rejected at every object depth
+json-ok 26 - isolated surrogates raw and escaped rejected
+json-ok 27 - invalid string escapes controls commas and truncation rejected
+json-ok 28 - every catalogued field required including nullable fields
+json-ok 29 - unknown fields rejected throughout supported tree
+json-ok 30 - kind absent unknown or null never inferred
+json-ok 31 - null rejected wherever field is not nullable
+json-ok 32 - integer JSON numbers forbidden
+json-ok 33 - canonical Natural lexemes enforced
+json-ok 34 - all envelope versions require exact identity
+json-ok 35 - incomplete ID and foreign or wrong domain IDs rejected
+json-ok 36 - duplicate definitions dangling references and missing evidence rejected
+json-ok 37 - PARTIAL without reason is INVALID_IR with AIR rule
+json-ok 38 - local AIR constraints and Java representability limits stay distinct
+json-ok 39 - closed tokens are checked explicitly
+json-ok 40 - process timestamp and private model fields forbidden
+json-ok 41 - valid Halt unsupported and Return never silently changed
+json-ok 42 - ordinary operation as terminator and Return as instruction invalid
+json-ok 43 - deferred forms fail explicitly without partial materialization
+json-ok 44 - capability nonempty manifest distinguished from invalid AIR
+json-ok 45 - document and depth limits explicit in both directions
+json-ok 46 - Validator limits remain INCOMPLETE_VALIDATION
+json-ok 47 - all complete ID wire shapes including future operand references
+json-ok 48 - all supported wire tokens have independent binding oracles
+json-ok 49 - writer never derives wire tokens from runtime enum
+json-ok 50 - local AIR failures carry pinned rule and site
+json-ok 51 - Validator issues preserve exact rule subject detail and site
+json-ok 52 - Natural span bases beyond Java range are representability limits
+json-ok 53 - empty FactScope entities is a Java representability limit
+json-ok 54 - admitted blank Text is a field-specific representability limit
+json-ok 55 - unexpected constructor exceptions are never classified generically
+json-ok 56 - Span coordinates below declared bases are representability limits
+json-ok 57 - Span inverted lines are representability limits
+json-ok 58 - Span inverted columns on same line are representability limits
+json-ok 59 - coherent spans preserve equality bases and lexicographic order
+json-ok 60 - coherent arbitrary bases reach only their Java representation limit
+json-ok 61 - invalid Span Natural lexemes remain physical errors at both sites
+json-ok 62 - 4B manual scalar AIR oracle validates independently
+json-ok 63 - 4B Java oracle has no transport or golden dependency
+json-ok 64 - 4B independent golden and model satisfy all four equalities
+json-ok 65 - 4B PARTIAL inventories origins precision and uncertainties preserved
+json-ok 66 - 4B text and nullable fields preserve exact values
+json-ok 67 - 4B object and cell references must close
+json-ok 68 - 4B storage kind domain and owner remain validated
+json-ok 69 - 4B operand operation and entry owners cannot be repaired
+json-ok 70 - 4B Assign destination and source roles remain validated
+json-ok 71 - 4B conflicting literal domain remains a Validator rule
+json-ok 72 - 4B Assign terminator and Return instruction fail I-04
+json-ok 73 - 4B all supported fields required and unknown fields rejected
+json-ok 74 - 4B null tokens kinds and ID shapes preserve physical taxonomy
+json-ok 75 - 4B recognized unsupported forms remain IMPLEMENTATION_LIMIT
+json-ok 76 - 4B every Lifetime Visibility and OperandRole token has a literal oracle
+json-ok 77 - 4B ordered Assigns preserve independent wire and model arrays
+json-ok 78 - 4B default representability and opt-in operational budgets
+SCALE objects=1000 storage=1000 operations=1001 operands=2000 inputBytes=4371328 outputBytes=4371328 nodes=238546 entities=5019 domainQueries=1000 observedMs=723
+SCALE objects=2000 storage=2000 operations=2001 operands=4000 inputBytes=8741328 outputBytes=8741328 nodes=476546 entities=10019 domainQueries=2000 observedMs=1247
+SCALE objects=1 storage=1 operations=10001 operands=20000 inputBytes=24747652 outputBytes=24747652 nodes=1320652 entities=30021 domainQueries=10000 observedMs=3330
+json-ok 79 - 4B scale N and 2N and repeated references preserve linear structure
+json-ok 80 - W1B literal Invoke preserves I-56 and canonical Publication
+json-ok 81 - W1B computed Invoke preserves Read ObjectPlace and obligations
+json-ok 82 - W1B independent wire oracle covers every invocation field
+json-ok 83 - W1B names policies and text stay language neutral
+json-ok 84 - W1B conservative effects finite outcomes and open bounds survive
+json-ok 85 - W1B empty signature inventories preserve independent remainders
+json-ok 86 - W1B invalid references roles owners and outcomes block transport
+json-ok 87 - W1B resource and unsupported capability stay blocking
+json-ok 88 - W1B non-obligation incomplete validation blocks with truncated issues
+json-ok 89 - W1B strict shapes duplicates kinds and local constraints
+json-ok 90 - W1B unimplemented invocation variants remain explicit
+W1B SCALE invokes=500 bytes=1673561 entities=1026 obligations=1000
+W1B SCALE invokes=1000 bytes=3336061 entities=2026 obligations=2000
+json-ok 91 - W1B Invoke N and 2N preserve linear structure
+PASS: 91 deterministic transport checks
+PASS: compiled module air-json; effective POM + resolved graph + 19 classfiles + JAR verified
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ air-json ---
+[INFO] Installing /tmp/cp6-w1c/air-java/air-json/pom.xml to /tmp/cp6-w1c/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.pom
+[INFO] Installing /tmp/cp6-w1c/air-java/air-json/target/air-json-0.1.0-SNAPSHOT.jar to /tmp/cp6-w1c/m2/io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Analysis IR Java Parent 0.1.0-SNAPSHOT:
+[INFO] 
+[INFO] Analysis IR Java Parent ............................ SUCCESS [  0.327 s]
+[INFO] Analysis IR Java Model ............................. SUCCESS [  3.950 s]
+[INFO] Analysis IR JSON ................................... SUCCESS [  9.431 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13.786 s
+[INFO] Finished at: 2026-09-11T14:38:45-03:00
+[INFO] ------------------------------------------------------------------------
+{"repository": "Gustavo2358/air-java", "commit": "2a37f5e980ba25fdc79614a66030a84d8bf5b8c9", "jar_sha256": "bea96d84e7179af397ad692745aad8f9e40142d846467a8480c58167ea53fd0e", "source_tree": "8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8", "codec_sha256": "2621844e843ba1803454482c720aafb3ec3a8733893879769bc41968da1b156e", "source_lock_sha256": "0831523155c8e0419e9f9dc000d19e9d70d44b8d63cd0e6101e60e27db5294d7", "java": "openjdk version \"21.0.12.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)"}
+PASS bootstrap

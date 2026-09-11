@@ -1,3 +1,7 @@
+# CP6 W1C
+
+[WORK-LOWER-010](active/WORK-LOWER-010/work-item.yaml): active implementation, CP0 only. [State](active/WORK-LOWER-010/state.md).
+
 # Trabalho de sincronização pós-CP5
 
 [WORK-LOWER-009](history/WORK-LOWER-009.md): COMPLETED local; PR10 e CI final/merge remoto pendentes. Pins/provenance/harness, sem alteração produtiva. [Estado](history/WORK-LOWER-009.md).

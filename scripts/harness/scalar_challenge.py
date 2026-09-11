@@ -27,7 +27,7 @@ CASES = [
   'var target = data.index().values().stream().filter(link -> data.objects().stream().anyMatch(o -> o.id().equals(link.object()) && o.displayName().equals(data.objects().getFirst().displayName()))).findFirst().orElseThrow();')], 'SCALAR destination by DataId, never name'),
  ('write-as-read', [(APP+'MoveHandler.java','Operand.Role.VALUE_WRITE','Operand.Role.VALUE_READ')], 'SCALAR precise input must lower: OUTPUT_INVALID'),
  ('literal-as-unknown', [(APP+'MoveHandler.java',
-  'new Expressions.Literal(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin),\n            new Values.TextValue(move.source().logicalValue().orElseThrow().value()))',
+  'new Expressions.Literal(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin),\n            new Values.TextValue(move.textAdjustment().map(a -> a.result().value()).orElseGet(() -> move.source().logicalValue().orElseThrow().value())))',
   'new Expressions.Unknown(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin), Types.known(Types.Builtin.TEXT), List.of(), Scopes.NoMemory.INSTANCE, new UncertaintyId(unit.publication(), ids.id("uncertainty", "scalar-entry-inventory", unit.localId(), "0")))')], 'SCALAR literal exact logical text, never UNKNOWN'),
  ('drop-data-link', [(APP+'ScalarMoveLowerer.java','List.copyOf(data.index().values()), operands','List.of(), operands')], 'SCALAR DATA correlation complete'),
  ('lose-literal-provenance', [(APP+'MoveHandler.java','move.source().id().handle(), move.source().provenance()','move.source().id().handle(), move.header().provenance()')], 'SCALAR literal provenance preserved'),

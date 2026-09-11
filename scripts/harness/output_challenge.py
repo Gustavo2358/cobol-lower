@@ -1,6 +1,7 @@
 """2A falsifications in isolated copies, byte restoration and a second real GREEN per case."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -16,8 +17,8 @@ CASES = [
  ('AIR-NEWLINE', AIR, 'files.write(temporary, bytes);', 'files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + "\\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));', 'semantic', 'exact shared codec bytes'),
  ('NON-SUCCESS-WRITES', CLI, 'err.println("Lowering " + result.status());', '''try { output.write(new CobolLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }
             catch (IOException ex) { throw new IllegalStateException(ex); }
-            err.println("Lowering " + result.status());''', 'semantic', 'non-SUCCESS never invokes physical output'),
- ('LOWERING-EXIT-ZERO', CLI, 'return LOWERING;', 'return SUCCESS;', 'semantic', 'expected exit 4'),
+            err.println("Lowering " + result.status());''', 'output', 'non-SUCCESS never invokes physical output'),
+ ('LOWERING-EXIT-ZERO', CLI, 'return LOWERING;', 'return SUCCESS;', 'output', 'expected exit 4'),
  ('CODEC-EXIT-ZERO', CLI, 'return CODEC;', 'return SUCCESS;', 'semantic', 'expected exit 5'),
  ('CORE-CODEC', 'core/pom.xml', '</dependencies>', '<dependency><groupId>io.github.gustavo2358</groupId><artifactId>air-json</artifactId></dependency></dependencies>', 'architecture', 'ARCH_DEPENDENCY'),
  ('SUITE-REMOVED', 'adapters/pom.xml', '<execution><id>air-output-suite</id>', '<execution><id>air-output-suite</id>', 'semantic', 'AIR output tests absent/zero/duplicate'),
@@ -28,6 +29,24 @@ CASES = [
 def sha(data): return hashlib.sha256(data).hexdigest()
 def execute(root, gate):
     command = [sys.executable,'scripts/harness/run.py',gate]
+    if gate == 'output':
+        # W1C adds CLI cases to the decoder suite. Compile the real mutant, then
+        # let the existing output oracle observe its deliberately injected seam.
+        # Baseline/restored semantic() still executes every suite.
+        m2 = Path(os.environ['LOWER_BUILD_ROOT'])/'m2'
+        build = subprocess.run(['mvn', '-B', '-ntp', '-Dmaven.repo.local='+str(m2),
+                                'test-compile', '-Dexec.skip=true'], cwd=root, text=True,
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if build.returncode: raise RuntimeError('output mutation must compile\n'+build.stdout)
+        jars = ['io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar',
+                'io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar',
+                'com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar',
+                'com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar',
+                'com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar',
+                'com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar']
+        cp = ':'.join([str(root/m/'target'/c) for m in ('core','adapters') for c in ('classes','test-classes')]
+                      + [str(m2/j) for j in jars])
+        command = ['java', '-ea', '-cp', cp, 'io.github.gustavo2358.lower.adapters.air.AirOutputSuite']
     if gate == 'boundary':
         command = [sys.executable,'-c','from pathlib import Path; import sys; sys.path.insert(0,"scripts/harness"); from architecture import output_boundary_errors; e=output_boundary_errors(Path.cwd()); print("\\n".join(e)); sys.exit(bool(e))']
     p=subprocess.run(command,cwd=root,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)

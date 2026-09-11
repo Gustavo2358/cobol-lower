@@ -1,0 +1,568 @@
+{
+  "dynamic-x8": {
+    "sp_unit": {
+      "canonicalProgramName": "CALLER",
+      "compilationUnitId": "DYNAMIC-X8.CBL",
+      "structuralPath": [
+        0
+      ]
+    },
+    "sp_call": {
+      "variant": "CALL",
+      "header": {
+        "containment": {
+          "branch": "ROOT",
+          "parent": null
+        },
+        "coverage": "MODELED",
+        "id": "statement:1",
+        "programPoint": 1,
+        "provenance": {
+          "exact": true,
+          "expanded": {
+            "endColumn": 14,
+            "endLine": 8,
+            "file": "<preprocessed>",
+            "startColumn": 4,
+            "startLine": 8
+          },
+          "includeChain": [],
+          "original": {
+            "endColumn": 21,
+            "endLine": 8,
+            "file": "dynamic-x8.cbl",
+            "startColumn": 11,
+            "startLine": 8
+          }
+        },
+        "readiness": {
+          "cfg": {
+            "scope": "conditional local successor after normal return only; other outcomes remain open",
+            "status": "SUFFICIENT"
+          },
+          "effectsDataflow": {
+            "scope": "CALL external effects UNKNOWN; outcome knowledge OPEN",
+            "status": "PARTIAL"
+          },
+          "lowering": {
+            "scope": "CALL source facts for the parameterless whole-text/literal slice; no AIR certification",
+            "status": "SUFFICIENT"
+          }
+        }
+      },
+      "syntax": "IDENTIFIER_OR_EXPRESSION",
+      "target": {
+        "kind": "DATA",
+        "reference": {
+          "binding": {
+            "candidates": [
+              {
+                "canonicalName": "WS-PGM",
+                "id": "data:0"
+              }
+            ],
+            "reason": "UNIQUE_VISIBLE_DECLARATION",
+            "selected": "data:0",
+            "status": "RESOLVED"
+          },
+          "id": "operand:1:0",
+          "provenance": {
+            "exact": true,
+            "expanded": {
+              "endColumn": 14,
+              "endLine": 8,
+              "file": "<preprocessed>",
+              "startColumn": 9,
+              "startLine": 8
+            },
+            "includeChain": [],
+            "original": {
+              "endColumn": 21,
+              "endLine": 8,
+              "file": "dynamic-x8.cbl",
+              "startColumn": 16,
+              "startLine": 8
+            }
+          },
+          "role": "CALL_TARGET",
+          "wholeItemAccess": {
+            "data": "data:0"
+          }
+        }
+      },
+      "runtimeTarget": "UNKNOWN",
+      "runtimeUncertaintyCode": "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN",
+      "normalContinuation": {
+        "availability": "KNOWN",
+        "provenance": {
+          "exact": true,
+          "expanded": {
+            "endColumn": 14,
+            "endLine": 8,
+            "file": "<preprocessed>",
+            "startColumn": 4,
+            "startLine": 8
+          },
+          "includeChain": [],
+          "original": {
+            "endColumn": 21,
+            "endLine": 8,
+            "file": "dynamic-x8.cbl",
+            "startColumn": 11,
+            "startLine": 8
+          }
+        },
+        "statement": "statement:2"
+      },
+      "surface": {
+        "argumentCount": 0,
+        "notOnException": "ABSENT",
+        "onException": "ABSENT",
+        "onOverflow": "ABSENT",
+        "returning": "ABSENT",
+        "using": "ABSENT"
+      },
+      "effects": "UNKNOWN",
+      "outcomes": "OPEN"
+    },
+    "publication": {
+      "domain": "publication",
+      "localId": "437c54421d9cd62278589ab67b6c7064"
+    },
+    "objects": [
+      {
+        "id": {
+          "domain": "object",
+          "localId": "d277a147621da9e9d6d7e52986bbb8ee",
+          "publication": "437c54421d9cd62278589ab67b6c7064",
+          "unit": "unit"
+        },
+        "displayName": "WS-PGM"
+      }
+    ],
+    "assigned_values": [
+      {
+        "kind": "text",
+        "value": "PROGA   "
+      }
+    ],
+    "invoke": {
+      "action": "call",
+      "kind": "invoke",
+      "target": {
+        "category": "program",
+        "kind": "computed",
+        "name": {
+          "header": {
+            "id": {
+              "domain": "operand",
+              "localId": "aac547df12607ed3d515957995766d40",
+              "owner": {
+                "kind": "operation",
+                "localId": "5357696c937658b9eac2d662086444cd"
+              },
+              "publication": "437c54421d9cd62278589ab67b6c7064",
+              "unit": "unit"
+            },
+            "origin": {
+              "domain": "origin",
+              "localId": "4744bb2d32a58483e57ecf43ceb1f4dd",
+              "publication": "437c54421d9cd62278589ab67b6c7064"
+            },
+            "role": "CALL_TARGET"
+          },
+          "kind": "read",
+          "place": {
+            "header": {
+              "id": {
+                "domain": "operand",
+                "localId": "f109022760784985e93eb00bf26c1047",
+                "owner": {
+                  "kind": "operation",
+                  "localId": "5357696c937658b9eac2d662086444cd"
+                },
+                "publication": "437c54421d9cd62278589ab67b6c7064",
+                "unit": "unit"
+              },
+              "origin": {
+                "domain": "origin",
+                "localId": "a53ecadd9a3dd30e04ce4680cb5c9a37",
+                "publication": "437c54421d9cd62278589ab67b6c7064"
+              },
+              "role": "VALUE_READ"
+            },
+            "kind": "object",
+            "object": {
+              "domain": "object",
+              "localId": "d277a147621da9e9d6d7e52986bbb8ee",
+              "publication": "437c54421d9cd62278589ab67b6c7064",
+              "unit": "unit"
+            }
+          }
+        },
+        "namePolicy": {
+          "kind": "unknown",
+          "uncertainty": {
+            "domain": "uncertainty",
+            "localId": "030886e70420de1d798dcfeb88c7356b",
+            "publication": "437c54421d9cd62278589ab67b6c7064"
+          }
+        },
+        "namespace": "cobol.program",
+        "origin": {
+          "domain": "origin",
+          "localId": "0e9557a6c8ad9c3c4c024e177fddc655",
+          "publication": "437c54421d9cd62278589ab67b6c7064"
+        }
+      },
+      "arguments": [],
+      "results": [],
+      "signature": {
+        "kind": "external",
+        "signature": {
+          "origin": {
+            "domain": "origin",
+            "localId": "3c0c6ec34eed1ef16cee8cfe7ff9bf1d",
+            "publication": "437c54421d9cd62278589ab67b6c7064"
+          },
+          "parameters": {
+            "known": [],
+            "remainder": {
+              "kind": "none"
+            }
+          },
+          "results": {
+            "known": [],
+            "remainder": {
+              "kind": "none"
+            }
+          }
+        }
+      },
+      "effectOperands": [],
+      "effectBound": {
+        "otherwise": {
+          "mustOverwrite": [],
+          "reads": {
+            "kind": "within",
+            "scope": {
+              "includingEnvironment": true,
+              "kind": "all",
+              "publication": {
+                "domain": "publication",
+                "localId": "437c54421d9cd62278589ab67b6c7064"
+              }
+            }
+          },
+          "writes": {
+            "kind": "within",
+            "scope": {
+              "includingEnvironment": true,
+              "kind": "all",
+              "publication": {
+                "domain": "publication",
+                "localId": "437c54421d9cd62278589ab67b6c7064"
+              }
+            }
+          }
+        },
+        "perOutcome": []
+      },
+      "outcomes": {
+        "known": [
+          {
+            "kind": "normal",
+            "label": {
+              "domain": "label",
+              "localId": "7ddd3bc903bf622c562de0f29452ac36",
+              "publication": "437c54421d9cd62278589ab67b6c7064",
+              "unit": "unit"
+            }
+          }
+        ],
+        "remainder": {
+          "kind": "within",
+          "scope": {
+            "kind": "all",
+            "publication": {
+              "domain": "publication",
+              "localId": "437c54421d9cd62278589ab67b6c7064"
+            }
+          }
+        }
+      },
+      "contract": {
+        "kind": "unknown",
+        "uncertainty": {
+          "domain": "uncertainty",
+          "localId": "3d831359fa8383e65d9386ed47fbde95",
+          "publication": "437c54421d9cd62278589ab67b6c7064"
+        }
+      }
+    },
+    "sequence_labels": [
+      {
+        "domain": "label",
+        "localId": "4d98ca286e7b8a4f406eae34f261a21b",
+        "publication": "437c54421d9cd62278589ab67b6c7064",
+        "unit": "unit"
+      },
+      {
+        "domain": "label",
+        "localId": "7ddd3bc903bf622c562de0f29452ac36",
+        "publication": "437c54421d9cd62278589ab67b6c7064",
+        "unit": "unit"
+      }
+    ],
+    "second_terminator": "return",
+    "publication_inventory": "PARTIAL",
+    "unit_inventory": "PARTIAL"
+  },
+  "literal": {
+    "sp_unit": {
+      "canonicalProgramName": "CALLER",
+      "compilationUnitId": "LITERAL.CBL",
+      "structuralPath": [
+        0
+      ]
+    },
+    "sp_call": {
+      "variant": "CALL",
+      "header": {
+        "containment": {
+          "branch": "ROOT",
+          "parent": null
+        },
+        "coverage": "MODELED",
+        "id": "statement:0",
+        "programPoint": 0,
+        "provenance": {
+          "exact": true,
+          "expanded": {
+            "endColumn": 15,
+            "endLine": 4,
+            "file": "<preprocessed>",
+            "startColumn": 4,
+            "startLine": 4
+          },
+          "includeChain": [],
+          "original": {
+            "endColumn": 22,
+            "endLine": 4,
+            "file": "literal.cbl",
+            "startColumn": 11,
+            "startLine": 4
+          }
+        },
+        "readiness": {
+          "cfg": {
+            "scope": "conditional local successor after normal return only; other outcomes remain open",
+            "status": "SUFFICIENT"
+          },
+          "effectsDataflow": {
+            "scope": "CALL external effects UNKNOWN; outcome knowledge OPEN",
+            "status": "PARTIAL"
+          },
+          "lowering": {
+            "scope": "CALL source facts for the parameterless whole-text/literal slice; no AIR certification",
+            "status": "SUFFICIENT"
+          }
+        }
+      },
+      "syntax": "LITERAL_PROGRAM_NAME",
+      "target": {
+        "kind": "LITERAL",
+        "id": "operand:0:0",
+        "logicalValue": {
+          "logicalDomain": "TEXT",
+          "logicalExtent": 5,
+          "value": "PROGA"
+        },
+        "provenance": {
+          "exact": true,
+          "expanded": {
+            "endColumn": 15,
+            "endLine": 4,
+            "file": "<preprocessed>",
+            "startColumn": 9,
+            "startLine": 4
+          },
+          "includeChain": [],
+          "original": {
+            "endColumn": 22,
+            "endLine": 4,
+            "file": "literal.cbl",
+            "startColumn": 16,
+            "startLine": 4
+          }
+        },
+        "text": "PROGA",
+        "writtenText": "'PROGA'"
+      },
+      "runtimeTarget": "UNKNOWN",
+      "runtimeUncertaintyCode": "CALL_RUNTIME_NOT_RESOLVED",
+      "normalContinuation": {
+        "availability": "KNOWN",
+        "provenance": {
+          "exact": true,
+          "expanded": {
+            "endColumn": 15,
+            "endLine": 4,
+            "file": "<preprocessed>",
+            "startColumn": 4,
+            "startLine": 4
+          },
+          "includeChain": [],
+          "original": {
+            "endColumn": 22,
+            "endLine": 4,
+            "file": "literal.cbl",
+            "startColumn": 11,
+            "startLine": 4
+          }
+        },
+        "statement": "statement:1"
+      },
+      "surface": {
+        "argumentCount": 0,
+        "notOnException": "ABSENT",
+        "onException": "ABSENT",
+        "onOverflow": "ABSENT",
+        "returning": "ABSENT",
+        "using": "ABSENT"
+      },
+      "effects": "UNKNOWN",
+      "outcomes": "OPEN"
+    },
+    "publication": {
+      "domain": "publication",
+      "localId": "3e110705fa33dadb2ada6f675475f8d4"
+    },
+    "objects": [],
+    "assigned_values": [],
+    "invoke": {
+      "action": "call",
+      "kind": "invoke",
+      "target": {
+        "category": "program",
+        "kind": "literal",
+        "name": "PROGA",
+        "namePolicy": {
+          "kind": "unknown",
+          "uncertainty": {
+            "domain": "uncertainty",
+            "localId": "9391fea7863096a1099e2cbd93f4aa9d",
+            "publication": "3e110705fa33dadb2ada6f675475f8d4"
+          }
+        },
+        "namespace": "cobol.program",
+        "origin": {
+          "domain": "origin",
+          "localId": "968e853966bf261e53d4f8c94a1d21c7",
+          "publication": "3e110705fa33dadb2ada6f675475f8d4"
+        }
+      },
+      "arguments": [],
+      "results": [],
+      "signature": {
+        "kind": "external",
+        "signature": {
+          "origin": {
+            "domain": "origin",
+            "localId": "35cf086231525c892ead5bf8aebe83bc",
+            "publication": "3e110705fa33dadb2ada6f675475f8d4"
+          },
+          "parameters": {
+            "known": [],
+            "remainder": {
+              "kind": "none"
+            }
+          },
+          "results": {
+            "known": [],
+            "remainder": {
+              "kind": "none"
+            }
+          }
+        }
+      },
+      "effectOperands": [],
+      "effectBound": {
+        "otherwise": {
+          "mustOverwrite": [],
+          "reads": {
+            "kind": "within",
+            "scope": {
+              "includingEnvironment": true,
+              "kind": "all",
+              "publication": {
+                "domain": "publication",
+                "localId": "3e110705fa33dadb2ada6f675475f8d4"
+              }
+            }
+          },
+          "writes": {
+            "kind": "within",
+            "scope": {
+              "includingEnvironment": true,
+              "kind": "all",
+              "publication": {
+                "domain": "publication",
+                "localId": "3e110705fa33dadb2ada6f675475f8d4"
+              }
+            }
+          }
+        },
+        "perOutcome": []
+      },
+      "outcomes": {
+        "known": [
+          {
+            "kind": "normal",
+            "label": {
+              "domain": "label",
+              "localId": "557cb7c1d31460ee2602a6f1b97d12dd",
+              "publication": "3e110705fa33dadb2ada6f675475f8d4",
+              "unit": "unit"
+            }
+          }
+        ],
+        "remainder": {
+          "kind": "within",
+          "scope": {
+            "kind": "all",
+            "publication": {
+              "domain": "publication",
+              "localId": "3e110705fa33dadb2ada6f675475f8d4"
+            }
+          }
+        }
+      },
+      "contract": {
+        "kind": "unknown",
+        "uncertainty": {
+          "domain": "uncertainty",
+          "localId": "934553509513d4ef5771e4a3edf14e50",
+          "publication": "3e110705fa33dadb2ada6f675475f8d4"
+        }
+      }
+    },
+    "sequence_labels": [
+      {
+        "domain": "label",
+        "localId": "4d98ca286e7b8a4f406eae34f261a21b",
+        "publication": "3e110705fa33dadb2ada6f675475f8d4",
+        "unit": "unit"
+      },
+      {
+        "domain": "label",
+        "localId": "557cb7c1d31460ee2602a6f1b97d12dd",
+        "publication": "3e110705fa33dadb2ada6f675475f8d4",
+        "unit": "unit"
+      }
+    ],
+    "second_terminator": "return",
+    "publication_inventory": "PARTIAL",
+    "unit_inventory": "PARTIAL"
+  }
+}

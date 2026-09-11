@@ -1,0 +1,9 @@
+2026-09-11T14:44:38.382-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=c31f9321-b695-4843-bb08-d445a9fc25c9 source=if.cbl programUnit=none event=analysis_started phase=ANALYSIS output=/tmp/cp6-w1c/real-e2e/if-2
+2026-09-11T14:44:39.084-03:00 level=WARN logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=c31f9321-b695-4843-bb08-d445a9fc25c9 source=if.cbl programUnit=CALLER event=analysis_degraded phase=REFERENCE_RESOLUTION gaps=1 blockingReasons=[DYNAMIC_CALL_TARGET_VALUE_UNKNOWN] reason=RESOLUTION_GAPS fallback=RESULT_PUBLISHED_WITH_GAPS impact=DEPENDENCY_ANALYSIS_NOT_READY statusCounts={RESOLVED=2, AMBIGUOUS=0, EXTERNAL_OBSERVED=0, UNSUPPORTED=0, UNRESOLVED=0}
+Generated /tmp/cp6-w1c/real-e2e/if-2/index.html, /tmp/cp6-w1c/real-e2e/if-2/ast.html, /tmp/cp6-w1c/real-e2e/if-2/symbols.html and /tmp/cp6-w1c/real-e2e/if-2/resolution.html
+Source: if.cbl
+Parse tree: 98 nodes | 49 tokens | depth 23
+AST: 19 nodes | depth 6 | literal-target CALLs 0
+Symbols: 2 declarations | 8 scopes | 0 diagnostics | parser errors 0
+Reference binding: 2 entries | 1 gaps | dependency analysis ready: false
+2026-09-11T14:44:39.085-03:00 level=INFO logger=i.g.g.cobolexplorer.ExplorerMain thread=main runId=c31f9321-b695-4843-bb08-d445a9fc25c9 source=if.cbl programUnit=CALLER event=analysis_completed phase=ANALYSIS elapsedMs=718 programUnits=1 references=2 gaps=1 dependencyAnalysisReady=false output=/tmp/cp6-w1c/real-e2e/if-2
