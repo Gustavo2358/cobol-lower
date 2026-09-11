@@ -5,9 +5,9 @@
   "checkpoint": "CP0",
   "repository": "Gustavo2358/cobol-lower",
   "branch": "feat/cp6-w1c-call-lowering",
-  "pull_request": 11,
+  "pull_request": null,
   "base_commit": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
-  "reviewed_head": "989637a7fd840f43aaf04abce299c839b82fcb55",
+  "reviewed_head": "18016f16b4f63149eb1bb4ca13db7e12593d8909",
   "upstream_sources_lock": "docs/sources/sources.lock.json",
   "executions": [
     {
@@ -152,105 +152,6 @@
       "exit_code": 0,
       "test_count": null,
       "log_reference": "docs/quality/WORK-LOWER-010/post-stage-git.log"
-    },
-    {
-      "gate": "docs",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical docs component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "architecture",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical architecture component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "semantic",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical semantic component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": 203875,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "performance",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical performance component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": 96,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "full",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical full component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "git",
-      "required": true,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical git component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "harness-tests",
-      "required": false,
-      "command": "python3 scripts/harness/run.py full --evidence docs/quality/WORK-LOWER-010/CP0.json (CI timeout correction; canonical harness-tests component)",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": 175,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/full.log"
-    },
-    {
-      "gate": "docs",
-      "required": true,
-      "command": "python3 scripts/harness/run.py docs",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/post-full-docs.log"
-    },
-    {
-      "gate": "git",
-      "required": true,
-      "command": "python3 scripts/harness/run.py git --evidence docs/quality/WORK-LOWER-010/CP0.json",
-      "cwd": "/home/gustavo/workspace/teste-e2e/cobol-lower",
-      "environment": "Java21 Temurin21.0.12.1; Maven3.9.16; Python3.14; LOWER_BUILD_ROOT=/tmp/cp6-w1c; isolated exact W1B Maven artifacts",
-      "status": "PASS",
-      "exit_code": 0,
-      "test_count": null,
-      "log_reference": "docs/quality/WORK-LOWER-010/ci-timeout/post-full-git.log"
     }
   ],
   "not_executed": [],
@@ -268,9 +169,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "5de990221ca87ab30d8f61b95186f45bad2ca4aba7e98282913de1c6eab33cdf",
-      "red_output_sha256": "9935443d04ad2559f5632c709f3b7bacd7355adbf580e35a23dae0db14573830",
-      "restored_output_sha256": "62d7978329d02cd313eef0c40c28024108a8906a7b7ea9b0008972958cab41f9",
+      "baseline_output_sha256": "bf1a5db931b761d32192ad22270102d863cd8f0d51696249fa3663b24c1d1501",
+      "red_output_sha256": "31bd82651c565440ca01a30337d00324a3c083507c1a8ed51f64c3b0b1f1ed45",
+      "restored_output_sha256": "61df78820cf6e1a5096633d51ae0b4234fce3d20b5cfbfcd381724d1d0909d9b",
       "baseline_counts": [
         "SEMANTIC_TEST_COUNT=203971",
         "PERFORMANCE_TEST_COUNT=96"
@@ -293,9 +194,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "25487f7a3c7fc43011b9dcd4b6e77154f96821788f62af1fa403402bb9217457",
-      "red_output_sha256": "93eaa4853d3e650062f0daed8490aa89dbd84491a09bcac7fa0fffaf1b81dc97",
-      "restored_output_sha256": "6b6437e03138cf55db2f8238d3cb07a53ed9eb6e346d25a7444cf28c1f0e16fa",
+      "baseline_output_sha256": "2d7220d3c9381c50ee591adfe3ff631332e2644a15ab7735734b2517354890fc",
+      "red_output_sha256": "5f3fd86b6c55f939998b0d103029620f0aafd4d7a5b853bd75cbe28272da0416",
+      "restored_output_sha256": "c2205586eadefae18679ba4ac1df550309d55e4d680edee3b119a11e2593ab59",
       "baseline_counts": [
         "SEMANTIC_TEST_COUNT=203971",
         "PERFORMANCE_TEST_COUNT=96"
@@ -318,9 +219,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py performance (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "61e958ab30871d310d5a0be89eba85d09271231a52e59eb65e5ee73eaff7c586",
-      "red_output_sha256": "09f295cd274305cf5162cc9a593c998473b15ce591748759dfc331857ce04a58",
-      "restored_output_sha256": "542be2ea8e9e112795df5ae82e6f9105aeb2d40e4074b6c442c674dd4ada4aa1",
+      "baseline_output_sha256": "5544d949edbd013dec7d5e5e599ea88ad22d1aac23ab016c85ffa72ce9ea3d3c",
+      "red_output_sha256": "7ca3513fd3238136df592166d78586e516894ebed8564984b20ab458c30d4192",
+      "restored_output_sha256": "e81b221367268b31b72a96bace77d19d320d2e68c4202650652eae1c81006c13",
       "baseline_counts": [
         "SEMANTIC_TEST_COUNT=203971",
         "PERFORMANCE_TEST_COUNT=96"
@@ -343,9 +244,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_rejects_self_consistent_wrong_receipt -v (isolated copy)",
-      "baseline_output_sha256": "adc0ddacf0f18ac6574eeae2db5063631614bc583ef64bf110a33c2465ddb8e7",
-      "red_output_sha256": "d58530dc6bef5f9c4305b29e9b9042610bb37d2955f74151d6c6bae57a75a147",
-      "restored_output_sha256": "f73181bcb8caf03af6be9a358da174d7d095b6d2e713c9d43fe46226938230c4"
+      "baseline_output_sha256": "4258babe6a9960c6f48b8dfbfa487e1601fe72150c3388f014e43719198a9005",
+      "red_output_sha256": "9131d6fa9042cee9a1532fd32e0f7bf2c655899a361eba0b9f7f1fe891bb80f1",
+      "restored_output_sha256": "ded5fd26b914f8fd32ab33780db97e4e05bdfe98ee4c61307ffd2ffd64fc3bf4"
     },
     {
       "id": "R1-B-ORACLE",
@@ -360,9 +261,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_human_review.py FreezeCandidate.test_immutable_oracle_candidate_and_committed_bytes -v (isolated copy)",
-      "baseline_output_sha256": "4c95bd1bd092f1b2e4b1b1c1473f80102e2626e1c68da0823853061217b1064e",
-      "red_output_sha256": "c2d9e76ee2d0ac7b812b81b2ea9a9967f78518526a39acf6eed2bedb90c76ddf",
-      "restored_output_sha256": "32f493328fa7079d6b47f9933d2b073e1fd010a4d412623b0efd49d7c4081284"
+      "baseline_output_sha256": "d0ee8d47f70a4f745f28f9ab0ff9e93b5b1d4a815eb2fa7da735d7eb6694a63d",
+      "red_output_sha256": "7fa440359059022db4c6da98f5db34eb69f60b8e71927968e28d2e67132cc63c",
+      "restored_output_sha256": "d0ee8d47f70a4f745f28f9ab0ff9e93b5b1d4a815eb2fa7da735d7eb6694a63d"
     },
     {
       "id": "R1-C-AUTHORITY",
@@ -377,9 +278,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_human_review.py ReviewDocuments.test_history_never_authorizes_execution -v (isolated copy)",
-      "baseline_output_sha256": "89cb88a1eed6bb344a1e17f17c39e60fc83131fd960be5f6eb4b882d98e970aa",
-      "red_output_sha256": "846d0a89c0fd01f43712631fd9fe007ae0ed295529dc3ffb3aa8053e1492b037",
-      "restored_output_sha256": "19b80105ea5711db300cd340e812198ee75426e0394dcd2882c3496d4a0a51de"
+      "baseline_output_sha256": "3f44850b7a0add82215f0d84cf004c954bd2a81e489c7dcba18488ec2da6eddb",
+      "red_output_sha256": "625ba6ab8d6a305143e39e4b0e8df808fa2977dc331e03657c701706a95669a8",
+      "restored_output_sha256": "80379ebd92cda5926e4b9b008432675a4a55fd27d95dbff0fbc6de25342f83b2"
     },
     {
       "id": "R1-D-WORKFLOW",
@@ -388,14 +289,14 @@
       "baseline_exit_code": 0,
       "observed_exit_code": 1,
       "failure_reason": "AssertionError: WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main",
-      "baseline_digest": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
-      "restored_digest": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
+      "baseline_digest": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0",
+      "restored_digest": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0",
       "digest_scope": ".github/workflows/checkpoint.yml",
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_human_review.py WorkflowPolicy.test_push_policy_covers_new_work_branch_and_main -v (isolated copy)",
       "baseline_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca",
-      "red_output_sha256": "da22b1a65c51fbfc466d6027dfb8a41c3bab323b5819ed2249a8df4c308ad545",
+      "red_output_sha256": "8297a5034b4ea736bd31813112c2f3300dba7f7d36c175f6e3ba2972fa1aa0f3",
       "restored_output_sha256": "5dd8356a1c0243aa42e587a5b268634d3b1896f73494a6298772659ddb8e17ca"
     },
     {
@@ -412,7 +313,7 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_human_review.py RemoteLifecycle.test_wrong_sha_success_still_rejected -v (isolated copy)",
       "baseline_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812",
-      "red_output_sha256": "6eb317b711f6c124919ff2523cf5a88e90d3286981a7a559715ae44b2bc813d3",
+      "red_output_sha256": "ae44ded81aeda83f030b4f50b834f2ed01da3596c74aae8e1bd384cf170f8eb3",
       "restored_output_sha256": "56a52249fcb5480b0fc3614d23b807ab8b9c450efc2dccd8c06af0808e941812"
     },
     {
@@ -420,16 +321,16 @@
       "mutation": "codec.encode(publication) -> new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)",
       "expected_oracle": "ARCH_AIR_OUTPUT JSON library",
       "observed_exit_code": 1,
-      "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-amt1nrn4/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
+      "failure_reason": "ARCH_AIR_OUTPUT JSON library outside SP input: /tmp/lower-output-challenge-51ifhpl3/adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java",
       "baseline_exit_code": 0,
       "baseline_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
       "restored_digest": "f2abf9d185c5e19624334955397538a97f25e0e381704a52bd4e5fcea12f477d",
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal boundary (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "d1973e0a670db9bb47d5f8f949d3fd60df1692bab5b87bbc7ae25079a4bd24ab",
-      "red_output_sha256": "cffa5addbdc00a13f18742edf80aa8a26757ebb03aa5815db2f2cced7a77af75",
-      "restored_output_sha256": "a22059687792a2e4ee9f271277ad9645001c82e1cc23a15a36c6f35b0515730b"
+      "baseline_output_sha256": "854ec35da9109529eabc78adf3741d535cf248d2b04fb734273cd8cb2e7f26b5",
+      "red_output_sha256": "a8d486eb385abe2e372b92ee491a1c403b13d38cae8ec2819e0850680ca21156",
+      "restored_output_sha256": "3f6fea9e5578051f274721da4db9eece30399b156fe129fce3e16e2a528acd8a"
     },
     {
       "id": "AIR-NEWLINE",
@@ -443,9 +344,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "c46b5db00a8581f705665be56bc9b6cff44c03de4ccdc97584918d568091b0fd",
-      "red_output_sha256": "ac73a75c37a75f460b216527439f02438c80eaa172ca92cba075d0258ec609ed",
-      "restored_output_sha256": "5d9017f1de87cf92ebdd08971d453c4e046ac997067945d9fd2dea718f5496a2"
+      "baseline_output_sha256": "cf0199c8a83281294b7a97c2a56d64385475b133cff0ca697eb16360bc2a2ced",
+      "red_output_sha256": "e1cbb28a204397150daf3594537be6cfcf8c0675a0dd166f5b3519d86cbee7ea",
+      "restored_output_sha256": "4fd5468f59f338d6282fcee57fee38c8ea56fd8cc71b792a257b09d1da1bed24"
     },
     {
       "id": "NON-SUCCESS-WRITES",
@@ -459,9 +360,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal output (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "a3ff28f37aa702fda8e5bdb210172113deafd0b1001bc317d3ce49dabd4e0ae0",
+      "baseline_output_sha256": "fb72fc4e640be2cc4b8c67080ccfcf20859b42c78f57a8d6892f7e6c28ff3777",
       "red_output_sha256": "8d01dd70b0293c08850287030a9324d7c19a4355943fd19e3437d3670b11aab8",
-      "restored_output_sha256": "68b1e5fae91891bdd76c4515e3a320180b489062e1249a7c540a9da41361de9f"
+      "restored_output_sha256": "01770b6c9926037a70fafe683a1e343061aa1356fe9001dd649fd14be1238281"
     },
     {
       "id": "LOWERING-EXIT-ZERO",
@@ -475,9 +376,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal output (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "700e4d00be89a3b5493eedf0ce8dcdb7ed61ac1616e2aad21fba50554602eaf9",
+      "baseline_output_sha256": "82a93d63f321902ede953c162cab90ced3514dbc1a62261f208fe6947e6bb799",
       "red_output_sha256": "7554053ef6414928653e38654b3a28cb9ea5b10372c63a00124301e369282d57",
-      "restored_output_sha256": "b3880a4f39ccd1ea9dd8949de6965173fa8cc62cadc370ca39a3cbd23aa10a39"
+      "restored_output_sha256": "a4cf31fb3e02b7444162f5e3b453c347abab6fe8fb9ba281fb442085978cd933"
     },
     {
       "id": "CODEC-EXIT-ZERO",
@@ -491,9 +392,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "effdbb2130700970acc3a5d878a42c497832dd9cab0879462424977c23712eff",
-      "red_output_sha256": "49e7512ff3f866e0ab38e07bea8ce35e01d788dd486e6a31960e588133d28ff0",
-      "restored_output_sha256": "6c935a071ca6c1ffe71eb43c5f5e87359370f873c734174f4e6fdbed9430c617"
+      "baseline_output_sha256": "974652519993f3bd6d18de4d811c03fc82d4288c3841397e76281819a2f318a9",
+      "red_output_sha256": "3940f1e4988dc7b90b78cd13e2a316dafaf456debc0b72d4aa45c32b4289a078",
+      "restored_output_sha256": "b41d06ffd12df9f1b6d574d50f15df8e02e8a3690f63d812d0d9eb1f807e4420"
     },
     {
       "id": "CORE-CODEC",
@@ -507,9 +408,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal architecture (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "b56b08c1cfe055d47bdc2c763b357577a6be0abd5f0ea7980bc8b3fd5a88acb6",
-      "red_output_sha256": "5949ed0a440c7d7f9f5b3cdebeeb682e336ffbe3acf3c48ea97248b15f17a69e",
-      "restored_output_sha256": "c3c7a9ae9baa92b8e9c245075b1d0f59beaa26da6ad0ffe896b0a82f7d6970f1"
+      "baseline_output_sha256": "6bda098ed2564c3a90a84418ebbddd37d0d0f7373560a5629e1dbdc552712c34",
+      "red_output_sha256": "7beb7f7626834aef7d40952a8973416d362d7152f57b138d2885ae33d0ab812b",
+      "restored_output_sha256": "5292203228f84c0c86a72ea0e185fa12e219acf4790f0e2743608db7033685c7"
     },
     {
       "id": "SUITE-REMOVED",
@@ -523,9 +424,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "d24458ee901ca6155f0255ba812e5397d34926e110dbf7591af345d781f6440c",
-      "red_output_sha256": "f2f48981c3591119ebf17411d6efaa77538d9209126a1e7e782683dcb708d4a7",
-      "restored_output_sha256": "2ce4bf745e0278e9239f8318937d64cc7006d74c2a6ec7175235ec33af911da3"
+      "baseline_output_sha256": "366dc3ba14ba66e857d21a3ae8169787ba94d7ca7c349ee571abf11082bf19cc",
+      "red_output_sha256": "e5a25403d488bc154db373dfc08d5b1b375657892b4fa5ee24ead5839ea89666",
+      "restored_output_sha256": "58e655dd4d6a10dc8388f595cb3c384362a38599804ca884becde22d71c85a74"
     },
     {
       "id": "SUITE-SKIPPED",
@@ -539,9 +440,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "52906b879e69c9dbc94ce2932f3aa21d1c08d2d4f542c8229abeba1c48e1a430",
-      "red_output_sha256": "a42d4d6574771cfc7a0ee19cc996aed03c34dc5c984457e9740fee535c906757",
-      "restored_output_sha256": "1c7509b9e6936c853ab0e0cd91fce34c1f75e15739fb0db96ffd7a2029e843ff"
+      "baseline_output_sha256": "7b31e1d9a6bdc0f365660f2c9c4e860538116389e47947c9ded15956db2d7a2f",
+      "red_output_sha256": "c71b7fe0144cb3096edd3b9c695d394c576e9ffc32ba3f3afee29bdd59fe5b29",
+      "restored_output_sha256": "0e0b88b59086a099e6f7302f8329a9711aff83c6c43609ee87af6f3c67a3e653"
     },
     {
       "id": "OUTPUT-BEFORE-ENCODE",
@@ -555,9 +456,9 @@
       "restoration_status": "RESTORED",
       "green_command": "python3 scripts/harness/run.py semantic; focal semantic (isolated copy)",
       "green_exit_code": 0,
-      "baseline_output_sha256": "edde8c12767e1bad051fc29fc61e4bcdf35e90e405d0060828bb780e95284da8",
-      "red_output_sha256": "32b1de5bfe8a144ac0c67e95903b2ba03f634c5599c582bcecf8e078483498e9",
-      "restored_output_sha256": "d394499e69ddb6caf99e4c617c1061025fe472e01119a19c9d1bfd718d471665"
+      "baseline_output_sha256": "de036a57bc1d1bb65a53bf46d6df130ac617d54997853b925aa7b2704f1d077d",
+      "red_output_sha256": "7680abe57b11dd28584d20c593b7d3696c36a91bcafd854a2439a915bb6e4076",
+      "restored_output_sha256": "fa0775214e3a9d013e8302772a47c5fa5039a79f6e9d9e99d18d8de7c683e943"
     },
     {
       "id": "program-point-successor",
@@ -577,8 +478,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "e1f507c41369d706703008b0547b97bc92c7dbbbf5ebe17f18ae8f11f3fe9752",
-      "second_green_log_sha256": "526fc2611f8e54b9d7d867c406d028772b14784af5434e087b23b1f7f73d472f"
+      "red_log_sha256": "dba0f673ef2b87b44e99111377537c8fb7617c2c50da6dce4d17543c68df97dc",
+      "second_green_log_sha256": "d44c2816899f224e25ba1e2bd73ce98f075b8525011ac1108a8b129b80c0f838"
     },
     {
       "id": "ignore-full-identity",
@@ -598,8 +499,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "523650fa5a6aabae519f38a49f8cfbc86041509ac833f6283bd223ba44526a4e",
-      "second_green_log_sha256": "896d9c7fef48f66cacc6e167f03f4c332b150c2ce641aca6168681bf5fdda082"
+      "red_log_sha256": "67efc82d434f218840f1898b9654a07811db4edb8a2c7b157572aebb82a45504",
+      "second_green_log_sha256": "4cc156051dcb3ba04b4f5a3b53b29eed6bbfa54694c256470412607122503f6e"
     },
     {
       "id": "invent-whole-access",
@@ -619,8 +520,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "748578a7380fc2b31f252afe9b94d283eaec97a333c5f0893117df3e4ccec25a",
-      "second_green_log_sha256": "2f7b2801192ebcbda520ac2d30930b2766aa4ab416540d71bb5de5d60a1b36b7"
+      "red_log_sha256": "84b43372587ec6b3157c9368b994ef7a9b0fe8bba3936872f9979235222b6786",
+      "second_green_log_sha256": "46f020f6fce3b77656cc93a56193e8b54ce892f8740299f1eec986b5e7e245c1"
     },
     {
       "id": "ignore-selected-mismatch",
@@ -640,8 +541,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "f324d2f10017f25eec6c4ad1a012586acad54a753e26a9b6f1e1966a71579b05",
-      "second_green_log_sha256": "1516ad2bf870597dd1e41ab8fb5b8308869f5f5794d97f72f1a057056cbc7c2d"
+      "red_log_sha256": "39f7102d8a4bf5bac8a9df09999ff62b4e9dc4b8b1efbb37678089569744231f",
+      "second_green_log_sha256": "df012e676cd1bdeb828c88979924e2a8741977e08dad9f065e4b396389a278d0"
     },
     {
       "id": "object-per-reference",
@@ -661,8 +562,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "bd1a1adbb0e35dd16be34b860ea231a7c0016afbbbd2d8b262d1dce7435a6abe",
-      "second_green_log_sha256": "f5ce88ab3b97e55e441692ed874af1dc8dfba0fd5cd758909b6bf777cc67cbdc"
+      "red_log_sha256": "4b7360781872036b5e02630f5abbe1b7644d4b9a4b6124136d88e248c6bf42be",
+      "second_green_log_sha256": "971b4857e8713ca9aec42354b25bc22fccfd2bc5cdaab5744f8ebde9a4a2f29d"
     },
     {
       "id": "cell-per-move",
@@ -682,8 +583,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "1bd117eb494ffdf9ab103cb4f6c9b7511089858af4586c834aca425b3ebab907",
-      "second_green_log_sha256": "5ddc2b9014548e4721ee8c336011cad4728c4b2739a3e9547ef8f954c87842ac"
+      "red_log_sha256": "0371c92584beec88d8452057a6719ed10d94370c94aef5779267ee695decdb80",
+      "second_green_log_sha256": "85b8217e101ff22a6dfe98def415de584975351768e11482a9e2bee652978fb1"
     },
     {
       "id": "name-join",
@@ -703,8 +604,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "de3fc4b6f641c67421d6bf77db04abbacd8b79f41e035d8047f94a8f60713e6b",
-      "second_green_log_sha256": "a146594c66338a448ec36d9ab1c2c109c66dc9079167330db970edda40c807bd"
+      "red_log_sha256": "5c3a1f398e4c54edf4c00e0e7dcccab1ec46641838ba0b84e28e82e35421d25b",
+      "second_green_log_sha256": "52daf08bb34385d05ba0d928cc8b8fe45448f8ad9717b111db41c7e267a48ea8"
     },
     {
       "id": "write-as-read",
@@ -724,8 +625,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "58fb7b98ece0f0816147c796955cdf3efb82842ebf9ee97ffab1d663daece219",
-      "second_green_log_sha256": "d1dc64b878ec7a595bc1f823de738bce837d82b2ddce5e8c621e39a62a13fcaf"
+      "red_log_sha256": "9b844b2bd218815441b3609c487f8e908f4a30f4ce60977cca2e569e4eb84a1a",
+      "second_green_log_sha256": "d1d82b028b0247f24c62d224ee8eefd9b826cd7911b623f0d85a74fd947b1e57"
     },
     {
       "id": "literal-as-unknown",
@@ -745,8 +646,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "fe1828cfbb2c64b726671a9de724b0ec6de06d0387fe122f01b3640a5edf87fd",
-      "second_green_log_sha256": "520d63bf098766a77729c3f2251c66b58fd1b481cef30a97e5735e34921ba3e2"
+      "red_log_sha256": "be232cf3f87969e3e1274b93f7dc0fb5446c10f656106f485f59e295cea00678",
+      "second_green_log_sha256": "1f2169f9cb210102cd7b0507ac76ae603d5e799931708b89218ece4e87a46198"
     },
     {
       "id": "drop-data-link",
@@ -766,8 +667,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "91d247d082de7fedd5841ff20b1fb1577b9aad1fde3d7e99eee034d3706800af",
-      "second_green_log_sha256": "84a3ee4992f06b96edd8bd54eaaec12799c6aff1cc351c952127bed248db35cc"
+      "red_log_sha256": "99f49102f4f03aa2ff21a0e77d534d1d2baf6d7e68947704ec7a2daac6d59b7c",
+      "second_green_log_sha256": "88f5b8a8c5d36ab12cf7ee3cd70cb2a1a1987e0e57aafe8c0e8968cbe2ec4121"
     },
     {
       "id": "lose-literal-provenance",
@@ -787,8 +688,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "84e6e330635dc07502c64977384ea953a8b7e6f9101e04610444de19ad402846",
-      "second_green_log_sha256": "b1d7fac5cf90f9c09df34f533a7913f3a4488aad871cbae715792c86ee3c1b76"
+      "red_log_sha256": "172d61722d04d907a986c2518b15ca053d02b119271775295eb3801bc4e63fcd",
+      "second_green_log_sha256": "83dee42d4c35fa1d38ca57b05b292ef0456d520e4a1a24a19e79ea06f163954e"
     },
     {
       "id": "lose-target-provenance",
@@ -808,8 +709,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "7be66cd3b9b9aae583fc6f73af218693c6bad8ba9be193c2ef038b69515c165c",
-      "second_green_log_sha256": "19fee1daed3a9fd895e0fad164bac886b8d516fe5124a944e556e586878a287b"
+      "red_log_sha256": "817348aa4a7a6dd43a42012b9e2e9fa77b6284d626f4cd551810c5e999ed073c",
+      "second_green_log_sha256": "944335cbad0b437f763eaef5a66f0ad86ca078faeebc31e4c33f8aa72c0789d6"
     },
     {
       "id": "goback-halt",
@@ -834,8 +735,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "05830537a54f0455652fab0b6ff02fe0997d6aba5524943c885965836c390a18",
-      "second_green_log_sha256": "767c3d81ac36e341a3591009eeb677214307390fa0fc767f2b56c26077ab9028"
+      "red_log_sha256": "c3598741428143e4e506c9ed6959558d5bba12cd21636bbae920850af99c60bf",
+      "second_green_log_sha256": "56faea1059a0c9c5d8dfaf560f46b4f229997cdad1e7d62ba9cf399fe9037a12"
     },
     {
       "id": "two-sequences",
@@ -855,8 +756,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "d8c424a84e58ad84ef8d010550907c8bfeeff839adb4a24f7fc94e4d043426e2",
-      "second_green_log_sha256": "029ff7d73f8a36a687ef7cfea45dec8f00b586a313587c15d17cc678b908d4df"
+      "red_log_sha256": "016341f49dffaca06933f4860b21b95ba764556a2e7b68afc1f8c58d63e3af13",
+      "second_green_log_sha256": "b47705fbe10bc6d51609d2f7b553fa1d00c480de86dc3765304dbeadb74e3fc0"
     },
     {
       "id": "revision-missing-value",
@@ -876,8 +777,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "9c3d7c0b5947b8ada8c2609fcda16f9c905747ed9d03c8425eef6801b8dc91fc",
-      "second_green_log_sha256": "b0416ffe8e3a0cf514de0857f08205ae72c5fb3ac0d00b3d31c139f16768589e"
+      "red_log_sha256": "7c5a82ca10ec18c5501552ebf68efc554dcda1d636f3a1c27512ac90fc2f3db8",
+      "second_green_log_sha256": "de0223b819638ee32db207e80cbd11408c260573b9316217600b4f3c7b6758b5"
     },
     {
       "id": "expanded-local-id",
@@ -897,8 +798,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "1caca645fba5cc7ac54635efa8f9403ebfd5423df6f58e67660da82158729d29",
-      "second_green_log_sha256": "5de572cb1109ac0b5df41c35b92cea07259a3c34c82daa60bf94eff224695cf1"
+      "red_log_sha256": "066a4d02729d577a6d2ddc2eedbd9cc87b80471af6a327b69f88cddd2094ff02",
+      "second_green_log_sha256": "41b81ccf2d6680653434b39ef03710d292b3768e854066d08970ec067dbe59ef"
     },
     {
       "id": "scalar-index-scan",
@@ -918,8 +819,8 @@
       "restoration_status": "RESTORED",
       "green_command": "mvn -pl core test-compile exec:java -Dexec.mainClass=io.github.gustavo2358.lower.testing.ScalarSuite -Dexec.classpathScope=test (isolated; pinned m2)",
       "green_exit_code": 0,
-      "red_log_sha256": "52c5d218d9057f7fa47a55ca1550333ceca0ba24879b87303cef1a29e8738c50",
-      "second_green_log_sha256": "8b1d3c416eb880e4d4dfff33c6d9c7db62d9c74f5dab7676dc5767768206b627"
+      "red_log_sha256": "a1c56a7a05f011d83c37006cf68579f3e54068a290d50ede0fa7758124fd2aa4",
+      "second_green_log_sha256": "cb844bdb00a049b9bcdad903dbf87fa33ae73adcdf0191871abd1b0d6d10fb8e"
     },
     {
       "id": "literal-value-coherence",
@@ -939,9 +840,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated coherence production challenge; pinned m2",
-      "baseline_log_sha256": "f1581efe97af4d1105d1ced607ccc38f79e749472a70ee2bfab6ee9a9ed75c65",
-      "red_log_sha256": "e740c87bee09406f3db4dfe7086a6e05e9446de119bfffa5dd83f0bd41fc0551",
-      "second_green_log_sha256": "977e6a00c3caf89ebb1bd86210337a57dc99bde8bb9ce98fb1c35a4bb7b968f4",
+      "baseline_log_sha256": "b770fd7ff3c87df32fb3ffa211f073cea3285c3e2abce91e745522601a830d47",
+      "red_log_sha256": "23d591f10f72e3e4cb8a777fbbe7746e362c3e3770b5839bdae59298050dce36",
+      "second_green_log_sha256": "1efa5e33ccdd54bd806d0a8036b57b7208639d947814cd473eec5a7b36450da2",
       "kind": "compiled semantic/gate"
     },
     {
@@ -962,9 +863,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated coherence production challenge; pinned m2",
-      "baseline_log_sha256": "83f73858be52ffc85857ab576d7522924627a001937bdc4a077b2d3b8cea7fc2",
-      "red_log_sha256": "bfca703644b34a53c528e19ba817868cf8e22dcb037e6b4d62a95652e6df97f1",
-      "second_green_log_sha256": "0b4bef534037e96af8bc13c0a48edc532b77a35281c1746b043579e6ae8ed4b2",
+      "baseline_log_sha256": "cdeb1bf1e71f8692c3f498a2e22786baeae3d881718a2012d1446c95930a7975",
+      "red_log_sha256": "36068d4b7fcdf572f9ff9c41b60d1d3933502f30353dcc9f2203f035b11e34a9",
+      "second_green_log_sha256": "162db686e8681bc89d1cb15d330b35e63541e215c4e599aef23ec9f8469080f2",
       "kind": "compiled semantic/gate"
     },
     {
@@ -985,9 +886,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated success production challenge; pinned m2",
-      "baseline_log_sha256": "aca2c2e08e6f2dcaf73a4bf12d7d28d464e23992e8b35dbda374d7ca5b48e8ba",
-      "red_log_sha256": "6e2131d67cb754e1cafb8906033c0031901078784dcfb5e5a74a1e65e79a1301",
-      "second_green_log_sha256": "a115a32b21527e327e98bbb5100ae1afc886605132903afae8f598b6c8e65876",
+      "baseline_log_sha256": "05c709e7598ea61c66d8586bdb19e54f8973f706da3cf45eb8a828f7463b6ea5",
+      "red_log_sha256": "4d6b76bdc3d4749dc478770f4ec764b9f902b81c3bedd897493c21b724b2c0df",
+      "second_green_log_sha256": "1e641f7f8df7e85d30ff1bbebae53db81ab78718b05ff15b456cac8719ee9a89",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1008,9 +909,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated success production challenge; pinned m2",
-      "baseline_log_sha256": "6f9ab8269d4466c1769e014e9ae432f6c7dfa514bae03e74cbd924f19967c893",
-      "red_log_sha256": "06724064e975d98009f3ee2cc9d1f3fe2bf6fa0a5af8c5ab86a091ae93b4eeb3",
-      "second_green_log_sha256": "6e655e75ef1935c884a612805f4c41e0f6d6a36b1f98f52639ab0ac616ff44f1",
+      "baseline_log_sha256": "921e871797fb694fbb03a5a99ec88c54191614d4fde6c09d7633acc44a13e572",
+      "red_log_sha256": "109283c8ad07d477cd6dd3bd5dbc06e124972f351d2f68b9418bb0b7ec52e953",
+      "second_green_log_sha256": "a1ebdf4892a6719a5b0167ba23b52937266d1153c94be8b844e7d0a892967c6c",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1031,9 +932,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated large production challenge; pinned m2",
-      "baseline_log_sha256": "9da80ed9e75afce32c086896bbbfe24bce0dc788ec17b2050c4a4a8108f2d8e9",
-      "red_log_sha256": "6e02158f0e59ae833fdd51662c97c63df86a0ceb7c4953ff527afae3a571f289",
-      "second_green_log_sha256": "110bf3d54d5253fead431c26130cdecec12e0481ea6c322eae3a7a4e36e87ed3",
+      "baseline_log_sha256": "67e3890ecdd87b88baeed35bb4f7f738e551e3e28eee52ac378aa484ceffe648",
+      "red_log_sha256": "3d0217d9bbec59fc827d12d836faa35e3676bf4aba3923c1e0eadbed8cc0356f",
+      "second_green_log_sha256": "8cc9855bbf88dc99538eb3a6c6bbf4a13f48175a4f9efaaf42860a29d6c36ed3",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1054,9 +955,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated semantic production challenge; pinned m2",
-      "baseline_log_sha256": "8be4dddd127ba9707c6f3c03283f09fa44fdb88a59e589637295481f95cfe049",
-      "red_log_sha256": "c44eb87596ee4e2425c0e05110ae52a0d870fd82e16b3623eed0ceb6096fdfde",
-      "second_green_log_sha256": "36cb7490f5e4a1365ea37ae24c0c9eadaf4a61fb5b7006c829e6ea0d3bc7bffa",
+      "baseline_log_sha256": "9a70986abb535dfc21c6ce942aa90d6c7433b0ec689a32d1f2b33e1c1bfd27e8",
+      "red_log_sha256": "00b64bb5659c96571a82f8f4fc495fa5a59dce3894f800991c3df02ead22c514",
+      "second_green_log_sha256": "016faf79423f07a238437979afc2cabd7e56faff2a96449f1e10d1772d2670a4",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1082,9 +983,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated success production challenge; pinned m2",
-      "baseline_log_sha256": "24ad11522d675b46438a5c94ec41abb4890049f97d593e7f04216dea92b03f75",
-      "red_log_sha256": "aa18961518657def9bd8b53e724e7da96cf6a2ec8d4a878b85a554b24a9e08f2",
-      "second_green_log_sha256": "0dae1e800726704311a148d4d58e614d39ff89543bf37f49c58c697caad8a6b2",
+      "baseline_log_sha256": "90832aa1b7d92c217c02d1ce5f76764e887d84fce95f6e6cb8bbabd0d15509ec",
+      "red_log_sha256": "404167195989305c6601abc36a80d34bec9d8ee465d78b6a12f159db555292a6",
+      "second_green_log_sha256": "949240477f7be84e55a62d868d0f01a179893a2226df083831f85d836cd3b097",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1105,9 +1006,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated scope production challenge; pinned m2",
-      "baseline_log_sha256": "c33b13271267c41ce86374574dea2608f0c285a6a69837bf8a3cd3944516a9b4",
-      "red_log_sha256": "c7bf7013f944a0e120e551ac0dbbe621e33cfc57a9b2d5536be8898eeb2eaf2d",
-      "second_green_log_sha256": "ec5c9c57254d91acda5645abde8cd2e3239bf86a4fc0bf17e814ac9191f7f7b3",
+      "baseline_log_sha256": "0f29ccc65b48635110e635117515dfc623d7887848690a62e4640d11071abfab",
+      "red_log_sha256": "62c2a0773efc20c793fd81be2711d15c7de3ac63f5fc143b972adbcd57f30df6",
+      "second_green_log_sha256": "6a93c7df3360af03b7e7fad5138ed473df1b10e0cc10b9728b0ce88f2f73df98",
       "kind": "scope/diff guard after compilation"
     },
     {
@@ -1128,9 +1029,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated scope production challenge; pinned m2",
-      "baseline_log_sha256": "d79320376a5ad6b5b796481178a9ede75c3f4a0cd535c9f9383054ec367a79b0",
-      "red_log_sha256": "dcdfb2c66f90fa551750036e161b31914271ae178bce5b2b2d90a09900f4505f",
-      "second_green_log_sha256": "61c147a7a2f3a8cc12ff43aac28eddcfb0fc8ae09e00d59ad39992a62d63ec23",
+      "baseline_log_sha256": "d1743a6ffb80ce3f04c237ba6bd9b7cd783555b11ae87fff7f9de3abc62691ae",
+      "red_log_sha256": "8255109fbedc3a0e0d56d4d17c5427378bb18987e0946fc7a3336d6b2af0a33d",
+      "second_green_log_sha256": "b2a2c7659ab7e5c23ca6e4de3d92dd09880b0155976546cdbc94baa761a866fc",
       "kind": "scope/diff guard after compilation"
     },
     {
@@ -1151,9 +1052,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated capacity production challenge; pinned m2",
-      "baseline_log_sha256": "1fe461bfd9063c818472d082d83f6b9276a3b5be781dc8ec5e925384ffbb96b7",
-      "red_log_sha256": "38d8ef7f9447af90345e752f060254e53cc0bdd3de7cecad901102c27636dbb8",
-      "second_green_log_sha256": "6eb45a8a40da552b7914dacf14e09f5a7520f580db8ca9475600cbde6331e30f",
+      "baseline_log_sha256": "5950c0a7184c5351ff2d9fc2d552d163185e23fb45df2dd7747c64462fc72bbe",
+      "red_log_sha256": "075bd3ea343df37c9b3d65b8ffb0a55aa7e865d47b8c6b14027664ed46c416ac",
+      "second_green_log_sha256": "cd36b7c28fd0c7b58edf16b2c8aa0de4acbcc0def8a0f05576590aee44753f26",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1174,9 +1075,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated capacity production challenge; pinned m2",
-      "baseline_log_sha256": "e17aa17dbed9c7e19ab427a30dc90115a4626fe8517f1a04a9a694c1cb2abd29",
-      "red_log_sha256": "d9cb9d5b1a1b8da1b4461e44f2c33b929691ea314f49f0dae900223572ab57de",
-      "second_green_log_sha256": "9a73733d3fb0b7f21b2c1d1b7d8e6dd5fa963f0bb1d856490e3417b822f69e96",
+      "baseline_log_sha256": "a2a4c05c74becc2cee5e25d7b936e55d7c250896a890b872691f599fcde6d8a5",
+      "red_log_sha256": "814a4004ed2c3308bfe074f275241648964e8f31b6625f2e6401736881f0e880",
+      "second_green_log_sha256": "2f34050cdb7666c19854624ecb0d131840cd0a076d637d57e59d85903d1fe97d",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1197,9 +1098,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated capacity production challenge; pinned m2",
-      "baseline_log_sha256": "fc0f6c995559258d46561874c01d85de56ed1529b6e642c97b5908ac248b6d9a",
-      "red_log_sha256": "f30ce829adf9e3dac5b466fd9d4ab7d9da883d46b40d7cd916e53d79149e34e3",
-      "second_green_log_sha256": "965f683d7dec4105fa3b4f4cc9ecf67898299ee952df5ed38ac1869be21d92e3",
+      "baseline_log_sha256": "07212fe699269decabeb7f36a8bc3b90131373786742c33e2df7b02a1cfd6b78",
+      "red_log_sha256": "de9997220389aa89199e61405b0997718a7b6525ec2afc65f3f020265c2d5ada",
+      "second_green_log_sha256": "df03de10b9bb3e9ea2d48e9a0f398f3e465105c939650111c99ac573d1db631d",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1220,9 +1121,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "compiled isolated capacity production challenge; pinned m2",
-      "baseline_log_sha256": "28500ce33c400dc22060fae961e2ae595047b6ba64ed64cb844c637aa367dcac",
-      "red_log_sha256": "62b61dc0550ae54147af255ae9d43d92c5c9ec0f7fc1744abbfc1af292274e56",
-      "second_green_log_sha256": "cb427b7a668dc57e0015e7775043d4a2a6f85e09a2ffcba96ff2c1f6e4f04782",
+      "baseline_log_sha256": "39fd9f73051fe8e7fa93c00c2191f3ef88996586b36f083f3e9df46994c445be",
+      "red_log_sha256": "9e4c2cf2d189a37b8ca7bc69404cb1fda5ad901a9792ebe5b2c170d4821edee4",
+      "second_green_log_sha256": "37f33f3c4d55628c487a3afb0414139d003245a9a88032933ef40c05ce1039bc",
       "kind": "compiled semantic/gate"
     },
     {
@@ -1239,8 +1140,8 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_initial_cp0_selects_historical_head -v (isolated)",
       "baseline_log_sha256": "c315e1f74f286f83b924a01f45708894dbc34982b35d9f1ee334a5e2e5e8d644",
-      "red_log_sha256": "745bd2e563b7930f555c2c2fc7cff6eeac384a0382494ab7b455ff44ac316449",
-      "second_green_log_sha256": "c82d8c99ff20a02f32339e6e1bf91233885bf12b96b884b677383ccc6d3dea0a"
+      "red_log_sha256": "73e035a12471d3428bc15aa3bca2d5cb1b73bec002c997a23e5f877ccbd60e5d",
+      "second_green_log_sha256": "8e2cfbb4b04e80f1d0b038f27d2f556d171a677390484976c7512fa973080569"
     },
     {
       "id": "null-beyond-cp0",
@@ -1256,7 +1157,7 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_null_later_checkpoint_rejected -v (isolated)",
       "baseline_log_sha256": "63f1f04ec9bdb14adf76ac88fb829641c2253c062d685eb7368fcd1b9912095b",
-      "red_log_sha256": "18abeab52f2f8f1bc254e3c24c1ebfafde9ecb90422f064d1244deb39533a9c3",
+      "red_log_sha256": "82fde5cc141514ddc71eb766841c9da52d2cc3b7541c1159c0347575dd28ed37",
       "second_green_log_sha256": "63f1f04ec9bdb14adf76ac88fb829641c2253c062d685eb7368fcd1b9912095b"
     },
     {
@@ -1273,7 +1174,7 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_explicit_wrong_pr_rejected -v (isolated)",
       "baseline_log_sha256": "00e264b3a640b1ccff9b00d3b4f4fd31ccfcd3083d27c6148fc197654923b123",
-      "red_log_sha256": "fceba0eacb46660e1c0265dac0778a08317770cd449925c310b280dcf5a090cc",
+      "red_log_sha256": "efa2b6d2c74d724de411c6608c72fec2664cbf13500bbf1c0ba73fbdc0401c43",
       "second_green_log_sha256": "00e264b3a640b1ccff9b00d3b4f4fd31ccfcd3083d27c6148fc197654923b123"
     },
     {
@@ -1290,7 +1191,7 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_wrong_branch_rejected -v (isolated)",
       "baseline_log_sha256": "6040a08e71975f74df6bf7018c15b06d56f17a4ce488fa8755e5465391d99abd",
-      "red_log_sha256": "57f1ba4f0490c956b1cf3d10a4a54fe9d751257cd00ce66897bbd8df8d6fe0db",
+      "red_log_sha256": "36b6f5bc6a663e12aad215412580a0593777bf4271e714b19758982b3167f19e",
       "second_green_log_sha256": "a8cab98de48a4c6030cb5abaf605415122b56d4de58017ec7e1c3c9a1f87f363"
     },
     {
@@ -1307,8 +1208,8 @@
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_altered_merge_evidence_rejected -v (isolated)",
       "baseline_log_sha256": "6b1feb7e1e08e14d2244ffec9f0b346b55cbb67b8f3a8d974ae9d10c70213b1f",
-      "red_log_sha256": "772b2491301969956a7d9e0311572302cac6a946039c41f421119d5b68952a27",
-      "second_green_log_sha256": "240998e71813f8b89428987597c030a2d4b883d192c48c2936f3690a3af8714c"
+      "red_log_sha256": "d00666619f54ee503cdc2b7ce8dca1ac5601af9b8e4393759c44720cbb8eeb3f",
+      "second_green_log_sha256": "17fe0e2aa853e62f731a40bb3de89afcdea14cd446395aff3581df506a8244dd"
     },
     {
       "id": "missing-ancestry",
@@ -1323,9 +1224,9 @@
       "restoration_status": "RESTORED",
       "green_exit_code": 0,
       "green_command": "python3 -B scripts/harness/tests/test_ci_bootstrap.py CiBootstrap.test_unrelated_head_rejected -v (isolated)",
-      "baseline_log_sha256": "f8d22bd9377141febbc1eeab2bd992db36a2052baeee7c62411c0d3873feb242",
-      "red_log_sha256": "45df4d7ba86905c9054a49b50b5087460bb583105ffc04a9b0fdeba6e37776aa",
-      "second_green_log_sha256": "f2bb897db58a737e67739cbec880e50f8f49e95b243908c12dc315dfa719907c"
+      "baseline_log_sha256": "1986793bc2932f58343c36f6d504732ebeeaad16328f4b98d949eb744f8ee2ae",
+      "red_log_sha256": "c1c30e50191e0d74a2695f6db2d45e54ecda7a041bf5bfe6e7e7d0d87dcc6d6c",
+      "second_green_log_sha256": "2ff38071af125e24a6e8dcbf20f501265ca4351bf4c34a5ee29eb7c2e4e8a157"
     },
     {
       "id": "dynamic-to-literal",
@@ -1591,8 +1492,7 @@
   "review": {
     "status": "PASS",
     "evidence": [
-      "docs/quality/WORK-LOWER-010/review.md",
-      "docs/quality/WORK-LOWER-010/ci-timeout/review.md"
+      "docs/quality/WORK-LOWER-010/review.md"
     ],
     "kind": "self-review",
     "reviewer_context": "Implementing Codex, same context; no independent/human review claimed",
@@ -1605,15 +1505,14 @@
     "Codec retains independent operational limits; N/2N and legacy capacity probes do not qualify general large-program E2E.",
     "Certificate is pre-commit; exact HEAD/PR/push CI and synthetic merge receipts are recorded in PR/handoff after push without modifying this immutable candidate.",
     "Historical ten documentary/architecture challenges emit paired records in full.log; complete compiled challenge receipts are included separately. Initial test/harness failures are preserved and explained in review.md.",
-    "Sibling production checkouts untouched. artefatos-e2e preexisting untracked checkpoint-4e/cp5 remain; no changes made there. W1D/W2 NOT_STARTED / NOT_AUTHORIZED.",
-    "Initial remote run 34633251413 at 989637a7fd840f43aaf04abce299c839b82fcb55 timed out after 30 minutes. The original certificate is preserved in that commit and ci-timeout/initial-certificate.json. This second certification is the same CP0 with a 45-minute operational job limit; final remote PASS still requires the newly published exact SHA."
+    "Sibling production checkouts untouched. artefatos-e2e preexisting untracked checkpoint-4e/cp5 remain; no changes made there. W1D/W2 NOT_STARTED / NOT_AUTHORIZED."
   ],
-  "note": "Second pre-commit certification of the SAME CP0 after operational CI timeout. Initial commit/certificate preserved byte-exact in Git and ci-timeout/initial-certificate.json. Original run TIMEOUT, not PASS. Current PR11 exists. Only workflow timeout and review metadata change; no next checkpoint.",
+  "note": "W1C candidate certificate. Commit resolved through unique Checkpoint-Evidence trailer; null initial CP0 PR is intentional. Exact post-push receipt belongs to PR/handoff. Original prose/fixtures freeze precedes production; final executable-oracle hashes bind the reviewed candidate.",
   "execution_mode": "single-checkpoint",
   "authorization_reference": "docs/work/active/WORK-LOWER-010/work-item.yaml",
   "previous_certified_checkpoint": null,
   "certified_commit": null,
-  "candidate_diff_sha256": "72750cb4ac874f4ba17fb2fd180f96a64f9513bf43cbcf3647ab9b43c4e885a2",
+  "candidate_diff_sha256": "7e6f4637e4337787dc593dd15e8fe00f65dfe1e1d48cdcf25b19745a4c4aabde",
   "candidate_exclusions": [
     "docs/quality/WORK-LOWER-010/CP0.json",
     "docs/work/active/WORK-LOWER-010/state.md"
@@ -1622,7 +1521,7 @@
     "references": [
       {
         "path": ".github/workflows/checkpoint.yml",
-        "sha256": "e1b0ced2d98ef65c1c958ea3647b54f737ea4345fbb1952e9ddff4ed7822224e",
+        "sha256": "06992bc0e4783b6d93d648f925bb0b395cf410478abd86f68479467333b4a8a0",
         "git_revision": null,
         "usage": "candidate_immutable"
       },
@@ -2071,18 +1970,6 @@
         "usage": "candidate_immutable"
       },
       {
-        "path": "docs/quality/WORK-LOWER-010/ci-timeout/contract.md",
-        "sha256": "1b10a1becaebecae25bbfc2e77073ce5d6c942437e915a1d4688be8b2a576e61",
-        "git_revision": null,
-        "usage": "candidate_immutable"
-      },
-      {
-        "path": "docs/quality/WORK-LOWER-010/ci-timeout/freeze.json",
-        "sha256": "957f2b82402829dd9ab33e6dff9a7e18c690bf94ae03fe3ce64f73f3d273478a",
-        "git_revision": null,
-        "usage": "candidate_immutable"
-      },
-      {
         "path": "docs/quality/WORK-LOWER-010/freeze.json",
         "sha256": "82a16c97d2db62af9727a31cda2ddbc929afebe3084b5c050f3180526b2b1111",
         "git_revision": null,
@@ -2120,7 +2007,7 @@
       },
       {
         "path": "docs/work/active/WORK-LOWER-010/work-item.yaml",
-        "sha256": "b2039ca13a0703835c782d7e48033ad5ece61d0aee6323fbd238f7f71aae8219",
+        "sha256": "6a0cf67369b0c158b9b8cfb72513c6156efd8a4b7ed5911ef007830d444759c4",
         "git_revision": null,
         "usage": "candidate_immutable"
       },
@@ -2208,21 +2095,6 @@
         10,
         11,
         12
-      ]
-    },
-    {
-      "previous_checkpoint": "Same CP0 initial local certificate at 989637a7fd840f43aaf04abce299c839b82fcb55; remote timeout, not a complete recovery point",
-      "guarantees": "Only operational workflow timeout and PR metadata changed. Full cumulative semantic/performance/architecture/Git/harness/challenges rerun with 175 harness tests and 76 restored mutations. Initial code, tests, source locks, fixtures and prior evidence remain byte-identical except the explicitly superseded current CP0 certificate.",
-      "execution_references": [
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21
       ]
     }
   ],

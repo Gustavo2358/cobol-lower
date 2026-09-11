@@ -1,0 +1,3 @@
+PASS workflow YAML differs only in operational timeout 30 -> 45; all steps/gates unchanged
+PASS product/tests/harness code/source lock byte-identical to initial certified commit
+PASS initial certificate byte-exact SHA256=9ee6a8b163be95d24a1ada4846d24612de83de2e24e2e0f416fbfa13a9a202d7

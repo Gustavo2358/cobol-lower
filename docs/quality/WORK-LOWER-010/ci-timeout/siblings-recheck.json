@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-09-11T19:02:32.678963+00:00",
+  "comparison": "IDENTICAL_TO_INITIAL_SNAPSHOT",
+  "repositories": {
+    "proleap-poc": {
+      "head": "bd6dd1c49bd724899a599beeff7dd3cb66d0f879",
+      "tree": "a43f0fc4ef8a227d47f012b9fcb4e410842ffcc0",
+      "branch": "feat/cp6-w1a-call-semantic-product",
+      "status": ""
+    },
+    "air-java": {
+      "head": "09560ee9bf288ea4a3e8464f9dcac952dace6506",
+      "tree": "8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8",
+      "branch": "feat/cp6-w1b-invoke-air-json",
+      "status": ""
+    },
+    "analysis-ir": {
+      "head": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+      "tree": "11b2361a40cb5ae9b6c201f0157f30ef2387d1b8",
+      "branch": "main",
+      "status": ""
+    },
+    "analysis-cfg": {
+      "head": "e9daaed9f8a2f2df3926a624f1067aba3d53297c",
+      "tree": "30f854c3c5dc626d2e2185611efa5fd254c6a502",
+      "branch": "main",
+      "status": ""
+    },
+    "artefatos-e2e": {
+      "head": "99bb086213934830a1cfad10e9b77032764ef669",
+      "tree": "eee9f51b9046b8159fbdc8e32aa162ed6dacd9aa",
+      "branch": "main",
+      "status": "?? checkpoint-4e/\n?? cp5/"
+    }
+  }
+}

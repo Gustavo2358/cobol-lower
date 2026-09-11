@@ -42,7 +42,7 @@
         "CP0"
       ],
       "git_branch": "feat/cp6-w1c-call-lowering",
-      "pull_request": null,
+      "pull_request": 11,
       "backlog_ids": [
         "BACKLOG-LOWER-008"
       ]

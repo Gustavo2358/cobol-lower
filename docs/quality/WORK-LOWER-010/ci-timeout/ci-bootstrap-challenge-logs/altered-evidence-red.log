@@ -1,0 +1,18 @@
+test_altered_merge_evidence_rejected (__main__.CiBootstrap.test_altered_merge_evidence_rejected) ... FAIL
+
+======================================================================
+FAIL: test_altered_merge_evidence_rejected (__main__.CiBootstrap.test_altered_merge_evidence_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 113, in test_altered_merge_evidence_rejected
+    self.rejected(fixture, 'altered merge evidence rejected', 'merge/evidence identity')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 71, in rejected
+    self.fail('CI_BOOTSTRAP ' + why)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP altered merge evidence rejected
+
+----------------------------------------------------------------------
+Ran 1 test in 0.047s
+
+FAILED (failures=1)

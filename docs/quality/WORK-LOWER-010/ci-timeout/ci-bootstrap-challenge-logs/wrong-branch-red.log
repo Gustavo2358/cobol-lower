@@ -1,0 +1,18 @@
+test_wrong_branch_rejected (__main__.CiBootstrap.test_wrong_branch_rejected) ... FAIL
+
+======================================================================
+FAIL: test_wrong_branch_rejected (__main__.CiBootstrap.test_wrong_branch_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 100, in test_wrong_branch_rejected
+    self.rejected(self.fixture({'branch': 'fix/unrelated'}), 'wrong branch rejected', 'merge/evidence identity')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/lower-ci-bootstrap-challenge-nca5nlue/scripts/harness/tests/test_ci_bootstrap.py", line 71, in rejected
+    self.fail('CI_BOOTSTRAP ' + why)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: CI_BOOTSTRAP wrong branch rejected
+
+----------------------------------------------------------------------
+Ran 1 test in 0.042s
+
+FAILED (failures=1)

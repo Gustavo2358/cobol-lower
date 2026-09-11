@@ -93,7 +93,7 @@ checkpoints:
   status: active
 git:
   branch: feat/cp6-w1c-call-lowering
-  pull_request: null
+  pull_request: 11
   one_pr_per_work_item: true
   merge_authorized: false
   suggested_branch: feat/cp6-w1c-call-lowering

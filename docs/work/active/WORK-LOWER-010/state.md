@@ -32,3 +32,15 @@ Sem resolução dinâmica, tracing de MOVE anterior, trim de nomes, CFG,
 PossibleValues ou dependency fact. Nenhum irmão produtivo alterado. Diretórios
 untracked preexistentes em artefatos-e2e preservados. Sem merge/auto-merge.
 W1D = NOT_STARTED / NOT_AUTHORIZED. W2 = NOT_STARTED / NOT_AUTHORIZED.
+
+## Correção operacional do CI no mesmo CP0
+
+Draft PR [#11](https://github.com/Gustavo2358/cobol-lower/pull/11), OPEN, sem auto-merge.
+Commit inicial `989637a7fd840f43aaf04abce299c839b82fcb55`: certificação local PASS,
+CI remoto TIMEOUT em 30 minutos; ainda não constitui recovery point com CI PASS.
+Contrato/log/recibo preservados em [ci-timeout](../../../quality/WORK-LOWER-010/ci-timeout/contract.md).
+Timeout do job ampliado para 45 minutos; comandos e garantias idênticos.
+Nova validação local do mesmo CP0 PASS, incluindo full cumulativo e challenges.
+Certificação corrente em CP0.json; versão inicial preservada no commit acima e
+em ci-timeout/initial-certificate.json. Novo SHA/tree/CI são registrados no
+PR/handoff após push, sem autoinscrição. Aguardando CI e review humano. W1D/W2 não iniciados.

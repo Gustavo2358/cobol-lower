@@ -1,0 +1,44 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------< io.github.gustavo2358:cobol-lower-core >---------------
+[INFO] Building cobol-lower-core 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /tmp/lower-scalar-challenge-4_lndflp/core/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ cobol-lower-core ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 25 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ cobol-lower-core ---
+[INFO] skip non existing resourceDirectory /tmp/lower-scalar-challenge-4_lndflp/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ cobol-lower-core ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 15 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- exec:3.5.0:java (default-cli) @ cobol-lower-core ---
+[WARNING] 
+java.lang.AssertionError: SCALAR scalar reference ledger 7N+3 no scans
+    at io.github.gustavo2358.lower.testing.ScalarSuite.check (ScalarSuite.java:16)
+    at io.github.gustavo2358.lower.testing.ScalarSuite.scale (ScalarSuite.java:182)
+    at io.github.gustavo2358.lower.testing.ScalarSuite.main (ScalarSuite.java:160)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doMain (ExecJavaMojo.java:375)
+    at org.codehaus.mojo.exec.ExecJavaMojo.doExec (ExecJavaMojo.java:364)
+    at org.codehaus.mojo.exec.ExecJavaMojo.lambda$execute$0 (ExecJavaMojo.java:286)
+    at java.lang.Thread.run (Thread.java:1583)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.492 s
+[INFO] Finished at: 2026-09-11T16:15:28-03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:exec-maven-plugin:3.5.0:java (default-cli) on project cobol-lower-core: An exception occurred while executing the Java class. SCALAR scalar reference ledger 7N+3 no scans -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

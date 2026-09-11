@@ -1,0 +1,5 @@
+Exception in thread "main" java.lang.AssertionError: CP6 target ObjectId follows selected DATA
+	at io.github.gustavo2358.lower.testing.CallOracle.check(CallOracle.java:15)
+	at io.github.gustavo2358.lower.testing.CallOracle.inspect(CallOracle.java:51)
+	at io.github.gustavo2358.lower.testing.CallSuite.run(CallSuite.java:17)
+	at io.github.gustavo2358.lower.testing.CallSuite.main(CallSuite.java:69)

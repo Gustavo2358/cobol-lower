@@ -1,0 +1,6 @@
+test_initial_cp0_selects_historical_head (__main__.CiBootstrap.test_initial_cp0_selects_historical_head) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.040s
+
+OK
