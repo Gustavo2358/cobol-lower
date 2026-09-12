@@ -1,0 +1,9 @@
+{
+  "kind": "ISOLATED_DOCUMENTARY_ARCHIVAL_PROBE",
+  "qualification_executed": false,
+  "errors": [
+    "HISTORY DEPENDENCY/REGISTRATION WORK-LOWER-011: final evidence path"
+  ],
+  "valid_history": [],
+  "notes": "Only an isolated documentary layout was supplied to the existing read-only history checker. No legacy certificate was created. Live repository and evidence were unchanged."
+}

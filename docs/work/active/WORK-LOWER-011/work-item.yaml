@@ -1,17 +1,18 @@
 schema_version: 1
 id: WORK-LOWER-011
 title: CP6 W2B — lower SP 1.4 simple IF to AIR diamond
-status: active
+status: blocked
 risk: high
 goal: Strict SP 1.4 IF and upstream storage proof to AIR closed/open diamond; split
   remote FAST from local-only full qualification.
 authorization:
   state: granted
-  scope: Implementation CP6 W2B only; lifecycle W1C reconciliation, product/tests/CI/harness/pins/docs;
-    commit, push, Draft PR; siblings read-only; no merge.
+  scope: Formal CP6 W2B closure only; explicit protected merge of PR12 and documentary
+    lifecycle/evidence administration. No new implementation or protected blob changes;
+    no pin updates, repeated full qualification, remote heavy execution or W2D.
   execution_mode: single-checkpoint
-  authority: Explicit user CP6 W2B request 2026-09-12; full qualification LOCAL ONLY
-    on final clean committed HEAD before first productive push.
+  authority: Explicit user formal closure request 2026-09-12, approved only HEAD cc55f45b55c3b9753ff4f1d86f5028a55ad150ab;
+    approval is in this task, not a GitHub review event.
   current_checkpoint: CP0
   authorized_checkpoints:
   - CP0
@@ -69,8 +70,8 @@ docs_scope:
 must_not_change:
 - Sibling repositories and aggregate root; historical evidence and goldens
 - AIR normative model validator codec; solver lattice and analysis-cfg
-- No W2D, path pruning, runtime FLAG evaluation, generic COBOL control; no merge or
-  auto-merge
+- No W2D, path pruning, runtime FLAG evaluation, generic COBOL control, product/test/harness/workflow/source
+  lock changes or auto-merge.
 gate_profile: first-slice
 gates: &id001
 - docs
@@ -86,7 +87,7 @@ checkpoints:
   depends_on: []
   gates: *id001
   evals: *id002
-  status: active
+  status: completed
 git:
   branch: feat/cp6-w2b-if-lowering
   pull_request: 12

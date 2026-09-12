@@ -1,0 +1,10 @@
+{
+  "kind": "TOOL_OUTPUT_OBSERVATION",
+  "command": "python3 scripts/harness/run.py docs-fast",
+  "stderr_observed": "FAIL SCHEMA WORK-LOWER-011: False was expected",
+  "cause": "Attempting git.merge_authorized=true conflicts with the existing schema const false.",
+  "individual_exit_code": "NOT_CAPTURED",
+  "raw_stderr_file": "NOT_CAPTURED; stderr was shown by the execution tool, while only stdout was redirected.",
+  "correction": "Preserve the schema-compatible false field; record the explicit human merge override separately. No protected schema or harness changes.",
+  "subsequent_docs_fast": "PASS"
+}

@@ -1,0 +1,39 @@
+{
+  "head": "cc55f45b55c3b9753ff4f1d86f5028a55ad150ab",
+  "base": "9de3825da64898258e647727393f01b9e9198d9e",
+  "delta": [
+    "DOCS_ONLY",
+    [
+      "MANIFEST.sha256",
+      "docs/domain/capability-matrix.md",
+      "docs/quality/WORK-LOWER-011/final-publication-audit.log.gz",
+      "docs/quality/WORK-LOWER-011/handoff.md",
+      "docs/quality/WORK-LOWER-011/local-qualification-bundle.json",
+      "docs/quality/WORK-LOWER-011/local-qualification-f588704.log.gz",
+      "docs/quality/WORK-LOWER-011/local-qualification.tar.gz",
+      "docs/quality/WORK-LOWER-011/pr12-created.json",
+      "docs/quality/WORK-LOWER-011/remote-code-checks.json",
+      "docs/quality/WORK-LOWER-011/remote-code-pr-run.json",
+      "docs/quality/WORK-LOWER-011/remote-code-pr.log.gz",
+      "docs/quality/WORK-LOWER-011/remote-code-push-jobs.json",
+      "docs/quality/WORK-LOWER-011/remote-code-push-receipt.json",
+      "docs/quality/WORK-LOWER-011/remote-code-push-run.json",
+      "docs/quality/WORK-LOWER-011/remote-code-push.log.gz",
+      "docs/quality/WORK-LOWER-011/siblings-read-only.json",
+      "docs/quality/WORK-LOWER-011/w1-historical-air-comparison.json",
+      "docs/work/active/WORK-LOWER-011/state.md",
+      "docs/work/active/WORK-LOWER-011/work-item.yaml",
+      "docs/work/registry.json"
+    ]
+  ],
+  "relation": {
+    "qualified_head": "f588704c5a958af93562fe10e5e6646f5cb6a17e",
+    "qualified_tree": "c7acea42fd4ab0fb21cb03c6314016e24ac46544",
+    "current_head": "cc55f45b55c3b9753ff4f1d86f5028a55ad150ab",
+    "current_tree": "52629a7bb9a97f78a943c924aad28631b9357d72",
+    "relation": "DOCUMENTATION_ONLY_SUCCESSOR",
+    "full_executed_on_current_head": false
+  },
+  "synthetic": "cbfa378aedb3f3c35ab76f691d4475810093121d",
+  "protected_blobs": "PRESERVED"
+}

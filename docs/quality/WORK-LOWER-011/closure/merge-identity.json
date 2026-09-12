@@ -1,0 +1,21 @@
+{
+  "pr": 12,
+  "source_head": "cc55f45b55c3b9753ff4f1d86f5028a55ad150ab",
+  "source_tree": "52629a7bb9a97f78a943c924aad28631b9357d72",
+  "merge_method": "merge",
+  "merge_sha": "2b7fa3a5cee865eef5007d6d870618e032047e1e",
+  "merge_tree": "52629a7bb9a97f78a943c924aad28631b9357d72",
+  "main_sha": "2b7fa3a5cee865eef5007d6d870618e032047e1e",
+  "main_tree": "52629a7bb9a97f78a943c924aad28631b9357d72",
+  "final_review_tree": "FINAL_REVIEW_TREE_PRESERVED",
+  "protected_product_blobs": "QUALIFIED_PRODUCT_BLOBS_PRESERVED",
+  "qualification": {
+    "qualified_head": "f588704c5a958af93562fe10e5e6646f5cb6a17e",
+    "qualified_tree": "c7acea42fd4ab0fb21cb03c6314016e24ac46544",
+    "current_head": "2b7fa3a5cee865eef5007d6d870618e032047e1e",
+    "current_tree": "52629a7bb9a97f78a943c924aad28631b9357d72",
+    "relation": "DOCUMENTATION_ONLY_SUCCESSOR",
+    "full_executed_on_current_head": false
+  },
+  "merged_at": "2026-09-12T17:20:41Z"
+}

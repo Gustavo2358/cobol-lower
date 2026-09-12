@@ -1,6 +1,6 @@
 # CP6 W2B
 
-[WORK-LOWER-011](active/WORK-LOWER-011/work-item.yaml): active CP0; [state](active/WORK-LOWER-011/state.md). Remote FAST only; full qualification LOCAL ONLY.
+[WORK-LOWER-011](active/WORK-LOWER-011/work-item.yaml): product APPROVED / MERGED; CP0 completed; lifecycle `blocked` by legacy archival requirements. [State](active/WORK-LOWER-011/state.md), [closeout evidence and blocker](../quality/WORK-LOWER-011/closeout.md). Product baseline frozen at `2b7fa3a5cee865eef5007d6d870618e032047e1e`. Remote FAST only; full qualification LOCAL ONLY. W2D NOT_STARTED / NOT_AUTHORIZED.
 
 # CP6 W1C
 

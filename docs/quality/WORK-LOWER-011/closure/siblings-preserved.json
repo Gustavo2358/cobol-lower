@@ -1,0 +1,34 @@
+{
+  "kind": "CLOSURE_SIBLING_PRESERVATION",
+  "all_five_preserved": true,
+  "comparison": "HEAD, porcelain status, tracked binary diff SHA256, every nonignored untracked file SHA256",
+  "siblings": {
+    "proleap-poc": {
+      "head": "9964d0c1404ecec32731750c2485d650e8df18c2",
+      "dirty_before_and_after": false,
+      "untracked_count": 0
+    },
+    "air-java": {
+      "head": "9aec1e9bce30466f4a53d2033bf2a2a2fedd56ec",
+      "dirty_before_and_after": false,
+      "untracked_count": 0
+    },
+    "analysis-cfg": {
+      "head": "0f94618cf326b1e18220122b04d359c73f104163",
+      "dirty_before_and_after": false,
+      "untracked_count": 0
+    },
+    "analysis-ir": {
+      "head": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+      "dirty_before_and_after": false,
+      "untracked_count": 0
+    },
+    "artefatos-e2e": {
+      "head": "2ae760d54f84fddb315e9c4742afb47f7ba6fc19",
+      "dirty_before_and_after": true,
+      "untracked_count": 225
+    }
+  },
+  "before_snapshot_sha256": "c314206ebe9551408225610ee2cdeee342b92fe6ce3894b732aee050aad4e441",
+  "after_snapshot_sha256": "c314206ebe9551408225610ee2cdeee342b92fe6ce3894b732aee050aad4e441"
+}

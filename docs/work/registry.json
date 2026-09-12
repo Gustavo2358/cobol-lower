@@ -36,7 +36,7 @@
     },
     {
       "id": "WORK-LOWER-011",
-      "status": "active",
+      "status": "blocked",
       "path": "docs/work/active/WORK-LOWER-011",
       "authorized_checkpoints": [
         "CP0"

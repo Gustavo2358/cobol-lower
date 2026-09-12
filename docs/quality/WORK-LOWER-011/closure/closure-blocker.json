@@ -1,0 +1,22 @@
+{
+  "kind": "ADMINISTRATIVE_CLOSEOUT_BLOCKER",
+  "work_item": "WORK-LOWER-011",
+  "product_findings": [],
+  "qualification_invalidated": false,
+  "reason": "The legacy history checker requires CP0.json and CP0-manifest.yaml; the W2B local qualification protocol has no such legacy certificate. Adding these paths is protected by the reviewed classifier and cannot be a DOCUMENTATION_ONLY successor.",
+  "history_checker": "scripts/harness/checks.py:history_errors",
+  "required_paths": {
+    "docs/quality/WORK-LOWER-011/CP0.json": {
+      "exists": false,
+      "documentary": false
+    },
+    "docs/quality/WORK-LOWER-011/CP0-manifest.yaml": {
+      "exists": false,
+      "documentary": false
+    }
+  },
+  "classification_if_added": "CODE_OR_HARNESS_CHANGE",
+  "allowed_policy_changes": false,
+  "original_qualification_receipt_preserved": true,
+  "resolution": "Separate human authorization and review are required for a harness/policy change supporting historical LOCAL_QUALIFICATION records. Do not manufacture a legacy certificate or weaken the classifier during closure."
+}

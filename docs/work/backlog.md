@@ -30,3 +30,7 @@ A saída AIR em arquivo está mergeada no 2A de BACKLOG-LOWER-003 (PR #4). A int
 [WORK-LOWER-009](history/WORK-LOWER-009.md) COMPLETED local: sincronizou baselines existentes; PR10 aguarda CI final/merge; não inicia capacidades futuras nem CP6.
 
 CP6 W1C: BACKLOG-LOWER-008 completed under [WORK-LOWER-010](history/WORK-LOWER-010.md); first CALL slice only.
+
+BACKLOG-LOWER-007: W2B simple IF product approved/merged; `in_progress` tracks only
+blocked WORK-LOWER-011 archival, not additional authorized implementation. See
+[closeout and blocker](../quality/WORK-LOWER-011/closeout.md). W2D is not started or authorized.
