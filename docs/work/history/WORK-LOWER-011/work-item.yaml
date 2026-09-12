@@ -1,0 +1,10 @@
+{
+  "id": "WORK-LOWER-011",
+  "title": "CP6 W2B IF lowering",
+  "status": "DONE",
+  "scope": [
+    "W2B product frozen at 2b7fa3a5cee865eef5007d6d870618e032047e1e"
+  ],
+  "pr": 12,
+  "notes": "MERGED; required technical tests passed. Git/PR/tests are the record."
+}

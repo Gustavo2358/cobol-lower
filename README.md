@@ -21,18 +21,17 @@ A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `Sp
 
 No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê o Path completo com proteção estrutural de profundidade. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
 
-Requisitos do harness: Java21, Maven, Python3 com [dependências](scripts/harness/requirements.txt), Git e gh autenticado para checks Git/PR. Use um diretório temporário isolado para dependências; bootstrap verifica SHA de air-java, digests dos jars de model e codec e testes upstream antes de cada uso posterior:
+Desenvolvimento (Java 21, Maven, Python 3 com PyYAML):
 
 ```sh
-export LOWER_BUILD_ROOT="$(mktemp -d /tmp/cobol-lower-build.XXXXXX)"
-python3 -m pip install -r scripts/harness/requirements.txt
-python3 scripts/harness/run.py bootstrap
-python3 scripts/harness/run.py semantic
-python3 scripts/harness/run.py performance
-python3 scripts/harness/run.py full
+python3 -B scripts/harness/lean.py fast
+# Antes de merge tecnicamente importante, local/on-demand:
+python3 -B scripts/harness/lean.py qualification-local
 ```
 
-`full` é exclusivamente local. O CI publicado executa apenas `ci-fast` no head exato; [política e qualification local](docs/engineering/ci-qualification.md). Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
+Abra PR, revisão humana quando aplicável, merge, DONE. [Política lean](docs/engineering/lean-harness.md).
+`LOWER_BUILD_ROOT` pode selecionar um cache isolado; o padrão é `.harness-results/build`.
+Pins de produto permanecem obrigatórios. CI remoto executa somente FAST.
 
 ## CLI: arquivo SP → arquivo AIR
 

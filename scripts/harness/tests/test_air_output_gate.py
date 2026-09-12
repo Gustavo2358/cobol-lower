@@ -12,25 +12,24 @@ import run as harness
 from architecture import source_errors, dependency_errors, output_boundary_errors
 
 class AirOutputGate(unittest.TestCase):
-    def test_w1b_tree_receipt_must_match_pin(self):
+    def test_actual_dependency_checkout_must_match_pin_without_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             build = Path(directory)
             jar = build/'m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar'
             codec = jar.parents[2]/'air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar'
             jar.parent.mkdir(parents=True); codec.parent.mkdir(parents=True)
             jar.write_bytes(b'model'); codec.write_bytes(b'codec')
-            pin = dict(commit='a'*40, tree='b'*40)
-            receipt = dict(commit=pin['commit'], source_tree=pin['tree'], jar_sha256=harness.digest(jar.read_bytes()),
-                           codec_sha256=harness.digest(codec.read_bytes()),
-                           source_lock_sha256=harness.digest((ROOT/'docs/sources/sources.lock.json').read_bytes()))
-            with patch.object(harness, 'build_root', return_value=build), patch.object(harness, 'source', return_value=pin), patch.object(harness, 'read_data', return_value=receipt):
-                self.assertEqual(jar, harness.verify_dependency())
-                receipt['source_tree'] = 'c'*40
-                with self.assertRaisesRegex(RuntimeError, 'source tree differs'):
-                    harness.verify_dependency()
-                del receipt['source_tree']
-                with self.assertRaisesRegex(RuntimeError, 'source tree differs'):
-                    harness.verify_dependency()
+            pin = dict(commit='a'*40)
+            with patch.object(harness, 'build_root', return_value=build), patch.object(harness, 'source', return_value=pin):
+                with patch.object(harness, 'git', side_effect=[b'a'*40, b'']):
+                    self.assertEqual(jar, harness.verify_dependency())
+                with patch.object(harness, 'git', return_value=b'b'*40):
+                    with self.assertRaisesRegex(RuntimeError, 'immutable pin'):
+                        harness.verify_dependency()
+                with patch.object(harness, 'git', side_effect=[b'a'*40, b' M product.java']):
+                    with self.assertRaisesRegex(RuntimeError, 'immutable pin'):
+                        harness.verify_dependency()
+
     def test_call_suites_cannot_be_skipped(self):
         prefix = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\n'
         required = ('LOWER_CALL_TESTS', 'LOWER_CALL_INTEGRATION_TESTS', 'LOWER_IF_TESTS', 'LOWER_IF_INTEGRATION_TESTS')

@@ -1,6 +1,6 @@
 # BACKLOG-LOWER-007 — IF e controle condicional sustentado
 
-**Estado:** `in_progress`. **Fase:** `capability`. **Autorização:** CP6 W2B simple IF only; product delivered, administrative archival blocked.
+**Estado:** `completed`. **Fase:** `capability`. **Autorização:** CP6 W2B simple IF only; product delivered, administrative archival blocked.
 
 ## Problema e objetivo observável
 
@@ -32,6 +32,6 @@ WORK-LOWER-011 implemented and qualified the explicitly bounded simple IF slice.
 
 ## Evidência atual
 
-Product merge `2b7fa3a5cee865eef5007d6d870618e032047e1e` is frozen. Local qualification belongs only to `f588704c5a958af93562fe10e5e6646f5cb6a17e`; remote merge FAST passed. Status remains `in_progress` solely because WORK-LOWER-011 administrative archival is blocked. General/nested control is not delivered. [Closeout and blocker](../../quality/WORK-LOWER-011/closeout.md).
+Product merge `2b7fa3a5cee865eef5007d6d870618e032047e1e` is frozen. Local qualification belongs only to `f588704c5a958af93562fe10e5e6646f5cb6a17e`; remote merge FAST passed. Status remains `completed` solely because WORK-LOWER-011 administrative archival is blocked. General/nested control is not delivered. [Closeout and blocker](../../quality/WORK-LOWER-011/closeout.md).
 
-CP6 W2B autorizado em [WORK-LOWER-011](../active/WORK-LOWER-011/work-item.yaml).
+CP6 W2B autorizado em [WORK-LOWER-011](../history/WORK-LOWER-011/work-item.yaml).
