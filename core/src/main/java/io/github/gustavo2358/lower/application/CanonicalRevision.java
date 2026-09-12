@@ -75,7 +75,39 @@ final class CanonicalRevision {
         e.word("cp6-call@1/AIR2/SP1.3/xxh3-128-v1/"); e.word(LocalIds.POLICY);
         // Domain-separated fixed-size fingerprint of the shared DATA/MOVE/entry/return facts.
         e.word(scalar(input, plan.data(), plan.moves(), plan.terminal().orElseThrow(), maximum).orElseThrow());
-        var call = plan.call().orElseThrow(); e.scalarHeader(call.header()); e.symbol(call.syntax());
+        callFacts(e, plan.call().orElseThrow());
+        return Optional.of(e.finish());
+    }
+    static Optional<String> perform(SpInput input, PerformAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("perform-basic@1/AIR2/SP1.6/xxh3-128-v1"); e.word(LocalIds.POLICY);
+        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
+        performFacts(e, plan.perform().orElseThrow());
+        return Optional.of(e.finish());
+    }
+    static Optional<String> simpleIf(SpInput input, IfAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("simple-if@1/AIR2/SP1.4/xxh3-128-v1"); e.word(LocalIds.POLICY);
+        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
+        ifFacts(e, plan.branch().orElseThrow(), plan.thenMoves(), plan.elseMoves());
+        var proof = input.storageIndependence().orElseThrow(); e.symbol(proof.availability()); e.symbol(proof.rule()); e.word(proof.authority());
+        e.list(proof.members(), id -> e.word(id.handle())); e.provenance(proof.provenance().orElseThrow()); e.list(proof.gapCodes(), e::word);
+        return Optional.of(e.finish());
+    }
+    static Optional<String> supportedProgram(SpInput input, SupportedProgramAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("supported-cp6-program@1/AIR2/SP1.7/xxh3-128-v1"); e.word(LocalIds.POLICY);
+        e.word(scalar(input, plan.data(), plan.moves(), plan.terminal(), maximum).orElseThrow());
+        for (var statement : plan.primary()) {
+            e.scalarHeader(statement.header());
+            if (statement instanceof CallFact call) callFacts(e, call);
+            if (statement instanceof IfFact f) { var d = plan.diamonds().get(f.header().id()); ifFacts(e, f, d.thenMoves(), d.elseMoves()); }
+            if (statement instanceof PerformFact p) performFacts(e, p);
+        }
+        return Optional.of(e.finish());
+    }
+    private static void callFacts(CanonicalRevision e, CallFact call) {
+        e.scalarHeader(call.header()); e.symbol(call.syntax());
         e.word(call.target().id().handle()); e.provenance(call.target().provenance());
         switch (call.target()) {
             case LiteralCallTarget l -> {
@@ -93,24 +125,16 @@ final class CanonicalRevision {
         var surface = call.surface(); e.symbol(surface.using()); e.optional(surface.argumentCount(), e::number); e.symbol(surface.returning());
         e.symbol(surface.onException()); e.symbol(surface.notOnException()); e.symbol(surface.onOverflow());
         e.symbol(call.runtimeTarget()); e.word(call.runtimeUncertaintyCode()); e.symbol(call.effects()); e.symbol(call.outcomes());
-        return Optional.of(e.finish());
     }
-    static Optional<String> perform(SpInput input, PerformAdmission.Plan plan, int maximum) {
-        if (maximum < 32) return Optional.empty();
-        var e = new CanonicalRevision(); e.word("perform-basic@1/AIR2/SP1.6/xxh3-128-v1"); e.word(LocalIds.POLICY);
-        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
-        var p = plan.perform().orElseThrow(); e.scalarHeader(p.header()); e.symbol(p.profile());
+    private static void performFacts(CanonicalRevision e, PerformFact p) {
+        e.scalarHeader(p.header()); e.symbol(p.profile());
         var t = p.target().orElseThrow(); e.word(t.id().handle()); e.provenance(t.referenceOrigin()); e.provenance(t.paragraphOrigin());
         e.statementId(p.targetEntry().orElseThrow()); e.list(p.targetStatements(), e::statementId); e.statementId(p.targetExit().orElseThrow());
         e.statementId(p.normalContinuation().statement().orElseThrow()); e.provenance(p.normalContinuation().provenance());
         e.list(p.primaryStatements(), e::statementId); e.list(p.gapCodes(), e::word);
-        return Optional.of(e.finish());
     }
-    static Optional<String> simpleIf(SpInput input, IfAdmission.Plan plan, int maximum) {
-        if (maximum < 32) return Optional.empty();
-        var e = new CanonicalRevision(); e.word("simple-if@1/AIR2/SP1.4/xxh3-128-v1"); e.word(LocalIds.POLICY);
-        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
-        var f = plan.branch().orElseThrow(); e.scalarHeader(f.header()); e.word(f.conditionShape()); e.flag(f.explicitlyTerminated()); e.symbol(f.profile());
+    private static void ifFacts(CanonicalRevision e, IfFact f, List<MoveFact> thenMoves, List<MoveFact> elseMoves) {
+        e.scalarHeader(f.header()); e.word(f.conditionShape()); e.flag(f.explicitlyTerminated()); e.symbol(f.profile());
         var p = f.predicateGuarantee(); e.symbol(p.availability()); e.symbol(p.profile()); e.symbol(p.resultDomain());
         e.symbol(p.evaluation()); e.symbol(p.normalCompletion()); e.symbol(p.readsCompleteness()); e.symbol(p.truthValue());
         e.list(p.knownReads(), id -> e.word(id.handle())); e.provenance(p.provenance()); e.list(p.gapCodes(), e::word);
@@ -120,11 +144,8 @@ final class CanonicalRevision {
             e.word(read.wholeItemAccess().orElseThrow().data().handle());
         });
         e.ifArm(f.thenArm()); e.ifArm(f.elseArm());
-        e.list(plan.thenMoves(), m -> e.statementId(m.header().id())); e.list(plan.elseMoves(), m -> e.statementId(m.header().id()));
+        e.list(thenMoves, m -> e.statementId(m.header().id())); e.list(elseMoves, m -> e.statementId(m.header().id()));
         e.symbol(f.normalContinuation().availability()); e.statementId(f.normalContinuation().statement().orElseThrow()); e.provenance(f.normalContinuation().provenance());
-        var proof = input.storageIndependence().orElseThrow(); e.symbol(proof.availability()); e.symbol(proof.rule()); e.word(proof.authority());
-        e.list(proof.members(), id -> e.word(id.handle())); e.provenance(proof.provenance().orElseThrow()); e.list(proof.gapCodes(), e::word);
-        return Optional.of(e.finish());
     }
     private void ifArm(IfArm arm) {
         symbol(arm.presence()); symbol(arm.contentAvailability()); symbol(arm.entry().availability());

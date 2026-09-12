@@ -35,3 +35,10 @@ enumeration, backward scan, RD or Def-Use. PerformOracle checks in-memory contro
 via source correlations. PerformIntegrationSuite exercises real SP fixtures,
 codec roundtrip, physical SP permutation and wrong target/end/resume/body/entry,
 second-callsite and unsupported-profile challenges. Both FAST and Full run it.
+
+## SP1.7 composition
+
+The earlier four-sequence shape above remains a regression fixture. The public
+compositor now admits arbitrary supported root statements before/after the single
+PERFORM and any supported root resume. [Current profile](supported-program.md).
+The target isolation and MOVE body semantics are unchanged.

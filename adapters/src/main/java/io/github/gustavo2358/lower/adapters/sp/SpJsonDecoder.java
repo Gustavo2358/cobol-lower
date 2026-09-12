@@ -114,6 +114,12 @@ public final class SpJsonDecoder {
                 case "1.6.0" -> {
                     var wire = mapper.treeToValue(node, Wire16.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent16(wire); input = Materialize.input(wire);
+                    requireLegacyPerform(input);
+                }
+                case "1.7.0" -> {
+                    // Same typed fields; SP1.7 explicitly generalizes isolated primary composition.
+                    var wire = mapper.treeToValue(node, Wire16.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent16(wire); input = Materialize.input(wire);
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
@@ -243,6 +249,20 @@ public final class SpJsonDecoder {
     private static void logical16(Wire16.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireLegacyPerform(SpInput input) {
+        var statements = new java.util.HashMap<SpInput.StatementId, SpInput.StatementFact>();
+        input.statements().forEach(s -> statements.put(s.header().id(), s));
+        for (var s : input.statements()) if (s instanceof SpInput.PerformFact p
+                && p.profile() == SpInput.PerformProfile.SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM) {
+            var main = p.primaryStatements(); int index = main.indexOf(p.header().id());
+            if (index < 0 || main.size() != index + 3 || !(statements.get(main.get(index + 1)) instanceof SpInput.CallFact)
+                    || !(statements.get(main.get(index + 2)) instanceof SpInput.GobackFact))
+                throw new PhysicalShape("$/statements/PERFORM (SP1.6 primary shape; composition requires SP1.7)");
+            for (int n = 0; n < index; n++) if (!(statements.get(main.get(n)) instanceof SpInput.MoveFact))
+                throw new PhysicalShape("$/statements/PERFORM (SP1.6 MOVE prefix)");
+        }
     }
 
     private static Rejected reject(Code code, String location) {
