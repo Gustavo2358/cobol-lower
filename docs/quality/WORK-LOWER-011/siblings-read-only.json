@@ -1,0 +1,56 @@
+{
+  "observed_at": "2026-09-12T16:30:30.260506+00:00",
+  "scope": "Session intake HEAD/status/diff; qualification start/end untracked byte digests. No sibling write/branch/push/CFG command executed.",
+  "repositories": {
+    "proleap-poc": {
+      "head": "9964d0c1404ecec32731750c2485d650e8df18c2",
+      "tree": "e8d9e35c42ce16a42612526faf8c48405ccdedf4",
+      "session_intake_head_status_diff_equal": true,
+      "qualification_untracked_bytes_equal": true,
+      "untracked_files": 0,
+      "untracked_map_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "status_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "air-java": {
+      "head": "9aec1e9bce30466f4a53d2033bf2a2a2fedd56ec",
+      "tree": "d746c1a15adf696de4c9a0e71dcb0a775b1f1549",
+      "session_intake_head_status_diff_equal": true,
+      "qualification_untracked_bytes_equal": true,
+      "untracked_files": 0,
+      "untracked_map_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "status_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "analysis-ir": {
+      "head": "51b4d9a8ae0364232bd97103cd73a77e1a34996c",
+      "tree": "11b2361a40cb5ae9b6c201f0157f30ef2387d1b8",
+      "session_intake_head_status_diff_equal": true,
+      "qualification_untracked_bytes_equal": true,
+      "untracked_files": 0,
+      "untracked_map_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "status_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "analysis-cfg": {
+      "head": "0f94618cf326b1e18220122b04d359c73f104163",
+      "tree": "24ec2dfbe6183cd2f7c8ed7cad8bac9fb5e68796",
+      "session_intake_head_status_diff_equal": true,
+      "qualification_untracked_bytes_equal": true,
+      "untracked_files": 0,
+      "untracked_map_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "status_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "artefatos-e2e": {
+      "head": "2ae760d54f84fddb315e9c4742afb47f7ba6fc19",
+      "tree": "bdba3c079bd301eec20ba34c5047f41e9e80f8c7",
+      "session_intake_head_status_diff_equal": true,
+      "qualification_untracked_bytes_equal": true,
+      "untracked_files": 225,
+      "untracked_map_sha256": "8eb5b40ea5760ea2b2039e8b6728ca9562c61f484ffddf34702754baafa21d46",
+      "status_sha256": "ca5a17d4bee968354437d3f49ed2d7c6c328c541e675a3768db4b83016946d5e",
+      "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

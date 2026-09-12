@@ -89,7 +89,7 @@ checkpoints:
   status: active
 git:
   branch: feat/cp6-w2b-if-lowering
-  pull_request: null
+  pull_request: 12
   one_pr_per_work_item: true
   merge_authorized: false
   suggested_branch: feat/cp6-w2b-if-lowering
