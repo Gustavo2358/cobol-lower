@@ -45,18 +45,7 @@ public final class IfAdmission implements AdmitInput {
                     && e.signature().parameterCount().equals(Optional.of(0)) && e.signature().returningClause()==ReturningClause.ABSENT
                     && e.provenance().exact() && e.gaps().isEmpty(),"entry explicitly starts at IF with closed zero signature");
             }
-            need(c,f.header().containment().equals(new Containment(Optional.empty(),Branch.ROOT)) && f.explicitlyTerminated()
-                && f.profile()==IfProfile.SIMPLE_TEXT_EQUALITY,"root explicitly terminated SIMPLE_TEXT_EQUALITY only; nested outside slice");
-            need(c,predicate.availability()==Availability.KNOWN && predicate.profile()==PredicateProfile.SCALAR_TEXT_EQUALITY
-                && predicate.resultDomain()==PredicateDomain.BOOLEAN && predicate.evaluation()==PredicateEvaluation.PURE
-                && predicate.normalCompletion()==PredicateCompletion.TOTAL && predicate.readsCompleteness()==ReadsCompleteness.COMPLETE
-                && predicate.truthValue()==PredicateTruth.UNKNOWN && predicate.gapCodes().isEmpty() && predicate.provenance().exact()
-                && f.conditionProvenance().exact() && f.conditionShape().equals("RELATION"),"published BOOLEAN/PURE/TOTAL/COMPLETE, truth UNKNOWN");
-            need(c,predicate.knownReads().size()==1 && predicate.knownReads().equals(f.conditionReads().stream().map(DataReference::id).toList()),"all known read occurrences in published order");
-            for(var read:f.conditionReads()) {
-                c.touch();CallAdmission.admitReference(read,OperandRole.READ,f.header(),c);
-                need(c,read.provenance().exact(),"exact predicate read provenance");
-            }
+            admitPredicate(f, c);
             need(c,f.normalContinuation().availability()==ContinuationAvailability.KNOWN
                 && f.normalContinuation().statement().equals(Optional.of(call.header().id())) && f.continuation().equals(f.normalContinuation().statement())
                 && f.normalContinuation().provenance().exact(),"IF completion explicitly identifies post-merge CALL");
@@ -86,7 +75,22 @@ public final class IfAdmission implements AdmitInput {
             return new Plan(c.result(Status.ADMITTED),ScalarDataOrder.canonical(c.data.values()),Optional.of(f),thenMoves,elseMoves,Optional.of(call),Optional.of(terminal));
         } catch(EntryGobackAdmission.LimitReached ex) { return rejected(c,Status.IMPLEMENTATION_LIMIT); }
     }
-    private static List<MoveFact> arm(IfFact owner,IfArm arm,Branch branch,List<StatementId> children,StatementId merge,EntryGobackAdmission.Context c) {
+    static void admitPredicate(IfFact f, EntryGobackAdmission.Context c) {
+        var predicate = f.predicateGuarantee();
+            need(c,f.header().containment().equals(new Containment(Optional.empty(),Branch.ROOT)) && f.explicitlyTerminated()
+                && f.profile()==IfProfile.SIMPLE_TEXT_EQUALITY,"root explicitly terminated SIMPLE_TEXT_EQUALITY only; nested outside slice");
+            need(c,predicate.availability()==Availability.KNOWN && predicate.profile()==PredicateProfile.SCALAR_TEXT_EQUALITY
+                && predicate.resultDomain()==PredicateDomain.BOOLEAN && predicate.evaluation()==PredicateEvaluation.PURE
+                && predicate.normalCompletion()==PredicateCompletion.TOTAL && predicate.readsCompleteness()==ReadsCompleteness.COMPLETE
+                && predicate.truthValue()==PredicateTruth.UNKNOWN && predicate.gapCodes().isEmpty() && predicate.provenance().exact()
+                && f.conditionProvenance().exact() && f.conditionShape().equals("RELATION"),"published BOOLEAN/PURE/TOTAL/COMPLETE, truth UNKNOWN");
+            need(c,predicate.knownReads().size()==1 && predicate.knownReads().equals(f.conditionReads().stream().map(DataReference::id).toList()),"all known read occurrences in published order");
+            for(var read:f.conditionReads()) {
+                c.touch();CallAdmission.admitReference(read,OperandRole.READ,f.header(),c);
+                need(c,read.provenance().exact(),"exact predicate read provenance");
+            }
+    }
+    static List<MoveFact> arm(IfFact owner,IfArm arm,Branch branch,List<StatementId> children,StatementId merge,EntryGobackAdmission.Context c) {
         need(c,arm.contentAvailability()==Availability.KNOWN && arm.gapCodes().isEmpty() && arm.provenance().exact(),"complete arm content proof");
         if(arm.presence()==ClausePresence.ABSENT) {
             need(c,branch==Branch.ELSE && children.isEmpty() && arm.entry().statement().isEmpty() && arm.entry().availability()==Availability.UNAVAILABLE,"proven absent ELSE without executable entry");

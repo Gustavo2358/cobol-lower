@@ -1,0 +1,15 @@
+id: WORK-LOWER-014
+title: Compose multiple CALL sites across supported control flow
+status: IN_PROGRESS
+scope:
+  - SUPPORTED_CP6_PROGRAM typed admission, assembly and canonical identity
+  - SP1.7 decoder, strict producer pin and seven composition fixtures
+  - Existing IF/PERFORM/MOVE/CALL/GOBACK semantics only
+notes: >-
+  Baseline merge 546af4067bc42540bb73e88684e18e3082ddfb94; discovery RED in WORK-CFG-037
+  before production. Seven real SP fixtures and existing focused regressions PASS.
+  No solver, lattice, AIR, air-java, RD or multi-PERFORM changes.
+  Existing full CALL negatives exposed diagnostic precedence: handlers with missing
+  continuation must remain UNSUPPORTED_SLICE. Admission now checks unsupported
+  surface before unavailable continuation, preserving earlier public outcomes.
+  Complete Maven verify PASS after correction; final qualification follows.

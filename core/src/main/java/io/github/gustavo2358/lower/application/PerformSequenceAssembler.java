@@ -16,13 +16,10 @@ final class PerformSequenceAssembler {
         var main = label(start, unit, ids); var target = label(p.targetEntry().orElseThrow(), unit, ids);
         var resume = label(p.normalContinuation().statement().orElseThrow(), unit, ids);
         var end = label(call.normalContinuation().statement().orElseThrow(), unit, ids);
-        var performOrigin = origins.source("statement", p.header().id().handle(), p.header().provenance());
-        var referenceOrigin = origins.source("perform-reference", p.header().id().handle(), p.target().orElseThrow().referenceOrigin());
-        var paragraphOrigin = origins.source("paragraph", p.target().orElseThrow().id().handle(), p.target().orElseThrow().paragraphOrigin());
-        var resumeOrigin = origins.source("perform-continuation", p.header().id().handle(), p.normalContinuation().provenance());
-        var invokeOrigin = origins.derived(ids.id("origin", "perform-jump", unit.localId(), p.header().id().handle()),
-            List.of(performOrigin, referenceOrigin, paragraphOrigin), "perform-basic@1/unique-resolved-target");
-        var jump = jump("perform", p.header().id(), target, invokeOrigin, unit, ids);
+        var control = control(p, target, resume, unit, ids, origins);
+        var jump = control.invoke(); var invokeOrigin = jump.header().origin();
+        var performOrigin = control.performOrigin(); var referenceOrigin = control.referenceOrigin();
+        var paragraphOrigin = control.paragraphOrigin(); var resumeOrigin = control.resumeOrigin();
         link(p.header().id(), jump, main, statements, items);
         var mainOrigins = new ArrayList<OriginId>(List.of(entryOrigin, invokeOrigin));
         var prefix = moves(plan.prefix(), main, data, unit, ids, origins, statements, operands, items, mainOrigins);
@@ -44,7 +41,20 @@ final class PerformSequenceAssembler {
             new Sequence(target, body, returning, returnOrigin), new Sequence(resume, List.of(), invoke, callOrigin),
             new Sequence(main, prefix, jump, mainOrigin)), main, mainOrigin);
     }
-    private static List<Instruction> moves(List<SpInput.MoveFact> moves, LabelId label, ScalarDataTranslator.Result data, UnitId unit,
+    record ControlProof(Operations.Jump invoke, OriginId performOrigin, OriginId referenceOrigin,
+                        OriginId paragraphOrigin, OriginId resumeOrigin) { }
+    static ControlProof control(SpInput.PerformFact p, LabelId target, LabelId resume, UnitId unit,
+                                LocalIds ids, SourceOrigins origins) {
+        var performOrigin = origins.source("statement", p.header().id().handle(), p.header().provenance());
+        var referenceOrigin = origins.source("perform-reference", p.header().id().handle(), p.target().orElseThrow().referenceOrigin());
+        var paragraphOrigin = origins.source("paragraph", p.target().orElseThrow().id().handle(), p.target().orElseThrow().paragraphOrigin());
+        var resumeOrigin = origins.source("perform-continuation", p.header().id().handle(), p.normalContinuation().provenance());
+        var invokeOrigin = origins.derived(ids.id("origin", "perform-jump", unit.localId(), p.header().id().handle()),
+            List.of(performOrigin, referenceOrigin, paragraphOrigin), "perform-basic@1/unique-resolved-target");
+        var jump = jump("perform", p.header().id(), target, invokeOrigin, unit, ids);
+        return new ControlProof(jump, performOrigin, referenceOrigin, paragraphOrigin, resumeOrigin);
+    }
+    static List<Instruction> moves(List<SpInput.MoveFact> moves, LabelId label, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements, List<LoweringResult.OperandLink> operands,
             List<Evidence.CoverageItem> items, List<OriginId> inputs) {
         var result = new ArrayList<Instruction>();
@@ -56,7 +66,7 @@ final class PerformSequenceAssembler {
         }
         return List.copyOf(result);
     }
-    private static Operations.Jump jump(String role, SpInput.StatementId source, LabelId destination, OriginId origin, UnitId unit, LocalIds ids) {
+    static Operations.Jump jump(String role, SpInput.StatementId source, LabelId destination, OriginId origin, UnitId unit, LocalIds ids) {
         var id = new OperationId(unit, ids.id("operation", "perform-" + role, unit.localId(), source.handle()));
         return new Operations.Jump(new Operations.Header(id, origin, Evidence.CoverageStatus.MODELED, ScalarEvidence.assign(id), List.of()), destination);
     }

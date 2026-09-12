@@ -18,13 +18,8 @@ final class IfSequenceAssembler {
         var thenLabel = label("then", f.thenArm().entry().statement().orElseThrow(), unit, ids);
         var elseLabel = f.elseArm().entry().statement().map(id -> label("else", id, unit, ids)).orElse(merge);
         var completion = origins.source("if-completion", f.header().id().handle(), f.normalContinuation().provenance());
-        var origin = origins.source("statement", f.header().id().handle(), f.header().provenance());
-        var operation = new OperationId(unit, ids.id("operation", "if-branch", unit.localId(), f.header().id().handle()));
-        var predicate = IfPredicate.translate(f, operation, data, ids, origins, operands, items, uncertainties);
-        var exact = new Evidence.Claim(new Scopes.EntityScope(List.of(operation)), Evidence.PrecisionStatus.EXACT, List.of());
-        var values = new Evidence.Claim(new Scopes.EntityScope(List.of(predicate.header().id())), Evidence.PrecisionStatus.OPEN, List.of(predicate.reason()));
-        var branch = new Operations.Branch(new Operations.Header(operation, origin, Evidence.CoverageStatus.ABSTRACTED,
-            new Evidence.Precision(exact, exact, exact, values, exact), List.of(predicate.reason())), predicate, thenLabel, elseLabel);
+        var branch = branch(f, thenLabel, elseLabel, data, unit, ids, origins, operands, items, uncertainties);
+        var origin = branch.header().origin();
         link(f.header().id(), branch, entry, statements, items);
         var entrySequenceOrigin = origins.derived(ids.id("origin", "if-sequence", unit.localId(), entry.localId()),
             List.of(entryOrigin, origin, completion), "simple-if@1/explicit-entry");
@@ -47,10 +42,22 @@ final class IfSequenceAssembler {
         sequences.add(new Sequence(entry, List.of(), branch, entrySequenceOrigin));
         return new Assembly(List.copyOf(sequences), entry, entrySequenceOrigin);
     }
+    static Operations.Branch branch(SpInput.IfFact f, LabelId thenLabel, LabelId elseLabel,
+            ScalarDataTranslator.Result data, UnitId unit, LocalIds ids, SourceOrigins origins,
+            List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
+        var origin = origins.source("statement", f.header().id().handle(), f.header().provenance());
+        var operation = new OperationId(unit, ids.id("operation", "if-branch", unit.localId(), f.header().id().handle()));
+        var predicate = IfPredicate.translate(f, operation, data, ids, origins, operands, items, uncertainties);
+        var exact = new Evidence.Claim(new Scopes.EntityScope(List.of(operation)), Evidence.PrecisionStatus.EXACT, List.of());
+        var values = new Evidence.Claim(new Scopes.EntityScope(List.of(predicate.header().id())), Evidence.PrecisionStatus.OPEN, List.of(predicate.reason()));
+        var branch = new Operations.Branch(new Operations.Header(operation, origin, Evidence.CoverageStatus.ABSTRACTED,
+            new Evidence.Precision(exact, exact, exact, values, exact), List.of(predicate.reason())), predicate, thenLabel, elseLabel);
+        return branch;
+    }
     private static LabelId label(String role, SpInput.StatementId source, UnitId unit, LocalIds ids) {
         return new LabelId(unit, ids.id("label", "if-" + role, unit.localId(), source.handle()));
     }
-    private static Sequence arm(SpInput.IfFact owner, SpInput.IfArm arm, List<SpInput.MoveFact> moves, LabelId label, LabelId merge,
+    static Sequence arm(SpInput.IfFact owner, SpInput.IfArm arm, List<SpInput.MoveFact> moves, LabelId label, LabelId merge,
             OriginId completion, ScalarDataTranslator.Result data, UnitId unit, LocalIds ids, SourceOrigins origins,
             List<LoweringResult.StatementLink> statements, List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items) {
         var key = arm.entry().statement().orElseThrow().handle();

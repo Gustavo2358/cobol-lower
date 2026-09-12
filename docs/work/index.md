@@ -61,3 +61,5 @@ Review B1/B2: mesmo WORK-LOWER-006/CP0/PR7. Dívidas futuras
 Current: [WORK-LOWER-012](active/WORK-LOWER-012.yaml) — IN_PROGRESS; [MOVE data source](../domain/move-data-source.md).
 
 - [WORK-LOWER-013](active/WORK-LOWER-013.yaml): CP6 PERFORM BASIC, IN_PROGRESS; [profile](../domain/perform-basic.md).
+
+- [WORK-LOWER-014](active/WORK-LOWER-014.yaml): CP6 supported multi-CALL composition, IN_PROGRESS.

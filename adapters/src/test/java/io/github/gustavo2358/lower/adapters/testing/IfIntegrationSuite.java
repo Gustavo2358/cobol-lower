@@ -32,7 +32,7 @@ public final class IfIntegrationSuite {
         int count=IfOracle.assertions()-before;System.out.println("LOWER_IF_INTEGRATION_FAST_TESTS="+count);return count;
     }
     public static int run() throws Exception {
-        int before=IfOracle.assertions();focal();MoveDataIntegrationSuite.run(); PerformIntegrationSuite.run();
+        int before=IfOracle.assertions();focal();MoveDataIntegrationSuite.run(); PerformIntegrationSuite.run(); MultiCallIntegrationSuite.run();
         var base=(ObjectNode)JSON.readTree(fixture("closed"));
         for(String pointer:List.of("/storageIndependence","/statements/0/condition/predicate","/statements/0/thenArm","/statements/0/elseArm")) {
             var changed=base.deepCopy();((ObjectNode)changed.at(pointer)).put("futureField",true);reject(changed,"future property "+pointer);

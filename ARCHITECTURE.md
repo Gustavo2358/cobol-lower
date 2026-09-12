@@ -72,3 +72,11 @@ e índices comuns; IfSequenceAssembler retorna entryLabel explícito. IfPredicat
 e StoragePremise traduzem somente garantias publicadas. Wire14 é fechado e separado
 do Wire13. CallSequenceAssembler também devolve sua entry explicitamente, preservando
 bytes W1. [Contrato IF](docs/domain/simple-if-diamond.md) e [CI/qualification](docs/engineering/ci-qualification.md).
+
+## CP6 multi-CALL
+
+CobolLowerer routes supported CALL/IF/PERFORM programs to
+SupportedProgramAdmission → SupportedProgramLowerer → SupportedProgramAssembler.
+Existing typed handlers and IF/PERFORM translation primitives are shared. The
+composed profile follows explicit facts and has no CALL count limit.
+[Profile and complexity](docs/domain/supported-program.md).

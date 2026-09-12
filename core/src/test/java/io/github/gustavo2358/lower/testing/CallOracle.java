@@ -18,7 +18,8 @@ public final class CallOracle {
         var publication = result.publication().orElseThrow(); check(publication.units().size() == 1, "one caller unit");
         var unit = publication.units().getFirst();
         check(unit.sequences().size() == 2, "CALL splits exactly two sequences");
-        var first = unit.sequences().getFirst(); var next = unit.sequences().getLast();
+        var first = unit.sequences().stream().filter(s -> unit.entries().getFirst().initialLabel().equals(Optional.of(s.label()))).findFirst().orElseThrow();
+        var next = unit.sequences().stream().filter(s -> s.terminator() instanceof Operations.Return).findFirst().orElseThrow();
         check(first.terminator() instanceof Operations.Invoke, "Invoke is the terminator");
         check(first.instructions().stream().allMatch(Operations.Assign.class::isInstance) && first.instructions().size() == values.size(), "only expected Assign instructions");
         check(next.instructions().isEmpty() && next.terminator() instanceof Operations.Return r && r.values().isEmpty(), "unique real GOBACK Return");
