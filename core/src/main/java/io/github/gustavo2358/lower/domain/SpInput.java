@@ -175,7 +175,11 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record LogicalValue(LogicalDomain logicalDomain, String value, int logicalExtent) {
         public LogicalValue { Objects.requireNonNull(logicalDomain); Objects.requireNonNull(value); }
     }
-    public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) {
+    public sealed interface MoveSource permits LiteralSource, DataReference {
+        OperandId id();
+        Provenance provenance();
+    }
+    public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) implements MoveSource {
         public LiteralSource { Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
     }
     public enum ResolutionReason { UNIQUE_VISIBLE_DECLARATION, QUALIFIED_HIERARCHY_MATCH, MULTIPLE_VALID_CANDIDATES,
@@ -191,7 +195,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record WholeItemAccess(DataId data) {
         public WholeItemAccess { Objects.requireNonNull(data); }
     }
-    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) {
+    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) implements MoveSource {
         public DataReference { Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
     }
     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
@@ -201,9 +205,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, LogicalValue result, Provenance provenance) {
         public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
     }
-    public record MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics,
+    public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
                            NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) implements StatementFact {
-        public MoveFact(StatementHeader header, LiteralSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
+        public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
         public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }

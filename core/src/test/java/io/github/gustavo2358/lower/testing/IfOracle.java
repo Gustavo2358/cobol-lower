@@ -92,7 +92,7 @@ public final class IfOracle {
                 var m=(SpInput.MoveFact)facts.get(relation.children().get(i));var a=seq.instructions().get(i);
                 check(a instanceof Operations.Assign && a.header().id().equals(links.get(m.header().id()).target()),"MOVE order from canonical children, not StatementId");
                 var assign=(Operations.Assign)a;
-                String value=m.textAdjustment().map(x -> x.result().value()).orElseGet(() -> m.source().logicalValue().orElseThrow().value());
+                String value=m.textAdjustment().map(x -> x.result().value()).orElseGet(() -> ((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).logicalValue().orElseThrow().value());
                 check(assign.value() instanceof Expressions.Literal l && l.value().equals(new Values.TextValue(value)),"fitted text from published MOVE");
                 check(((Places.ObjectPlace)assign.destination()).object().equals(data.get(m.target().wholeItemAccess().orElseThrow().data()).object()),"MOVE selected object");
                 check(hasLocation(origins,artifacts,assign.header().origin(),m.header().provenance().original()),"Assign real MOVE provenance");

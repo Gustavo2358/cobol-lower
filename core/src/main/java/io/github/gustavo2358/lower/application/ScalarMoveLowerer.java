@@ -52,9 +52,10 @@ final class ScalarMoveLowerer implements LowerInput {
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
         var body = new Unit(unit, Optional.empty(), data.objects(), List.of(), List.of(entry), List.of(sequence), List.of(),
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
+        var premises = StoragePremise.available(input, data, unit, ids, origins);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(List.of(), List.of()), origins.artifacts(),
             List.of(body), data.storage(), List.of(), List.of(), origins.origins(),
-            new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, List.of());
+            new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
         var assessment = OutputAssessment.assess(output, options.validation());
         return new LoweringResult(assessment.status(), admission, assessment.publication(), Optional.of(assessment.validation()),
             entryLinks, statements, origins.limitations(), List.copyOf(data.index().values()), operands);

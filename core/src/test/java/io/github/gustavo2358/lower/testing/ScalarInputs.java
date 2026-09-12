@@ -42,7 +42,7 @@ public final class ScalarInputs {
         var statements = new ArrayList<>(base.statements()); statements.set(0, move);
         return replace(base, base.dataDeclarations(), statements);
     }
-    public static MoveFact move(MoveFact base, LiteralSource source, DataReference target, CopySemantics copy, NormalContinuation continuation) {
+    public static MoveFact move(MoveFact base, MoveSource source, DataReference target, CopySemantics copy, NormalContinuation continuation) {
         return new MoveFact(base.header(), source, target, copy, continuation);
     }
     public static DataReference target(MoveFact m, Binding binding, Optional<WholeItemAccess> whole) {

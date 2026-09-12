@@ -36,8 +36,15 @@ final class CanonicalRevision {
         });
         e.list(moves, m -> {
             e.word("MOVE"); e.scalarHeader(m.header());
-            var source = m.source(); e.word(source.id().handle()); e.symbol(source.kind()); e.provenance(source.provenance());
-            var value = source.logicalValue().orElseThrow(); e.symbol(value.logicalDomain()); e.word(value.value()); e.number(value.logicalExtent());
+            var source = m.source(); e.word(source.id().handle());
+            if (source instanceof LiteralSource literal) {
+                e.symbol(literal.kind()); e.provenance(source.provenance());
+                var value = literal.logicalValue().orElseThrow(); e.symbol(value.logicalDomain()); e.word(value.value()); e.number(value.logicalExtent());
+            } else {
+                var read = (DataReference) source; e.word("DATA"); e.symbol(read.role()); e.provenance(read.provenance());
+                e.symbol(read.binding().status()); e.word(read.binding().selected().orElseThrow().handle());
+                e.word(read.wholeItemAccess().orElseThrow().data().handle());
+            }
             var target = m.target(); e.word(target.id().handle()); e.symbol(target.role()); e.provenance(target.provenance());
             e.symbol(target.binding().status()); e.word(target.binding().selected().orElseThrow().handle());
             e.word(target.wholeItemAccess().orElseThrow().data().handle()); e.symbol(m.copySemantics());
@@ -47,6 +54,10 @@ final class CanonicalRevision {
                 e.word("FITTED_TEXT"); e.symbol(a.rule()); e.number(a.receiverExtent());
                 e.word(a.result().value()); e.number(a.result().logicalExtent()); e.provenance(a.provenance());
             });
+        });
+        input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN).ifPresent(proof -> {
+            e.word("STORAGE_INDEPENDENCE"); e.symbol(proof.rule()); e.word(proof.authority());
+            e.list(proof.members(), id -> e.word(id.handle())); e.provenance(proof.provenance().orElseThrow());
         });
         e.word("GOBACK"); e.scalarHeader(terminal.header()); e.symbol(terminal.exit()); e.symbol(terminal.localContinuation());
         var entry = input.entryInventory().entries().getFirst();

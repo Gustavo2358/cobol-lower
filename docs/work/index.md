@@ -57,3 +57,5 @@ WORK-LOWER-001–005 reconciliados no histórico após merges confirmados.
 Review B1/B2: mesmo WORK-LOWER-006/CP0/PR7. Dívidas futuras
 [BACKLOG-LOWER-017](backlog/BACKLOG-LOWER-017.md) e
 [BACKLOG-LOWER-018](backlog/BACKLOG-LOWER-018.md): planned/NOT STARTED, sem work item.
+
+Current: [WORK-LOWER-012](active/WORK-LOWER-012.yaml) — IN_PROGRESS; [MOVE data source](../domain/move-data-source.md).

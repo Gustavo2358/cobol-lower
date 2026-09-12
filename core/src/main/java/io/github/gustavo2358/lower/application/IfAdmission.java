@@ -81,17 +81,7 @@ public final class IfAdmission implements AdmitInput {
             var thenMoves=arm(f,f.thenArm(),Branch.THEN,armRelations.getOrDefault(Branch.THEN,List.of()),call.header().id(),c);
             var elseMoves=arm(f,f.elseArm(),Branch.ELSE,armRelations.getOrDefault(Branch.ELSE,List.of()),call.header().id(),c);
             need(c,thenMoves.size()+elseMoves.size()+3==input.statements().size(),"arms and three root statements cover complete input exactly");
-            need(c,input.storageIndependence().isPresent(),"upstream IndependentStorageSet required");
-            input.storageIndependence().ifPresent(proof -> {
-                need(c,proof.availability()==Availability.KNOWN && proof.rule()==StorageIndependenceRule.INDEPENDENT_WORKING_STORAGE_ROOTS
-                    && proof.authority().equals("IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE") && proof.gapCodes().isEmpty()
-                    && proof.provenance().filter(Provenance::exact).isPresent() && proof.members().size()>=2,"known source-derived storage authority, complete provenance, no gaps");
-                var members=new HashSet<DataId>();
-                for(var id:proof.members()) { c.touch();need(c,id.unit().equals(input.unit()) && c.data(id)!=null && members.add(id),"each published proof member maps exactly once"); }
-                // Every relevant storage is covered. This validates the published set, never creates one.
-                for(var d:input.dataDeclarations()) { c.touch();need(c,members.contains(d.id()),"storage evidence covers all declared/relevant scalar storages"); }
-                proof.provenance().ifPresent(c::provenance);
-            });
+            StoragePremise.admit(input, c);
             if(!c.diagnostics.isEmpty())return rejected(c,Status.UNSUPPORTED_SLICE);
             return new Plan(c.result(Status.ADMITTED),ScalarDataOrder.canonical(c.data.values()),Optional.of(f),thenMoves,elseMoves,Optional.of(call),Optional.of(terminal));
         } catch(EntryGobackAdmission.LimitReached ex) { return rejected(c,Status.IMPLEMENTATION_LIMIT); }

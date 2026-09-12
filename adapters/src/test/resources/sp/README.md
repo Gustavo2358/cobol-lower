@@ -14,3 +14,5 @@ de SP1.2.0 real do merge2815e805fd3a9ef4762a39ab9435260fc76da0e8, gzip lossless.
 SCALE-PRODUCTION.cbl é a fonte400DATA/MOVE; o corpus10k é emitido pelo teste
 upstream ScalarMoveScaleTest.tenThousandTargetsShareOneDataDeclaration, sem edição
 de output. Testes ordinários descomprimem snapshots, não executam frontend.
+
+MOVE data source: `move-data/one-hop.json` was emitted by frontend SHA `2b72d0c7ad72cbc9379a7e364607de89d5d1097c` from the adjacent real COBOL source, using ExplorerMain. SP 1.5.0; no AIR fixtures replace the real final cross-repo E2E.

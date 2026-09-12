@@ -107,6 +107,10 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire14.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent14(wire); input = Materialize.input(wire);
                 }
+                case "1.5.0" -> {
+                    var wire = mapper.treeToValue(node, Wire15.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent15(wire); input = Materialize.input(wire);
+                }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
@@ -189,6 +193,28 @@ public final class SpJsonDecoder {
         }
     }
     private static void logical14(Wire14.LogicalDocument value) {
+        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
+            throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireCoherent15(Wire15.Document wire) {
+        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
+            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
+        for (var statement : wire.statements()) {
+            if (statement instanceof Wire15.MoveDocument m && m.source() instanceof Wire15.LiteralDocument literal && literal.logicalValue() != null) {
+                var value = literal.logicalValue();
+                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                    throw new PhysicalShape("$/statements/source/logicalValue");
+                logical15(value);
+            }
+            if (statement instanceof Wire15.MoveDocument m && m.textAdjustment() != null) logical15(m.textAdjustment().result());
+            if (statement instanceof Wire15.CallDocument c && c.target() instanceof Wire15.LiteralTargetDocument l && l.logicalValue() != null) {
+                logical15(l.logicalValue());
+                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
+            }
+        }
+    }
+    private static void logical15(Wire15.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
     }

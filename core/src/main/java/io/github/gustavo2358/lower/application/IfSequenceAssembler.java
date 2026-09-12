@@ -58,7 +58,7 @@ final class IfSequenceAssembler {
         var inputs = new ArrayList<OriginId>(); inputs.add(armOrigin); inputs.add(completion);
         var instructions = new ArrayList<Instruction>();
         for (var move : moves) {
-            var assign = MoveHandler.translate(move, data.index().get(move.target().wholeItemAccess().orElseThrow().data()), unit, ids, origins, operands, items);
+            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands, items);
             instructions.add(assign); inputs.add(assign.header().origin());
             inputs.add(origins.source("continuation", move.header().id().handle(), move.normalContinuation().provenance()));
             link(move.header().id(), assign, label, statements, items);
