@@ -7,7 +7,7 @@ scope:
   - SP1.8 explicit semantics with backward-compatible decoding
 notes: Coordinated with WORK-CFG-038. Draft review only; no merge or auto-merge.
 baseline_merge: 797dcbd6f05f12661299339746c607b5b57ac1ba
-frontend_pin: c857d7a71b5172c68b5eb9f5ebe6a80739379095
+frontend_pin: 15354e946904337a74980ca659119f2eb22df57b
 air_java_pin: b1c45b8f23452082c9f3969b78915976747e87c7
 implementation: >-
   SP1.8 selects per-statement precision and conservative fallback after structural
@@ -34,3 +34,8 @@ integrated_corrections: >-
   The original PERFORM provenance oracle required the specialized return to retain
   callsite, resolved target, paragraph, body write and resume. This lineage is now
   explicit; interior body transfers retain their own structural continuation origin.
+future_family_guard: >-
+  Every typed nonterminal statement family must occur at least N times in each
+  1/2/5/40 composition fixture, which must lower precisely without Opaque. New fact
+  families therefore require updated generators and composition tests. Final test-only
+  guard PASS, /tmp/partial-lower-contract-final.log; production unchanged since Full.

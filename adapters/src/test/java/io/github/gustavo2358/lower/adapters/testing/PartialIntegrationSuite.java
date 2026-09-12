@@ -37,6 +37,13 @@ public final class PartialIntegrationSuite {
             check(expected.equals(new HashSet<>(r.statements().stream().map(LoweringResult.StatementLink::source).toList())),"no source statement elision "+name);
             check(r.statements().stream().map(LoweringResult.StatementLink::target).distinct().count()==r.statements().size(),"unique operation per activation "+name);
             check(unit.sequences().stream().filter(s->s.terminator() instanceof Operations.Invoke).count()==input.statements().stream().filter(SpInput.CallFact.class::isInstance).count(),"CALL sites retained "+name);
+            if(name.startsWith("compose-")) {
+                int n=Integer.parseInt(name.substring("compose-".length()));
+                for(var family:SpInput.StatementFact.class.getPermittedSubclasses())
+                    if(family!=SpInput.OtherStatement.class && family!=SpInput.GobackFact.class)
+                        check(input.statements().stream().filter(family::isInstance).count()>=n,
+                            "every typed semantic family needs a multiplicity fixture: "+family.getSimpleName()+" N="+n);
+            }
             if(name.startsWith("compose-")||name.startsWith("perform-")) {
                 check(unit.sequences().stream().noneMatch(s->s.terminator() instanceof Operations.Opaque),"precise supported composition "+name);
                 for(var p:input.statements())if(p instanceof SpInput.PerformFact f) {
