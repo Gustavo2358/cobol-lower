@@ -22,6 +22,14 @@ public final class ScalarMoveAdmission implements AdmitInput {
             var operands = new HashSet<OperandId>();
             for (var statement : input.statements()) if (statement instanceof MoveFact m) {
                 c.touch(); var h = m.header();
+                if (m.source() instanceof DataReference read) {
+                    CallAdmission.reference(read, h, operands, c);
+                    CallAdmission.reference(m.target(), h, operands, c);
+                    CallAdmission.continuation(m.normalContinuation(), h, c);
+                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),
+                        Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "FITTED_TEXT iff textAdjustment present");
+                    continue;
+                }
                 c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(), Rule.PROFILE_FACT,
                     h.id().handle(), h.provenance(), "FITTED_TEXT iff textAdjustment present");
                 for (var id : List.of(m.source().id(), m.target().id())) {
@@ -60,24 +68,30 @@ public final class ScalarMoveAdmission implements AdmitInput {
                     && t.logicalExtent() > 0 && t.storageClass() == StorageClass.WORKING_STORAGE && t.declarationScope() == DeclarationScope.LOCAL).isPresent(),
                     Rule.PROFILE_FACT, d.id().handle(), d.provenance(), "scalarText TEXT positive extent WORKING_STORAGE LOCAL required");
             }
+            input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN)
+                .ifPresent(p -> StoragePremise.admit(input, c));
             for (var statement : input.statements()) {
                 c.touch(); var h = statement.header();
                 c.require(h.coverage() == CoverageStatus.MODELED && h.containment().branch() == Branch.ROOT,
                     Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Modeled root statement required");
                 if (statement instanceof MoveFact m) {
-                    var b = m.target().binding();
-                    c.require(m.copySemantics() == CopySemantics.FULL_IDENTITY, Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "FULL_IDENTITY proof required");
-                    c.require(m.source().kind() == LiteralKind.ALPHANUMERIC && m.source().logicalValue().filter(v -> v.logicalDomain() == LogicalDomain.TEXT && v.logicalExtent() > 0).isPresent(),
-                        Rule.PROFILE_FACT, h.id().handle(), m.source().provenance(), "Explicit TEXT logicalValue required");
-                    c.require(m.target().role() == OperandRole.WRITE && b.status() == ResolutionStatus.RESOLVED && b.selected().isPresent() && b.candidates().size() == 1,
-                        Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "WRITE with unique RESOLVED selected required");
-                    c.require(m.target().wholeItemAccess().isPresent(), Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "wholeItemAccess proof required");
-                    if (m.target().wholeItemAccess().isPresent()) {
-                        var data = c.data(m.target().wholeItemAccess().orElseThrow().data());
-                        c.require(b.selected().equals(Optional.of(data.id())), Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "selected equals wholeItemAccess");
-                        c.require(data.scalarText().isPresent() && m.source().logicalValue().isPresent()
-                                && data.scalarText().orElseThrow().logicalExtent() == m.source().logicalValue().orElseThrow().logicalExtent(),
-                            Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Published logical extents agree; no String/PIC interpretation");
+                    if (m.source() instanceof DataReference) CallAdmission.admitMove(m, c);
+                    else {
+                        var literal = (LiteralSource) m.source();
+                        var b = m.target().binding();
+                        c.require(m.copySemantics() == CopySemantics.FULL_IDENTITY, Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "FULL_IDENTITY proof required");
+                        c.require(literal.kind() == LiteralKind.ALPHANUMERIC && literal.logicalValue().filter(v -> v.logicalDomain() == LogicalDomain.TEXT && v.logicalExtent() > 0).isPresent(),
+                            Rule.PROFILE_FACT, h.id().handle(), m.source().provenance(), "Explicit TEXT logicalValue required");
+                        c.require(m.target().role() == OperandRole.WRITE && b.status() == ResolutionStatus.RESOLVED && b.selected().isPresent() && b.candidates().size() == 1,
+                            Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "WRITE with unique RESOLVED selected required");
+                        c.require(m.target().wholeItemAccess().isPresent(), Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "wholeItemAccess proof required");
+                        if (m.target().wholeItemAccess().isPresent()) {
+                            var data = c.data(m.target().wholeItemAccess().orElseThrow().data());
+                            c.require(b.selected().equals(Optional.of(data.id())), Rule.PROFILE_FACT, h.id().handle(), m.target().provenance(), "selected equals wholeItemAccess");
+                            c.require(data.scalarText().isPresent() && literal.logicalValue().isPresent()
+                                    && data.scalarText().orElseThrow().logicalExtent() == literal.logicalValue().orElseThrow().logicalExtent(),
+                                Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Published logical extents agree; no String/PIC interpretation");
+                        }
                     }
                     c.require(m.normalContinuation().availability() == ContinuationAvailability.KNOWN, Rule.PROFILE_FACT,
                         h.id().handle(), m.normalContinuation().provenance(), "Known explicit normalContinuation required");

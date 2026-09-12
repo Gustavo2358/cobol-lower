@@ -33,6 +33,11 @@
       "git_branch": "fix/ci-initial-cp0-merge",
       "pull_request": null,
       "backlog_ids": []
+    },
+    {
+      "id": "WORK-LOWER-012",
+      "status": "IN_PROGRESS",
+      "path": "docs/work/active/WORK-LOWER-012.yaml"
     }
   ],
   "proposals": [],

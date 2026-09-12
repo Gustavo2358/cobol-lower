@@ -96,9 +96,9 @@ public final class ScalarSuite {
         var data = new ArrayList<>(base.dataDeclarations());
         data.set(0, new DataFact(d.id(), d.canonicalName(), d.picture(), d.provenance(), d.coverage(), d.readiness(), Optional.empty()));
         rejected(ScalarInputs.replace(base, data, base.statements()), "scalarText absent");
-        var source = new LiteralSource(m.source().id(), m.source().kind(), Optional.empty(), m.source().provenance());
+        var source = new LiteralSource(m.source().id(), ((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).kind(), Optional.empty(), m.source().provenance());
         rejected(ScalarInputs.move(base, ScalarInputs.move(m, source, m.target(), m.copySemantics(), m.normalContinuation())), "logicalValue absent");
-        source = new LiteralSource(m.source().id(), LiteralKind.NUMERIC, m.source().logicalValue(), m.source().provenance());
+        source = new LiteralSource(m.source().id(), LiteralKind.NUMERIC, ((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).logicalValue(), m.source().provenance());
         rejected(ScalarInputs.move(base, ScalarInputs.move(m, source, m.target(), m.copySemantics(), m.normalContinuation())), "non textual source kind");
         rejected(ScalarInputs.move(base, ScalarInputs.move(m, m.source(), ScalarInputs.target(m, m.target().binding(), Optional.empty()), m.copySemantics(), m.normalContinuation())), "wholeItemAccess absent");
         var binding = m.target().binding();
@@ -124,7 +124,7 @@ public final class ScalarSuite {
         rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, base.statements().getLast(), new GobackFact(extra, GobackExit.CURRENT_PROGRAM_INVOCATION, LocalContinuation.NONE))), "unreachable extra GOBACK");
         rejected(ScalarInputs.replace(base, List.of(base.dataDeclarations().get(1)), base.statements()), "referenced DATA absent");
         var tooShort = new LogicalValue(LogicalDomain.TEXT, "PROGA", 4);
-        source = new LiteralSource(m.source().id(), m.source().kind(), Optional.of(tooShort), m.source().provenance());
+        source = new LiteralSource(m.source().id(), ((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).kind(), Optional.of(tooShort), m.source().provenance());
         rejected(ScalarInputs.move(base, ScalarInputs.move(m, source, m.target(), m.copySemantics(), m.normalContinuation())), "typed extent mismatch");
         var duplicate = new ArrayList<>(base.dataDeclarations()); duplicate.add(d);
         rejected(ScalarInputs.replace(base, duplicate, base.statements()), "duplicate DATA");
@@ -143,7 +143,7 @@ public final class ScalarSuite {
         var d = base.dataDeclarations().getFirst();
         data = new ArrayList<>(base.dataDeclarations()); data.set(0, new DataFact(d.id(), d.canonicalName(), Optional.of("garbage PIC ignored"), d.provenance(), d.coverage(), d.readiness(), d.scalarText()));
         check(success(ScalarInputs.replace(base, data, base.statements())).publication().equals(original.publication()), "PIC excluded from scalar semantics and revision");
-        var source = new LiteralSource(first.source().id(), first.source().kind(), Optional.of(new LogicalValue(LogicalDomain.TEXT, "CCCCC", 5)), first.source().provenance());
+        var source = new LiteralSource(first.source().id(), ((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) first.source()).kind(), Optional.of(new LogicalValue(LogicalDomain.TEXT, "CCCCC", 5)), first.source().provenance());
         changed = success(ScalarInputs.move(base, ScalarInputs.move(first, source, first.target(), first.copySemantics(), first.normalContinuation())));
         check(!changed.publication().orElseThrow().id().equals(original.publication().orElseThrow().id()), "new logical value in PublicationId");
         oracle(base, original, List.of("PROGA", "BBBBB"), List.of(base.dataDeclarations().get(0).id(), base.dataDeclarations().get(1).id()));

@@ -21,7 +21,7 @@ public final class IfInputs {
             var m=moves.get(children.get(i));boolean thenArm=children==thenChildren;
             var header=new StatementHeader(m.header().id(),statements.size()+1,new Containment(Optional.of(ifId),thenArm?Branch.THEN:Branch.ELSE),m.header().provenance(),m.header().coverage(),m.header().readiness());
             var value=thenArm?"PROGA":"PROGB";
-            var source=new LiteralSource(m.source().id(),m.source().kind(),Optional.of(new LogicalValue(LogicalDomain.TEXT,value,5)),m.source().provenance());
+            var source=new LiteralSource(m.source().id(),((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).kind(),Optional.of(new LogicalValue(LogicalDomain.TEXT,value,5)),m.source().provenance());
             var next=new NormalContinuation(ContinuationAvailability.KNOWN,Optional.of(i+1<children.size()?children.get(i+1):call.header().id()),m.normalContinuation().provenance());
             statements.add(new MoveFact(header,source,m.target(),CopySemantics.FITTED_TEXT,next,Optional.of(new TextAdjustment(TextAdjustmentRule.RIGHT_PAD_SPACE,8,new LogicalValue(LogicalDomain.TEXT,value+"   ",8),m.header().provenance()))));
         }

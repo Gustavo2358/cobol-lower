@@ -36,6 +36,8 @@ public final class CallAdmission implements AdmitInput {
                 c.require(d.coverage() == CoverageStatus.MODELED && scalar(d), Rule.PROFILE_FACT, d.id().handle(),
                     d.provenance(), "Published local WORKING_STORAGE scalar TEXT required");
             }
+            input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN)
+                .ifPresent(p -> StoragePremise.admit(input, c));
             int calls = 0;
             for (var statement : input.statements()) {
                 c.touch(); var h = statement.header();
@@ -89,11 +91,14 @@ public final class CallAdmission implements AdmitInput {
             for (var statement : input.statements()) {
                 c.touch();
                 if (statement instanceof MoveFact m) {
-                    operand(m.source().id(), m.header(), operands, c);
-                    c.provenance(m.source().provenance());
+                    if (m.source() instanceof DataReference read) reference(read, m.header(), operands, c);
+                    else {
+                        operand(m.source().id(), m.header(), operands, c);
+                        c.provenance(m.source().provenance());
+                    }
                     reference(m.target(), m.header(), operands, c);
                     continuation(m.normalContinuation(), m.header(), c);
-                    m.source().logicalValue().ifPresent(v -> logical(v, m.header(), c));
+                    if (m.source() instanceof LiteralSource literal) literal.logicalValue().ifPresent(v -> logical(v, m.header(), c));
                     c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),
                         Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT iff textAdjustment present");
                     m.textAdjustment().ifPresent(a -> {
@@ -179,8 +184,22 @@ public final class CallAdmission implements AdmitInput {
     static void admitMove(MoveFact m, EntryGobackAdmission.Context c) {
         var h = m.header();
         admitReference(m.target(), OperandRole.WRITE, h, c);
-        var value = m.source().logicalValue();
-        c.require(m.source().kind() == LiteralKind.ALPHANUMERIC && value.isPresent(), Rule.PROFILE_FACT,
+        if (m.source() instanceof DataReference read) {
+            admitReference(read, OperandRole.READ, h, c);
+            c.require(m.copySemantics() == CopySemantics.FULL_IDENTITY && m.textAdjustment().isEmpty(), Rule.PROFILE_FACT,
+                h.id().handle(), h.provenance(), "Data copy requires FULL_IDENTITY; no data fitting");
+            if (read.wholeItemAccess().isPresent() && m.target().wholeItemAccess().isPresent()) {
+                var source = c.data(read.wholeItemAccess().orElseThrow().data());
+                var target = c.data(m.target().wholeItemAccess().orElseThrow().data());
+                c.require(source.scalarText().isPresent() && target.scalarText().isPresent()
+                        && source.scalarText().orElseThrow().logicalExtent() == target.scalarText().orElseThrow().logicalExtent(),
+                    Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Data copy requires equal scalar extents");
+            }
+            return;
+        }
+        var literal = (LiteralSource) m.source();
+        var value = literal.logicalValue();
+        c.require(literal.kind() == LiteralKind.ALPHANUMERIC && value.isPresent(), Rule.PROFILE_FACT,
             h.id().handle(), m.source().provenance(), "Published logical TEXT source required");
         c.require(m.copySemantics() != CopySemantics.UNAVAILABLE, Rule.PROFILE_FACT, h.id().handle(), h.provenance(),
             "FULL_IDENTITY or FITTED_TEXT required; truncation remains unsupported");

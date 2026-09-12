@@ -28,7 +28,7 @@ public final class ScalarIdentitySuite {
                 with(d, "provenance", ScalarInputs.provenance(50, 0)))) {
             if (baseline.equals(identity(input, List.of(changed), m))) throw new AssertionError("SCALAR_ID DATA fact absent from preimage"); count++;
         }
-        var source = m.source(); var target = m.target(); var next = m.normalContinuation();
+        var source = (LiteralSource) m.source(); var target = m.target(); var next = m.normalContinuation();
         for (var changed : List.of(
                 with(m, "source", with(source, "id", new OperandId(m.header().id(), "operand:0:9"))),
                 with(m, "source", with(source, "kind", LiteralKind.NUMERIC)),
