@@ -33,6 +33,19 @@
       "git_branch": "fix/ci-initial-cp0-merge",
       "pull_request": null,
       "backlog_ids": []
+    },
+    {
+      "id": "WORK-LOWER-011",
+      "status": "active",
+      "path": "docs/work/active/WORK-LOWER-011",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "feat/cp6-w2b-if-lowering",
+      "pull_request": null,
+      "backlog_ids": [
+        "BACKLOG-LOWER-007"
+      ]
     }
   ],
   "proposals": [],
@@ -321,13 +334,13 @@
     {
       "id": "BACKLOG-LOWER-007",
       "title": "IF e controle condicional sustentado",
-      "status": "needs_discovery",
+      "status": "in_progress",
       "phase": "capability",
       "dependencies": [
         "BACKLOG-LOWER-002"
       ],
       "path": "docs/work/backlog/BACKLOG-LOWER-007.md",
-      "work_item": null
+      "work_item": "WORK-LOWER-011"
     },
     {
       "id": "BACKLOG-LOWER-008",

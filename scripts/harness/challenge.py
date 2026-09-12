@@ -38,6 +38,8 @@ def mutate(root, path, replacement, predicate, expected, ident):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     count = 7
     with tempfile.TemporaryDirectory(prefix="lower-challenge-") as name:
         root = Path(name)
@@ -97,4 +99,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from local_only import require_local
+    require_local()
     main()

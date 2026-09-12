@@ -1,0 +1,19 @@
+test_docs_successor_does_not_inherit_full (test_ci_policy.DocumentaryQualificationTest.test_docs_successor_does_not_inherit_full) ... ok
+test_false_classifier_cannot_hide_protected_change (test_ci_policy.DocumentaryQualificationTest.test_false_classifier_cannot_hide_protected_change) ... ok
+test_product_and_manifest_invalidates (test_ci_policy.DocumentaryQualificationTest.test_product_and_manifest_invalidates) ... ok
+test_same_tree_merge_preserves_qualification_without_claiming_execution (test_ci_policy.DocumentaryQualificationTest.test_same_tree_merge_preserves_qualification_without_claiming_execution) ... ok
+test_direct_heavy (test_ci_policy.OrchestrationTest.test_direct_heavy) ... ok
+test_docs_fast_no_bootstrap (test_ci_policy.OrchestrationTest.test_docs_fast_no_bootstrap) ... ok
+test_harness_never_docs (test_ci_policy.OrchestrationTest.test_harness_never_docs) ... ok
+test_hidden_entrypoint_alias (test_ci_policy.OrchestrationTest.test_hidden_entrypoint_alias) ... ok
+test_local_only_runtime (test_ci_policy.OrchestrationTest.test_local_only_runtime) ... ok
+test_manual_full (test_ci_policy.OrchestrationTest.test_manual_full) ... ok
+test_merge_main_fast_only (test_ci_policy.OrchestrationTest.test_merge_main_fast_only) ... ok
+test_qualification_alias (test_ci_policy.OrchestrationTest.test_qualification_alias) ... ok
+test_reusable_job (test_ci_policy.OrchestrationTest.test_reusable_job) ... ok
+test_src_never_docs (test_ci_policy.OrchestrationTest.test_src_never_docs) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.271s
+
+OK

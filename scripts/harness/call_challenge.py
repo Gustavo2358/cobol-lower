@@ -54,6 +54,8 @@ def digest(raw):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     build = Path(os.environ['LOWER_BUILD_ROOT'])
     logs = build/'call-challenge-logs'; logs.mkdir(parents=True, exist_ok=True)
     jars = [build/'m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar',
@@ -110,4 +112,6 @@ def main():
 
 
 if __name__ == '__main__':
+    from local_only import require_local
+    require_local()
     main()

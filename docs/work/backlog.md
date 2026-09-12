@@ -10,7 +10,7 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 | [BACKLOG-LOWER-004](backlog/BACKLOG-LOWER-004.md) | Primeira integração com analysis-cfg | `candidate` |
 | [BACKLOG-LOWER-005](backlog/BACKLOG-LOWER-005.md) | DATA nominal e tipos/storage explicitamente desconhecidos | `needs_discovery` |
 | [BACKLOG-LOWER-006](backlog/BACKLOG-LOWER-006.md) | MOVE preciso e normalização de valores | `needs_discovery` |
-| [BACKLOG-LOWER-007](backlog/BACKLOG-LOWER-007.md) | IF e controle condicional sustentado | `needs_discovery` |
+| [BACKLOG-LOWER-007](backlog/BACKLOG-LOWER-007.md) | IF e controle condicional sustentado | `in_progress` |
 | [BACKLOG-LOWER-008](backlog/BACKLOG-LOWER-008.md) | CALL e contrato por site de interação | `completed` |
 | [BACKLOG-LOWER-009](backlog/BACKLOG-LOWER-009.md) | Fallback opaco com envelopes conservadores | `needs_discovery` |
 | [BACKLOG-LOWER-010](backlog/BACKLOG-LOWER-010.md) | PERFORM e controle local | `needs_discovery` |

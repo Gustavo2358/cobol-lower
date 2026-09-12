@@ -14,6 +14,7 @@ from checks import certificate_errors, digest, document_errors, read_data, remot
 from git_checks import candidate_errors, evidence_path, git, preflight
 from full_checks import execute_full, performance_counts
 from closeout import closeout_target
+from local_only import require_local
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -45,7 +46,9 @@ def maven(*args):
     return ["mvn", "-B", "-ntp", "-Dmaven.repo.local=" + str(build_root() / "m2"), *args]
 
 
-def bootstrap():
+def bootstrap(fast=False):
+    if not fast:
+        require_local()
     version = run(["java", "-version"])
     if not re.search(r'version "21[.\"]', version):
         raise RuntimeError("Java 21 runtime required")
@@ -57,12 +60,16 @@ def bootstrap():
         run(["git", "checkout", "--detach", src["commit"]], path)
     if git(path, "rev-parse", "HEAD").decode().strip() != src["commit"] or git(path, "status", "--porcelain"):
         raise RuntimeError("upstream snapshot differs from lock or has local changes")
-    log = run(maven("clean", "install"), path)
-    if not re.search(r"PASS: [1-9][0-9]* deterministic contract checks", log):
+    if fast:
+        from upstream_fast import compile_dependency
+        log = compile_dependency(path, build_root(), run, maven)
+    else:
+        log = run(maven("clean", "install"), path)
+    if not fast and not re.search(r"PASS: [1-9][0-9]* deterministic contract checks", log):
         raise RuntimeError("upstream contract tests absent")
     jar = build_root() / "m2/io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar"
     codec = jar.parents[2] / "air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar"
-    provenance = dict(repository=src["repository"], commit=src["commit"], jar_sha256=digest(jar.read_bytes()),
+    provenance = dict(repository=src["repository"], commit=src["commit"], build_profile="FAST_COMPILE" if fast else "LOCAL_QUALIFICATION", jar_sha256=digest(jar.read_bytes()),
                       source_tree=git(path, "rev-parse", "HEAD^{tree}").decode().strip(),
                       codec_sha256=digest(codec.read_bytes()),
                       source_lock_sha256=digest((ROOT / "docs/sources/sources.lock.json").read_bytes()),
@@ -86,6 +93,7 @@ def verify_dependency():
 
 
 def semantic(extra=()):
+    require_local()
     verify_dependency()
     output = run(maven(*extra, "verify"))
     counts = [int(n) for n in re.findall(r"^LOWER_TESTS=([0-9]+)$", output, re.M)]
@@ -113,6 +121,7 @@ def semantic(extra=()):
 
 
 def performance():
+    require_local()
     output = semantic(("-Dlower.performance=true",))
     print("PERFORMANCE_TEST_COUNT=" + str(performance_counts(output)))
 
@@ -135,6 +144,7 @@ def git_gate(record, commit=None, mode="execution"):
 
 
 def challenge():
+    require_local()
     run([sys.executable, "scripts/harness/challenge.py"])
     run([sys.executable, "scripts/harness/semantic_challenge.py"])
     run([sys.executable, "scripts/harness/review_challenge.py"])
@@ -147,6 +157,7 @@ def challenge():
 
 
 def full(record, commit=None, mode="execution"):
+    require_local()
     execute_full(record["frozen_contract"]["required_gates"], {
         "docs": lambda: fail_on(document_errors(ROOT)),
         "semantic": semantic,
@@ -305,22 +316,35 @@ def current_evidence():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "performance", "full", "challenge", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return", "ci", "reconcile"])
+    parser.add_argument("gate", choices=["bootstrap", "docs", "architecture", "fast", "semantic", "performance", "full", "challenge", "git", "harness-tests", "certify", "verify-commit", "remote", "challenge-return", "ci", "ci-fast", "docs-fast", "ci-guard", "qualification-local", "verify-qualification", "reconcile"])
     parser.add_argument("--evidence")
     parser.add_argument("--commit")
+    parser.add_argument("--receipt")
     parser.add_argument("--mode", choices=["execution", "historical"], default="execution")
     args = parser.parse_args()
-    if args.gate == "ci":
-        if os.environ.get("GITHUB_EVENT_NAME") != "push" or not args.commit:
-            raise RuntimeError("CI requires explicit push context")
-        event = read_data(Path(os.environ["GITHUB_EVENT_PATH"]))
-        if git(ROOT, "rev-parse", "HEAD").decode().strip() != args.commit or git(ROOT, "status", "--porcelain"):
-            raise RuntimeError("CI checkout/head mismatch")
-        record, certified, mode = ci_target(args.commit, event)
-        full(record, certified, mode=mode)
-        fail_on(certificate_errors(ROOT, record) + candidate_errors(ROOT, record, certified))
-        print("PASS ci " + mode + " certified=" + certified + " checkout=" + args.commit)
+    if args.gate in ("ci", "ci-fast"):
+        from ci_fast import entry
+        entry(args.commit)
         return
+    if args.gate in ("docs-fast", "ci-guard"):
+        from ci_policy import orchestration_errors
+        fail_on(orchestration_errors(ROOT))
+        if args.gate == "docs-fast":
+            from ci_fast import integrity
+            fail_on(document_errors(ROOT))
+            integrity()
+        print("PASS " + args.gate)
+        return
+    if args.gate == "qualification-local":
+        from qualification_local import qualify
+        qualify(args.commit)
+        return
+    if args.gate == "verify-qualification":
+        from qualification_local import verify_receipt
+        print(json.dumps(verify_receipt(ROOT, Path(args.receipt), args.commit), indent=2))
+        return
+    if args.gate in ("bootstrap", "semantic", "performance", "full", "challenge", "challenge-return", "harness-tests"):
+        require_local()
     needs_record = args.gate in ("full", "git", "certify", "verify-commit", "remote", "reconcile")
     if needs_record and args.evidence is None:
         if args.commit:

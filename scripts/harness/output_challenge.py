@@ -58,6 +58,8 @@ def green(root):
     return out
 
 def main():
+    from local_only import require_local
+    require_local()
     with tempfile.TemporaryDirectory(prefix='lower-output-challenge-') as name:
         root=Path(name)
         for folder in ('docs','scripts','core','adapters','.github'):

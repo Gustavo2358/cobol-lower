@@ -1,6 +1,6 @@
 # BACKLOG-LOWER-007 — IF e controle condicional sustentado
 
-**Estado:** `needs_discovery`. **Fase:** `capability`. **Autorização:** não concedida.
+**Estado:** `in_progress`. **Fase:** `capability`. **Autorização:** não concedida.
 
 ## Problema e objetivo observável
 
@@ -33,3 +33,5 @@ Nenhum work item promovido. Ao promover, delimitar um resultado por checkpoint, 
 ## Evidência atual
 
 Planejamento documental somente. Sem commit de implementação, CI, benchmark ou aprovação remota atribuídos a este item.
+
+CP6 W2B autorizado em [WORK-LOWER-011](../active/WORK-LOWER-011/work-item.yaml).

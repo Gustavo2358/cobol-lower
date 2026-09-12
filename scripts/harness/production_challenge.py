@@ -38,7 +38,7 @@ def scope_errors(root):
     registry = root/'docs/work/registry.json'
     if not registry.exists(): return []
     active = {w['id'] for w in json.loads(registry.read_text())['active']}
-    work = next((w for w in ('WORK-LOWER-010', 'WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
+    work = next((w for w in ('WORK-LOWER-011', 'WORK-LOWER-010', 'WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
     if work is None: return []
     guard = json.loads((root/'docs/quality'/work/'production-source-guard.json').read_text())
     expected = guard['source_hashes']; errors = []
@@ -52,6 +52,8 @@ def scope_errors(root):
     return errors
 
 def main(cases=CASES, log_name="production"):
+    from local_only import require_local
+    require_local()
     logs = Path(os.environ['LOWER_BUILD_ROOT'])/(log_name + '-challenge-logs'); logs.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='lower-production-challenge-') as directory:
         root = Path(directory)

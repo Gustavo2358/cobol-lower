@@ -1,0 +1,1913 @@
+Você vai executar **CP6 W2B exclusivamente no repositório `cobol-lower`**.
+
+W2A e W2C estão concluídos e congelados. W2B está agora **AUTORIZADO**.
+
+Esta wave possui dois objetivos inseparáveis:
+
+1. implementar a tradução do **Semantic Product 1.4.0 de IF** para AIR, produzindo o diamond estrutural real;
+2. corrigir transversalmente a política de CI/harness do `cobol-lower`, eliminando a execução automática da suíte gigante em GitHub Actions.
+
+O objetivo produtivo é:
+
+```text id="4f8jqh"
+COBOL
+ ↓
+SP 1.4.0
+ ↓
+cobol-lower
+ ↓
+AIR 2.0.0
+
+              Assign PROGA → Jump ┐
+Branch(UNKNOWN BOOL)              ├→ Invoke → Return
+              Assign PROGB → Jump ┘
+```
+
+e, para ELSE ausente:
+
+```text id="q2510p"
+              Assign PROGA → Jump ┐
+Branch                            ├→ Invoke → Return
+              false ──────────────┘
+```
+
+Não implemente W2D.
+Não altere `analysis-cfg`.
+Não altere solver/lattice.
+Não avalie o valor runtime de `FLAG`.
+Não implemente path pruning.
+Não transforme W2B em suporte geral a controle COBOL.
+
+Ao final:
+
+**W2B IMPLEMENTED / QUALIFIED / AWAITING_HUMAN_REVIEW**
+
+**W2D NOT_STARTED / NOT_AUTHORIZED**
+
+Não faça merge nem auto-merge.
+
+---
+
+# 1. Estado e autoridades
+
+## cobol-lower
+
+Baseline remoto atual:
+
+```text id="rslh5g"
+main:
+9de3825da64898258e647727393f01b9e9198d9e
+
+tree:
+2e3027df2fc4f9e550df8df9518e7e80f89324f1
+```
+
+Esse commit é o merge do CP6 W1C / PR #11.
+
+Antes de editar:
+
+* leia `AGENTS.md`;
+* leia work-item protocol;
+* leia Git/review;
+* leia gates;
+* leia change control;
+* leia sources authority/upstream state;
+* confira `origin`;
+* faça fetch;
+* confirme HEAD/tree;
+* working tree deve estar limpa;
+* preserve mudanças e untracked alheios;
+* não use reset/stash/discard/force-push para “limpar” problemas.
+
+---
+
+# 2. Reconciliação administrativa obrigatória do W1C
+
+O estado remoto observado possui inconsistência administrativa:
+
+* PR #11 está MERGED;
+* `main` contém o merge W1C;
+* porém `WORK-LOWER-010` e o índice ainda descrevem W1C como `IMPLEMENTED / AWAITING_HUMAN_REVIEW`.
+
+Antes de iniciar o produto W2B, reconcilie formalmente W1C segundo o lifecycle do repo.
+
+Registre algo semanticamente equivalente a:
+
+```text id="71h9s4"
+CP6 W1C
+APPROVED / MERGED / CLOSED
+
+WORK-LOWER-010
+completed
+```
+
+Use os tokens oficiais existentes.
+
+Essa reconciliação deve ser:
+
+```text id="ig3ukv"
+DOCUMENTATION / LIFECYCLE ONLY
+```
+
+e ficar em commit separado da implementação W2B.
+
+Não requalifique W1C.
+Não reescreva sua evidência histórica.
+Não esconda o timeout histórico de CI.
+Não atribua qualificações antigas a uma tree diferente.
+
+Se o protocolo permite fazer o closeout dentro da branch do próximo trabalho, faça dessa forma.
+
+Não é necessário criar um PR separado apenas para esse closeout se a convenção vigente não exigir.
+
+---
+
+# 3. Autoridade upstream W2A — Semantic Product
+
+Use como autoridade produtiva do SP:
+
+```text id="dfd7u3"
+repo:
+Gustavo2358/proleap-poc
+
+W2A product merge:
+4ffabded1aad39316b8a6f337f732976fdb3ca3e
+
+qualified tree:
+5880e174b33c85ba3f3cdbc70bd2d8dc7b1d567b
+
+Semantic Product:
+1.4.0
+```
+
+Existe commit administrativo posterior no `proleap-poc`, mas a autoridade produtiva qualificada é o merge acima.
+
+Atualize o pin `SRC-SP` explicitamente:
+
+```text id="0wyvlp"
+SP 1.3.0
+    ↓
+SP 1.4.0
+```
+
+Não use floating `main`.
+
+Inclua no source lock os documentos e superfícies W2A realmente necessárias:
+
+* contrato IF W2A;
+* writer SP 1.4;
+* fixtures closed/open;
+* IndependentStorageSet;
+* predicate guarantee;
+* completion;
+* arm presence/completeness.
+
+Não copie implementação frontend para o lower.
+
+---
+
+# 4. Autoridade upstream W2C — AIR Java + codec
+
+A autoridade produtiva de W2C é:
+
+```text id="dpfc64"
+repo:
+Gustavo2358/air-java
+
+W2C product merge:
+1d22068e9d9c1d100ecdef734e5b6995252e7ede
+
+qualified tree:
+ab3a55e13b781ec5424356e83bddbc6fde42dcb1
+```
+
+Existe closeout administrativo posterior:
+
+```text id="tcnrto"
+9aec1e9bce30466f4a53d2033bf2a2a2fedd56ec
+```
+
+mas **não use o commit administrativo como substituto silencioso da autoridade produtiva qualificada**.
+
+Atualize `SRC-AIR-JAVA` para o **product merge W2C** salvo se uma regra explícita do repo exigir pin diferente e você provar que os blobs produtivos são idênticos.
+
+Registre a decisão.
+
+O product W2C já transporta:
+
+```text id="op59qt"
+Operations.Jump
+Operations.Branch
+Types.Known(BOOL)
+Expressions.Unknown
+Proofs.Premise(DisjointStorage)
+```
+
+Nenhuma nova cobertura de codec deve ser necessária em W2B.
+
+Se o lower exigir uma forma que W2C não transporta:
+
+**STOP.**
+
+Não altere `air-java` nesta tarefa.
+
+---
+
+# 5. Autoridade normativa AIR
+
+Preserve:
+
+```text id="yh6x0f"
+analysis-ir:
+51b4d9a8ae0364232bd97103cd73a77e1a34996c
+
+AIR:
+2.0.0
+
+analysis-ir-json:
+1.0.0 DRAFT
+```
+
+A direção continua:
+
+```text id="i9tmwc"
+AIR normativa
+    ↓
+air-java model
+    ↓
+air-json
+    ↓
+cobol-lower producer
+```
+
+O lower não redefine AIR.
+
+---
+
+# 6. PRIMEIRO ajuste transversal: política de CI/harness
+
+Antes do primeiro push produtivo de W2B, corrija a política atual de CI.
+
+## Problema atual
+
+O workflow remoto atual executa:
+
+```text id="szj9rm"
+bootstrap
+    ↓
+run.py ci
+    ↓
+full cumulativo
+    ↓
+performance
+    ↓
+challenges
+    ↓
+suítes históricas
+```
+
+em cada push.
+
+Essa estratégia já excedeu 30 minutos no W1C e o timeout foi elevado para 45 minutos.
+
+Isso deixa de ser aceitável.
+
+---
+
+# 7. Nova regra de CI — requisito obrigatório
+
+Adote a mesma separação conceitual usada no `analysis-cfg`, com uma diferença importante:
+
+> **NO `cobol-lower`, A QUALIFICAÇÃO PESADA É LOCAL-ONLY.**
+
+Não crie Full Qualification remota.
+
+Nem automática.
+Nem manual.
+Nem `workflow_dispatch`.
+
+A arquitetura deve ser:
+
+```text id="s09xne"
+                  ┌──────────────┐
+push / PR / merge │ REMOTE FAST  │
+                  └──────────────┘
+
+desenvolvimento local
+        │
+        ├── fast/focal tests repetidamente
+        │
+        ▼
+implementação finalizada
+        │
+        ▼
+LOCAL FULL QUALIFICATION
+uma vez sobre HEAD/tree final
+        │
+        ▼
+push / Draft PR
+        │
+        ▼
+REMOTE FAST
+```
+
+---
+
+# 8. O teste gigante nunca roda remotamente
+
+Crie uma invariante automatizada:
+
+```text id="bnvwmo"
+FULL / PERFORMANCE / PRODUCT MUTATION CAMPAIGNS /
+HISTORICAL CUMULATIVE QUALIFICATION /
+REAL LARGE E2E
+MUST NEVER RUN IN GITHUB ACTIONS
+```
+
+O workflow remoto não pode chamar:
+
+```text id="vvdymo"
+run.py full
+run.py performance
+run.py challenge
+```
+
+nem aliases que terminem executando esses gates.
+
+Também não pode executar diretamente:
+
+* challenge scripts;
+* mutation campaigns;
+* performance/capacity giant suites;
+* full cumulative historical suite;
+* exact-producer giant qualification;
+* qualquer script equivalente mascarado com outro nome.
+
+Implemente um **guard executável de CI orchestration** que inspecione workflows/entrypoints e falhe se alguém reintroduzir a bateria pesada no remoto.
+
+Teste o guard com contracasos.
+
+---
+
+# 9. Não criar workflow manual pesado
+
+Diferentemente do `analysis-cfg`, **não crie** algo equivalente a:
+
+```text id="s1ya0l"
+workflow_dispatch:
+  Full Qualification
+```
+
+A exigência aqui é mais forte:
+
+```text id="t1myuh"
+REMOTE FULL QUALIFICATION = PROHIBITED
+```
+
+A única autoridade da suíte gigante será:
+
+```text id="8crhki"
+LOCAL_QUALIFICATION
+```
+
+executada explicitamente após a implementação estar finalizada.
+
+---
+
+# 10. Fast CI remoto
+
+Preserve um único check remoto claro e rápido.
+
+Preferencialmente mantenha a identidade histórica:
+
+```text id="69p5wr"
+workflow:
+.github/workflows/checkpoint.yml
+
+job/check:
+checkpoint
+```
+
+salvo razão forte para evolução explícita.
+
+Não crie dois workflows redundantes que façam a mesma coisa.
+
+O Fast CI remoto deve ser suficientemente forte para impedir regressão óbvia, mas não executar qualification.
+
+## Para mudança de código/test/harness
+
+Execute um perfil fixo equivalente a:
+
+```text id="8kd8ry"
+CI_FAST
+
+- checkout/source receipt
+- docs
+- source lock / pin integrity
+- architecture boundaries
+- compile reactor
+- unit/contract tests rápidos
+- W1C regressions rápidas
+- W2B focal tests rápidos
+- codec round-trip focal
+- harness orchestration guards
+- git/scope checks apropriados ao CI
+```
+
+Use uma lista fixa/revisada de suites/testes.
+
+**Não selecione testes semanticamente com base no diff.**
+
+A classificação do diff serve apenas para distinguir:
+
+```text id="4h8e15"
+DOCS_ONLY
+vs
+CODE_OR_HARNESS_CHANGE
+```
+
+não para escolher arbitrariamente quais testes de produto “parecem afetados”.
+
+---
+
+# 11. Mudanças somente documentais
+
+Quando o diff for exclusivamente documental/lifecycle/evidence:
+
+```text id="0mf64a"
+DOCS_ONLY
+```
+
+o CI remoto deve executar somente algo equivalente a:
+
+```text id="c86tbq"
+docs
+manifest/integrity
+lifecycle/registry
+links/anchors
+git/scope
+CI-orchestration guard
+```
+
+Não:
+
+* bootstrap air-java;
+* Maven full;
+* semantic giant;
+* performance;
+* challenges;
+* mutation;
+* exact producer E2E.
+
+A classificação DOCS_ONLY precisa ser conservadora.
+
+Arquivos como:
+
+```text id="9i8yli"
+src/**
+pom.xml
+scripts/**
+.github/**
+test sources
+resources produtivos
+source locks produtivos
+```
+
+NÃO são documentação pura.
+
+Se houver dúvida:
+
+classifique como código/harness e execute Fast CI normal.
+
+`MANIFEST.sha256` pode acompanhar uma alteração documental somente quando o classifier também prova que nenhum blob protegido de código/harness mudou.
+
+---
+
+# 12. Qualificação pesada local
+
+Crie um entrypoint canônico explícito.
+
+Nome sugerido:
+
+```text id="bhuie8"
+python3 scripts/harness/run.py qualification-local --commit <SHA>
+```
+
+ou equivalente consistente com o harness.
+
+Ele deve executar a bateria completa existente, incluindo o que hoje torna CI caro:
+
+```text id="vhwz99"
+bootstrap exato
+docs
+architecture
+semantic full
+performance
+harness-tests completos
+todos os challenges históricos
+W1C challenges
+W2B challenges
+real producer integration
+determinism
+full cumulative regression
+git/certificate
+restoration + second GREEN
+```
+
+Não delete testes pesados.
+
+Não enfraqueça qualification.
+
+A mudança é **quando e onde** ela roda.
+
+---
+
+# 13. Regra temporal da qualification
+
+Durante desenvolvimento:
+
+```text id="xfr1f5"
+use FAST + focused RED/GREEN
+```
+
+Não rode a bateria gigante a cada mudança.
+
+Quando a implementação W2B estiver concluída:
+
+1. faça self-review;
+2. execute focused GREEN;
+3. execute mutations W2B;
+4. restaure;
+5. crie o commit candidato final;
+6. working tree limpa;
+7. execute **LOCAL FULL QUALIFICATION uma vez** sobre esse HEAD/tree;
+8. produza receipt fora da árvore ou conforme protocolo não circular;
+9. somente então faça push / Draft PR.
+
+Se qualquer **código, teste, harness, workflow ou contrato executável** mudar depois:
+
+```text id="5rtw77"
+LOCAL FULL QUALIFICATION INVALIDATED
+```
+
+e precisa ser repetida.
+
+---
+
+# 14. Documentação pós-qualification não repete teste gigante
+
+Se depois da local qualification houver somente:
+
+```text id="0lbpfn"
+docs
+lifecycle
+handoff
+links
+receipts
+MANIFEST correspondente apenas a docs
+```
+
+e for provado que todos os blobs produtivos/test/harness permanecem iguais:
+
+**não execute novamente a bateria gigante.**
+
+Execute apenas:
+
+```text id="b2zhdb"
+fast/docs
+scope
+integrity
+git diff --check
+protected-blob comparison
+```
+
+e registre claramente:
+
+```text id="jztdz5"
+PRODUCT QUALIFICATION BELONGS TO
+<qualified HEAD/tree>
+
+later documentation-only commit
+does not receive retroactive qualification
+```
+
+A mesma regra vale para closeout/merge posterior.
+
+---
+
+# 15. Fast CI também no merge
+
+Merge em `main` não dispara full.
+
+No merge remoto:
+
+```text id="fghp10"
+REMOTE FAST ONLY
+```
+
+Se a merge tree for igual à qualified tree:
+
+```text id="en7gw8"
+QUALIFIED_TREE_PRESERVED
+```
+
+não reexecute a bateria pesada.
+
+Commit administrativo posterior também recebe somente docs/fast.
+
+Essa regra deve ser codificada e testada no harness.
+
+---
+
+# 16. Não aumentar timeout para esconder o problema
+
+Não resolva o CI com:
+
+```text id="myb49i"
+timeout-minutes: 60
+timeout-minutes: 90
+```
+
+O objetivo é remover a qualification pesada do remoto.
+
+O Fast CI deve ter um timeout razoável e curto.
+
+Registre duração observada.
+
+Não estabeleça SLA artificial se não houver dados suficientes, mas um Fast CI que volte a levar dezenas de minutos é um finding.
+
+---
+
+# 17. Evidência separada
+
+Distinguir explicitamente:
+
+```text id="lc8okq"
+FAST_CI
+```
+
+de:
+
+```text id="y8ijuy"
+LOCAL_QUALIFICATION
+```
+
+Receipts nunca devem tratar os dois como equivalentes.
+
+O PR deve declarar:
+
+```text id="w3nzwk"
+Remote CI certifies the fast gate only.
+
+The W2B product qualification is the
+local qualification receipt for the exact
+source HEAD/tree.
+```
+
+---
+
+# 18. Crie o work item W2B
+
+Após reconciliar W1C, crie novo work item.
+
+ID sugerido:
+
+```text id="3ztxsj"
+WORK-LOWER-011
+```
+
+mas siga o registry real.
+
+Título conceitual:
+
+```text id="848jo4"
+CP6 W2B — lower SP 1.4 simple IF to AIR diamond
+```
+
+Single checkpoint/vertical slice, salvo se o protocolo exigir outra decomposição.
+
+Não transforme W2B em long-running multi-wave automaticamente.
+
+---
+
+# 19. Branch
+
+Crie branch dedicada:
+
+```text id="s96ict"
+feat/cp6-w2b-if-lowering
+```
+
+ou convenção equivalente.
+
+A branch deve conter commits logicamente separados, preferencialmente:
+
+```text id="abjg6i"
+1. docs: reconcile merged W1C lifecycle
+2. ci: split remote fast from local qualification
+3+. feat/test: W2B implementation
+```
+
+Não é obrigatório forçar exatamente essa contagem de commits se o protocolo do repo definir outra forma, mas preserve a separação conceitual.
+
+---
+
+# 20. SP 1.4 decoder
+
+Hoje o W1C usa `Wire13` e reduz IF a:
+
+```text id="wmfrr8"
+OtherStatement(IF)
+```
+
+W2B deve adicionar uma representação específica do SP 1.4.0.
+
+Prefira algo como:
+
+```text id="uwks1w"
+Wire14
+```
+
+em vez de alterar silenciosamente o significado de `Wire13`.
+
+O decoder deve entender exatamente os fatos 1.4 necessários:
+
+* `PredicateGuarantee`;
+* predicate profile;
+* knownReads;
+* BOOLEAN;
+* PURE;
+* TOTAL;
+* readsCompleteness COMPLETE;
+* truth UNKNOWN;
+* wholeItemAccess;
+* `IfArm`;
+* presence;
+* contentAvailability;
+* executable entry;
+* IF normalContinuation;
+* IfProfile;
+* `storageIndependence`;
+* rule;
+* authority;
+* ordered members;
+* provenance/gaps.
+
+Não use Jackson para “aceitar qualquer campo futuro”.
+
+Contrato fechado.
+
+---
+
+# 21. Preserve SP 1.3 histórico
+
+Não destrua o suporte W1C.
+
+Publicações SP 1.3.0 históricas devem continuar seguindo seu adapter existente.
+
+W2B acrescenta 1.4.0.
+
+Não:
+
+```text id="v8ae9x"
+reinterpretar bytes 1.3 como 1.4
+```
+
+nem alterar silenciosamente seus facts.
+
+Regressão W1C obrigatória.
+
+---
+
+# 22. Domínio interno do lower
+
+Promova IF de:
+
+```text id="xc82kn"
+OtherStatement(IF)
+```
+
+para um fact tipado próprio.
+
+O domínio interno deve transportar somente fatos publicados pelo SP, não AIR.
+
+Conceitualmente:
+
+```text id="b04fdy"
+IfFact
+  header
+  predicateGuarantee
+  conditionReads
+  thenArm
+  elseArm
+  normalContinuation
+  profile
+```
+
+E no nível da unidade:
+
+```text id="tadvzs"
+IndependentStorageSet
+```
+
+Não use classes AIR como DTO de SP.
+
+O core continua independente de JSON/Jackson/frontend.
+
+---
+
+# 23. Admission W2B
+
+Admitir somente:
+
+```text id="qythdz"
+IfProfile.SIMPLE_TEXT_EQUALITY
+```
+
+com todas as provas W2A necessárias.
+
+Exigir:
+
+* IF root;
+* explicitamente terminado;
+* predicate KNOWN;
+* BOOLEAN;
+* PURE;
+* TOTAL;
+* reads COMPLETE;
+* truth UNKNOWN;
+* leitura whole-item resolvida;
+* THEN PRESENT + KNOWN;
+* ELSE PRESENT + KNOWN ou ABSENT + KNOWN;
+* IF completion KNOWN;
+* children/membership consistentes;
+* arms compostos apenas pelos MOVEs admitidos;
+* CALL W1C admitido após merge;
+* GOBACK normal continuation admitido;
+* IndependentStorageSet KNOWN cobrindo os storages relevantes.
+
+Qualquer ausência de prova:
+
+```text id="zxg3z5"
+UNSUPPORTED_SLICE
+```
+
+ou diagnóstico tipado equivalente.
+
+Não “tente fazer funcionar”.
+
+---
+
+# 24. Predicate AIR
+
+Não traduza:
+
+```cobol id="lz6kyv"
+FLAG = 'Y'
+```
+
+para uma expressão AIR `EQ`.
+
+W2 não avalia a condição.
+
+Produza:
+
+```text id="h6zkpb"
+Expressions.Unknown(
+    header = PREDICATE,
+    typeRef = Types.known(BOOL),
+    dependencies = [
+        Expressions.Read(
+            ObjectPlace(FLAG)
+        )
+    ],
+    remainingReads = NoMemory,
+    reason = predicate-value-unknown
+)
+```
+
+`dependencies` deve seguir exatamente os `knownReads` publicados pelo SP.
+
+Não descobrir reads reanalisando texto.
+
+Não ler nomes.
+
+Não criar `Read` a partir de toda DATA disponível.
+
+---
+
+# 25. Uncertainty do predicate
+
+`Expressions.Unknown` exige `UncertaintyId`.
+
+Produza uma uncertainty AIR determinística que represente apenas:
+
+```text id="ko5pom"
+predicate truth/value unknown
+```
+
+Preserve:
+
+* origem do predicate;
+* dimensão VALUES adequada;
+* scope correto;
+* código/reason determinísticos.
+
+Não use a uncertainty para afirmar:
+
+* condição impura;
+* reads incompletos;
+* predicate parcial.
+
+W2A já provou:
+
+```text id="v2qqwa"
+BOOLEAN / PURE / TOTAL / COMPLETE
+```
+
+A única incerteza aqui é o **valor de verdade**.
+
+---
+
+# 26. IndependentStorageSet → AIR Premise
+
+Traduza mecanicamente:
+
+```text id="5pk2fy"
+SP IndependentStorageSet
+```
+
+para:
+
+```text id="f3tlt9"
+Proofs.Premise(
+    id,
+    authority,
+    justification,
+    origin,
+    Proofs.DisjointStorage(
+        storageIds
+    )
+)
+```
+
+## Regra central
+
+O lower **NÃO prova disjunção**.
+
+Ele só traduz uma prova upstream já publicada.
+
+Proibido:
+
+```text id="2bg6w1"
+DataId A != DataId B
+=> disjoint
+```
+
+ou:
+
+```text id="5pkgxe"
+StorageId A != StorageId B
+=> disjoint
+```
+
+---
+
+# 27. Members de DisjointStorage
+
+Preserve exatamente os membros do SP, na ordem publicada.
+
+Mapeie:
+
+```text id="av7c5j"
+DataItemId
+   ↓
+Object/Cell mapping já produzido pelo ScalarDataTranslator
+   ↓
+StorageId
+```
+
+Não:
+
+* selecione apenas FLAG/WS-PGM por conveniência;
+* remova membros “não usados”;
+* ordene por nome;
+* adicione células;
+* reconstrua o conjunto via scan.
+
+Cada membro deve ter mapeamento existente e comprovado.
+
+Se algum membro SP não puder ser traduzido:
+
+**rejeite a slice.**
+
+---
+
+# 28. Authority e justification da Premise
+
+`authority` deve derivar diretamente da autoridade publicada no SP.
+
+Não invente autoridade própria.
+
+Para `justification`, use mapeamento determinístico e puramente descritivo da regra SP, por exemplo conceitualmente:
+
+```text id="0n52rc"
+SP rule:
+INDEPENDENT_WORKING_STORAGE_ROOTS
+```
+
+sem criar nova afirmação semântica.
+
+Documente o mapping exato.
+
+Origin da Premise deve derivar da provenance publicada para a prova upstream.
+
+---
+
+# 29. Diamond AIR — closed case
+
+Fixture principal real:
+
+```cobol id="4nc39a"
+01 FLAG   PIC X.
+01 WS-PGM PIC X(8).
+
+IF FLAG = 'Y'
+    MOVE 'PROGA' TO WS-PGM
+ELSE
+    MOVE 'PROGB' TO WS-PGM
+END-IF
+
+CALL WS-PGM.
+GOBACK.
+```
+
+AIR esperado conceitualmente:
+
+```text id="aj1ao8"
+Entry → Lif
+
+Lif:
+    Branch(
+        Unknown<BOOL>(
+            dependencies=[Read FLAG]
+        ),
+        true=Lthen,
+        false=Lelse
+    )
+
+Lthen:
+    Assign WS-PGM = "PROGA   "
+    Jump Lcall
+
+Lelse:
+    Assign WS-PGM = "PROGB   "
+    Jump Lcall
+
+Lcall:
+    Invoke Read(WS-PGM)
+      normal → Lreturn
+
+Lreturn:
+    Return
+```
+
+---
+
+# 30. Diamond AIR — open case
+
+Fixture:
+
+```cobol id="muwhmg"
+IF FLAG = 'Y'
+    MOVE 'PROGA' TO WS-PGM
+END-IF
+
+CALL WS-PGM.
+GOBACK.
+```
+
+AIR:
+
+```text id="x8284f"
+Lif:
+    Branch(
+        predicate,
+        true=Lthen,
+        false=Lcall
+    )
+
+Lthen:
+    Assign WS-PGM = "PROGA   "
+    Jump Lcall
+
+Lcall:
+    Invoke ...
+```
+
+Não criar:
+
+```text id="1uy3xr"
+Lelse:
+    Havoc
+```
+
+Não criar Assign unknown.
+
+Não criar valor inicial.
+
+Não criar programa fictício.
+
+A ausência de write no false path é representada estruturalmente pela aresta direta ao merge.
+
+---
+
+# 31. Nenhum Merge/phi sintético
+
+AIR não precisa de:
+
+```text id="kbu06q"
+Merge operation
+Phi
+StrongUpdate
+Join instruction
+```
+
+O merge é o compartilhamento do mesmo:
+
+```text id="wlko4u"
+LabelId Lcall
+```
+
+por dois predecessors.
+
+---
+
+# 32. Sequence assembly
+
+Crie montagem estrutural explícita.
+
+Não tente adaptar o W1C apenas adicionando IF dentro de:
+
+```text id="gvnvme"
+[Assign*; Invoke]
+```
+
+como uma lista linear.
+
+O assembler W2B precisa possuir controle explícito.
+
+Use:
+
+```text id="1a72gr"
+Sequence
+terminator
+LabelId
+```
+
+como AIR define.
+
+Cada Sequence termina explicitamente.
+
+Sem fallthrough implícito.
+
+---
+
+# 33. Labels
+
+Use a infraestrutura `LocalIds` existente.
+
+Labels devem ser derivados deterministicamente de:
+
+* owner;
+* semantic role;
+* statement identity/fact key.
+
+Não derivar controle por:
+
+* ordem da lista;
+* linha;
+* ProgramPoint;
+* nome de variável;
+* texto `"THEN"`/`"ELSE"` como identidade;
+* contador dependente de traversal incidental.
+
+Roles conceituais:
+
+```text id="tgce24"
+if-entry
+then-entry
+else-entry
+call-merge
+return
+```
+
+---
+
+# 34. Entry inicial
+
+O W1C possui convenção interna relacionada ao primeiro elemento da lista de sequences.
+
+W2B deve remover qualquer dependência semântica de:
+
+```text id="14jhc6"
+sequences.getFirst()
+```
+
+para descobrir o entry.
+
+O plano/assembler deve retornar explicitamente:
+
+```text id="gu2nmt"
+entryLabel
+```
+
+A ordem física de `Publication.units[].sequences[]` não é execução.
+
+Crie teste metamórfico que permute a lista de sequences e prove que:
+
+* labels/destinations permanecem corretos;
+* entry continua correto;
+* branches não trocam;
+* merge não muda.
+
+O byte JSON pode mudar se a ordem física mudar; a semântica referencial não pode.
+
+---
+
+# 35. THEN / ELSE com vários MOVEs
+
+W2A já consegue publicar:
+
+```text id="whz4g0"
+MOVE A → MOVE B → IF completion
+```
+
+Se houver múltiplos MOVEs admitidos no braço, W2B pode montar uma única sequence linear do braço:
+
+```text id="u3gjfg"
+Lthen:
+    Assign A
+    Assign B
+    Jump Lcall
+```
+
+Não é necessário criar uma Sequence por MOVE.
+
+Mas a ordem precisa vir das relações/children canônicos do SP.
+
+Nunca de StatementId lexical.
+
+---
+
+# 36. Origins
+
+Preserve origem por responsabilidade:
+
+* Branch → IF/predicate source facts;
+* predicate Unknown → condition provenance;
+* dependency Read → predicate read occurrence;
+* Assign → MOVE;
+* Jump → arm/completion derivada;
+* Invoke → CALL;
+* Return → GOBACK;
+* Premise → IndependentStorageSet provenance.
+
+Origem `derived` deve enumerar inputs reais quando necessário.
+
+Não atribua ao texto fitted `"PROGA   "` uma origem que finja que os espaços estavam escritos no literal — preserve a política W1C.
+
+---
+
+# 37. AirValidator
+
+Após montar a Publication:
+
+```text id="8jyk8s"
+AirValidator.validate(publication)
+```
+
+deve completar traversal.
+
+Não exija zero semantic obligations se AIR normativamente as mantém abertas.
+
+Em particular preserve corretamente as obrigações aplicáveis como:
+
+```text id="ck18hc"
+I-09
+I-59
+I-56
+```
+
+se surgirem para essa Publication.
+
+Transporte válido:
+
+```text id="luqwfv"
+!=
+proof obligation discharged
+```
+
+Não modifique Validator.
+
+---
+
+# 38. AirJson round-trip
+
+Toda Publication W2B deve atravessar o codec W2C:
+
+```text id="e43o6k"
+Publication
+ ↓
+AirJson.encode
+ ↓
+bytes
+ ↓
+AirJson.decode
+ ↓
+Publication equivalent
+ ↓
+AirJson.encode
+ ↓
+byte-identical
+```
+
+Isso deve acontecer para:
+
+* closed;
+* open;
+* regressão W1 literal;
+* regressão W1 computed CALL.
+
+---
+
+# 39. REDs obrigatórios
+
+Preserve REDs independentes antes da implementação produtiva.
+
+## RED 1 — SP version
+
+SP 1.4 real deve ser rejeitado pelo baseline atual por versão/shape ainda não suportado.
+
+## RED 2 — IF materialization
+
+Após decoder 1.4 isolado, provar que IF ainda cairia em:
+
+```text id="yfg20e"
+OtherStatement(IF)
+```
+
+ou equivalente ao gap atual.
+
+## RED 3 — admission
+
+Typed IF deve ser recusado pelo admission linear W1C.
+
+## RED 4 — assembler
+
+Plan válido de IF ainda não consegue gerar Branch/Jump diamond.
+
+## RED 5 — storage premise
+
+Mesmo com diamond, prova `IndependentStorageSet` ainda não vira `Premise(DisjointStorage)`.
+
+Não deixe um gap transitive mascarar os demais.
+
+Use probes focais.
+
+---
+
+# 40. GREEN closed
+
+O closed case deve provar, independentemente do JSON textual:
+
+```text id="6t1f0t"
+Branch TRUE  → arm PROGA
+Branch FALSE → arm PROGB
+
+PROGA Assign source:
+real MOVE A
+
+PROGB Assign source:
+real MOVE B
+
+both Jump → same Lcall
+
+Lcall = Invoke
+Invoke normal → real GOBACK Return
+
+predicate:
+Unknown BOOL
+dependency = whole FLAG Read
+
+Premise:
+DisjointStorage
+members exactly mapped from SP set
+```
+
+---
+
+# 41. GREEN open
+
+Provar:
+
+```text id="0epm4q"
+TRUE → Assign PROGA → Jump Lcall
+FALSE → Lcall directly
+```
+
+e ausência de:
+
+* ELSE sequence artificial;
+* havoc;
+* unknown write;
+* fake assignment;
+* initial WS-PGM;
+* fake candidate.
+
+---
+
+# 42. Consumer boundary oracle independente
+
+Crie oracle que consome apenas:
+
+```text id="3x3tju"
+SP public contract
++
+lower public output/AIR model
+```
+
+Não pode ler:
+
+* AST;
+* COBOL source para reconstruir semântica;
+* internal assembler;
+* private maps;
+* implementation IDs;
+* logs humanos.
+
+O oracle deve verificar relações por identidades explícitas.
+
+---
+
+# 43. Producer E2E real — LOCAL QUALIFICATION ONLY
+
+Na qualificação final local, execute os fixtures através do produtor real W2A pinado:
+
+```text id="pn6yg5"
+COBOL real
+ ↓
+proleap-poc W2A
+ ↓
+SP 1.4 JSON real
+ ↓
+cobol-lower W2B
+ ↓
+AIR model
+ ↓
+AirJson W2C
+ ↓
+AIR JSON
+```
+
+Faça ao menos:
+
+```text id="hga3wc"
+closed
+open
+```
+
+duas vezes cada para determinismo.
+
+Esse E2E **não vai para GitHub Actions**.
+
+É parte da `LOCAL_QUALIFICATION`.
+
+Não executar `analysis-cfg`.
+
+Isso ainda é W2B producer integration, não W2D.
+
+---
+
+# 44. Negative SP cases
+
+Rejeitar explicitamente:
+
+* predicate não KNOWN;
+* resultDomain != BOOLEAN;
+* evaluation != PURE;
+* completion != TOTAL;
+* reads completeness != COMPLETE;
+* truth diferente de UNKNOWN se contrato não autoriza;
+* read sem wholeItemAccess;
+* ambiguous/unresolved predicate read;
+* ELSE PRESENT/PARTIAL;
+* arm PARTIAL;
+* nested profile;
+* IF não explicitamente terminado;
+* completion ausente;
+* child não MOVE;
+* storage independence UNAVAILABLE;
+* membro storage sem mapeamento;
+* IndependentStorageSet com gaps;
+* inconsistência membership/entry/completion;
+* CALL fora da slice W1C.
+
+Não tente “salvar” input parcial.
+
+---
+
+# 45. Mutation/challenges W2B
+
+Inclua pelo menos:
+
+1. trocar TRUE/FALSE;
+2. apontar ambos os braços para THEN;
+3. FALSE open apontar para um ELSE inventado;
+4. remover Jump THEN;
+5. remover Jump ELSE;
+6. usar labels por posição física;
+7. usar `sequences.getFirst()` como entry authority;
+8. usar StatementId ordering como control;
+9. trocar Lcall por Lreturn;
+10. colocar Invoke em instructions;
+11. colocar Assign depois do terminator;
+12. avaliar predicate como `false`;
+13. transformar Unknown em literal bool;
+14. apagar Read FLAG;
+15. trocar FLAG por WS-PGM dependency;
+16. marcar remainingReads aberto apesar de COMPLETE;
+17. construir DisjointStorage por IDs diferentes;
+18. remover membro da proof;
+19. ordenar members;
+20. adicionar só FLAG/WS-PGM ignorando membros extras do SP;
+21. inventar authority;
+22. perder premise origin;
+23. fake ELSE havoc;
+24. flatten nested;
+25. perder fitting `"PROGA   "`;
+26. quebrar computed CALL W1.
+
+Mutations devem ser locais.
+
+Nunca no CI remoto.
+
+Restaurar byte-exact e executar segundo GREEN.
+
+---
+
+# 46. Regressões W1
+
+Preserve:
+
+```text id="wvdc50"
+SP 1.3
+literal CALL
+computed CALL
+MOVE fitted
+Invoke
+Return
+UnknownName
+UnknownContract
+effects/outcomes
+```
+
+W2B não pode transformar o W1:
+
+```text id="kr5y91"
+MOVE PROGA
+CALL WS-PGM
+```
+
+em outro produto sem razão contratual.
+
+Goldens históricos não são atualizados para esconder regressão.
+
+---
+
+# 47. Performance / complexidade
+
+Esperado aproximadamente:
+
+```text id="pvwh7g"
+O(statements + branch relations + data + proof members)
+```
+
+Não introduzir:
+
+* scan de todas sequences para cada successor;
+* scan de todos statements para cada arm;
+* O(N²) pairwise storage proof;
+* busca por displayName;
+* lookup linear de label repetido;
+* reconstrução textual do IF.
+
+Use índices.
+
+Performance N/2N entra apenas na **LOCAL QUALIFICATION final**.
+
+Não rodar remotely.
+
+---
+
+# 48. CI FAST — conteúdo mínimo obrigatório do W2B
+
+O novo Fast remoto deve incluir testes focais W2B suficientes para detectar:
+
+* decoder SP1.4 ausente;
+* IF materialization perdida;
+* Branch/Jumps ausentes;
+* swapped TRUE/FALSE;
+* premise perdida;
+* predicate Unknown perdida;
+* W1 CALL regression;
+* AirJson encode/decode focal.
+
+Mas não executar:
+
+* todos os mutations;
+* 100k/capacity;
+* performance;
+* repeated producer E2E;
+* full historical cumulative;
+* giant restored challenges.
+
+Fast é proteção rápida.
+
+Qualification é prova de fechamento.
+
+---
+
+# 49. Harness test do próprio split CI
+
+Adicione testes que falsifiquem a configuração.
+
+No mínimo:
+
+## Mutante CI 1
+
+Trocar no workflow:
+
+```text id="yygy9m"
+ci-fast
+```
+
+por:
+
+```text id="qhkytx"
+qualification-local
+```
+
+deve falhar o guard.
+
+## Mutante CI 2
+
+Adicionar diretamente:
+
+```text id="kqa1el"
+run.py full
+```
+
+ao workflow deve falhar.
+
+## Mutante CI 3
+
+Adicionar `challenge.py` remotamente deve falhar.
+
+## Mutante CI 4
+
+Adicionar `performance` remotamente deve falhar.
+
+## Mutante CI 5
+
+Criar workflow_dispatch de full remoto deve falhar.
+
+## Mutante CI 6
+
+Classificar `src/main/java/...` como DOCS_ONLY deve falhar.
+
+## Mutante CI 7
+
+Classificar `scripts/harness/**` como DOCS_ONLY deve falhar.
+
+## Mutante CI 8
+
+Diff somente `docs/**` deve selecionar docs-fast e não bootstrap/full.
+
+## Mutante CI 9
+
+Merge/main deve continuar Fast only.
+
+## Mutante CI 10
+
+Commit documental posterior à qualification não pode herdar campo que alegue “FULL executed on this tree”.
+
+---
+
+# 50. Não deletar bateria pesada
+
+É expressamente proibido “otimizar CI” removendo:
+
+* performance tests;
+* mutation campaigns;
+* challenges;
+* historical regressions;
+* producer E2E;
+* determinism;
+* full gate.
+
+Todos continuam obrigatórios para **LOCAL QUALIFICATION** de mudanças complexas.
+
+Mudamos a orquestração.
+
+Não a qualidade final.
+
+---
+
+# 51. Remote check contract
+
+Atualize o FREEZE/work item para exigir somente o check remoto Fast.
+
+O check obrigatório deve provar:
+
+```text id="5t9e4e"
+event
+head SHA
+checkout SHA
+workflow identity
+job identity
+success
+```
+
+Não espere remote qualification pesada.
+
+Não configure `remote_wait_limit_seconds` pensando numa bateria de 45 minutos.
+
+O esperado agora é uma espera curta correspondente ao Fast.
+
+---
+
+# 52. Push e PR
+
+Depois da local qualification final:
+
+1. confirme HEAD/tree;
+2. working tree limpa;
+3. push;
+4. abra Draft PR;
+5. aguarde **Fast CI remoto**;
+6. confira checkout SHA;
+7. registre receipt;
+8. não rode full remoto;
+9. não dispare workflow manual pesado;
+10. não merge;
+11. pare para revisão humana.
+
+---
+
+# 53. Evidência final deve distinguir três coisas
+
+No handoff:
+
+```text id="zh7s6x"
+Development RED/GREEN
+        ≠
+LOCAL FULL QUALIFICATION
+        ≠
+REMOTE FAST CI
+```
+
+Reporte comandos, exit codes, HEAD/tree e hashes separadamente.
+
+Não diga apenas:
+
+```text id="hru6pw"
+CI PASS
+```
+
+como substituto da qualification.
+
+---
+
+# 54. Definition of Done W2B
+
+W2B somente está implementado quando:
+
+* W1C lifecycle reconciliado;
+* CI split implementado e falsificado;
+* nenhuma heavy qualification pode rodar remotamente;
+* docs-only remoto evita bootstrap/heavy runtime;
+* SP pin = W2A 1.4 product authority;
+* air-java pin = W2C product authority;
+* Wire14/adapter equivalente estrito;
+* typed IfFact;
+* IndependentStorageSet no domínio;
+* admission simples implementado;
+* predicate Unknown BOOL emitido;
+* known Read FLAG preservado;
+* DisjointStorage premise emitida;
+* closed diamond correto;
+* open diamond correto;
+* labels explícitos/determinísticos;
+* entry explícito;
+* ausência de fallthrough implícito;
+* Invoke W1C preservado;
+* fitted MOVE preservado;
+* AirValidator traversal completo;
+* semantic obligations preservadas;
+* AirJson round-trip byte-identical;
+* W1 regressions verdes;
+* W2B mutations mortas;
+* segundo GREEN;
+* real producer closed/open E2E passa localmente;
+* local full qualification passa no HEAD final;
+* remote Fast CI passa no mesmo HEAD;
+* working tree limpa;
+* siblings inalterados.
+
+---
+
+# 55. Siblings
+
+Não modifique:
+
+* `proleap-poc`
+* `air-java`
+* `analysis-cfg`
+* `analysis-ir`
+* `artefatos-e2e`
+
+Podem ser usados read-only como autoridades/produtores na qualification local.
+
+Não fazer branch/push nesses repos.
+
+---
+
+# 56. Handoff obrigatório
+
+Informe:
+
+```text id="s4p8o9"
+Work item:
+...
+
+Branch:
+...
+
+PR:
+...
+
+Baseline:
+9de3825da64898258e647727393f01b9e9198d9e
+
+Baseline tree:
+2e3027df2fc4f9e550df8df9518e7e80f89324f1
+
+Final HEAD:
+...
+
+Final tree:
+...
+```
+
+Inclua:
+
+* commit administrativo W1C;
+* SP pin W2A;
+* air-java pin W2C;
+* analysis-ir pin;
+* arquivos produtivos;
+* CI/harness files alterados;
+* descrição Fast CI;
+* descrição Local Qualification;
+* prova de que full/performance/challenges não podem rodar remotamente;
+* docs-only CI proof;
+* REDs;
+* GREENs;
+* closed result;
+* open result;
+* premise result;
+* predicate result;
+* AirValidator issues/obligations;
+* AirJson round-trip;
+* W1 regression;
+* mutations;
+* local qualification receipt;
+* remote Fast CI receipt;
+* exact remote checkout;
+* siblings;
+* limitações.
+
+Declare:
+
+**W2B IMPLEMENTED / QUALIFIED / AWAITING_HUMAN_REVIEW**
+
+**REMOTE CI = FAST ONLY**
+
+**FULL QUALIFICATION = LOCAL ONLY**
+
+**W2D NOT_STARTED / NOT_AUTHORIZED**
+
+Não faça merge.
+
+Pare para revisão humana.

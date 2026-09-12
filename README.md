@@ -28,7 +28,7 @@ python3 scripts/harness/run.py performance
 python3 scripts/harness/run.py full
 ```
 
-`full` exige a branch/PR autorizados; no CI publicado usa `--commit "$GITHUB_SHA"`, certificado/trailer e head exatos. Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
+`full` é exclusivamente local. O CI publicado executa apenas `ci-fast` no head exato; [política e qualification local](docs/engineering/ci-qualification.md). Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
 
 ## CLI: arquivo SP → arquivo AIR
 
@@ -90,7 +90,7 @@ O limite de caracteres de identidade avalia o ID final de 32 caracteres, não o 
 com os mesmos defaults de validação. Limites não fazem parte da identidade, não mudam o perfil,
 não elevam PARTIAL a COMPLETE e não convertem interrupção em sucesso. Não há flags de capacidade. A memória disponível continua sendo um recurso finito; BACKLOG-LOWER-018 não foi resolvido.
 
-A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full/CI`, percorre a fixture
+A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full` local, percorre a fixture
 SP real, verifica bytes contra o codec, decode integral, repetição, falhas e publicação física.
 Os oracles anteriores de Entry/Sequence/Return, PARTIAL, claims, origins, uncertainties e correlation
 continuam independentes do round-trip. AIR JSON não inclui o relatório externo de lowering; links de

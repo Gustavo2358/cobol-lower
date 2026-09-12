@@ -34,6 +34,8 @@ def execute(root, selector):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     with tempfile.TemporaryDirectory(prefix="lower-review-challenge-") as directory:
         root = Path(directory)
         copy_checkout(root)
@@ -64,4 +66,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from local_only import require_local
+    require_local()
     main()

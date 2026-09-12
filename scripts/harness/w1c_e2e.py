@@ -97,4 +97,6 @@ def main():
 
 
 if __name__ == '__main__':
+    from local_only import require_local
+    require_local()
     main()

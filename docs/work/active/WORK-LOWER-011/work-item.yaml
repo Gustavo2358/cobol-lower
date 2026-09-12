@@ -1,0 +1,95 @@
+schema_version: 1
+id: WORK-LOWER-011
+title: CP6 W2B — lower SP 1.4 simple IF to AIR diamond
+status: active
+risk: high
+goal: Strict SP 1.4 IF and upstream storage proof to AIR closed/open diamond; split
+  remote FAST from local-only full qualification.
+authorization:
+  state: granted
+  scope: Implementation CP6 W2B only; lifecycle W1C reconciliation, product/tests/CI/harness/pins/docs;
+    commit, push, Draft PR; siblings read-only; no merge.
+  execution_mode: single-checkpoint
+  authority: Explicit user CP6 W2B request 2026-09-12; full qualification LOCAL ONLY
+    on final clean committed HEAD before first productive push.
+  current_checkpoint: CP0
+  authorized_checkpoints:
+  - CP0
+backlog_ids:
+- BACKLOG-LOWER-007
+must_read:
+- AGENTS.md
+- docs/work/index.md
+- docs/engineering/work-item-protocol.md
+- docs/engineering/git-and-review.md
+- docs/engineering/agent-session-protocol.md
+- docs/engineering/gates.md
+- ARCHITECTURE.md
+- docs/architecture/ports-and-adapters.md
+- docs/engineering/testing.md
+- docs/engineering/falsification.md
+- docs/engineering/performance.md
+- docs/engineering/semantic-analysis-policy.md
+- docs/engineering/research-and-evidence.md
+- docs/domain/first-slice-entry-goback.md
+- docs/domain/identity-and-provenance.md
+- docs/sources/sources.lock.json
+- docs/architecture/extensibility.md
+- docs/engineering/change-control.md
+- docs/evals/fixtures.md
+- docs/domain/scalar-text-move.md
+- docs/domain/semantic-input-contract.md
+- docs/domain/validation-and-results.md
+related_domain_rules: []
+related_decisions: []
+related_invariants:
+- INV-LWR-007
+- INV-LWR-017
+- INV-LWR-021
+evals: &id002
+- EVAL-LWR-007
+- EVAL-LWR-015
+- EVAL-LWR-018
+source_scope:
+- core/src/main/java
+- adapters/src/main/java
+test_scope:
+- core/src/test
+- adapters/src/test
+- core/pom.xml
+- adapters/pom.xml
+- pom.xml
+- scripts/harness
+- .github/workflows/checkpoint.yml
+docs_scope:
+- README.md
+- ARCHITECTURE.md
+- MANIFEST.sha256
+- docs
+must_not_change:
+- Sibling repositories and aggregate root; historical evidence and goldens
+- AIR normative model validator codec; solver lattice and analysis-cfg
+- No W2D, path pruning, runtime FLAG evaluation, generic COBOL control; no merge or
+  auto-merge
+gate_profile: first-slice
+gates: &id001
+- docs
+- architecture
+- semantic
+- performance
+- full
+- git
+checkpoints:
+- id: CP0
+  goal: Implement, qualify locally and publish Draft PR; remote FAST only; stop for
+    human review
+  depends_on: []
+  gates: *id001
+  evals: *id002
+  status: active
+git:
+  branch: feat/cp6-w2b-if-lowering
+  pull_request: null
+  one_pr_per_work_item: true
+  merge_authorized: false
+  suggested_branch: feat/cp6-w2b-if-lowering

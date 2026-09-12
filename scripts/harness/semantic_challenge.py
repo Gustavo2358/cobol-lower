@@ -42,6 +42,8 @@ def green(root):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     with tempfile.TemporaryDirectory(prefix="lower-semantic-challenge-") as name:
         root = Path(name)
         for item in ("docs", "scripts", "core", "adapters", ".github"):
@@ -78,4 +80,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from local_only import require_local
+    require_local()
     main()
