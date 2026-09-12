@@ -21,7 +21,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -146,6 +146,23 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             Objects.requireNonNull(provenance, "provenance");
             Objects.requireNonNull(coverage, "coverage");
             Objects.requireNonNull(readiness, "readiness");
+        }
+    }
+
+    public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, OUTSIDE_SLICE }
+    public record ProcedureId(UnitKey unit, String handle) {
+        public ProcedureId { Objects.requireNonNull(unit); Objects.requireNonNull(handle); }
+    }
+    public record PerformTarget(ProcedureId id, Provenance referenceOrigin, Provenance paragraphOrigin) {
+        public PerformTarget { Objects.requireNonNull(id); Objects.requireNonNull(referenceOrigin); Objects.requireNonNull(paragraphOrigin); }
+    }
+    public record PerformFact(StatementHeader header, PerformProfile profile, Optional<PerformTarget> target,
+        Optional<StatementId> targetEntry, List<StatementId> targetStatements, Optional<StatementId> targetExit,
+        NormalContinuation normalContinuation, List<StatementId> primaryStatements, List<String> gapCodes) implements StatementFact {
+        public PerformFact {
+            Objects.requireNonNull(header); Objects.requireNonNull(profile); Objects.requireNonNull(target); Objects.requireNonNull(targetEntry);
+            Objects.requireNonNull(targetExit); Objects.requireNonNull(normalContinuation);
+            targetStatements = List.copyOf(targetStatements); primaryStatements = List.copyOf(primaryStatements); gapCodes = List.copyOf(gapCodes);
         }
     }
 

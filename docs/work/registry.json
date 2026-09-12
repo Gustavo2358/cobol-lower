@@ -38,6 +38,10 @@
       "id": "WORK-LOWER-012",
       "status": "IN_PROGRESS",
       "path": "docs/work/active/WORK-LOWER-012.yaml"
+    },
+    {
+      "id": "WORK-LOWER-013",
+      "path": "docs/work/active/WORK-LOWER-013.yaml"
     }
   ],
   "proposals": [],

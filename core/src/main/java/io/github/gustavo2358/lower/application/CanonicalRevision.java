@@ -95,6 +95,17 @@ final class CanonicalRevision {
         e.symbol(call.runtimeTarget()); e.word(call.runtimeUncertaintyCode()); e.symbol(call.effects()); e.symbol(call.outcomes());
         return Optional.of(e.finish());
     }
+    static Optional<String> perform(SpInput input, PerformAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("perform-basic@1/AIR2/SP1.6/xxh3-128-v1"); e.word(LocalIds.POLICY);
+        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
+        var p = plan.perform().orElseThrow(); e.scalarHeader(p.header()); e.symbol(p.profile());
+        var t = p.target().orElseThrow(); e.word(t.id().handle()); e.provenance(t.referenceOrigin()); e.provenance(t.paragraphOrigin());
+        e.statementId(p.targetEntry().orElseThrow()); e.list(p.targetStatements(), e::statementId); e.statementId(p.targetExit().orElseThrow());
+        e.statementId(p.normalContinuation().statement().orElseThrow()); e.provenance(p.normalContinuation().provenance());
+        e.list(p.primaryStatements(), e::statementId); e.list(p.gapCodes(), e::word);
+        return Optional.of(e.finish());
+    }
     static Optional<String> simpleIf(SpInput input, IfAdmission.Plan plan, int maximum) {
         if (maximum < 32) return Optional.empty();
         var e = new CanonicalRevision(); e.word("simple-if@1/AIR2/SP1.4/xxh3-128-v1"); e.word(LocalIds.POLICY);
