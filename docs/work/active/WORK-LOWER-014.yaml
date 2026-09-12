@@ -1,6 +1,6 @@
 id: WORK-LOWER-014
 title: Compose multiple CALL sites across supported control flow
-status: IN_PROGRESS
+status: DONE
 scope:
   - SUPPORTED_CP6_PROGRAM typed admission, assembly and canonical identity
   - SP1.7 decoder, strict producer pin and seven composition fixtures
@@ -17,3 +17,6 @@ notes: >-
   244225 semantic and 39215 performance checks; raw log
   /tmp/multicall-lower-final-full.log. Later changes are documentary only.
   IMPLEMENTED / AWAITING HUMAN REVIEW; remote remains FAST ONLY.
+
+merge_commit: 797dcbd6f05f12661299339746c607b5b57ac1ba
+closeout: DONE / MERGED; merge verified after fetch on 2026-09-12. Earlier review wording above is historical.

@@ -5,7 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence) {
+        this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, storageIndependence, false);
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory) {
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
@@ -149,7 +152,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, OUTSIDE_SLICE }
+    public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, BASIC_PROCEDURE_PERFORM, OUTSIDE_SLICE }
     public record ProcedureId(UnitKey unit, String handle) {
         public ProcedureId { Objects.requireNonNull(unit); Objects.requireNonNull(handle); }
     }
@@ -295,10 +298,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             members=List.copyOf(members); Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
 
-    public record OtherStatement(StatementHeader header, Variant variant) implements StatementFact {
+    public record OtherStatement(StatementHeader header, Variant variant, String observedKind, String gapCode,
+                                 NormalContinuation normalContinuation, List<DataReference> knownReferences) implements StatementFact {
+        public OtherStatement(StatementHeader header, Variant variant) {
+            this(header, variant, variant.name(), "SEMANTICS_NOT_AVAILABLE", new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());
+        }
         public OtherStatement {
             Objects.requireNonNull(header, "header");
             Objects.requireNonNull(variant, "variant");
+            Objects.requireNonNull(observedKind); Objects.requireNonNull(gapCode); Objects.requireNonNull(normalContinuation); knownReferences=List.copyOf(knownReferences);
         }
     }
 

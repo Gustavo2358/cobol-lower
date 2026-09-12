@@ -121,6 +121,10 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire16.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent16(wire); input = Materialize.input(wire);
                 }
+                case "1.8.0" -> {
+                    var wire = mapper.treeToValue(node, Wire18.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent18(wire); input = Materialize.input(wire);
+                }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
@@ -230,6 +234,8 @@ public final class SpJsonDecoder {
     }
 
     private static void requireCoherent16(Wire16.Document wire) {
+        for (var s : wire.statements()) if (s instanceof Wire16.PerformDocument p && p.profile() == io.github.gustavo2358.lower.domain.SpInput.PerformProfile.BASIC_PROCEDURE_PERFORM)
+            throw new IllegalArgumentException("BASIC intrinsic body semantics require SP 1.8.0");
         for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
             throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
         for (var statement : wire.statements()) {
@@ -247,6 +253,28 @@ public final class SpJsonDecoder {
         }
     }
     private static void logical16(Wire16.LogicalDocument value) {
+        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
+            throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireCoherent18(Wire18.Document wire) {
+        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
+            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
+        for (var statement : wire.statements()) {
+            if (statement instanceof Wire18.MoveDocument m && m.source() instanceof Wire18.LiteralDocument literal && literal.logicalValue() != null) {
+                var value = literal.logicalValue();
+                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                    throw new PhysicalShape("$/statements/source/logicalValue");
+                logical18(value);
+            }
+            if (statement instanceof Wire18.MoveDocument m && m.textAdjustment() != null) logical18(m.textAdjustment().result());
+            if (statement instanceof Wire18.CallDocument c && c.target() instanceof Wire18.LiteralTargetDocument l && l.logicalValue() != null) {
+                logical18(l.logicalValue());
+                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
+            }
+        }
+    }
+    private static void logical18(Wire18.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
     }

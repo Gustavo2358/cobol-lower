@@ -15,6 +15,8 @@ final class SourceOrigins {
     private final LocalIds ids;
     private final LinkedHashMap<String, Origins.Artifact> artifacts = new LinkedHashMap<>();
     private final List<Origins.Origin> origins = new ArrayList<>();
+    private final java.util.Map<String, SpInput.Provenance> sourceEvidence = new java.util.HashMap<>();
+    private final java.util.Map<String, Ids.OriginId> sourceIds = new java.util.HashMap<>();
     private final List<LoweringResult.Limitation> limitations = new ArrayList<>();
     SourceOrigins(Ids.PublicationId publication, LocalIds ids) { this.publication = publication; this.ids = ids; }
     List<Origins.Artifact> artifacts() { return List.copyOf(artifacts.values()); }
@@ -24,6 +26,11 @@ final class SourceOrigins {
         var id = new Ids.OriginId(publication, local); origins.add(new Origins.Derived(id, inputs, rule)); return id;
     }
     Ids.OriginId source(String kind, String handle, SpInput.Provenance provenance) {
+        var cacheKey = kind.length() + ":" + kind + handle;
+        if (sourceIds.containsKey(cacheKey)) {
+            if (!sourceEvidence.get(cacheKey).equals(provenance)) throw new IllegalArgumentException("conflicting source provenance");
+            return sourceIds.get(cacheKey);
+        }
         String local = ids.id("origin", "source", kind, handle);
         List<Origins.IncludeFrame> includes = new ArrayList<>();
         for (var frame : provenance.includeChain()) {
@@ -34,7 +41,8 @@ final class SourceOrigins {
         }
         var original = written(ids.id("origin", "original", kind, handle), "original", provenance.original(), includes, provenance.exact());
         var expanded = written(ids.id("origin", "expanded", kind, handle), "expanded", provenance.expanded(), includes, provenance.exact());
-        return derived(local, List.of(original, expanded), "sp-provenance/original-expanded@1");
+        var result = derived(local, List.of(original, expanded), "sp-provenance/original-expanded@1");
+        sourceEvidence.put(cacheKey, provenance); sourceIds.put(cacheKey, result); return result;
     }
     private Ids.ArtifactId artifact(String role, String file) {
         String key = ids.id("artifact", role, "publication", file);

@@ -207,6 +207,7 @@ public final class AirOutputSuite {
                 for (Path path : paths.sorted(java.util.Comparator.reverseOrder()).toList()) Files.delete(path);
             }
         }
+        io.github.gustavo2358.lower.adapters.testing.PartialIntegrationSuite.run();
         assertions += ScalarOutputSuite.run();
         int production = ProductionPathSuite.run(); assertions += production;
         System.out.println("LOWER_PRODUCTION_TESTS=" + production);

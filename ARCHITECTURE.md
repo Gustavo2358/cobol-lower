@@ -80,3 +80,5 @@ SupportedProgramAdmission → SupportedProgramLowerer → SupportedProgramAssemb
 Existing typed handlers and IF/PERFORM translation primitives are shared. The
 composed profile follows explicit facts and has no CALL count limit.
 [Profile and complexity](docs/domain/supported-program.md).
+
+Current pipeline policy: [compositionality and conservative partial lowering](docs/architecture/compositional-partial-lowering.md).
