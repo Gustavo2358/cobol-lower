@@ -45,8 +45,9 @@ public final class MoveDataSuite {
         var without = new CobolLowerer().lower(IfInputs.proof(input, Optional.empty()), ScalarSuite.OPTIONS);
         check(without.publication().orElseThrow().premises().isEmpty(), "no fabricated storage premise");
         var changedData = new ArrayList<>(input.dataDeclarations());
-        var d = changedData.getFirst();
-        changedData.set(0, new DataFact(d.id(), d.canonicalName(), d.picture(), d.provenance(), d.coverage(), d.readiness(),
+        // Only the receiver extent changes: the preceding literal MOVE remains valid.
+        var d = changedData.get(1);
+        changedData.set(1, new DataFact(d.id(), d.canonicalName(), d.picture(), d.provenance(), d.coverage(), d.readiness(),
             Optional.of(new ScalarText(LogicalDomain.TEXT, 9, StorageClass.WORKING_STORAGE, DeclarationScope.LOCAL))));
         check(new CobolLowerer().lower(ScalarInputs.replace(input, changedData, input.statements()), ScalarSuite.OPTIONS).publication().isEmpty(),
             "incompatible source/target extents refused");

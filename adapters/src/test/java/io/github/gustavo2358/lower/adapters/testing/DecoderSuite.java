@@ -42,12 +42,14 @@ public final class DecoderSuite {
         return (ObjectNode) node.path("entryInventory").path("entries").get(0).path("signature");
     }
     private static void physical(ObjectNode golden, byte[] raw) throws Exception {
-        for (String version : List.of("1.0.0", "1.5.0", "2.0.0")) {
+        for (String version : List.of("1.0.0", "1.6.0", "2.0.0")) {
             var value = golden.deepCopy(); value.put("contractVersion", version);
             rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         }
         var masquerade = golden.deepCopy(); masquerade.put("contractVersion", "1.4.0");
         rejects(bytes(masquerade), Code.INPUT_ERROR); // SP1.1 bytes cannot impersonate the new closed SP1.4 shape.
+        masquerade.put("contractVersion", "1.5.0");
+        rejects(bytes(masquerade), Code.INPUT_ERROR); // A known version still requires its closed source union.
         var value = golden.deepCopy(); value.put("schema", "other");
         rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         rejects("{".getBytes(StandardCharsets.UTF_8), Code.INPUT_ERROR);

@@ -21,3 +21,7 @@ Finite indexed admission and one translation per MOVE cost O(facts + references
 Oracle: literal versus Read, correct ObjectIds, roles/origins, same extents,
 source binding/access refusal, unchanged W1 fitting and W2 shape admission.
 AIR model/JSON/normative contracts are unchanged. IF composer is unchanged.
+
+Validation: FAST and qualification-local cover the closed decoder, core lowering,
+AIR round trip, W1/W2 and capacity/performance. Literal-only admission retains its
+existing validation path and exact counters; only data sources use the new branch.
