@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "57cc8e3e63ad2eea2133ad08ab232a2112752478",
+      "commit": "c857d7a71b5172c68b5eb9f5ebe6a80739379095",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "1.8.0",
@@ -30,24 +30,24 @@
       "evidence_level": "SP1.8 compositional/partial source; FAST and qualification-local PASS; Draft review pending",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/cobol-semantic-product.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/scalar-text-move.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/evals/checkpoint-4a.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/test/resources/cobol/semantic/AIR-MOVE.cbl",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/call-semantic-product.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/if-semantic-product.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/CobolSemanticProduct.java",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/test/resources/cobol/semantic/cp6-w2a-closed.cbl",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/src/test/resources/cobol/semantic/cp6-w2a-open.cbl",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/work/evidence/WORK-AST-006/products/closed.json.gz",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/work/evidence/WORK-AST-006/products/open.json.gz",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/move-data-source.md",
-        "https://github.com/Gustavo2358/proleap-poc/blob/57cc8e3e63ad2eea2133ad08ab232a2112752478/docs/domain/perform-basic.md"
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/cobol-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductEntryGobackTest.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/scalar-text-move.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/evals/checkpoint-4a.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/test/resources/cobol/semantic/AIR-MOVE.cbl",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/call-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/if-semantic-product.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/CobolSemanticProduct.java",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/test/resources/cobol/semantic/cp6-w2a-closed.cbl",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/src/test/resources/cobol/semantic/cp6-w2a-open.cbl",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/work/evidence/WORK-AST-006/products/closed.json.gz",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/work/evidence/WORK-AST-006/products/open.json.gz",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/move-data-source.md",
+        "https://github.com/Gustavo2358/proleap-poc/blob/c857d7a71b5172c68b5eb9f5ebe6a80739379095/docs/domain/perform-basic.md"
       ],
       "observed_on": "2026-09-12",
-      "tree": "705d0991e26e360b456dc21d6a4783cb3a83c474",
+      "tree": "7a773f1f1ff828acad699d2fe107eccb0db376b4",
       "blob_sha256": {
         "docs/domain/cobol-semantic-product.md": "505871146ff6ae07c01079bac468fe97e99f76b089d62ff5ec549e40921be430",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java": "b21f48b75082810190438581b19eda2b3c3ed2ea49bc0110d2c6340529385139",
@@ -63,7 +63,7 @@
         "docs/work/evidence/WORK-AST-006/products/closed.json.gz": "d583430f750b1fa78e3a4eba56974d2d3bc4328c48bb96df6623f80eb5bc37ca",
         "docs/work/evidence/WORK-AST-006/products/open.json.gz": "12559928197046e9d55f8f8725cba5ba5baa029eb176b755ace27f422f8ce95f",
         "docs/domain/move-data-source.md": "4b7d1be69b85d41de16d774db86fb4cb7e92e50a95455dc93d381273dc6a771f",
-        "docs/domain/perform-basic.md": "fc6c5212495c6f2b510b879426ecb12d86593439efbcc906c25ca5c0a269784d"
+        "docs/domain/perform-basic.md": "69856a82b5da2dd92d01647b64f6a35261565bb5115da94b13b33b3110c4baa7"
       }
     },
     {
@@ -306,5 +306,5 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "SP1.7 supported CP6 composition; AIR model and JSON unchanged"
+  "implementation_state": "SP1.8 compositional and conservative partial lowering; AIR2 model unchanged, existing JSON forms implemented"
 }

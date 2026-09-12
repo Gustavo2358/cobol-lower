@@ -71,3 +71,8 @@ PartialIntegrationSuite protects 1/2/5/40 mixed occurrences, both mandatory PERF
 cases, all source links, activation returns, partial regions and deterministic
 bytes under reversed physical statement inventory. Old seven MULTI-CALL fixtures
 remain frozen regressions; real source is rerun through SP1.8 locally.
+
+A control-only frontier after Assign or HavocMust has empty memory/dependency
+effects: the write was already applied. Missing continuation does not cancel the
+proof of a mandatory receiver and does not add a second possible write. Unit
+provenance links entry and the actual initial sequence, with no duplicate inputs.

@@ -8,7 +8,7 @@ import java.util.*;
 /** One explicit source occurrence per sequence; BASIC bodies specialize by activation. */
 final class PartialProgramAssembler {
     record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
-    static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit, OriginId entryOrigin,
+    static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
         var sequences=new ArrayList<Sequence>();
@@ -46,11 +46,12 @@ final class PartialProgramAssembler {
                 }
             } else if(precise && fact instanceof SpInput.GobackFact g) {
                 term=GobackHandler.translate(g,unit,ids,origins,uncertainties);link(fact.header().id(),term,label,statements,items);
-            } else if(fact instanceof SpInput.MoveFact m && destination!=null && m.target().role()==SpInput.OperandRole.WRITE
+            } else if(fact instanceof SpInput.MoveFact m && m.target().role()==SpInput.OperandRole.WRITE
                     && m.target().wholeItemAccess().filter(w->data.index().containsKey(w.data())).isPresent()) {
                 var havoc=ConservativeMove.translate(m,data,unit,ids,origins,operands,uncertainties);
                 instructions.add(havoc);link(m.header().id(),havoc,label,statements,items);
-                term=PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids);
+                term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
+                    : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
             } else {
                 term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact ? null : destination,data,unit,ids,origins,uncertainties,operands,true);
                 link(fact.header().id(),term,label,statements,items);
@@ -59,14 +60,17 @@ final class PartialProgramAssembler {
         }
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
-        return new Assembly(List.copyOf(sequences),label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids),entryOrigin);
+        var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
+        var entrySequence=sequences.stream().filter(s->s.label().equals(entryLabel)).findFirst().orElseThrow();
+        return new Assembly(List.copyOf(sequences),entryLabel,entrySequence.origin());
     }
     private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects) {
         var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
         var id=new OperationId(unit,ids.id("operation","opaque",unit.localId(),fact.header().id().handle()));
         var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","unsupported-region",id.localId(),"semantics"));
-        var known=OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties);
+        var known=unknownEffects ? OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties)
+            : new OpaqueOperands.Known(List.of(),List.of(),List.of(),List.of());
         var scope=new Scopes.EntityScope(List.of(id));
         var code=!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,

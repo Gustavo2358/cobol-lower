@@ -7,7 +7,7 @@ scope:
   - SP1.8 explicit semantics with backward-compatible decoding
 notes: Coordinated with WORK-CFG-038. Draft review only; no merge or auto-merge.
 baseline_merge: 797dcbd6f05f12661299339746c607b5b57ac1ba
-frontend_pin: 57cc8e3e63ad2eea2133ad08ab232a2112752478
+frontend_pin: c857d7a71b5172c68b5eb9f5ebe6a80739379095
 air_java_pin: b1c45b8f23452082c9f3969b78915976747e87c7
 implementation: >-
   SP1.8 selects per-statement precision and conservative fallback after structural
@@ -18,9 +18,16 @@ implementation: >-
   contracts preserve their original semantics. No AST/COBOL parsing in the lower.
 validation: >-
   FAST PASS including architecture and partial fixtures, /tmp/partial-lower-fast-1.log.
-  Final qualification-local PASS, /tmp/partial-lower-full-2.log: semantic suites,
+  Final qualification-local PASS, /tmp/partial-lower-full-4.log: semantic suites,
   backward decoder contracts, 20,000 MOVE capacity with real AIR validation and
   deterministic Publication equality, transport/atomicity and architecture.
   The first attempt exposed a historical future-version test using 1.8; it now
-  uses 1.9 and the unknown-version refusal remains tested. No production changed.
+  uses 1.9 and the unknown-version refusal remains tested. Final productive boundary
+  corrections below were requalified after the integrated findings.
 review_state: IMPLEMENTED / AWAITING HUMAN REVIEW; integrated exact-pin gate in WORK-CFG-038.
+integrated_corrections: >-
+  Unit lineage links the actual initial sequence rather than duplicating entryOrigin.
+  An unknown continuation after a proved write has a control-only Opaque, without
+  repeating memory effects. Mandatory unknown writes remain HavocMust even when
+  their continuation is unknown. Compound PERFORM and DISPLAY handler fixtures
+  preserve source CALL sites and open control.

@@ -28,7 +28,7 @@ final class PartialProgramLowerer implements LowerInput {
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
         var data = ScalarDataTranslator.translate(plan.data(), unit, ids, origins, items, uncertainties);
-        var assembly = PartialProgramAssembler.assemble(plan, data, unit, entryOrigin, ids, origins, statements, operands, items, uncertainties);
+        var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
         if(sourceEntry.signature().availability()!=SpInput.Availability.KNOWN) {

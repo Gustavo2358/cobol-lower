@@ -27,8 +27,12 @@ public final class PartialIntegrationSuite {
     }
     public static void run() throws Exception {
         var codec=new AirJson();
-        for(var name:List.of("p1","p2","p3","p4","p5","mixed-data","entry-using","body-gap","must-write","call-unknown","call-handlers","read","call-using","call-returning","perform-distinct","perform-repeated","if-arm","if-nested","if-unknown","compose-1","compose-2","compose-5","compose-40")) {
+        for(var name:List.of("p1","p2","p3","p4","p5","mixed-data","entry-using","body-gap","control-body","display-handler","must-write","call-unknown","call-handlers","read","call-using","call-returning","perform-distinct","perform-repeated","if-arm","if-nested","if-unknown","compose-1","compose-2","compose-5","compose-40")) {
             var input=fixture(name);var r=lower(input);var publication=r.publication().orElseThrow();var unit=publication.units().getFirst();
+            var unitOrigin=publication.origins().stream().filter(o->o.id().equals(unit.origin())).map(Origins.Derived.class::cast).findFirst().orElseThrow();
+            var entryOrigin=unit.entries().getFirst().origin();
+            var entrySequence=unit.sequences().stream().filter(q->q.label().equals(unit.entries().getFirst().initialLabel().orElseThrow())).findFirst().orElseThrow();
+            check(unitOrigin.inputs().equals(List.of(entryOrigin,entrySequence.origin())) && !entryOrigin.equals(entrySequence.origin()),"unit lineage contains entry and actual initial sequence "+name);
             var expected=new HashSet<>(input.statements().stream().map(s->s.header().id()).toList());
             check(expected.equals(new HashSet<>(r.statements().stream().map(LoweringResult.StatementLink::source).toList())),"no source statement elision "+name);
             check(r.statements().stream().map(LoweringResult.StatementLink::target).distinct().count()==r.statements().size(),"unique operation per activation "+name);
@@ -48,6 +52,13 @@ public final class PartialIntegrationSuite {
             if(List.of("p1","p2","p3","p5","read","if-unknown").contains(name)) {
                 check(unit.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.Opaque),"conservative operation retained "+name);
                 check(!publication.uncertainties().isEmpty(),"explicit gap "+name);
+            }
+            for(var sequence:unit.sequences()) if(sequence.terminator() instanceof Operations.Opaque opaque
+                    && publication.uncertainties().stream().anyMatch(u->opaque.header().uncertainties().contains(u.id()) && u.code().equals("cobol-lower:NORMAL_CONTINUATION_NOT_PROVEN"))) {
+                var memory=opaque.envelope().memory();
+                check(opaque.knownOperands().isEmpty() && memory.knownReads().isEmpty() && memory.knownWrites().isEmpty()
+                    && memory.otherReads()==Scopes.NoMemory.INSTANCE && memory.otherWrites()==Scopes.NoMemory.INSTANCE,
+                    "control-only frontier does not repeat or reopen a proved write "+name);
             }
             var bytes=codec.encode(publication);check(Arrays.equals(bytes,codec.encode(codec.decode(bytes))),"AIR A/B "+name);
             var facts=new ArrayList<>(input.statements());Collections.reverse(facts);
