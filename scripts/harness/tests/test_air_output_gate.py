@@ -33,32 +33,33 @@ class AirOutputGate(unittest.TestCase):
                     harness.verify_dependency()
     def test_call_suites_cannot_be_skipped(self):
         prefix = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\n'
-        for name in ('LOWER_CALL_TESTS', 'LOWER_CALL_INTEGRATION_TESTS'):
-            other = 'LOWER_CALL_INTEGRATION_TESTS' if name == 'LOWER_CALL_TESTS' else 'LOWER_CALL_TESTS'
+        required = ('LOWER_CALL_TESTS', 'LOWER_CALL_INTEGRATION_TESTS', 'LOWER_IF_TESTS', 'LOWER_IF_INTEGRATION_TESTS')
+        for name in required:
+            others = ''.join(other + '=1\n' for other in required if other != name)
             for marker in ('', name + '=0\n', name + '=1\n' + name + '=1\n'):
-                with self.subTest(name=name, marker=marker), patch.object(harness, 'verify_dependency'), patch.object(harness, 'maven', return_value=[]), patch.object(harness, 'run', return_value=prefix + other + '=1\n' + marker):
+                with self.subTest(name=name, marker=marker), patch.object(harness, 'verify_dependency'), patch.object(harness, 'maven', return_value=[]), patch.object(harness, 'run', return_value=prefix + others + marker):
                     with self.assertRaisesRegex(RuntimeError, 'CALL tests absent/zero/duplicate: ' + name):
                         harness.semantic()
     def test_missing_zero_or_duplicate_suite_rejected(self):
-        for marker in ('', 'LOWER_AIR_OUTPUT_TESTS=0\n', 'LOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\n'):
+        for marker in ('', 'LOWER_AIR_OUTPUT_TESTS=0\n', 'LOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\n'):
             with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\n'+marker):
                 with self.assertRaisesRegex(RuntimeError,'AIR output tests absent/zero/duplicate'):
                     harness.semantic()
     def test_output_suite_present(self):
-        with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'):
+        with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value='LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'):
             harness.semantic()
     def test_production_probe_is_mandatory(self):
-        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\n'
+        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\n'
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
             with self.assertRaisesRegex(RuntimeError,'production path probe absent/zero'):
                 harness.semantic()
     def test_production_limit_order_is_mandatory_in_performance(self):
-        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'
+        output = 'LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\nPRODUCTION_SUCCESS_PROBE data=400 moves=400\n'
         with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=output):
             with self.assertRaisesRegex(RuntimeError,'production capacity probe absent'):
                 harness.semantic(('-Dlower.performance=true',))
     def test_capacity_proof_is_mandatory_in_performance(self):
-        prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
+        prefix = ('LOWER_TESTS=1\nLOWER_TESTS=1\nLOWER_AIR_OUTPUT_TESTS=1\nLOWER_CALL_TESTS=1\nLOWER_CALL_INTEGRATION_TESTS=1\nLOWER_IF_TESTS=1\nLOWER_IF_INTEGRATION_TESTS=1\nLOWER_PRODUCTION_TESTS=1\n'
                   'PRODUCTION_SUCCESS_PROBE data=400 moves=400\nPRODUCTION_CAPACITY_PROBE data=1 moves=10000\n')
         for marker in ('', 'LOWER_CAPACITY_TESTS=0\n', 'LOWER_CAPACITY_TESTS=1\nLOWER_CAPACITY_TESTS=1\n', 'LOWER_CAPACITY_TESTS=1\n'):
             with patch.object(harness,'verify_dependency'), patch.object(harness,'maven',return_value=[]), patch.object(harness,'run',return_value=prefix+marker):

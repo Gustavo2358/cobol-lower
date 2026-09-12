@@ -15,7 +15,7 @@ MANIFEST = "docs/quality/" + IDENT + "/CP5-manifest.yaml"
 def copy_checkout(root):
     for name in ("docs", "scripts", "core", "adapters", ".github"):
         shutil.copytree(ROOT / name, root / name, ignore=shutil.ignore_patterns("target", "__pycache__"))
-    for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "pom.xml", ".gitignore"):
+    for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "MANIFEST.sha256", "pom.xml", ".gitignore"):
         shutil.copy2(ROOT / name, root / name)
     attach_git(root)
 

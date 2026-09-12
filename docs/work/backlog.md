@@ -10,8 +10,8 @@ Backlog não é autorização. A prioridade inicial é o primeiro proof point, s
 | [BACKLOG-LOWER-004](backlog/BACKLOG-LOWER-004.md) | Primeira integração com analysis-cfg | `candidate` |
 | [BACKLOG-LOWER-005](backlog/BACKLOG-LOWER-005.md) | DATA nominal e tipos/storage explicitamente desconhecidos | `needs_discovery` |
 | [BACKLOG-LOWER-006](backlog/BACKLOG-LOWER-006.md) | MOVE preciso e normalização de valores | `needs_discovery` |
-| [BACKLOG-LOWER-007](backlog/BACKLOG-LOWER-007.md) | IF e controle condicional sustentado | `needs_discovery` |
-| [BACKLOG-LOWER-008](backlog/BACKLOG-LOWER-008.md) | CALL e contrato por site de interação | `needs_discovery` |
+| [BACKLOG-LOWER-007](backlog/BACKLOG-LOWER-007.md) | IF e controle condicional sustentado | `in_progress` |
+| [BACKLOG-LOWER-008](backlog/BACKLOG-LOWER-008.md) | CALL e contrato por site de interação | `completed` |
 | [BACKLOG-LOWER-009](backlog/BACKLOG-LOWER-009.md) | Fallback opaco com envelopes conservadores | `needs_discovery` |
 | [BACKLOG-LOWER-010](backlog/BACKLOG-LOWER-010.md) | PERFORM e controle local | `needs_discovery` |
 | [BACKLOG-LOWER-011](backlog/BACKLOG-LOWER-011.md) | EVALUATE/SEARCH e seleção | `needs_discovery` |
@@ -29,4 +29,4 @@ A saída AIR em arquivo está mergeada no 2A de BACKLOG-LOWER-003 (PR #4). A int
 
 [WORK-LOWER-009](history/WORK-LOWER-009.md) COMPLETED local: sincronizou baselines existentes; PR10 aguarda CI final/merge; não inicia capacidades futuras nem CP6.
 
-CP6 W1C: BACKLOG-LOWER-008 in_progress under [WORK-LOWER-010](active/WORK-LOWER-010/work-item.yaml); first CALL slice only.
+CP6 W1C: BACKLOG-LOWER-008 completed under [WORK-LOWER-010](history/WORK-LOWER-010.md); first CALL slice only.

@@ -1,7 +1,7 @@
 # BACKLOG-LOWER-008 — CALL e contrato por site de interação
 
-**Estado:** `in_progress`. **Fase:** `capability`. **Autorização:** implementação
-da primeira slice CP6 W1C em [WORK-LOWER-010](../active/WORK-LOWER-010/work-item.yaml).
+**Estado:** `completed`. **Fase:** `capability`. **Autorização:** implementação
+da primeira slice CP6 W1C em [WORK-LOWER-010](../history/WORK-LOWER-010.md).
 
 ## Problema e objetivo observável
 
@@ -37,5 +37,5 @@ este. W1D/W2 não autorizados; irmãos somente read-only.
 
 [Evidência W1C](../../quality/WORK-LOWER-010/CP0.json) e
 [guia de RED/GREEN/E2E](../../quality/WORK-LOWER-010/evidence-guide.md).
-Implementação aguarda review humano; esta promoção não certifica CALL geral,
+PR #11 mergeada; review formal não registrado na API. Este fechamento não certifica CALL geral,
 resolução dinâmica ou contrato externo conhecido.

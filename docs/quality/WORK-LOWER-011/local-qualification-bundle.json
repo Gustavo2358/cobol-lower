@@ -1,0 +1,12 @@
+{
+  "kind": "LOCAL_QUALIFICATION_BUNDLE",
+  "qualified_head": "f588704c5a958af93562fe10e5e6646f5cb6a17e",
+  "qualified_tree": "c7acea42fd4ab0fb21cb03c6314016e24ac46544",
+  "archive": "local-qualification.tar.gz",
+  "archive_sha256": "3bc7919aaedd72479fce0d617ffeba53ea7a59facfa9354895ca5d7dffeb9180",
+  "receipt_sha256": "b962a4377f7eabc2cfa0de8f86884057456012db8bc7cb50f356dbfd8331dadd",
+  "conclusion": "success",
+  "raw_evidence_files": 761,
+  "all_stage_exits_zero": true,
+  "documentation_successor_policy": "Qualification belongs only to the qualified HEAD/tree; packaging does not claim full execution on a later commit."
+}

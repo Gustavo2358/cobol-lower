@@ -1,11 +1,15 @@
 # cobol-lower
 
+CP6 W2B: SP 1.4.0 IF simples → AIR diamond com Branch(Unknown BOOL),
+Assign/Jump, Invoke e Return; premissa DisjointStorage traduzida da prova upstream.
+[Contrato IF](docs/domain/simple-if-diamond.md), [work item W2B](docs/work/active/WORK-LOWER-011/work-item.yaml).
+
 CP6 W1C: SP 1.3.0 → DATA/MOVE textual + CALL literal ou DATA + GOBACK → AIR Invoke/JSON.
-[Contrato e limites](docs/domain/call-lowering.md), [work item](docs/work/active/WORK-LOWER-010/work-item.yaml).
+[Contrato e limites](docs/domain/call-lowering.md), [work item](docs/work/history/WORK-LOWER-010.md).
 Consome o resultado fitted publicado pelo SP, preserva alvo dinâmico como Read e
 mantém efeitos/outcomes abertos. Sem resolução dinâmica, interpretação de nomes,
 CFG, dataflow ou produto de dependências. CP3/SP1.1 e scalar/SP1.2 preservados.
-CLI usa o shared codec W1B; falha de encode não publica saída parcial. SP válido
+CLI usa o shared codec W2C; falha de encode não publica saída parcial. SP válido
 suportado não tem teto de bytes, nós ou visitas; proteção de profundidade e
 limites operacionais do codec permanecem.
 
@@ -13,7 +17,7 @@ O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em
 
 ## Usar e verificar
 
-A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles CALL, escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
+A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles IF, CALL, escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
 
 No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê o Path completo com proteção estrutural de profundidade. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
 
@@ -28,7 +32,7 @@ python3 scripts/harness/run.py performance
 python3 scripts/harness/run.py full
 ```
 
-`full` exige a branch/PR autorizados; no CI publicado usa `--commit "$GITHUB_SHA"`, certificado/trailer e head exatos. Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
+`full` é exclusivamente local. O CI publicado executa apenas `ci-fast` no head exato; [política e qualification local](docs/engineering/ci-qualification.md). Maven sozinho não substitui certificação nem confirmação remota. Os testes Java executam pelo exec-maven-plugin, com marcadores não zero, não por contagem vazia de Surefire. [Gates](docs/engineering/gates.md) explica execução e limites.
 
 ## CLI: arquivo SP → arquivo AIR
 
@@ -90,7 +94,7 @@ O limite de caracteres de identidade avalia o ID final de 32 caracteres, não o 
 com os mesmos defaults de validação. Limites não fazem parte da identidade, não mudam o perfil,
 não elevam PARTIAL a COMPLETE e não convertem interrupção em sucesso. Não há flags de capacidade. A memória disponível continua sendo um recurso finito; BACKLOG-LOWER-018 não foi resolvido.
 
-A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full/CI`, percorre a fixture
+A suíte `AirOutputSuite`, chamada pelo Maven e obrigatória em `semantic/full` local, percorre a fixture
 SP real, verifica bytes contra o codec, decode integral, repetição, falhas e publicação física.
 Os oracles anteriores de Entry/Sequence/Return, PARTIAL, claims, origins, uncertainties e correlation
 continuam independentes do round-trip. AIR JSON não inclui o relatório externo de lowering; links de
@@ -108,9 +112,9 @@ PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex min
 
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
-WORK-LOWER-001–005 estão reconciliados após merges confirmados. O trabalho atual é
-[WORK-LOWER-010](docs/work/active/WORK-LOWER-010/work-item.yaml), CP6 W1C.
-PR para review humano; sem merge/auto-merge; W1D/W2 não iniciados e não autorizados.
+WORK-LOWER-001–005 e [WORK-LOWER-010](docs/work/history/WORK-LOWER-010.md)
+estão reconciliados após merges confirmados. CP6 W1C está completed/merged;
+review formal não registrado na API. W2B possui autorização separada; W2D não iniciado.
 
 IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro de
 colisões por publicação. A revisão escalar usa domínio versionado próprio; CP3

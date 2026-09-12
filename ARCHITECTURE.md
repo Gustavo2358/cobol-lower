@@ -64,3 +64,11 @@ de entrada; CallLowerer reutiliza tradução de DATA, MOVE e origens. InvokeHand
 e CallSequenceAssembler produzem duas sequências com continuação SP explícita.
 Wire13/Materialize continuam em adapters. Core conhece somente SpInput e modelo/
 validator AIR; codec continua exclusivo de adapters. [Contrato CALL](docs/domain/call-lowering.md).
+
+## CP6 W2B
+
+O dispatch IF precede CALL. IfAdmission reutiliza validação de referências/MOVEs
+e índices comuns; IfSequenceAssembler retorna entryLabel explícito. IfPredicate
+e StoragePremise traduzem somente garantias publicadas. Wire14 é fechado e separado
+do Wire13. CallSequenceAssembler também devolve sua entry explicitamente, preservando
+bytes W1. [Contrato IF](docs/domain/simple-if-diamond.md) e [CI/qualification](docs/engineering/ci-qualification.md).

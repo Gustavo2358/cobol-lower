@@ -22,7 +22,11 @@ G-DOCS verifica o grafo documental corrente; os handoffs em `docs/sources/histor
 
 No checkout publicado, `full --commit <SHA completo>` verifica também HEAD exato, worktree limpa, certificado/trailer/digest/FREEZE, autoridade e PR/head. O modo local conserva preflight de branch/escopo/PR; não aceita detached como fallback. `--mode historical` audita certificado e identidade PR/Git sem autorizar código nem exigir PR aberto. `reconcile` compara registro histórico com metadata remota e detecta reconciliação pendente; auditoria de um certificado antigo não afirma que o registro atual já foi reconciliado.
 
-O workflow `checkpoint` recebe push em todas as branches (`**`), incluindo main. Após bootstrap, `ci --commit "$GITHUB_SHA"` exige evento push e checkout limpo no SHA exato. Branch de trabalho usa o trailer/evidence do próprio head e execução com PR aberto; main exige PR mergeado associado ao merge SHA por API, ancestralidade do head certificado e evidence idêntica no merge. Executa full sobre o checkout main com auditoria histórica do head do PR. Merge sem associação única/prova preservada falha: não há fallback para outro work item. O perfil full atual conserva os seis gates e os dois módulos semânticos existentes; novos trabalhos precisam de autorização/evidence própria, sem branch especial. O check obrigatório segue identificável por nome `checkpoint`, workflow `.github/workflows/checkpoint.yml`, app `github-actions`, evento `push` e head SHA exato. Sua própria conclusão só é consultada depois por remote, nunca presumida pelo job em andamento. Não há pipeline de release nem merge automático.
+O workflow `checkpoint` executa somente `ci-fast` em push/PR/main. A
+[política corrente](ci-qualification.md) proíbe full, performance, challenges,
+mutation e E2E pesado remotamente, inclusive workflow manual. DOCS_ONLY evita
+bootstrap; mudanças de código/harness usam perfil focal fixo. O único check remoto
+é `checkpoint`; sua conclusão não certifica a qualification local.
 
 ## Estado de execução e enforcement
 
@@ -33,7 +37,7 @@ branch e evidence idêntica já verificados. PR explícita divergente ou null fo
 de CP0 falha. O certificado original não é alterado e a auditoria permanece
 histórica, sem conceder autorização de execução. `test_ci_bootstrap.py` constrói
 históricos Git reais e controla apenas as respostas da API; `ci_bootstrap_challenge.py`
-é obrigatório em `challenge/full/CI`, com seis mutações, restauração e segundo GREEN.
+é obrigatório em `challenge/full` local, com seis mutações, restauração e segundo GREEN.
 
 Enforcement: SPECIFIED_NOT_IMPLEMENTED → IMPLEMENTED_UNVERIFIED → AUTOMATED_VERIFIED, somente com executor real e evidência positivo/negativo. Cada execução possui status PASS/FAIL/NOT_RUN/BLOCKED/NOT_APPLICABLE, SHA e escopo. NOT_APPLICABLE exige razão contratual e não pode mascarar gate obrigatório ausente.
 
@@ -59,7 +63,7 @@ Falsificações mínimas: link quebrado; invariant inexistente em eval; active c
 
 ## CI e espera remota
 
-O workflow do bootstrap parte de checkout limpo, resolve air-java no SHA, verifica número real de testes, executa gates e contracasos e confere o commit com a evidência. Logs/exit codes ficam no run remoto. Cache não substitui source lock. Node não é dependência de aplicação/build; ações do provedor podem usá-lo internamente. Gates de parser do ProLeap não pertencem ao lowerer.
+O workflow FAST parte de checkout limpo, classifica somente docs versus código, e verifica o perfil fixo e a identidade do checkout. Qualification pesada é exclusivamente local. Logs/exit codes ficam no run remoto. Cache não substitui source lock. Node não é dependência de aplicação/build; ações do provedor podem usá-lo internamente. Gates de parser do ProLeap não pertencem ao lowerer.
 
 Checks remotos obrigatórios devem ser enumerados no FREEZE com identidade verificável (workflow/job/contexto e produtor esperado) e `remote_wait_limit_seconds` positivo, medido desde o primeiro push do CP, sem reiniciar a espera por reruns; incluir os exigidos pelo plano/perfil e pelo PR. Não descobrir obrigatoriedade apenas pela lista de runs existentes, que pode estar vazia por workflow defeituoso. CP4 prova CI e exige essa espera antes de CP5; CP5 também espera os checks finais do seu SHA.
 
@@ -75,7 +79,7 @@ Registrar comando, cwd lógico, SHA, ambiente, saída/contagem, exit code, subse
 
 `semantic` exige também exatamente um marcador `LOWER_AIR_OUTPUT_TESTS` positivo, emitido pela
 execução Maven `air-output-suite`. Remover/skippá-la faz o gate falhar mesmo com Maven exit 0.
-`full` e o job CI `checkpoint` executam esse mesmo gate; não há seleção por branch/work item.
+`full` local executa esse mesmo gate; o CI `checkpoint` usa somente o perfil focal fixo descrito na política corrente.
 `bootstrap` vincula os dois jars (air-java e air-json) ao build do SHA e seus digests; ambos são
 reverificados no uso. G-ARCH verifica core sem air.json em source/API/bytecode/jdeps/Maven,
 Jackson restrito ao SP, ownership do package upstream e ausência de shading/cópias nos jars.

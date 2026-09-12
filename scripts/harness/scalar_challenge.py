@@ -45,6 +45,8 @@ CASES = [
 def digest(data): return hashlib.sha256(data).hexdigest()
 
 def main():
+    from local_only import require_local
+    require_local()
     logs = Path(os.environ['LOWER_BUILD_ROOT']) / 'scalar-challenge-logs'
     logs.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='lower-scalar-challenge-') as folder:

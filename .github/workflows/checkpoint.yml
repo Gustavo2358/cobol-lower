@@ -2,22 +2,25 @@ name: Checkpoint verification
 "on":
   push:
     branches: ['**']
+  pull_request:
+    branches: [main]
 permissions:
   contents: read
   pull-requests: read
 jobs:
   checkpoint:
     runs-on: ubuntu-latest
-    # Cumulative CP6 regression and restored challenges exceeded 30 min on CI.
-    timeout-minutes: 45
+    timeout-minutes: 15
     env:
       LOWER_BUILD_ROOT: /tmp/lower-build-${{ github.run_id }}-${{ github.run_attempt }}
       GH_TOKEN: ${{ github.token }}
       MAVEN_OPTS: -Xmx3g
+      CHECKOUT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -27,7 +30,5 @@ jobs:
           python-version: '3.12'
       - name: Harness dependencies
         run: python3 -m pip install -r scripts/harness/requirements.txt
-      - name: Fixed AIR snapshot and upstream tests
-        run: python3 scripts/harness/run.py bootstrap
-      - name: Full first-slice gates and restored challenge
-        run: python3 scripts/harness/run.py ci --commit "$GITHUB_SHA"
+      - name: Remote fast gate only
+        run: python3 scripts/harness/run.py ci-fast --commit "$CHECKOUT_SHA"

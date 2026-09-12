@@ -38,12 +38,14 @@ def mutate(root, path, replacement, predicate, expected, ident):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     count = 7
     with tempfile.TemporaryDirectory(prefix="lower-challenge-") as name:
         root = Path(name)
         for item in ("docs", "scripts", "core", "adapters", ".github"):
             shutil.copytree(ROOT / item, root / item, ignore=shutil.ignore_patterns("target", "__pycache__"))
-        for item in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "pom.xml", ".gitignore"):
+        for item in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "MANIFEST.sha256", "pom.xml", ".gitignore"):
             shutil.copy2(ROOT / item, root / item)
         attach_git(root)
         mutate(root, "README.md", lambda b: b + b"\n[broken](missing.md)\n",
@@ -97,4 +99,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from local_only import require_local
+    require_local()
     main()

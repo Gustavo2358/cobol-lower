@@ -35,16 +35,16 @@
       "backlog_ids": []
     },
     {
-      "id": "WORK-LOWER-010",
+      "id": "WORK-LOWER-011",
       "status": "active",
-      "path": "docs/work/active/WORK-LOWER-010",
+      "path": "docs/work/active/WORK-LOWER-011",
       "authorized_checkpoints": [
         "CP0"
       ],
-      "git_branch": "feat/cp6-w1c-call-lowering",
-      "pull_request": 11,
+      "git_branch": "feat/cp6-w2b-if-lowering",
+      "pull_request": 12,
       "backlog_ids": [
-        "BACKLOG-LOWER-008"
+        "BACKLOG-LOWER-007"
       ]
     }
   ],
@@ -232,12 +232,44 @@
       "evidence": "docs/quality/WORK-LOWER-009/CP0.json",
       "review_status": "pending_human",
       "merge_status": "open_not_merged"
+    },
+    {
+      "id": "WORK-LOWER-010",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-010.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "feat/cp6-w1c-call-lowering",
+      "pull_request": 11,
+      "backlog_ids": [
+        "BACKLOG-LOWER-008"
+      ],
+      "manifest": "docs/quality/WORK-LOWER-010/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-010/CP0.json",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 11,
+        "branch": "feat/cp6-w1c-call-lowering",
+        "base": "main",
+        "head_sha": "7df2989d8d02c13552645386bbd963de00c7b4b4",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "9de3825da64898258e647727393f01b9e9198d9e",
+        "merged_at": "2026-09-11T20:02:33Z",
+        "observed_at": "2026-09-12T15:00:57.824491+00:00"
+      }
     }
   ],
   "backlog": [
     {
       "id": "BACKLOG-LOWER-001",
-      "title": "Primeiro slice Entry/GOBACK \u2192 AIR Return",
+      "title": "Primeiro slice Entry/GOBACK → AIR Return",
       "status": "completed",
       "phase": "foundation",
       "dependencies": [],
@@ -246,7 +278,7 @@
     },
     {
       "id": "BACKLOG-LOWER-002",
-      "title": "Sequenciamento e invent\u00e1rios execut\u00e1veis maiores",
+      "title": "Sequenciamento e inventários executáveis maiores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -257,7 +289,7 @@
     },
     {
       "id": "BACKLOG-LOWER-003",
-      "title": "Adapter AIR JSON de sa\u00edda e prova interoper\u00e1vel",
+      "title": "Adapter AIR JSON de saída e prova interoperável",
       "status": "completed",
       "phase": "transport",
       "dependencies": [
@@ -268,7 +300,7 @@
     },
     {
       "id": "BACKLOG-LOWER-004",
-      "title": "Primeira integra\u00e7\u00e3o com analysis-cfg",
+      "title": "Primeira integração com analysis-cfg",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -290,7 +322,7 @@
     },
     {
       "id": "BACKLOG-LOWER-006",
-      "title": "MOVE preciso e normaliza\u00e7\u00e3o de valores",
+      "title": "MOVE preciso e normalização de valores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -302,18 +334,18 @@
     {
       "id": "BACKLOG-LOWER-007",
       "title": "IF e controle condicional sustentado",
-      "status": "needs_discovery",
+      "status": "in_progress",
       "phase": "capability",
       "dependencies": [
         "BACKLOG-LOWER-002"
       ],
       "path": "docs/work/backlog/BACKLOG-LOWER-007.md",
-      "work_item": null
+      "work_item": "WORK-LOWER-011"
     },
     {
       "id": "BACKLOG-LOWER-008",
-      "title": "CALL e contrato por site de intera\u00e7\u00e3o",
-      "status": "in_progress",
+      "title": "CALL e contrato por site de interação",
+      "status": "completed",
       "phase": "capability",
       "dependencies": [
         "BACKLOG-LOWER-005"
@@ -345,7 +377,7 @@
     },
     {
       "id": "BACKLOG-LOWER-011",
-      "title": "EVALUATE/SEARCH e sele\u00e7\u00e3o",
+      "title": "EVALUATE/SEARCH e seleção",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -356,7 +388,7 @@
     },
     {
       "id": "BACKLOG-LOWER-012",
-      "title": "Outros terminais e transfer\u00eancias",
+      "title": "Outros terminais e transferências",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -389,7 +421,7 @@
     },
     {
       "id": "BACKLOG-LOWER-015",
-      "title": "Adapter de integra\u00e7\u00e3o em mem\u00f3ria e composi\u00e7\u00e3o Maven",
+      "title": "Adapter de integração em memória e composição Maven",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -400,7 +432,7 @@
     },
     {
       "id": "BACKLOG-LOWER-016",
-      "title": "Evolu\u00e7\u00e3o do harness e conformidade declarada",
+      "title": "Evolução do harness e conformidade declarada",
       "status": "candidate",
       "phase": "harness",
       "dependencies": [],

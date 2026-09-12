@@ -5,8 +5,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory) {
+        this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
+    }
     public SpInput {
+        Objects.requireNonNull(storageIndependence, "storageIndependence");
         Objects.requireNonNull(unit, "unit");
         Objects.requireNonNull(policy, "policy");
         dataDeclarations = List.copyOf(dataDeclarations);
@@ -17,7 +21,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, OtherStatement { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -234,6 +238,40 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public CallFact { Objects.requireNonNull(header); Objects.requireNonNull(syntax); Objects.requireNonNull(target);
             Objects.requireNonNull(runtimeTarget); Objects.requireNonNull(runtimeUncertaintyCode); Objects.requireNonNull(normalContinuation);
             Objects.requireNonNull(surface); Objects.requireNonNull(effects); Objects.requireNonNull(outcomes); }
+    }
+
+    // Closed SP 1.4 facts. These describe upstream proof, never AIR or evaluated truth.
+    public enum PredicateProfile { SCALAR_TEXT_EQUALITY, UNAVAILABLE }
+    public enum PredicateDomain { BOOLEAN, UNKNOWN }
+    public enum PredicateEvaluation { PURE, UNKNOWN }
+    public enum PredicateCompletion { TOTAL, UNKNOWN }
+    public enum ReadsCompleteness { COMPLETE, PARTIAL }
+    public enum PredicateTruth { UNKNOWN }
+    public enum IfProfile { SIMPLE_TEXT_EQUALITY, OUTSIDE_SLICE }
+    public enum StorageIndependenceRule { INDEPENDENT_WORKING_STORAGE_ROOTS }
+    public record PredicateGuarantee(Availability availability, PredicateProfile profile, PredicateDomain resultDomain,
+            PredicateEvaluation evaluation, PredicateCompletion normalCompletion, ReadsCompleteness readsCompleteness,
+            PredicateTruth truthValue, List<OperandId> knownReads, Provenance provenance, List<String> gapCodes) {
+        public PredicateGuarantee { Objects.requireNonNull(availability); Objects.requireNonNull(profile); Objects.requireNonNull(resultDomain);
+            Objects.requireNonNull(evaluation); Objects.requireNonNull(normalCompletion); Objects.requireNonNull(readsCompleteness);
+            Objects.requireNonNull(truthValue); knownReads=List.copyOf(knownReads); Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
+    }
+    public record IfArm(ClausePresence presence, Availability contentAvailability, ExecutableStart entry, Provenance provenance, List<String> gapCodes) {
+        public IfArm { Objects.requireNonNull(presence); Objects.requireNonNull(contentAvailability); Objects.requireNonNull(entry);
+            Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
+    }
+    public record IfFact(StatementHeader header, String conditionShape, PredicateGuarantee predicateGuarantee,
+            List<DataReference> conditionReads, Provenance conditionProvenance, boolean explicitlyTerminated,
+            Optional<StatementId> continuation, NormalContinuation normalContinuation, IfArm thenArm, IfArm elseArm,
+            IfProfile profile) implements StatementFact {
+        public IfFact { Objects.requireNonNull(header); Objects.requireNonNull(conditionShape); Objects.requireNonNull(predicateGuarantee);
+            conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(conditionProvenance); Objects.requireNonNull(continuation);
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(thenArm); Objects.requireNonNull(elseArm); Objects.requireNonNull(profile); }
+    }
+    public record IndependentStorageSet(Availability availability, StorageIndependenceRule rule, String authority,
+            List<DataId> members, Optional<Provenance> provenance, List<String> gapCodes) {
+        public IndependentStorageSet { Objects.requireNonNull(availability); Objects.requireNonNull(rule); Objects.requireNonNull(authority);
+            members=List.copyOf(members); Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
 
     public record OtherStatement(StatementHeader header, Variant variant) implements StatementFact {

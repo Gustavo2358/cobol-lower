@@ -72,3 +72,12 @@ Preservar último checkpoint certificado; registrar blocker factual no state/evi
 ## Saída
 
 Responder com objetivo atingido ou bloqueado, commit/PR, testes reais, findings, limitações e próximo checkpoint não iniciado. Atualizar índices conforme lifecycle. Não misturar “pronto para review”, “aprovado”, “concluído localmente” e “mergeado”.
+
+## CP6 W2B qualification transaction
+
+The explicit user-authorized [CI/local split](ci-qualification.md) supersedes the
+pre-commit full timing above for W2B. Freeze → focused RED/GREEN → self-review →
+local mutations → exact restoration/second GREEN → clean candidate commit →
+LOCAL_QUALIFICATION once on exact HEAD/tree → push/Draft PR → remote FAST → human
+review. No heavy remote/manual qualification. Documentation-only successors do
+not inherit a full execution; protected-blob equality preserves the original receipt.

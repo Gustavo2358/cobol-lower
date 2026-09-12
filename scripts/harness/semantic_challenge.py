@@ -42,11 +42,13 @@ def green(root):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     with tempfile.TemporaryDirectory(prefix="lower-semantic-challenge-") as name:
         root = Path(name)
         for item in ("docs", "scripts", "core", "adapters", ".github"):
             shutil.copytree(ROOT / item, root / item, ignore=shutil.ignore_patterns("target", "__pycache__"))
-        for item in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "pom.xml", ".gitignore"):
+        for item in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "MANIFEST.sha256", "pom.xml", ".gitignore"):
             shutil.copy2(ROOT / item, root / item)
         for ident, relative, before_token, after_token, oracle in CASES:
             path = root / relative
@@ -78,4 +80,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from local_only import require_local
+    require_local()
     main()

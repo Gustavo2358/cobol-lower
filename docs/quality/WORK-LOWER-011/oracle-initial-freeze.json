@@ -1,0 +1,5 @@
+{
+  "path": "core/src/test/java/io/github/gustavo2358/lower/testing/IfOracle.java",
+  "sha256": "b1d3bb0f75be887aa33b81a58b17538076d147147ef6f5b1196eb3c6728cdf56",
+  "phase": "before W2B production implementation; initial oracle authored from SP/AIR public contract"
+}

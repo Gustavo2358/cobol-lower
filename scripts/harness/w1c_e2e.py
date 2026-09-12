@@ -16,6 +16,8 @@ def sha(data):
 
 
 def main():
+    from local_only import require_local
+    require_local()
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--producer', type=Path, required=True)
     p.add_argument('--m2', type=Path, required=True)
@@ -97,4 +99,6 @@ def main():
 
 
 if __name__ == '__main__':
+    from local_only import require_local
+    require_local()
     main()

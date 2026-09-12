@@ -28,14 +28,14 @@ final class CallLowerer implements LowerInput {
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
         var data = ScalarDataTranslator.translate(plan.data(), unit, ids, origins, items, uncertainties);
-        var sequences = CallSequenceAssembler.assemble(plan, data, unit, entryOrigin, ids, origins, statements, operands, items, uncertainties);
+        var assembly = CallSequenceAssembler.assemble(plan, data, unit, entryOrigin, ids, origins, statements, operands, items, uncertainties);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         var signature = new Interactions.Signature(new Interactions.ParameterInventory(List.of(), Interactions.NoRemainder.INSTANCE),
             new Interactions.ResultInventory(List.of(), Interactions.NoRemainder.INSTANCE), entryOrigin);
-        var entry = new Entries.Entry(entryId, Optional.of(sequences.getFirst().label()), signature, new Entries.EntryState(List.of(), List.of()), entryOrigin);
-        var entryLinks = List.of(new LoweringResult.EntryLink(sourceEntry.id(), entryId, sequences.getFirst().label(), entryOrigin));
+        var entry = new Entries.Entry(entryId, Optional.of(assembly.entryLabel()), signature, new Entries.EntryState(List.of(), List.of()), entryOrigin);
+        var entryLinks = List.of(new LoweringResult.EntryLink(sourceEntry.id(), entryId, assembly.entryLabel(), entryOrigin));
         items.add(ScalarEvidence.item(publication, "entry", sourceEntry.id().handle(), entryOrigin, List.of(entryId)));
-        var unitOrigin = origins.derived("unit-origin", List.of(entryOrigin, sequences.getFirst().origin()), "cp6-call@1/selected-unit");
+        var unitOrigin = origins.derived("unit-origin", List.of(entryOrigin, assembly.entrySequenceOrigin()), "cp6-call@1/selected-unit");
         var gaps = new ArrayList<UncertaintyId>();
         for (var code : input.entryInventory().gapCodes()) {
             var gap = new UncertaintyId(publication, ids.id("uncertainty", "scalar-entry-inventory", unit.localId(), Integer.toString(gaps.size()))); gaps.add(gap);
@@ -50,7 +50,7 @@ final class CallLowerer implements LowerInput {
                 gap.scope().name() + ": " + gap.detail(), origin));
         }
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
-        var body = new Unit(unit, Optional.empty(), data.objects(), List.of(), List.of(entry), sequences, List.of(),
+        var body = new Unit(unit, Optional.empty(), data.objects(), List.of(), List.of(entry), assembly.sequences(), List.of(),
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(List.of(), List.of()), origins.artifacts(),
             List.of(body), data.storage(), List.of(), List.of(), origins.origins(),

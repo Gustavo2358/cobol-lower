@@ -1,6 +1,10 @@
+# CP6 W2B
+
+[WORK-LOWER-011](active/WORK-LOWER-011/work-item.yaml): active CP0; [state](active/WORK-LOWER-011/state.md). Remote FAST only; full qualification LOCAL ONLY.
+
 # CP6 W1C
 
-[WORK-LOWER-010](active/WORK-LOWER-010/work-item.yaml): active implementation, CP0 only. [State](active/WORK-LOWER-010/state.md).
+[WORK-LOWER-010](history/WORK-LOWER-010.md): completed; PR #11 merged; formal review not_recorded. Documentary reconciliation only.
 
 # Trabalho de sincronização pós-CP5
 

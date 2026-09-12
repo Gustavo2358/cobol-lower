@@ -6,7 +6,8 @@ import java.util.*;
 
 /** A CALL terminates the current sequence; its explicit SP continuation owns the Return. */
 final class CallSequenceAssembler {
-    static List<Sequence> assemble(CallAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit, OriginId entryOrigin,
+    record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
+    static Assembly assemble(CallAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit, OriginId entryOrigin,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
         var call = plan.call().orElseThrow(); var goback = plan.terminal().orElseThrow();
@@ -34,6 +35,6 @@ final class CallSequenceAssembler {
         var origin = origins.derived(ids.id("origin", "call-sequence", unit.localId(), label.localId()), inputs, "cp6-call@1/explicit-chain-to-invoke");
         var returnOrigin = origins.derived(ids.id("origin", "call-sequence", unit.localId(), successor.localId()),
             List.of(terminal.header().origin(), continuation), "cp6-call@1/explicit-normal-continuation");
-        return List.of(new Sequence(label, instructions, invoke, origin), new Sequence(successor, List.of(), terminal, returnOrigin));
+        return new Assembly(List.of(new Sequence(label, instructions, invoke, origin), new Sequence(successor, List.of(), terminal, returnOrigin)), label, origin);
     }
 }

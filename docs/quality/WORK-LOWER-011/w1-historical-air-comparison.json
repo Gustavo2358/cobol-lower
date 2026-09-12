@@ -1,0 +1,18 @@
+{
+  "docs/quality/WORK-LOWER-010/real-e2e/literal-1/cli.air.json": {
+    "byte_identical": true,
+    "sha256": "d532b89c074d3a3fe8672090cef5432d9b664e137f3ce1bd37058af5fc59e67d"
+  },
+  "docs/quality/WORK-LOWER-010/real-e2e/literal-2/cli.air.json": {
+    "byte_identical": true,
+    "sha256": "d532b89c074d3a3fe8672090cef5432d9b664e137f3ce1bd37058af5fc59e67d"
+  },
+  "docs/quality/WORK-LOWER-010/real-e2e/dynamic-x8-1/cli.air.json": {
+    "byte_identical": true,
+    "sha256": "bef5d8979c0ffd3fb96272dd405b18d7b873e4e4d9244eeeb9ac98587fb973d2"
+  },
+  "docs/quality/WORK-LOWER-010/real-e2e/dynamic-x8-2/cli.air.json": {
+    "byte_identical": true,
+    "sha256": "bef5d8979c0ffd3fb96272dd405b18d7b873e4e4d9244eeeb9ac98587fb973d2"
+  }
+}

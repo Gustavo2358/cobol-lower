@@ -46,10 +46,15 @@ igual à contagem Unicode de code points; scalar extent positivo, logical extent
 não negativo. Violação → INPUT_ERROR antes de Materialize. Ausência legítima não
 é reparada. Esta é validação do contrato SP, não interpretação COBOL.
 
-## Contrato corrente W1C
+## Contrato histórico preservado W1C
 
-SP 1.3.0 é o caminho corrente para [CALL](call-lowering.md). Wire13 preserva a
+SP 1.3.0 mantém seu adapter para [CALL](call-lowering.md). Wire13 preserva a
 soma literal/DATA, surface, knowledge, binding completo e textAdjustment de MOVE.
 A política física é estrita; FITTED_TEXT exige ajuste e FULL_IDENTITY o exclui.
 Ausência legítima é preservada. Versões 1.1/1.2 existentes continuam explícitas;
 o antigo probe de versão futura agora usa 1.4.0. Não há negociação ou downgrade.
+
+## Contrato W2B
+
+SP 1.4.0 usa Wire14 fechado, IfFact tipado, PredicateGuarantee, IfArm e
+IndependentStorageSet. Wire13 não é reinterpretado. [Regras, prova e limites](simple-if-diamond.md).
