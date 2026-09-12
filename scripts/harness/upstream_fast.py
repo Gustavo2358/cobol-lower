@@ -6,6 +6,7 @@ POMs or entering upstream test/qualification lifecycle. LOCAL_QUALIFICATION uses
 the original complete Maven lifecycle instead.
 """
 from pathlib import Path
+import shutil
 
 
 def compile_dependency(checkout, build, execute, maven):
@@ -15,7 +16,9 @@ def compile_dependency(checkout, build, execute, maven):
         if not sources:
             raise RuntimeError("upstream fast compilation sources absent")
         classes = build / "fast-upstream" / module / "classes"
-        classes.mkdir(parents=True, exist_ok=True)
+        if classes.exists():
+            shutil.rmtree(classes)  # Task-owned output only; deleted upstream sources cannot leave stale classes.
+        classes.mkdir(parents=True)
         args = ["javac", "--release", "21", "-Xlint:all", "-Werror", "-d", str(classes)]
         if outputs:
             args += ["-cp", str(outputs[0])]

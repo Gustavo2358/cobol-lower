@@ -21,7 +21,7 @@ class Documents(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         shutil.copytree(ROOT / "docs", self.root / "docs")
-        for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md"):
+        for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "MANIFEST.sha256"):
             shutil.copy2(ROOT / name, self.root / name)
         # Only sources needed by documentary references; generated build outputs are excluded.
         for name in ("scripts", "core", "adapters", ".github"):

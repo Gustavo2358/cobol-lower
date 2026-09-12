@@ -103,7 +103,7 @@ def semantic(extra=()):
     output_counts = [int(n) for n in re.findall(r"^LOWER_AIR_OUTPUT_TESTS=([0-9]+)$", output, re.M)]
     if len(output_counts) != 1 or output_counts[0] <= 0:
         raise RuntimeError("AIR output tests absent/zero/duplicate")
-    for marker in ("LOWER_CALL_TESTS", "LOWER_CALL_INTEGRATION_TESTS"):
+    for marker in ("LOWER_CALL_TESTS", "LOWER_CALL_INTEGRATION_TESTS", "LOWER_IF_TESTS", "LOWER_IF_INTEGRATION_TESTS"):
         call_counts = re.findall(r"^" + marker + r"=([0-9]+)$", output, re.M)
         if len(call_counts) != 1 or int(call_counts[0]) <= 0:
             raise RuntimeError("CALL tests absent/zero/duplicate: " + marker)

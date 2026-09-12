@@ -47,3 +47,14 @@ Norma AIR permanece `51b4d9a8ae0364232bd97103cd73a77e1a34996c`. O bootstrap
 constrói model/codec desse merge em Maven repo isolado e vincula SHA/tree/digests
 ao source lock. Produtor real é executado em checkout isolado do W1A.
 [Contrato](../domain/call-lowering.md), [certificado](../quality/WORK-LOWER-010/CP0.json).
+
+## CP6 W2B productive authorities — 2026-09-12
+
+SP1.4 W2A product merge `4ffabded1aad39316b8a6f337f732976fdb3ca3e`, tree
+`5880e174b33c85ba3f3cdbc70bd2d8dc7b1d567b`; AIR Java W2C product merge
+`1d22068e9d9c1d100ecdef734e5b6995252e7ede`, tree
+`ab3a55e13b781ec5424356e83bddbc6fde42dcb1`. Explicitly pinned product merges,
+not later administrative closeouts (air-java `9aec1e9bce30466f4a53d2033bf2a2a2fedd56ec`).
+Source lock includes SHA-256 for consumed contracts, writer, predicate/arm/completion/
+IndependentStorageSet public model and fixtures. Historical SP1.3 decoder keeps
+its exact meaning. AIR2 normative and JSON1.0 DRAFT pins remain unchanged.

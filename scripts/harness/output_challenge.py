@@ -64,7 +64,7 @@ def main():
         root=Path(name)
         for folder in ('docs','scripts','core','adapters','.github'):
             shutil.copytree(ROOT/folder,root/folder,ignore=shutil.ignore_patterns('target','__pycache__'))
-        for file in ('AGENTS.md','README.md','ARCHITECTURE.md','pom.xml','.gitignore'):
+        for file in ('AGENTS.md','README.md','ARCHITECTURE.md','pom.xml','MANIFEST.sha256','.gitignore'):
             shutil.copy2(ROOT/file,root/file)
         for ident,relative,before,after,gate,oracle in CASES:
             baseline=green(root)

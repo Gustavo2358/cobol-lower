@@ -1,0 +1,11 @@
+{
+  "kind": "W2B_ORACLE_BEFORE_MUTATIONS",
+  "note": "Initial independent oracle preserved by initial hash; public API correction initializations -> conditions and stricter artifact-name/exact-provenance comparison before campaign. Expected diamond/predicate/premise semantics unchanged.",
+  "files": {
+    "core/src/test/java/io/github/gustavo2358/lower/testing/IfOracle.java": "5fb1e884b9ab351ef1cdf76ebfd46e9876da79a721182e0c7a5b8f90ed050535",
+    "core/src/test/java/io/github/gustavo2358/lower/testing/IfInputs.java": "7173934c903987d408414fee288319b5441a97b50d45403b8227b1c491df5a27",
+    "core/src/test/java/io/github/gustavo2358/lower/testing/IfSuite.java": "513922f9495b980ec85fb13cd98807055689b0b0225a73be3569a49537c863d4",
+    "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/IfIntegrationSuite.java": "0516ff01777533fc0a38bc6cd4222d0822979adedbb58c489b5db4ea520d48d0",
+    "adapters/src/test/java/io/github/gustavo2358/lower/adapters/testing/IfPlacementChallenge.java": "8fc9a5063ca0931f87141cb95325b7529faf168d7886fafeaca78f82ba4aa0dd"
+  }
+}

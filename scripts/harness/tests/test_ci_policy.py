@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ci_policy import classify, classify_delta, git, orchestration_errors, qualification_relation
-from ci_fast import profile_steps
+from ci_fast import profile_steps, source_context
 from local_only import require_local
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -68,7 +68,8 @@ class OrchestrationTest(unittest.TestCase):
 
     def test_harness_never_docs(self):
         for path in ("scripts/harness/run.py", "core/pom.xml", "pom.xml", ".github/workflows/checkpoint.yml",
-                     "adapters/src/test/resources/sp/example.json", "docs/sources/sources.lock.json", "docs/templates/work-item.schema.json"):
+                     "adapters/src/test/resources/sp/example.json", "docs/sources/sources.lock.json", "docs/templates/work-item.schema.json", "docs/quality/WORK-LOWER-011/production-source-guard.json",
+                     "docs/quality/WORK-LOWER-011/oracle-challenge-freeze.json", "docs/quality/WORK-LOWER-011/qualification-contract.json"):
             self.assertEqual("CODE_OR_HARNESS_CHANGE", classify(["docs/readme.md", path]))
 
     def test_docs_fast_no_bootstrap(self):
@@ -104,6 +105,25 @@ class DocumentaryQualificationTest(unittest.TestCase):
         git(self.root, "add", ".")
         git(self.root, "commit", "-m", "test")
         return git(self.root, "rev-parse", "HEAD").decode().strip()
+
+    def test_real_push_main_and_pr_context_stay_fast(self):
+        (self.root / "docs/readme.md").write_text("new docs")
+        current = self.commit()
+        event_file = self.root / "event.json"
+        for event, payload in (("push", dict(after=current, before=self.before, ref="refs/heads/main")),
+                               ("pull_request", dict(pull_request=dict(head=dict(sha=current), base=dict(ref="main", sha=self.before))))):
+            payload["repository"] = dict(full_name="Gustavo2358/cobol-lower")
+            # Event file outside the checkout: source_context also proves cleanliness.
+            external = Path(self.temp.name).parent / (self.root.name + "-event.json")
+            self.addCleanup(lambda p=external: p.unlink(missing_ok=True))
+            external.write_text(json.dumps(payload))
+            with patch("ci_fast.ROOT", self.root), patch.dict(os.environ, {"GITHUB_EVENT_NAME": event, "GITHUB_EVENT_PATH": str(external)}):
+                name, base = source_context(current)
+                self.assertEqual(event, name)
+                self.assertEqual(self.before, base)
+                self.assertNotIn("bootstrap-fast", profile_steps(classify_delta(self.root, base, current)[0]))
+                with self.assertRaisesRegex(RuntimeError, "mismatch"):
+                    source_context(self.before)
 
     def test_docs_successor_does_not_inherit_full(self):
         (self.root / "docs/readme.md").write_text("closeout receipt")

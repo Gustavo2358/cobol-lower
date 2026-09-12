@@ -1,6 +1,6 @@
 # Matriz bilateral e rota de evolução
 
-**Status:** Entry/GOBACK e DATA/MOVE escalar implementados; CALL W1C implementado sob review humano em WORK-LOWER-010. Demais capacidades são plano, não autorização. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
+**Status:** Entry/GOBACK e DATA/MOVE escalar implementados; CALL W1C merged/closed; IF simples W2B implementado em WORK-LOWER-011, aguardando qualificação/review. Demais capacidades são plano, não autorização. A matriz deve evoluir por evidência dos snapshots, não por expectativa de prazo. Cada linha exige simultaneamente fatos upstream e pré-condições target.
 
 | Capability | Entrada indispensável | Target/objetivo | Limite atual / próximo pré-requisito |
 | --- | --- | --- | --- |
@@ -38,3 +38,9 @@ com cadeia explícita até GOBACK. Não habilita MOVE geral, IF ou CALL.
 explícita para GOBACK e consumo FITTED_TEXT publicado. Runtime target/name policy,
 efeitos e saídas não normais permanecem abertos. Não promove IF, argumentos,
 handlers, CFG ou resolução de dependências.
+
+## CP6 W2B
+
+[IF simples](simple-if-diamond.md) acrescenta diamond fechado/aberto com Unknown BOOL
+e DisjointStorage da prova W2A. Predicado não avaliado; obrigações e PARTIAL mantidos.
+Não habilita IF geral/nested, path pruning, CFG, solver/lattice ou W2D.

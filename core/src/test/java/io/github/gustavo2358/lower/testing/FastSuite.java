@@ -4,7 +4,7 @@ package io.github.gustavo2358.lower.testing;
 public final class FastSuite {
     private FastSuite() { }
     public static void main(String[] args) {
-        int n = InputSuite.run() + LoweringSuite.run() + ScalarSuite.run() + CallSuite.run();
+        int n = InputSuite.run() + LoweringSuite.run() + ScalarSuite.run() + CallSuite.run() + IfSuite.run();
         if (n <= 0) throw new AssertionError("fast suite must execute assertions");
         System.out.println("LOWER_FAST_CORE_TESTS=" + n);
     }

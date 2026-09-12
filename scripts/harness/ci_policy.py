@@ -25,6 +25,8 @@ def documentary(path):
         return False
     if any(path == s or s.endswith("/") and path.startswith(s) for s in PROTECTED_DOCS):
         return False
+    if path.startswith("docs/quality/") and ("freeze" in p.name.lower() or p.name.endswith("source-guard.json") or p.name.startswith("CP") and p.suffix in (".json", ".yaml")):
+        return False  # Executable frozen expectations/source guards are never receipts-only.
     if path in ("README.md", "ARCHITECTURE.md", "MANIFEST.sha256"):
         return True
     if path.startswith("docs/") and p.suffix == ".md":

@@ -42,10 +42,12 @@ public final class DecoderSuite {
         return (ObjectNode) node.path("entryInventory").path("entries").get(0).path("signature");
     }
     private static void physical(ObjectNode golden, byte[] raw) throws Exception {
-        for (String version : List.of("1.0.0", "1.4.0", "2.0.0")) {
+        for (String version : List.of("1.0.0", "1.5.0", "2.0.0")) {
             var value = golden.deepCopy(); value.put("contractVersion", version);
             rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         }
+        var masquerade = golden.deepCopy(); masquerade.put("contractVersion", "1.4.0");
+        rejects(bytes(masquerade), Code.INPUT_ERROR); // SP1.1 bytes cannot impersonate the new closed SP1.4 shape.
         var value = golden.deepCopy(); value.put("schema", "other");
         rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         rejects("{".getBytes(StandardCharsets.UTF_8), Code.INPUT_ERROR);
@@ -166,6 +168,7 @@ public final class DecoderSuite {
     public static void main(String[] ignored) throws Exception {
         assertions += ScalarWireSuite.run();
         assertions += CallIntegrationSuite.run();
+        assertions += IfIntegrationSuite.run();
         byte[] raw;
         try (var stream = DecoderSuite.class.getResourceAsStream("/sp/cobol-semantic-product.json")) {
             if (stream == null) throw new AssertionError("golden missing"); raw = stream.readAllBytes();

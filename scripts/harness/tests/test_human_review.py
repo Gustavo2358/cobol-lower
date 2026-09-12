@@ -235,7 +235,7 @@ class WorkflowPolicy(unittest.TestCase):
         workflow = checks.read_data(ROOT / ".github/workflows/checkpoint.yml")
         self.assertIn("checkpoint", workflow["jobs"])
         commands = [step.get("run", "") for step in workflow["jobs"]["checkpoint"]["steps"]]
-        self.assertTrue(any('run.py ci --commit "$GITHUB_SHA"' in command for command in commands))
+        self.assertTrue(any('run.py ci-fast --commit "$CHECKOUT_SHA"' in command for command in commands))
 
     def target(self, branch, pulls=None, bad_record=False):
         sha = "b" * 40 if branch == "main" else CP5

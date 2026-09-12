@@ -59,7 +59,7 @@ def main(cases=CASES, log_name="production"):
         root = Path(directory)
         for folder in ('core','adapters','docs','scripts','.github'):
             shutil.copytree(ROOT/folder,root/folder,ignore=shutil.ignore_patterns('target','__pycache__'))
-        for name in ('pom.xml','AGENTS.md','ARCHITECTURE.md','README.md','.gitignore'): shutil.copy2(ROOT/name,root/name)
+        for name in ('pom.xml','AGENTS.md','ARCHITECTURE.md','README.md','MANIFEST.sha256','.gitignore'): shutil.copy2(ROOT/name,root/name)
         maven = ['mvn','-B','-ntp','-Dmaven.repo.local='+str(Path(os.environ['LOWER_BUILD_ROOT'])/'m2')]
         # Focal adapter invocations do not have a reactor. Produce their current
         # core and test-jar dependencies explicitly, even with a clean CI cache.

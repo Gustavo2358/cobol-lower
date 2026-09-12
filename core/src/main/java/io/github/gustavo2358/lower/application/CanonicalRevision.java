@@ -84,6 +84,30 @@ final class CanonicalRevision {
         e.symbol(call.runtimeTarget()); e.word(call.runtimeUncertaintyCode()); e.symbol(call.effects()); e.symbol(call.outcomes());
         return Optional.of(e.finish());
     }
+    static Optional<String> simpleIf(SpInput input, IfAdmission.Plan plan, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("simple-if@1/AIR2/SP1.4/xxh3-128-v1"); e.word(LocalIds.POLICY);
+        e.word(call(input, new CallAdmission.Plan(plan.admission(), plan.data(), plan.moves(), plan.call(), plan.terminal()), maximum).orElseThrow());
+        var f = plan.branch().orElseThrow(); e.scalarHeader(f.header()); e.word(f.conditionShape()); e.flag(f.explicitlyTerminated()); e.symbol(f.profile());
+        var p = f.predicateGuarantee(); e.symbol(p.availability()); e.symbol(p.profile()); e.symbol(p.resultDomain());
+        e.symbol(p.evaluation()); e.symbol(p.normalCompletion()); e.symbol(p.readsCompleteness()); e.symbol(p.truthValue());
+        e.list(p.knownReads(), id -> e.word(id.handle())); e.provenance(p.provenance()); e.list(p.gapCodes(), e::word);
+        e.provenance(f.conditionProvenance());
+        e.list(f.conditionReads(), read -> {
+            e.word(read.id().handle()); e.symbol(read.role()); e.provenance(read.provenance());
+            e.word(read.wholeItemAccess().orElseThrow().data().handle());
+        });
+        e.ifArm(f.thenArm()); e.ifArm(f.elseArm());
+        e.list(plan.thenMoves(), m -> e.statementId(m.header().id())); e.list(plan.elseMoves(), m -> e.statementId(m.header().id()));
+        e.symbol(f.normalContinuation().availability()); e.statementId(f.normalContinuation().statement().orElseThrow()); e.provenance(f.normalContinuation().provenance());
+        var proof = input.storageIndependence().orElseThrow(); e.symbol(proof.availability()); e.symbol(proof.rule()); e.word(proof.authority());
+        e.list(proof.members(), id -> e.word(id.handle())); e.provenance(proof.provenance().orElseThrow()); e.list(proof.gapCodes(), e::word);
+        return Optional.of(e.finish());
+    }
+    private void ifArm(IfArm arm) {
+        symbol(arm.presence()); symbol(arm.contentAvailability()); symbol(arm.entry().availability());
+        optional(arm.entry().statement(), this::statementId); provenance(arm.provenance()); list(arm.gapCodes(), this::word);
+    }
     private void scalarHeader(StatementHeader h) { statementId(h.id()); provenance(h.provenance()); symbol(h.coverage()); }
     private String finish() {
         flush();

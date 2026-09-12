@@ -1,11 +1,15 @@
 # cobol-lower
 
+CP6 W2B: SP 1.4.0 IF simples → AIR diamond com Branch(Unknown BOOL),
+Assign/Jump, Invoke e Return; premissa DisjointStorage traduzida da prova upstream.
+[Contrato IF](docs/domain/simple-if-diamond.md), [work item W2B](docs/work/active/WORK-LOWER-011/work-item.yaml).
+
 CP6 W1C: SP 1.3.0 → DATA/MOVE textual + CALL literal ou DATA + GOBACK → AIR Invoke/JSON.
 [Contrato e limites](docs/domain/call-lowering.md), [work item](docs/work/history/WORK-LOWER-010.md).
 Consome o resultado fitted publicado pelo SP, preserva alvo dinâmico como Read e
 mantém efeitos/outcomes abertos. Sem resolução dinâmica, interpretação de nomes,
 CFG, dataflow ou produto de dependências. CP3/SP1.1 e scalar/SP1.2 preservados.
-CLI usa o shared codec W1B; falha de encode não publica saída parcial. SP válido
+CLI usa o shared codec W2C; falha de encode não publica saída parcial. SP válido
 suportado não tem teto de bytes, nós ou visitas; proteção de profundidade e
 limites operacionais do codec permanecem.
 
@@ -13,7 +17,7 @@ O primeiro slice `minimal-entry-goback@1` transforma fatos públicos SP 1.1.0 em
 
 ## Usar e verificar
 
-A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles CALL, escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
+A porta pública `io.github.gustavo2358.lower.application.LowerInput` recebe `SpInput` e `LowerInput.Options`. `CobolLowerer` faz dispatch entre os profiles IF, CALL, escalar e CP3; memória e arquivo usam a mesma admissão. `LoweringResult` contém status, input observado/diagnósticos, Publication somente em sucesso, correlações tipadas, limitações e relatório integral do AirValidator.
 
 No módulo adapters, `SpJsonDecoder` decodifica bytes e `SpFileInput` lê o Path completo com proteção estrutural de profundidade. `FileLowering` compõe reader e porta: falha física não chama o lowerer; um resultado `Lowered` ainda exige examinar o status interno. Caminhos de provenance não são abertos. `CobolLower` compõe esse caminho e `AirFileOutput`, exclusivamente no módulo adapters.
 

@@ -20,44 +20,7 @@ public final class CallAdmission implements AdmitInput {
             }
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
-            var operands = new HashSet<OperandId>();
-            for (var statement : input.statements()) {
-                c.touch();
-                if (statement instanceof MoveFact m) {
-                    operand(m.source().id(), m.header(), operands, c);
-                    c.provenance(m.source().provenance());
-                    reference(m.target(), m.header(), operands, c);
-                    continuation(m.normalContinuation(), m.header(), c);
-                    m.source().logicalValue().ifPresent(v -> logical(v, m.header(), c));
-                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),
-                        Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT iff textAdjustment present");
-                    m.textAdjustment().ifPresent(a -> {
-                        c.provenance(a.provenance()); logical(a.result(), m.header(), c);
-                        c.require(a.receiverExtent() > 0 && a.receiverExtent() == a.result().logicalExtent(), Rule.PROFILE_FACT,
-                            m.header().id().handle(), a.provenance(), "Adjustment result extent equals positive receiver extent");
-                    });
-                } else if (statement instanceof CallFact call) {
-                    if (call.target() instanceof DataCallTarget d) reference(d.reference(), call.header(), operands, c);
-                    else {
-                        var l = (LiteralCallTarget) call.target(); operand(l.id(), call.header(), operands, c); c.provenance(l.provenance());
-                        l.logicalValue().ifPresent(v -> {
-                            logical(v, call.header(), c);
-                            c.require(v.value().equals(l.text()), Rule.PROFILE_FACT, l.id().handle(), l.provenance(), "Literal text agrees with logical value");
-                        });
-                    }
-                    c.require((call.syntax() == CallSyntax.LITERAL_PROGRAM_NAME) == (call.target() instanceof LiteralCallTarget),
-                        Rule.PROFILE_FACT, call.header().id().handle(), call.target().provenance(), "CALL syntax agrees with target variant");
-                    continuation(call.normalContinuation(), call.header(), c);
-                    var surface = call.surface();
-                    boolean count = switch (surface.using()) {
-                        case ABSENT -> surface.argumentCount().equals(Optional.of(0));
-                        case PRESENT -> surface.argumentCount().filter(n -> n > 0).isPresent();
-                        case UNKNOWN -> surface.argumentCount().isEmpty();
-                    };
-                    c.require(count && !call.runtimeUncertaintyCode().isBlank(), Rule.PROFILE_FACT, call.header().id().handle(),
-                        call.header().provenance(), "USING presence/count and runtime uncertainty must be coherent");
-                }
-            }
+            validateFacts(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             c.phase = Phase.ADMISSION;
             c.require(input.coverage().inventoryStatus() == InventoryStatus.COMPLETE && input.coverage().inputMissingStatements() == 0
@@ -121,10 +84,50 @@ public final class CallAdmission implements AdmitInput {
             return new Plan(c.result(Status.ADMITTED), ScalarDataOrder.canonical(c.data.values()), List.copyOf(moves), Optional.of(call), Optional.of(terminal));
         } catch (EntryGobackAdmission.LimitReached ex) { return rejected(c, Status.IMPLEMENTATION_LIMIT); }
     }
+    static void validateFacts(SpInput input, EntryGobackAdmission.Context c) {
+            var operands = new HashSet<OperandId>();
+            for (var statement : input.statements()) {
+                c.touch();
+                if (statement instanceof MoveFact m) {
+                    operand(m.source().id(), m.header(), operands, c);
+                    c.provenance(m.source().provenance());
+                    reference(m.target(), m.header(), operands, c);
+                    continuation(m.normalContinuation(), m.header(), c);
+                    m.source().logicalValue().ifPresent(v -> logical(v, m.header(), c));
+                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),
+                        Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT iff textAdjustment present");
+                    m.textAdjustment().ifPresent(a -> {
+                        c.provenance(a.provenance()); logical(a.result(), m.header(), c);
+                        c.require(a.receiverExtent() > 0 && a.receiverExtent() == a.result().logicalExtent(), Rule.PROFILE_FACT,
+                            m.header().id().handle(), a.provenance(), "Adjustment result extent equals positive receiver extent");
+                    });
+                } else if (statement instanceof CallFact call) {
+                    if (call.target() instanceof DataCallTarget d) reference(d.reference(), call.header(), operands, c);
+                    else {
+                        var l = (LiteralCallTarget) call.target(); operand(l.id(), call.header(), operands, c); c.provenance(l.provenance());
+                        l.logicalValue().ifPresent(v -> {
+                            logical(v, call.header(), c);
+                            c.require(v.value().equals(l.text()), Rule.PROFILE_FACT, l.id().handle(), l.provenance(), "Literal text agrees with logical value");
+                        });
+                    }
+                    c.require((call.syntax() == CallSyntax.LITERAL_PROGRAM_NAME) == (call.target() instanceof LiteralCallTarget),
+                        Rule.PROFILE_FACT, call.header().id().handle(), call.target().provenance(), "CALL syntax agrees with target variant");
+                    continuation(call.normalContinuation(), call.header(), c);
+                    var surface = call.surface();
+                    boolean count = switch (surface.using()) {
+                        case ABSENT -> surface.argumentCount().equals(Optional.of(0));
+                        case PRESENT -> surface.argumentCount().filter(n -> n > 0).isPresent();
+                        case UNKNOWN -> surface.argumentCount().isEmpty();
+                    };
+                    c.require(count && !call.runtimeUncertaintyCode().isBlank(), Rule.PROFILE_FACT, call.header().id().handle(),
+                        call.header().provenance(), "USING presence/count and runtime uncertainty must be coherent");
+                }
+            }
+    }
     private static Plan rejected(EntryGobackAdmission.Context c, Status status) {
         return new Plan(c.result(status), List.of(), List.of(), Optional.empty(), Optional.empty());
     }
-    private static void operand(OperandId id, StatementHeader h, Set<OperandId> seen, EntryGobackAdmission.Context c) {
+    static void operand(OperandId id, StatementHeader h, Set<OperandId> seen, EntryGobackAdmission.Context c) {
         String prefix = "operand:" + h.id().handle().substring("statement:".length()) + ":";
         boolean valid = false;
         if (id.handle().startsWith(prefix)) try {
@@ -134,7 +137,7 @@ public final class CallAdmission implements AdmitInput {
         c.require(id.statement().equals(h.id()) && valid && seen.add(id), Rule.IDENTITY, id.handle(), h.provenance(),
             "Unique canonical operand identity owned by this statement");
     }
-    private static void reference(DataReference reference, StatementHeader h, Set<OperandId> seen, EntryGobackAdmission.Context c) {
+    static void reference(DataReference reference, StatementHeader h, Set<OperandId> seen, EntryGobackAdmission.Context c) {
         operand(reference.id(), h, seen, c); c.provenance(reference.provenance());
         var binding = reference.binding(); var candidates = new HashSet<DataId>();
         for (var d : binding.candidates()) {
@@ -150,22 +153,22 @@ public final class CallAdmission implements AdmitInput {
                 && binding.selected().equals(Optional.of(w.data())) && c.data(w.data()) != null,
             Rule.PROFILE_FACT, h.id().handle(), reference.provenance(), "Whole-item proof agrees with uniquely selected DATA"));
     }
-    private static void continuation(NormalContinuation next, StatementHeader h, EntryGobackAdmission.Context c) {
+    static void continuation(NormalContinuation next, StatementHeader h, EntryGobackAdmission.Context c) {
         c.provenance(next.provenance());
         c.require((next.availability() == ContinuationAvailability.KNOWN) == next.statement().isPresent(), Rule.PROFILE_FACT,
             h.id().handle(), next.provenance(), "Only KNOWN normal continuation carries a reference");
         next.statement().ifPresent(id -> c.require(id.unit().equals(c.input.unit()) && c.lookup(id) != null, Rule.PROFILE_FACT,
             h.id().handle(), next.provenance(), "Continuation references a published statement in this unit"));
     }
-    private static void logical(LogicalValue value, StatementHeader h, EntryGobackAdmission.Context c) {
+    static void logical(LogicalValue value, StatementHeader h, EntryGobackAdmission.Context c) {
         c.require(value.logicalExtent() >= 0 && value.logicalExtent() == value.value().codePointCount(0, value.value().length()),
             Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Published logical TEXT extent coherent with value");
     }
-    private static boolean scalar(DataFact d) {
+    static boolean scalar(DataFact d) {
         return d.scalarText().filter(t -> t.logicalDomain() == LogicalDomain.TEXT && t.logicalExtent() > 0
             && t.storageClass() == StorageClass.WORKING_STORAGE && t.declarationScope() == DeclarationScope.LOCAL).isPresent();
     }
-    private static void admitReference(DataReference reference, OperandRole role, StatementHeader h, EntryGobackAdmission.Context c) {
+    static void admitReference(DataReference reference, OperandRole role, StatementHeader h, EntryGobackAdmission.Context c) {
         var b = reference.binding();
         c.require(reference.role() == role && b.status() == ResolutionStatus.RESOLVED && b.selected().isPresent()
                 && b.candidates().size() == 1 && reference.wholeItemAccess().isPresent(), Rule.PROFILE_FACT,
@@ -173,7 +176,7 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(scalar(c.data(w.data())), Rule.PROFILE_FACT,
             h.id().handle(), reference.provenance(), "Whole-item target has scalar TEXT proof"));
     }
-    private static void admitMove(MoveFact m, EntryGobackAdmission.Context c) {
+    static void admitMove(MoveFact m, EntryGobackAdmission.Context c) {
         var h = m.header();
         admitReference(m.target(), OperandRole.WRITE, h, c);
         var value = m.source().logicalValue();
