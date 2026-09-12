@@ -12,6 +12,13 @@ import run as harness
 from architecture import source_errors, dependency_errors, output_boundary_errors
 
 class AirOutputGate(unittest.TestCase):
+    def setUp(self):
+        # These unit tests fake Maven output; they do not execute qualification.
+        # The actual remote guard is exercised separately by test_lean.py.
+        guard = patch.object(harness, 'require_local')
+        guard.start()
+        self.addCleanup(guard.stop)
+
     def test_actual_dependency_checkout_must_match_pin_without_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             build = Path(directory)
