@@ -41,7 +41,12 @@ final class PartialProgramAssembler {
                     var resume=i+1<body.size()?label(body.get(i+1).header().id(),unit,activation):destination;
                     var assign=MoveHandler.translate(move,data,unit,activation,origins,operands,items);
                     link(move.header().id(),assign,here,statements,items);
-                    var returning=PerformSequenceAssembler.jump("activation-next",move.header().id(),resume,proof.resumeOrigin(),unit,activation);
+                    var continuation=i+1<body.size()
+                        ? origins.source("continuation",move.header().id().handle(),move.normalContinuation().provenance())
+                        : origins.derived(activation.id("origin","activation-return",unit.localId(),move.header().id().handle()),
+                            List.of(proof.performOrigin(),proof.referenceOrigin(),proof.paragraphOrigin(),proof.resumeOrigin(),assign.header().origin()),
+                            "perform-basic@2/intrinsic-body-end-to-activation-resume");
+                    var returning=PerformSequenceAssembler.jump("activation-next",move.header().id(),resume,continuation,unit,activation);
                     sequences.add(new Sequence(here,List.of(assign),returning,assign.header().origin()));
                 }
             } else if(precise && fact instanceof SpInput.GobackFact g) {

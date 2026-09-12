@@ -18,7 +18,7 @@ implementation: >-
   contracts preserve their original semantics. No AST/COBOL parsing in the lower.
 validation: >-
   FAST PASS including architecture and partial fixtures, /tmp/partial-lower-fast-1.log.
-  Final qualification-local PASS, /tmp/partial-lower-full-4.log: semantic suites,
+  Final qualification-local PASS, /tmp/partial-lower-full-5.log: semantic suites,
   backward decoder contracts, 20,000 MOVE capacity with real AIR validation and
   deterministic Publication equality, transport/atomicity and architecture.
   The first attempt exposed a historical future-version test using 1.8; it now
@@ -31,3 +31,6 @@ integrated_corrections: >-
   repeating memory effects. Mandatory unknown writes remain HavocMust even when
   their continuation is unknown. Compound PERFORM and DISPLAY handler fixtures
   preserve source CALL sites and open control.
+  The original PERFORM provenance oracle required the specialized return to retain
+  callsite, resolved target, paragraph, body write and resume. This lineage is now
+  explicit; interior body transfers retain their own structural continuation origin.

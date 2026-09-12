@@ -47,6 +47,10 @@ public final class PartialIntegrationSuite {
                     check(target.instructions().size()==1 && target.instructions().getFirst() instanceof Operations.Assign,"BASIC body assignment");
                     var resume=r.statements().stream().filter(l->l.source().equals(f.normalContinuation().statement().orElseThrow())).findFirst().orElseThrow().label();
                     check(target.terminator() instanceof Operations.Jump jump && jump.destination().equals(resume),"activation-specific return");
+                    var jumpOrigin=publication.origins().stream().filter(o->o.id().equals(sequence.terminator().header().origin())).map(Origins.Derived.class::cast).findFirst().orElseThrow();
+                    var returnOrigin=publication.origins().stream().filter(o->o.id().equals(target.terminator().header().origin())).map(Origins.Derived.class::cast).findFirst().orElseThrow();
+                    check(returnOrigin.inputs().containsAll(jumpOrigin.inputs()) && returnOrigin.inputs().contains(target.instructions().getFirst().header().origin()),
+                        "activation return retains target-resolution and body provenance");
                 }
             }
             if(List.of("p1","p2","p3","p5","read","if-unknown").contains(name)) {

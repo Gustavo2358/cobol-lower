@@ -76,3 +76,7 @@ A control-only frontier after Assign or HavocMust has empty memory/dependency
 effects: the write was already applied. Missing continuation does not cancel the
 proof of a mandatory receiver and does not add a second possible write. Unit
 provenance links entry and the actual initial sequence, with no duplicate inputs.
+
+Specialized BASIC return provenance joins the activation, resolved target,
+paragraph, body write and resume. Interior body jumps use intrinsic continuation
+provenance. Normalization preserves the original control evidence per activation.
