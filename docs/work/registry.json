@@ -33,19 +33,6 @@
       "git_branch": "fix/ci-initial-cp0-merge",
       "pull_request": null,
       "backlog_ids": []
-    },
-    {
-      "id": "WORK-LOWER-010",
-      "status": "active",
-      "path": "docs/work/active/WORK-LOWER-010",
-      "authorized_checkpoints": [
-        "CP0"
-      ],
-      "git_branch": "feat/cp6-w1c-call-lowering",
-      "pull_request": 11,
-      "backlog_ids": [
-        "BACKLOG-LOWER-008"
-      ]
     }
   ],
   "proposals": [],
@@ -232,6 +219,38 @@
       "evidence": "docs/quality/WORK-LOWER-009/CP0.json",
       "review_status": "pending_human",
       "merge_status": "open_not_merged"
+    },
+    {
+      "id": "WORK-LOWER-010",
+      "status": "completed",
+      "path": "docs/work/history/WORK-LOWER-010.md",
+      "authorized_checkpoints": [
+        "CP0"
+      ],
+      "git_branch": "feat/cp6-w1c-call-lowering",
+      "pull_request": 11,
+      "backlog_ids": [
+        "BACKLOG-LOWER-008"
+      ],
+      "manifest": "docs/quality/WORK-LOWER-010/CP0-manifest.yaml",
+      "evidence": "docs/quality/WORK-LOWER-010/CP0.json",
+      "review_status": "not_recorded",
+      "merge_status": "merged",
+      "remote_observation": {
+        "repository": "Gustavo2358/cobol-lower",
+        "pull_request": 11,
+        "branch": "feat/cp6-w1c-call-lowering",
+        "base": "main",
+        "head_sha": "7df2989d8d02c13552645386bbd963de00c7b4b4",
+        "state": "MERGED",
+        "review_status": "not_recorded",
+        "review_commit": null,
+        "review_url": null,
+        "reviews": [],
+        "merge_commit": "9de3825da64898258e647727393f01b9e9198d9e",
+        "merged_at": "2026-09-11T20:02:33Z",
+        "observed_at": "2026-09-12T15:00:57.824491+00:00"
+      }
     }
   ],
   "backlog": [
@@ -313,7 +332,7 @@
     {
       "id": "BACKLOG-LOWER-008",
       "title": "CALL e contrato por site de intera\u00e7\u00e3o",
-      "status": "in_progress",
+      "status": "completed",
       "phase": "capability",
       "dependencies": [
         "BACKLOG-LOWER-005"

@@ -1,6 +1,6 @@
 # CP6 W1C
 
-[WORK-LOWER-010](active/WORK-LOWER-010/work-item.yaml): active implementation, CP0 only. [State](active/WORK-LOWER-010/state.md).
+[WORK-LOWER-010](history/WORK-LOWER-010.md): completed; PR #11 merged; formal review not_recorded. Documentary reconciliation only.
 
 # Trabalho de sincronização pós-CP5
 

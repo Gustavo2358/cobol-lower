@@ -8,8 +8,8 @@ O contrato corrente é SP 1.3.0, W1A merge
 `air-java/docs/engineering/air-json.md` e `docs/quality/cp6-w1b-invoke.md`
 foram consultados nesses snapshots. AIR normativa permanece no pin
 `analysis-ir@51b4d9a8ae0364232bd97103cd73a77e1a34996c` (04 §7, 05 e 06).
-[Regra congelada](../work/active/WORK-LOWER-010/spec.md),
-[oracle](../work/active/WORK-LOWER-010/eval.md) e
+[Regra congelada](https://github.com/Gustavo2358/cobol-lower/blob/7df2989d8d02c13552645386bbd963de00c7b4b4/docs/work/active/WORK-LOWER-010/spec.md),
+[oracle](https://github.com/Gustavo2358/cobol-lower/blob/7df2989d8d02c13552645386bbd963de00c7b4b4/docs/work/active/WORK-LOWER-010/eval.md) e
 [evidências](../quality/WORK-LOWER-010/CP0.json).
 
 ## Entrada e admissão

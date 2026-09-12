@@ -1,7 +1,7 @@
 # cobol-lower
 
 CP6 W1C: SP 1.3.0 → DATA/MOVE textual + CALL literal ou DATA + GOBACK → AIR Invoke/JSON.
-[Contrato e limites](docs/domain/call-lowering.md), [work item](docs/work/active/WORK-LOWER-010/work-item.yaml).
+[Contrato e limites](docs/domain/call-lowering.md), [work item](docs/work/history/WORK-LOWER-010.md).
 Consome o resultado fitted publicado pelo SP, preserva alvo dinâmico como Read e
 mantém efeitos/outcomes abertos. Sem resolução dinâmica, interpretação de nomes,
 CFG, dataflow ou produto de dependências. CP3/SP1.1 e scalar/SP1.2 preservados.
@@ -108,9 +108,9 @@ PublicationId usa XXH3-128 completo incremental dos fatos canônicos, 32 hex min
 
 [AGENTS.md](AGENTS.md) é a entrada para agentes; [arquitetura](ARCHITECTURE.md), [trabalho](docs/work/index.md), [índice](docs/index.md), [source lock](docs/sources/sources.lock.json) e [capacidades futuras](docs/domain/capability-matrix.md) orientam contexto. Domínio usa o contrato interno e AIR compartilhada; a aplicação também usa hash4j fixado para identidade. Adapters dependem das portas internas. `analysis-ir` governa a semântica, `air-java` fornece modelo/validator.
 
-WORK-LOWER-001–005 estão reconciliados após merges confirmados. O trabalho atual é
-[WORK-LOWER-010](docs/work/active/WORK-LOWER-010/work-item.yaml), CP6 W1C.
-PR para review humano; sem merge/auto-merge; W1D/W2 não iniciados e não autorizados.
+WORK-LOWER-001–005 e [WORK-LOWER-010](docs/work/history/WORK-LOWER-010.md)
+estão reconciliados após merges confirmados. CP6 W1C está completed/merged;
+review formal não registrado na API. W2B possui autorização separada; W2D não iniciado.
 
 IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro de
 colisões por publicação. A revisão escalar usa domínio versionado próprio; CP3

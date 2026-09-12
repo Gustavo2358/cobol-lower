@@ -8,3 +8,5 @@ Certificados históricos não concedem autorização atual nem fabricam aprovaç
 [WORK-LOWER-004](WORK-LOWER-004.md): PR5 merged, revisão formal não registrada.
 
 [WORK-LOWER-005](WORK-LOWER-005.md): PR6 merged, reviews não registrados.
+
+[WORK-LOWER-010](WORK-LOWER-010.md): PR11 merged, review formal não registrado; evidência W1C preservada.
