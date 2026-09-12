@@ -15,3 +15,8 @@ UNSUPPORTED_CONTRACT /contractVersion, CLI exit 3, with no AIR file. This is
 version evidence only, before any W2B product code. Other REDs pending.
 
 These are development results, not LOCAL_QUALIFICATION or remote FAST_CI.
+
+The first committed FAST invocation failed before Java at Git whitespace checking
+because Maven raw logs contain trailing spaces. Logs are preserved byte-exact in
+gzip with raw/compressed SHA-256; no evidence text was edited to pass. The log
+packaging correction is documentation only and receives DOCS_ONLY CI.
