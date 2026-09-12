@@ -33,23 +33,20 @@ CASES = [
 def sha(raw): return hashlib.sha256(raw).hexdigest()
 
 def scope_errors(root):
-    """Frozen production scope of the currently authorized work; historical guards are unchanged."""
+    """Compare challenge mutations to the current source, never a work-item certificate."""
     root = Path(root)
-    registry = root/'docs/work/registry.json'
-    if not registry.exists(): return []
-    active = {w['id'] for w in json.loads(registry.read_text())['active']}
-    work = next((w for w in ('WORK-LOWER-011', 'WORK-LOWER-010', 'WORK-LOWER-007', 'WORK-LOWER-006') if w in active), None)
-    if work is None: return []
-    guard = json.loads((root/'docs/quality'/work/'production-source-guard.json').read_text())
-    expected = guard['source_hashes']; errors = []
-    for path, digest in expected.items():
-        if not (root/path).is_file() or sha((root/path).read_bytes()) != digest:
+    expected = {str(p.relative_to(ROOT)): p.read_bytes() for module in ('core', 'adapters')
+                for p in (ROOT/module/'src/main/java').rglob('*.java')}
+    errors = []
+    for path, content in expected.items():
+        if not (root/path).is_file() or (root/path).read_bytes() != content:
             errors.append('PRODUCTION_SCOPE immutable transport/core ' + path)
-    allowed = set(expected) | set(guard['allowed_changes'])
     for module in ('core', 'adapters'):
         for path in (root/module/'src/main/java').rglob('*.java'):
-            if str(path.relative_to(root)) not in allowed: errors.append('PRODUCTION_SCOPE unexpected source ' + str(path.relative_to(root)))
+            if str(path.relative_to(root)) not in expected:
+                errors.append('PRODUCTION_SCOPE unexpected source ' + str(path.relative_to(root)))
     return errors
+
 
 def main(cases=CASES, log_name="production"):
     from local_only import require_local
@@ -59,7 +56,7 @@ def main(cases=CASES, log_name="production"):
         root = Path(directory)
         for folder in ('core','adapters','docs','scripts','.github'):
             shutil.copytree(ROOT/folder,root/folder,ignore=shutil.ignore_patterns('target','__pycache__'))
-        for name in ('pom.xml','AGENTS.md','ARCHITECTURE.md','README.md','MANIFEST.sha256','.gitignore'): shutil.copy2(ROOT/name,root/name)
+        for name in ('pom.xml','AGENTS.md','ARCHITECTURE.md','README.md','.gitignore'): shutil.copy2(ROOT/name,root/name)
         maven = ['mvn','-B','-ntp','-Dmaven.repo.local='+str(Path(os.environ['LOWER_BUILD_ROOT'])/'m2')]
         # Focal adapter invocations do not have a reactor. Produce their current
         # core and test-jar dependencies explicitly, even with a clean CI cache.

@@ -1,6 +1,12 @@
-# CP6 W2B
+# Trabalho — navegação
 
-[WORK-LOWER-011](active/WORK-LOWER-011/work-item.yaml): product APPROVED / MERGED; CP0 completed; lifecycle `blocked` by legacy archival requirements. [State](active/WORK-LOWER-011/state.md), [closeout evidence and blocker](../quality/WORK-LOWER-011/closeout.md). Product baseline frozen at `2b7fa3a5cee865eef5007d6d870618e032047e1e`. Remote FAST only; full qualification LOCAL ONLY. W2D NOT_STARTED / NOT_AUTHORIZED.
+W2B: **DONE / MERGED**, PR #12, product baseline `2b7fa3a5cee865eef5007d6d870618e032047e1e`.
+O blocker administrativo foi resolvido pela [política lean](../engineering/lean-harness.md).
+O índice abaixo contém contexto legado; ele não governa lifecycle ou desenvolvimento.
+
+## CP6 W2B
+
+[WORK-LOWER-011](history/WORK-LOWER-011/work-item.yaml): **DONE / MERGED**, PR #12. [Estado](history/WORK-LOWER-011/state.md). W2B congelado; W2D não iniciado.
 
 # CP6 W1C
 
