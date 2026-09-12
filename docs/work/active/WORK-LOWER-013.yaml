@@ -1,0 +1,7 @@
+id: WORK-LOWER-013
+title: CP6 PERFORM BASIC — explicit direct control
+status: IN_PROGRESS
+scope:
+  - consume SP 1.6.0 isolated paragraph profile
+  - Jump target and unique resume; unchanged AIR and scalar semantics
+notes: "Baseline main 59897f9d17ff30c9c2284f85ce56f50331dca77a (PR 14); Draft for human review."
