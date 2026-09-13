@@ -40,7 +40,7 @@ public final class PartialIntegrationSuite {
             if(name.startsWith("compose-")) {
                 int n=Integer.parseInt(name.substring("compose-".length()));
                 for(var family:SpInput.StatementFact.class.getPermittedSubclasses())
-                    if(family!=SpInput.OtherStatement.class && family!=SpInput.GobackFact.class && family!=SpInput.EvaluateFact.class /* SP2 multiplicity: EvaluateIntegrationSuite */)
+                    if(family!=SpInput.OtherStatement.class && family!=SpInput.GobackFact.class && family!=SpInput.EvaluateFact.class && family!=SpInput.GoToFact.class /* SP2 multiplicity: EvaluateIntegrationSuite / GoToIntegrationSuite */)
                         check(input.statements().stream().filter(family::isInstance).count()>=n,
                             "every typed semantic family needs a multiplicity fixture: "+family.getSimpleName()+" N="+n);
             }

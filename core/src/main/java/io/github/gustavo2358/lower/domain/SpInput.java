@@ -24,7 +24,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -284,6 +284,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public IfArm { Objects.requireNonNull(presence); Objects.requireNonNull(contentAvailability); Objects.requireNonNull(entry);
             Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
+    public record GoToTarget(ProcedureId id, Provenance paragraphOrigin) {
+        public GoToTarget { Objects.requireNonNull(id); Objects.requireNonNull(paragraphOrigin); }
+    }
+    public record GoToFact(StatementHeader header, Optional<GoToTarget> target, Provenance referenceOrigin,
+            Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin, List<String> gapCodes) implements StatementFact {
+        public GoToFact { Objects.requireNonNull(header); Objects.requireNonNull(target); Objects.requireNonNull(referenceOrigin);
+            Objects.requireNonNull(targetEntry); Objects.requireNonNull(entryOrigin); gapCodes=List.copyOf(gapCodes); }
+    }
+
     public record EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
         public EvaluateArm { Objects.requireNonNull(selection); statements=List.copyOf(statements); Objects.requireNonNull(control); }
     }

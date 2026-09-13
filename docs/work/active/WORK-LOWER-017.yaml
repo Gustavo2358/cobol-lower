@@ -1,0 +1,4 @@
+id: WORK-LOWER-017
+title: GO TO first slice
+status: IN_PROGRESS
+scope: SP 2.1 decoder and local paragraph Jump lowering, conservative control, BASIC disjointness and focal tests. Draft for human review; no merge.

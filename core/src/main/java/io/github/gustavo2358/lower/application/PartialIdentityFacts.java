@@ -258,6 +258,20 @@ final class PartialIdentityFacts {
                 field.accept("provenance"); value.accept(r.provenance());
                 field.accept("gapCodes"); value.accept(r.gapCodes());
             }
+            case SpInput.GoToTarget r -> {
+                field.accept("GoToTarget");
+                field.accept("id"); value.accept(r.id());
+                field.accept("paragraphOrigin"); value.accept(r.paragraphOrigin());
+            }
+            case SpInput.GoToFact r -> {
+                field.accept("GoToFact");
+                field.accept("header"); value.accept(r.header());
+                field.accept("target"); value.accept(r.target());
+                field.accept("referenceOrigin"); value.accept(r.referenceOrigin());
+                field.accept("targetEntry"); value.accept(r.targetEntry());
+                field.accept("entryOrigin"); value.accept(r.entryOrigin());
+                field.accept("gapCodes"); value.accept(r.gapCodes());
+            }
             case SpInput.EvaluateArm r -> {
                 field.accept("EvaluateArm");
                 field.accept("ordinal"); value.accept(r.ordinal());

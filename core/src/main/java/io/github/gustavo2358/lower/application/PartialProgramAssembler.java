@@ -22,6 +22,15 @@ final class PartialProgramAssembler {
                 link(m.header().id(),assign,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+            } else if(precise && fact instanceof SpInput.GoToFact g) {
+                var source=origins.source("statement",g.header().id().handle(),g.header().provenance());
+                var reference=origins.source("goto-reference",g.header().id().handle(),g.referenceOrigin());
+                var paragraph=origins.source("goto-paragraph",g.target().orElseThrow().id().handle(),g.target().orElseThrow().paragraphOrigin());
+                var entry=origins.source("goto-entry",g.targetEntry().orElseThrow().handle(),g.entryOrigin().orElseThrow());
+                var origin=origins.derived(ids.id("origin","goto-target",unit.localId(),g.header().id().handle()),
+                    List.of(source,reference,paragraph,entry),"goto-paragraph@1/explicit-executable-entry");
+                term=PerformSequenceAssembler.jump("goto-target",g.header().id(),label(g.targetEntry().orElseThrow(),unit,ids),origin,unit,ids);
+                link(g.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.CallFact call) {
                 var completion=origins.source("continuation",call.header().id().handle(),call.normalContinuation().provenance());
                 term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties);
@@ -63,7 +72,7 @@ final class PartialProgramAssembler {
                 term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
             } else {
-                term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact || fact instanceof SpInput.EvaluateFact ? null : destination,data,unit,ids,origins,uncertainties,operands,true);
+                term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact || fact instanceof SpInput.EvaluateFact ? null : destination,data,unit,ids,origins,uncertainties,operands,!(fact instanceof SpInput.GoToFact));
                 link(fact.header().id(),term,label,statements,items);
             }
             sequences.add(new Sequence(label,instructions,term,term.header().origin()));
@@ -82,7 +91,7 @@ final class PartialProgramAssembler {
         var known=unknownEffects ? OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties)
             : new OpaqueOperands.Known(List.of(),List.of(),List.of(),List.of());
         var scope=new Scopes.EntityScope(List.of(id));
-        var code=!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
+        var code=fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retained with conservative effects and only proved control",origin));
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
