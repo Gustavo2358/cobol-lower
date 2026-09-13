@@ -16,6 +16,7 @@ public final class FastAdapterSuite {
             }
         }
         if (cases != 2) throw new AssertionError("fixed W1 focal cases absent");
+        EntryLocalizationSuite.run();
         IfIntegrationSuite.focal();
         MoveDataIntegrationSuite.run(); PerformIntegrationSuite.run(); MultiCallIntegrationSuite.run(); PartialIntegrationSuite.run();
         System.out.println("LOWER_FAST_ADAPTER_CASES=" + (cases + 2));

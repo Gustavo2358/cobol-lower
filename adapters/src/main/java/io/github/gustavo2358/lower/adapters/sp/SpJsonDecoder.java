@@ -121,7 +121,8 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire16.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent16(wire); input = Materialize.input(wire);
                 }
-                case "1.8.0" -> {
+                case "1.8.0", "1.9.0" -> {
+                    // SP1.9 localizes frontend entry/input completeness using the same typed fields.
                     var wire = mapper.treeToValue(node, Wire18.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent18(wire); input = Materialize.input(wire);
                 }

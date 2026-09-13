@@ -42,7 +42,7 @@ public final class DecoderSuite {
         return (ObjectNode) node.path("entryInventory").path("entries").get(0).path("signature");
     }
     private static void physical(ObjectNode golden, byte[] raw) throws Exception {
-        for (String version : List.of("1.0.0", "1.9.0", "2.0.0")) {
+        for (String version : List.of("1.0.0", "1.10.0", "2.0.0")) {
             var value = golden.deepCopy(); value.put("contractVersion", version);
             rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         }
@@ -168,6 +168,7 @@ public final class DecoderSuite {
         check(mapped.entryInventory().entries().get(0).id().handle().equals("entry:91") && mapped.entryInventory().entries().get(0).start().statement().orElseThrow().handle().equals("statement:73") && mapped.structure().roots().get(0).handle().equals("statement:73"), "consistent arbitrary handles preserved");
     }
     public static void main(String[] ignored) throws Exception {
+        EntryLocalizationSuite.run();
         assertions += ScalarWireSuite.run();
         assertions += CallIntegrationSuite.run();
         assertions += IfIntegrationSuite.run();
