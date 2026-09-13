@@ -13,6 +13,7 @@ final class OpaqueOperands {
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.Uncertainty> uncertainties) {
         var refs=new ArrayList<SpInput.DataReference>();
         if(fact instanceof SpInput.OtherStatement o)refs.addAll(o.knownReferences());
+        if(fact instanceof SpInput.EvaluateFact e)e.subject().ifPresent(refs::add);
         if(fact instanceof SpInput.IfFact f)refs.addAll(f.conditionReads());
         if(fact instanceof SpInput.MoveFact m) {refs.add(m.target());if(m.source() instanceof SpInput.DataReference r)refs.add(r);}
         var operands=new ArrayList<Operand>();var reads=new ArrayList<OperandId>();var writes=new ArrayList<OperandId>();var evidence=new ArrayList<OriginId>();

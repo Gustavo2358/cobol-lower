@@ -1,0 +1,7 @@
+id: WORK-LOWER-016
+title: CP6 — EVALUATE first vertical slice
+status: IN_PROGRESS
+scope:
+  - Decode SP 2.0 without changing historical decoders
+  - Lower ordered literal arms to generic AIR Branch; preserve unknown subjects
+  - No AIR, solver or lattice changes

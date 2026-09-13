@@ -26,6 +26,11 @@ final class PartialProgramAssembler {
                 var completion=origins.source("continuation",call.header().id().handle(),call.normalContinuation().provenance());
                 term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties);
                 link(fact.header().id(),term,label,statements,items);
+            } else if(precise && fact instanceof SpInput.EvaluateFact e) {
+                var chain = EvaluateLowerer.chain(e, destination, data, unit, ids, origins, operands, items, uncertainties);
+                term=chain.getFirst().terminator();
+                for (int i=1;i<chain.size();i++) sequences.add(chain.get(i));
+                for (var sequence : chain) link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);
             } else if(precise && fact instanceof SpInput.IfFact f) {
                 term=IfSequenceAssembler.branch(f,label(f.thenArm().entry().statement().orElseThrow(),unit,ids),
                     f.elseArm().entry().statement().map(s->label(s,unit,ids)).orElse(destination),data,unit,ids,origins,operands,items,uncertainties);
@@ -58,7 +63,7 @@ final class PartialProgramAssembler {
                 term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
             } else {
-                term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact ? null : destination,data,unit,ids,origins,uncertainties,operands,true);
+                term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact || fact instanceof SpInput.EvaluateFact ? null : destination,data,unit,ids,origins,uncertainties,operands,true);
                 link(fact.header().id(),term,label,statements,items);
             }
             sequences.add(new Sequence(label,instructions,term,term.header().origin()));
@@ -90,7 +95,7 @@ final class PartialProgramAssembler {
                     :new Control.ControlEnvelope(List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),
                 new Envelopes.DependencyEnvelope(List.of(),unknownEffects?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
     }
-    private static LabelId label(SpInput.StatementId s,UnitId unit,LocalIds ids) {return new LabelId(unit,ids.id("label","partial-sequence",unit.localId(),s.handle()));}
+    static LabelId label(SpInput.StatementId s,UnitId unit,LocalIds ids) {return new LabelId(unit,ids.id("label","partial-sequence",unit.localId(),s.handle()));}
     private static void link(SpInput.StatementId source,Operation op,LabelId label,List<LoweringResult.StatementLink> statements,List<Evidence.CoverageItem> items) {
         var h=op.header();statements.add(new LoweringResult.StatementLink(source,h.id(),label,h.origin()));
         items.add(new Evidence.CoverageItem("sp-partial@1/"+h.id().localId()+"/"+source.handle(),h.origin(),h.coverage(),List.of(h.id(),label),h.uncertainties(),Optional.empty()));

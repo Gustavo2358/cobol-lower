@@ -126,6 +126,10 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire18.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent18(wire); input = Materialize.input(wire);
                 }
+                case "2.0.0" -> {
+                    var wire = mapper.treeToValue(node, Wire20.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent20(wire); input = Materialize.input(wire);
+                }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
@@ -276,6 +280,34 @@ public final class SpJsonDecoder {
         }
     }
     private static void logical18(Wire18.LogicalDocument value) {
+        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
+            throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireCoherent20(Wire20.Document wire) {
+        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
+            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
+        for (var statement : wire.statements()) {
+            if (statement instanceof Wire20.EvaluateDocument e) for (var a : e.arms()) {
+                if (!(a.selection() instanceof Wire20.LiteralDocument l) || l.kind()!=SpInput.LiteralKind.ALPHANUMERIC
+                        || l.logicalValue()==null || !l.value().equals(l.logicalValue().value()))
+                    throw new PhysicalShape("$/statements/EVALUATE/arms/selection");
+                logical20(l.logicalValue());
+            }
+            if (statement instanceof Wire20.MoveDocument m && m.source() instanceof Wire20.LiteralDocument literal && literal.logicalValue() != null) {
+                var value = literal.logicalValue();
+                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                    throw new PhysicalShape("$/statements/source/logicalValue");
+                logical20(value);
+            }
+            if (statement instanceof Wire20.MoveDocument m && m.textAdjustment() != null) logical20(m.textAdjustment().result());
+            if (statement instanceof Wire20.CallDocument c && c.target() instanceof Wire20.LiteralTargetDocument l && l.logicalValue() != null) {
+                logical20(l.logicalValue());
+                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
+            }
+        }
+    }
+    private static void logical20(Wire20.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
     }

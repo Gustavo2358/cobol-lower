@@ -16,12 +16,16 @@ final class PartialProgramAdmission {
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             CallAdmission.validateFacts(input,c);
+            var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
+            for(var s:input.statements()) if(s.header().containment().branch()==Branch.EVALUATE_ARM)
+                s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
             for (var s : input.statements()) {
                 var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
                 if(s instanceof OtherStatement o) {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
                 }
+                if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
                 if (s instanceof IfFact f) {
                     var operands = new HashSet<OperandId>();
                     for (var ref : f.conditionReads()) CallAdmission.reference(ref,f.header(),operands,c);
@@ -65,14 +69,15 @@ final class PartialProgramAdmission {
                         && (f.elseArm().entry().statement().isPresent() || f.elseArm().presence()==ClausePresence.ABSENT)
                         && f.conditionReads().stream().allMatch(r -> mapped.contains(r.wholeItemAccess().map(WholeItemAccess::data).orElse(null)))) {
                     IfAdmission.admitPredicate(f,c,true); eligible=true;
-                } else if(s instanceof GobackFact) eligible=true;
+                } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e);
+                else if(s instanceof GobackFact) eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
             }
             var bodies=new LinkedHashMap<StatementId,List<MoveFact>>(); var bodyMembers=new HashSet<StatementId>();
             var targets=new HashMap<ProcedureId,List<StatementId>>();
             var owners=new HashMap<StatementId,ProcedureId>();
-            var primary=Set.copyOf(primary(input,c));
+            var primary=Set.copyOf(primary(input,c,precise));
             for(var s:input.statements()) if(s instanceof PerformFact p && p.profile()==PerformProfile.BASIC_PROCEDURE_PERFORM) {
                 boolean valid=p.target().isPresent()&&!p.targetStatements().isEmpty()&&p.normalContinuation().statement().isPresent()&&p.gapCodes().isEmpty();
                 valid &= p.primaryStatements().isEmpty() && primary.contains(p.header().id())
@@ -111,16 +116,41 @@ final class PartialProgramAdmission {
             return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
     }
-    private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c) {
-        var list=new ArrayList<StatementId>(); var seen=new HashSet<StatementId>();
-        var current=input.entryInventory().entries().getFirst().start().statement();
-        while(current.isPresent() && seen.add(current.orElseThrow())) {
-            c.touch();var s=c.lookup(current.orElseThrow()); if(s==null)return List.of(); list.add(s.header().id());
-            if(s instanceof GobackFact)return List.copyOf(list);
-            var continuation=next(s); current=continuation==null?Optional.empty():continuation.statement();
+    private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c,Set<StatementId> precise) {
+        record Visit(StatementId id,boolean complete) { }
+        var closed=new LinkedHashSet<StatementId>(); var active=new HashSet<StatementId>(); var pending=new ArrayDeque<Visit>();
+        input.entryInventory().entries().getFirst().start().statement().ifPresent(id->pending.push(new Visit(id,false)));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop(); var id=visit.id();
+            if(visit.complete()) { active.remove(id); closed.add(id); continue; }
+            if(closed.contains(id))continue; // A shared join was already proved closed.
+            if(!active.add(id))return List.of(); // A cycle does not prove a returning primary region.
+            c.touch(); var s=c.lookup(id); if(s==null)return List.of();
+            if(s instanceof GobackFact) { active.remove(id); closed.add(id); continue; }
+            var continuation=next(s);
+            if(continuation==null || continuation.availability()!=ContinuationAvailability.KNOWN
+                    || continuation.statement().isEmpty() || !continuation.provenance().exact())return List.of();
+            pending.push(new Visit(id,true));
+            pending.push(new Visit(continuation.statement().orElseThrow(),false));
+            if(s instanceof EvaluateFact e) {
+                if(!precise.contains(id))return List.of();
+                for(var arm:e.arms())pending.push(new Visit(arm.control().entry().statement().orElseThrow(),false));
+                e.otherArm().entry().statement().ifPresent(entry->pending.push(new Visit(entry,false)));
+            }
+            if(s instanceof IfFact f) {
+                if(!precise.contains(id) || !primaryArm(f.thenArm(),false) || !primaryArm(f.elseArm(),true))return List.of();
+                pending.push(new Visit(f.thenArm().entry().statement().orElseThrow(),false));
+                f.elseArm().entry().statement().ifPresent(entry->pending.push(new Visit(entry,false)));
+            }
         }
-        return List.of(); // A BASIC proof cannot claim an isolated returning primary region here.
+        return List.copyOf(closed);
     }
+    private static boolean primaryArm(IfArm arm,boolean mayBeAbsent) {
+        return arm.contentAvailability()==Availability.KNOWN && arm.provenance().exact()
+            && (arm.presence()==ClausePresence.PRESENT && arm.entry().availability()==Availability.KNOWN && arm.entry().statement().isPresent()
+                || mayBeAbsent && arm.presence()==ClausePresence.ABSENT && arm.entry().statement().isEmpty());
+    }
+
     private static void validateArm(IfFact f,IfArm arm,Branch branch,EntryGobackAdmission.Context c) {
         if(arm.entry().statement().isPresent()) {
             var id=arm.entry().statement().orElseThrow();var child=c.lookup(id);
@@ -130,6 +160,7 @@ final class PartialProgramAdmission {
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
     static NormalContinuation next(StatementFact s) {
+        if(s instanceof EvaluateFact e)return e.normalContinuation();
         if(s instanceof OtherStatement o)return o.normalContinuation();
         return SupportedProgramAdmission.next(s);
     }
