@@ -124,6 +124,8 @@ final class PartialIdentityFacts {
                 field.accept("PerformParagraph"); value.accept(r.id()); value.accept(r.entry()); value.accept(r.statements()); value.accept(r.completions()); value.accept(r.provenance());
             }
             case SpInput.ScalarInteger r -> {field.accept("ScalarInteger");value.accept(r.digits());}
+            case SpInput.VaryingOperand r -> {field.accept("VaryingOperand");value.accept(r.level());value.accept(r.role());value.accept(r.integer());value.accept(r.references());value.accept(r.provenance());}
+            case SpInput.PerformVarying r -> {field.accept("PerformVarying");value.accept(r.levels());value.accept(r.controls());}
             case SpInput.PerformCount r -> {field.accept("PerformCount");value.accept(r.profile());value.accept(r.integer());value.accept(r.reference());value.accept(r.provenance());}
             case SpInput.PerformLoop r -> {
                 field.accept("PerformLoop"); value.accept(r.testMode()); value.accept(r.conditionShape()); value.accept(r.predicate()); value.accept(r.conditionReads()); value.accept(r.provenance());
@@ -132,6 +134,7 @@ final class PartialIdentityFacts {
                 field.accept("ProcedurePerformFact"); value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
                 if(r.loop().isPresent()){field.accept("loop"); value.accept(r.loop());}
                 if(r.times().isPresent()){field.accept("times");value.accept(r.times());}
+                if(r.varying().isPresent()){field.accept("varying");value.accept(r.varying());}
                 value.accept(r.gapCodes());
             }
             case SpInput.PerformFact r -> {

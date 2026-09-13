@@ -171,10 +171,20 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record PerformCount(PerformCountProfile profile,Optional<String> integer,Optional<DataReference> reference,Provenance provenance) {
         public PerformCount { Objects.requireNonNull(profile);Objects.requireNonNull(integer);Objects.requireNonNull(reference);Objects.requireNonNull(provenance); }
     }
+    public enum VaryingOperandRole { CONTROL_VARIABLE, FROM, BY }
+    public record VaryingOperand(int level,VaryingOperandRole role,Optional<String> integer,List<DataReference> references,Provenance provenance) {
+        public VaryingOperand { Objects.requireNonNull(role);Objects.requireNonNull(integer);references=List.copyOf(references);Objects.requireNonNull(provenance); }
+    }
+    public record PerformVarying(int levels,List<VaryingOperand> controls) {
+        public PerformVarying { controls=List.copyOf(controls); }
+    }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
-            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,List<String> gapCodes) implements StatementFact {
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes) implements StatementFact {
         public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
-            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times);Objects.requireNonNull(varying); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+        public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,Optional<PerformCount> times,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,times,Optional.empty(),gapCodes);
+        }
         public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,List<String> gapCodes) {
             this(header,start,end,procedures,normalContinuation,loop,Optional.empty(),gapCodes);
         }
@@ -296,7 +306,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     }
 
     // Closed SP 1.4 facts. These describe upstream proof, never AIR or evaluated truth.
-    public enum PredicateProfile { SCALAR_TEXT_EQUALITY, UNAVAILABLE }
+    public enum PredicateProfile { SCALAR_TEXT_EQUALITY, NUMERIC_RELATION, UNAVAILABLE }
     public enum PredicateDomain { BOOLEAN, UNKNOWN }
     public enum PredicateEvaluation { PURE, UNKNOWN }
     public enum PredicateCompletion { TOTAL, UNKNOWN }

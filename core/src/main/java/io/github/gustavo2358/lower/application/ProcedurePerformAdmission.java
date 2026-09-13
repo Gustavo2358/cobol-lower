@@ -12,11 +12,12 @@ final class ProcedurePerformAdmission {
     static void validate(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
         need(c,p,p.loop().isEmpty()||p.times().isEmpty(),"one repetition profile");
         p.times().ifPresent(t->PerformCountAdmission.validate(p,t,c));
+        var operands=new HashSet<OperandId>();
+        p.varying().ifPresent(v->PerformVaryingAdmission.validate(p,v,operands,c));
         p.loop().ifPresent(l->{
             c.provenance(l.provenance());c.provenance(l.predicate().provenance());
-            var operands=new HashSet<OperandId>();
             for(var read:l.conditionReads())CallAdmission.reference(read,p.header(),operands,c);
-            if(p.gapCodes().isEmpty())IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c);
+            if(p.gapCodes().isEmpty())IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
         });
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());

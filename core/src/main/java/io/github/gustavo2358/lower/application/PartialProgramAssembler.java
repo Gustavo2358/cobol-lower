@@ -71,11 +71,24 @@ final class PartialProgramAssembler {
                 var completion=destination;var entry=target;
                 if(p.loop().isPresent()) {
                     var decisionLabel=new LabelId(unit,ids.id("label","perform-loop-decision",unit.localId(),p.header().id().handle()));
-                    var decision=PerformLoopAssembler.decision(p,target,destination,data,unit,ids,origins,operands,items,uncertainties);
+                    boolean before=p.loop().get().testMode()==SpInput.PerformTestMode.BEFORE;
+                    var repeat=target;
+                    completion=decisionLabel;
+                    if(before)entry=decisionLabel;
+                    if(p.varying().isPresent()) {
+                        var initialLabel=new LabelId(unit,ids.id("label","perform-varying-initialization",unit.localId(),p.header().id().handle()));
+                        var incrementLabel=new LabelId(unit,ids.id("label","perform-varying-increment",unit.localId(),p.header().id().handle()));
+                        var initial=PerformVaryingEffects.effect(p,true,before?decisionLabel:target,data,unit,ids,origins,operands,uncertainties);
+                        var increment=PerformVaryingEffects.effect(p,false,before?decisionLabel:target,data,unit,ids,origins,operands,uncertainties);
+                        sequences.add(new Sequence(initialLabel,List.of(),initial,initial.header().origin()));
+                        sequences.add(new Sequence(incrementLabel,List.of(),increment,increment.header().origin()));
+                        link(p.header().id(),initial,initialLabel,statements,items);link(p.header().id(),increment,incrementLabel,statements,items);
+                        entry=initialLabel;
+                        if(before)completion=incrementLabel;else repeat=incrementLabel;
+                    }
+                    var decision=PerformLoopAssembler.decision(p,repeat,destination,data,unit,ids,origins,operands,items,uncertainties);
                     sequences.add(new Sequence(decisionLabel,List.of(),decision,decision.header().origin()));
                     link(p.header().id(),decision,decisionLabel,statements,items);
-                    completion=decisionLabel;
-                    if(p.loop().get().testMode()==SpInput.PerformTestMode.BEFORE)entry=decisionLabel;
                 }
                 if(p.times().isPresent()) {
                     var repeatLabel=new LabelId(unit,ids.id("label","perform-count-exhaustion",unit.localId(),p.header().id().handle()));

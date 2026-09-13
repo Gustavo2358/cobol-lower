@@ -142,11 +142,21 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire24.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent24(wire); input = Materialize.input(wire);
                 }
+                case "2.5.0" -> {
+                    var wire = mapper.treeToValue(node, Wire25.Document.class);
+                    requirePhysical(wire, "$", meter); requireCoherent25(wire); input = Materialize.input(wire);
+                }
                 case "2.1.0" -> {
                     var wire = mapper.treeToValue(node, Wire21.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent21(wire); input = Materialize.input(wire);
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
+            }
+            if (!node.path("contractVersion").textValue().equals("2.5.0")) for (var statement : input.statements()) {
+                var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
+                    : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
+                if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)
+                    throw new PhysicalShape("$/statements/predicate/profile");
             }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
                 .map(SpInput.OtherStatement.class::cast).map(v -> new UnsupportedVariant(v.header().id(), v.variant())).toList();
@@ -436,6 +446,34 @@ public final class SpJsonDecoder {
         }
     }
     private static void logical24(Wire24.LogicalDocument value) {
+        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
+            throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireCoherent25(Wire25.Document wire) {
+        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
+            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
+        for (var statement : wire.statements()) {
+            if (statement instanceof Wire25.EvaluateDocument e) for (var a : e.arms()) {
+                if (!(a.selection() instanceof Wire25.LiteralDocument l) || l.kind()!=SpInput.LiteralKind.ALPHANUMERIC
+                        || l.logicalValue()==null || !l.value().equals(l.logicalValue().value()))
+                    throw new PhysicalShape("$/statements/EVALUATE/arms/selection");
+                logical25(l.logicalValue());
+            }
+            if (statement instanceof Wire25.MoveDocument m && m.source() instanceof Wire25.LiteralDocument literal && literal.logicalValue() != null) {
+                var value = literal.logicalValue();
+                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                    throw new PhysicalShape("$/statements/source/logicalValue");
+                logical25(value);
+            }
+            if (statement instanceof Wire25.MoveDocument m && m.textAdjustment() != null) logical25(m.textAdjustment().result());
+            if (statement instanceof Wire25.CallDocument c && c.target() instanceof Wire25.LiteralTargetDocument l && l.logicalValue() != null) {
+                logical25(l.logicalValue());
+                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
+            }
+        }
+    }
+    private static void logical25(Wire25.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
     }
