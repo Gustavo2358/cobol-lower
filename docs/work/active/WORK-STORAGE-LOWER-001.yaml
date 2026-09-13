@@ -1,0 +1,10 @@
+id: WORK-STORAGE-LOWER-001
+title: Storage Semantics campaign — ST-W0..ST-W5
+status: IN_PROGRESS
+scope:
+  - ST-W0 freeze SP 2.6/AIR baseline and reconcile physical-fact ownership.
+  - ST-W3.2 consume versioned SP 2.7 layout/access/byte effects and lower explicit Region/View facts.
+  - ST-W4.2/W4.3 shared physical components and conservative local admission; W5 integration/copy evidence.
+  - Preserve historical SP decoders, scalar/control profiles, strict closure and exact dependency pins.
+  - No PICTURE reparsing, offset invention, COBOL reanalysis, separate memory model, W6-W8, merge or auto-merge.
+notes: Promotes translation side of BACKLOG-SP-008/DF-001 handoffs. One persistent draft PR, human review after W5.

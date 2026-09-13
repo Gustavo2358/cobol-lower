@@ -1,5 +1,7 @@
 # Trabalho — navegação
 
+[WORK-STORAGE-LOWER-001 — Storage Semantics ST-W0..ST-W5](active/WORK-STORAGE-LOWER-001.yaml): IN_PROGRESS; tradução de fatos físicos explícitos, preservando contratos históricos. Revisão humana após a qualificação W5.
+
 Atual: [WORK-LOWER-015](active/WORK-LOWER-015.yaml), CP6 compositionality e partial lowering, coordenado com WORK-CFG-038.
 WORK-LOWER-014: DONE / MERGED #16, `797dcbd6f05f12661299339746c607b5b57ac1ba`.
 
