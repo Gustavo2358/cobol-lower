@@ -449,6 +449,86 @@ final class Materialize {
         return new IndependentStorageSet(s.availability(), s.rule(), s.authority(), s.members().stream().map(id -> new DataId(unit,id)).toList(),
             Optional.ofNullable(s.provenance()).map(p -> provenance(p,unit)), s.gapCodes());
     }
+    static SpInput input(Wire21.Document d) {
+        var unit = unitKey(d.unit(), null);
+        return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
+            var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
+            return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar);
+        }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
+            d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true);
+    }
+    private static StatementFact statement(Wire21.StatementDocument value, UnitKey unit) {
+        var h = statementHeader(value.header(), unit);
+        return switch (value) {
+            case Wire21.GoToDocument v -> new GoToFact(h,Optional.ofNullable(v.target()).map(t ->
+                new GoToTarget(new ProcedureId(unit,t.id()),provenance(t.paragraphOrigin(),unit))),provenance(v.referenceOrigin(),unit),
+                Optional.ofNullable(v.targetEntry()).map(id -> new StatementId(unit,id)),Optional.ofNullable(v.entryOrigin()).map(o -> provenance(o,unit)),v.gapCodes());
+            case Wire21.EvaluateDocument v -> new EvaluateFact(h, Optional.ofNullable(v.subject()).map(s -> reference(s,h.id(),unit)),
+                v.arms().stream().map(a -> { var l=(Wire21.LiteralDocument)a.selection();
+                    return new EvaluateArm(a.ordinal(), new LiteralSource(new OperandId(h.id(),l.id()),l.kind(),
+                        Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit)),
+                        a.statements().stream().map(id -> new StatementId(unit,id)).toList(), arm(a.control(),unit)); }).toList(),
+                arm(v.otherArm(),unit),v.otherStatements().stream().map(id -> new StatementId(unit,id)).toList(),
+                continuation(v.normalContinuation(),unit),v.gapCodes());
+            case Wire21.PerformDocument v -> new PerformFact(h, v.profile(), Optional.ofNullable(v.target()).map(t ->
+                new PerformTarget(new ProcedureId(unit, t.id()), provenance(t.referenceOrigin(), unit), provenance(t.paragraphOrigin(), unit))),
+                Optional.ofNullable(v.targetEntry()).map(id -> new StatementId(unit, id)), v.targetStatements().stream().map(id -> new StatementId(unit,id)).toList(),
+                Optional.ofNullable(v.targetExit()).map(id -> new StatementId(unit,id)), continuation(v.normalContinuation(), unit),
+                List.of(), v.gapCodes());
+            case Wire21.GobackDocument v -> new GobackFact(h, v.exit(), v.localContinuation());
+            case Wire21.MoveDocument v -> {
+                MoveSource source = switch (v.source()) {
+                    case Wire21.LiteralDocument literal -> new LiteralSource(new OperandId(h.id(), literal.id()), literal.kind(),
+                        Optional.ofNullable(literal.logicalValue()).map(Materialize::logical), provenance(literal.provenance(), unit));
+                    case Wire21.DataSourceDocument data -> reference(data.reference(), h.id(), unit);
+                };
+                yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
+                    Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
+                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+            }
+            case Wire21.CallDocument v -> {
+                CallTarget target = switch (v.target()) {
+                    case Wire21.DataTargetDocument d -> new DataCallTarget(reference(d.reference(), h.id(), unit));
+                    case Wire21.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(), l.id()), l.text(), l.writtenText(),
+                        Optional.ofNullable(l.logicalValue()).map(Materialize::logical), provenance(l.provenance(), unit));
+                };
+                var s = v.surface();
+                yield new CallFact(h, v.syntax(), target, v.runtimeTarget(), v.runtimeUncertaintyCode(), continuation(v.normalContinuation(), unit),
+                    new CallSurface(s.using(), Optional.ofNullable(s.argumentCount()), s.returning(), s.onException(), s.notOnException(), s.onOverflow()), v.effects(), v.outcomes());
+            }
+            case Wire21.IfDocument v -> {
+                var condition=v.condition(); var p=condition.predicate();
+                var predicate=new PredicateGuarantee(p.availability(),p.profile(),p.resultDomain(),p.evaluation(),p.normalCompletion(),
+                    p.readsCompleteness(),p.truthValue(),p.knownReads().stream().map(id -> new OperandId(h.id(),id)).toList(),provenance(p.provenance(),unit),p.gapCodes());
+                yield new IfFact(h,condition.shape(),predicate,condition.references().stream().map(r -> reference(r,h.id(),unit)).toList(),
+                    provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
+                    continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
+            }
+            case Wire21.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+        };
+    }
+    private static LogicalValue logical(Wire21.LogicalDocument value) {
+        return new LogicalValue(value.logicalDomain(), value.value(), value.logicalExtent());
+    }
+    private static NormalContinuation continuation(Wire21.ContinuationDocument next, UnitKey unit) {
+        return new NormalContinuation(next.availability(), Optional.ofNullable(next.statement()).map(id -> new StatementId(unit, id)), provenance(next.provenance(), unit));
+    }
+    private static DataReference reference(Wire21.ReferenceDocument target, StatementId statement, UnitKey unit) {
+        var binding = target.binding();
+        return new DataReference(new OperandId(statement, target.id()), target.role(),
+            new Binding(ResolutionStatus.valueOf(binding.status().name()), binding.candidates().stream().map(c -> new DataId(unit, c.id())).toList(),
+                Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())),
+                binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
+            Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit));
+    }
+    private static IfArm arm(Wire21.ArmDocument a, UnitKey unit) {
+        return new IfArm(a.presence(),a.contentAvailability(),executableStart(a.entry(),unit),provenance(a.provenance(),unit),a.gapCodes());
+    }
+    private static IndependentStorageSet storage(Wire21.StorageDocument s, UnitKey unit) {
+        return new IndependentStorageSet(s.availability(), s.rule(), s.authority(), s.members().stream().map(id -> new DataId(unit,id)).toList(),
+            Optional.ofNullable(s.provenance()).map(p -> provenance(p,unit)), s.gapCodes());
+    }
     private static StatementFact statement(Wire.StatementDocument value, UnitKey unit) {
         return switch (value) {
             case Wire.GobackFactDocument v -> gobackFact(v, unit);

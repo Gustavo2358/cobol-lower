@@ -16,6 +16,7 @@ final class PartialProgramAdmission {
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             CallAdmission.validateFacts(input,c);
+            var goToTargets=new HashMap<ProcedureId,GoToFact>();
             var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
             for(var s:input.statements()) if(s.header().containment().branch()==Branch.EVALUATE_ARM)
                 s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
@@ -25,6 +26,7 @@ final class PartialProgramAdmission {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
                 }
+                if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);
                 if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
                 if (s instanceof IfFact f) {
                     var operands = new HashSet<OperandId>();
@@ -70,6 +72,7 @@ final class PartialProgramAdmission {
                         && f.conditionReads().stream().allMatch(r -> mapped.contains(r.wholeItemAccess().map(WholeItemAccess::data).orElse(null)))) {
                     IfAdmission.admitPredicate(f,c,true); eligible=true;
                 } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e);
+                else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
@@ -106,6 +109,8 @@ final class PartialProgramAdmission {
                 precise.add(p.header().id());bodies.put(p.header().id(),List.copyOf(body));bodyMembers.addAll(p.targetStatements());
             }
             for (var s : input.statements()) {
+                if(s instanceof GoToFact g)c.require(g.targetEntry().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,
+                    s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary GO TO incoming edge");
                 var successor=next(s);
                 if (!bodyMembers.contains(s.header().id()) && successor!=null)
                     c.require(successor.statement().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary incoming continuation");
@@ -127,6 +132,11 @@ final class PartialProgramAdmission {
             if(!active.add(id))return List.of(); // A cycle does not prove a returning primary region.
             c.touch(); var s=c.lookup(id); if(s==null)return List.of();
             if(s instanceof GobackFact) { active.remove(id); closed.add(id); continue; }
+            if(s instanceof GoToFact g) {
+                if(!precise.contains(id))return List.of();
+                pending.push(new Visit(id,true)); pending.push(new Visit(g.targetEntry().orElseThrow(),false));
+                continue;
+            }
             var continuation=next(s);
             if(continuation==null || continuation.availability()!=ContinuationAvailability.KNOWN
                     || continuation.statement().isEmpty() || !continuation.provenance().exact())return List.of();
