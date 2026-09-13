@@ -209,3 +209,16 @@ Lowerer e CFG validam suas responsabilidades sem importar os algoritmos do outro
 
 Regra detalhada: [fonte local](../product/ecosystem.md). Evals: EVAL-LWR-026.
 Enforcement: `SPECIFIED_NOT_IMPLEMENTED` no escopo registrado no JSON. Sem exceção silenciosa; limites legítimos devem ser explicitados no perfil/work item.
+
+
+## Finite Multiplicity
+
+One supported occurrence implies arbitrary valid finite multiplicity must remain
+supported unless the source language itself defines a semantic limit. Product code
+must not impose a smaller implementation count limit.
+
+For GO TO DEPENDING ON, lists with hundreds of destinations are normal supported
+inputs and must not be truncated, rejected, or degraded merely because of target
+count. Destination order and duplicate occurrences are semantic. A profile gap
+never authorizes dropping a parser-observed tail. Oracles include destination counts
+1/2/5/40/100/200/255, source occurrence multiplicity 1/2/5/40, and indexed work checks.

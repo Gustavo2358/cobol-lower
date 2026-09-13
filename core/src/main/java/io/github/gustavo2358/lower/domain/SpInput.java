@@ -24,7 +24,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -332,6 +332,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin, List<String> gapCodes) implements StatementFact {
         public GoToFact { Objects.requireNonNull(header); Objects.requireNonNull(target); Objects.requireNonNull(referenceOrigin);
             Objects.requireNonNull(targetEntry); Objects.requireNonNull(entryOrigin); gapCodes=List.copyOf(gapCodes); }
+    }
+
+    public record GoToDestination(int ordinal, Optional<ProcedureId> target, Optional<Provenance> procedureOrigin,
+            Provenance referenceOrigin, Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin,List<String> gapCodes) {
+        public GoToDestination { Objects.requireNonNull(target);Objects.requireNonNull(procedureOrigin);Objects.requireNonNull(referenceOrigin);
+            Objects.requireNonNull(targetEntry);Objects.requireNonNull(entryOrigin);gapCodes=List.copyOf(gapCodes); }
+    }
+    public record ConditionalGoToFact(StatementHeader header, Optional<DataReference> selector, boolean selectorInteger,
+            Provenance selectorOrigin,List<GoToDestination> destinations,NormalContinuation normalContinuation,List<String> gapCodes) implements StatementFact {
+        public ConditionalGoToFact { Objects.requireNonNull(header);Objects.requireNonNull(selector);Objects.requireNonNull(selectorOrigin);
+            destinations=List.copyOf(destinations);Objects.requireNonNull(normalContinuation);gapCodes=List.copyOf(gapCodes); }
     }
 
     public record EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {

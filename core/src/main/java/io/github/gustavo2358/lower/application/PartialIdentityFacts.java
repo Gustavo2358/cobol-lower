@@ -281,6 +281,26 @@ final class PartialIdentityFacts {
                 field.accept("id"); value.accept(r.id());
                 field.accept("paragraphOrigin"); value.accept(r.paragraphOrigin());
             }
+            case SpInput.GoToDestination r -> {
+                field.accept("GoToDestination");
+                field.accept("ordinal"); value.accept(r.ordinal());
+                field.accept("target"); value.accept(r.target());
+                field.accept("procedureOrigin"); value.accept(r.procedureOrigin());
+                field.accept("referenceOrigin"); value.accept(r.referenceOrigin());
+                field.accept("targetEntry"); value.accept(r.targetEntry());
+                field.accept("entryOrigin"); value.accept(r.entryOrigin());
+                field.accept("gapCodes"); value.accept(r.gapCodes());
+            }
+            case SpInput.ConditionalGoToFact r -> {
+                field.accept("ConditionalGoToFact");
+                field.accept("header"); value.accept(r.header());
+                field.accept("selector"); value.accept(r.selector());
+                field.accept("selectorInteger"); value.accept(r.selectorInteger());
+                field.accept("selectorOrigin"); value.accept(r.selectorOrigin());
+                field.accept("destinations"); value.accept(r.destinations());
+                field.accept("normalContinuation"); value.accept(r.normalContinuation());
+                field.accept("gapCodes"); value.accept(r.gapCodes());
+            }
             case SpInput.GoToFact r -> {
                 field.accept("GoToFact");
                 field.accept("header"); value.accept(r.header());
