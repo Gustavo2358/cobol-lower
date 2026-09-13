@@ -120,12 +120,16 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText) {
+    public record ScalarInteger(int digits) { }
+    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarInteger> scalarInteger) {
+        public DataFact(DataId id,String canonicalName,Optional<String> picture,Provenance provenance,CoverageStatus coverage,Readiness readiness,Optional<ScalarText> scalarText) {
+            this(id,canonicalName,picture,provenance,coverage,readiness,scalarText,Optional.empty());
+        }
         public DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness) {
             this(id, canonicalName, picture, provenance, coverage, readiness, Optional.empty());
         }
         public DataFact {
-            Objects.requireNonNull(scalarText, "scalarText");
+            Objects.requireNonNull(scalarText, "scalarText");Objects.requireNonNull(scalarInteger);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(canonicalName, "canonicalName");
             Objects.requireNonNull(picture, "picture");
@@ -163,10 +167,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public PerformLoop { Objects.requireNonNull(testMode); Objects.requireNonNull(conditionShape); Objects.requireNonNull(predicate);
             conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(provenance); }
     }
+    public enum PerformCountProfile { POSITIVE_INTEGER, INTEGER_ITEM, UNAVAILABLE }
+    public record PerformCount(PerformCountProfile profile,Optional<String> integer,Optional<DataReference> reference,Provenance provenance) {
+        public PerformCount { Objects.requireNonNull(profile);Objects.requireNonNull(integer);Objects.requireNonNull(reference);Objects.requireNonNull(provenance); }
+    }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
-            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, List<String> gapCodes) implements StatementFact {
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,List<String> gapCodes) implements StatementFact {
         public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
-            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+        public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,Optional.empty(),gapCodes);
+        }
         public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
                 List<PerformParagraph> procedures, NormalContinuation normalContinuation, List<String> gapCodes) {
             this(header,start,end,procedures,normalContinuation,Optional.empty(),gapCodes);

@@ -16,8 +16,13 @@ final class IfPredicate {
     static Expressions.Unknown translate(SpInput.StatementId statement, SpInput.PredicateGuarantee guarantee,
             List<SpInput.DataReference> conditionReads,String role,String rule,OperationId operation,ScalarDataTranslator.Result data,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        return translateReads(statement,guarantee.provenance(),guarantee.knownReads(),conditionReads,role,rule,operation,data,ids,origins,links,items,uncertainties);
+    }
+    static Expressions.Unknown translateReads(SpInput.StatementId statement,SpInput.Provenance provenance,List<SpInput.OperandId> knownReads,
+            List<SpInput.DataReference> conditionReads,String role,String rule,OperationId operation,ScalarDataTranslator.Result data,
+            LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var owner = new OperationOwner(operation); var key = statement.handle();
-        var origin = origins.source(role+"-predicate", key, guarantee.provenance());
+        var origin = origins.source(role+"-predicate", key, provenance);
         var operand = new OperandId(owner, ids.id("operand", role+"-predicate", operation.localId(), key));
         var reason = new UncertaintyId(operation.unit().publication(), ids.id("uncertainty", "predicate-value-unknown", operation.localId(), key));
         uncertainties.add(new Evidence.Uncertainty(reason, "predicate-value-unknown", List.of(Evidence.Dimension.VALUES),
@@ -25,7 +30,7 @@ final class IfPredicate {
         var references = new HashMap<SpInput.OperandId, SpInput.DataReference>();
         conditionReads.forEach(r -> references.put(r.id(), r));
         var dependencies = new ArrayList<Expression>();
-        for (var known : guarantee.knownReads()) {
+        for (var known : knownReads) {
             var reference = references.get(known); var mapping = data.index().get(reference.wholeItemAccess().orElseThrow().data());
             var source = origins.source(role+"-read", known.handle(), reference.provenance());
             var placeOrigin = origins.derived(ids.id("origin", role+"-read-place", operation.localId(), known.handle()),

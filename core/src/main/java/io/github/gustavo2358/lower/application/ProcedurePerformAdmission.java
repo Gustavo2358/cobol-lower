@@ -10,6 +10,8 @@ final class ProcedurePerformAdmission {
         var result=new HashSet<StatementId>();p.procedures().forEach(r->result.addAll(r.statements()));return result;
     }
     static void validate(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
+        need(c,p,p.loop().isEmpty()||p.times().isEmpty(),"one repetition profile");
+        p.times().ifPresent(t->PerformCountAdmission.validate(p,t,c));
         p.loop().ifPresent(l->{
             c.provenance(l.provenance());c.provenance(l.predicate().provenance());
             var operands=new HashSet<OperandId>();

@@ -19,7 +19,7 @@ final class ScalarDataTranslator {
             var origin = origins.source("data", d.id().handle(), d.provenance());
             var objectOrigin = origins.derived(ids.id("origin", "scalar-object", unit.localId(), d.id().handle()), List.of(origin), "scalar-text-move@1/data-object");
             var cellOrigin = origins.derived(ids.id("origin", "scalar-cell", unit.localId(), d.id().handle()), List.of(origin), "scalar-text-move@1/local-working-storage-cell");
-            var text = Types.known(Types.Builtin.TEXT);
+            var text = Types.known(d.scalarInteger().isPresent()?Types.Builtin.INT:Types.Builtin.TEXT);
             var precision = ScalarEvidence.limited(ids, unit.publication(), object, d.id().handle(), origin, Evidence.Dimension.STORAGE, uncertainties);
             objects.add(new Memory.ObjectDeclaration(object, Optional.of(d.canonicalName()), text, new Memory.CellBinding(cell),
                 Memory.Visibility.PRIVATE, objectOrigin, Evidence.CoverageStatus.MODELED, precision));

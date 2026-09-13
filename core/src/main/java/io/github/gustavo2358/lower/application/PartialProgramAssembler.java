@@ -77,6 +77,18 @@ final class PartialProgramAssembler {
                     completion=decisionLabel;
                     if(p.loop().get().testMode()==SpInput.PerformTestMode.BEFORE)entry=decisionLabel;
                 }
+                if(p.times().isPresent()) {
+                    var repeatLabel=new LabelId(unit,ids.id("label","perform-count-exhaustion",unit.localId(),p.header().id().handle()));
+                    var repeat=PerformLoopAssembler.countDecision(p,false,target,destination,data,unit,ids,origins,operands,items,uncertainties);
+                    sequences.add(new Sequence(repeatLabel,List.of(),repeat,repeat.header().origin()));
+                    link(p.header().id(),repeat,repeatLabel,statements,items);completion=repeatLabel;
+                    if(p.times().get().profile()==SpInput.PerformCountProfile.INTEGER_ITEM) {
+                        var initialLabel=new LabelId(unit,ids.id("label","perform-count-entry",unit.localId(),p.header().id().handle()));
+                        var initial=PerformLoopAssembler.countDecision(p,true,target,destination,data,unit,ids,origins,operands,items,uncertainties);
+                        sequences.add(new Sequence(initialLabel,List.of(),initial,initial.header().origin()));
+                        link(p.header().id(),initial,initialLabel,statements,items);entry=initialLabel;
+                    }
+                }
                 term=PerformSequenceAssembler.jump("range-entry",p.header().id(),entry,origin,unit,ids);
                 link(p.header().id(),term,label,statements,items);
                 var completions=new HashMap<SpInput.StatementId,LabelId>();

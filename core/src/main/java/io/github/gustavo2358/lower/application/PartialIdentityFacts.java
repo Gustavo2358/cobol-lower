@@ -93,6 +93,7 @@ final class PartialIdentityFacts {
                 field.accept("coverage"); value.accept(r.coverage());
                 field.accept("readiness"); value.accept(r.readiness());
                 field.accept("scalarText"); value.accept(r.scalarText());
+                if(r.scalarInteger().isPresent()){field.accept("scalarInteger");value.accept(r.scalarInteger());}
             }
             case SpInput.Containment r -> {
                 field.accept("Containment");
@@ -122,12 +123,15 @@ final class PartialIdentityFacts {
             case SpInput.PerformParagraph r -> {
                 field.accept("PerformParagraph"); value.accept(r.id()); value.accept(r.entry()); value.accept(r.statements()); value.accept(r.completions()); value.accept(r.provenance());
             }
+            case SpInput.ScalarInteger r -> {field.accept("ScalarInteger");value.accept(r.digits());}
+            case SpInput.PerformCount r -> {field.accept("PerformCount");value.accept(r.profile());value.accept(r.integer());value.accept(r.reference());value.accept(r.provenance());}
             case SpInput.PerformLoop r -> {
                 field.accept("PerformLoop"); value.accept(r.testMode()); value.accept(r.conditionShape()); value.accept(r.predicate()); value.accept(r.conditionReads()); value.accept(r.provenance());
             }
             case SpInput.ProcedurePerformFact r -> {
                 field.accept("ProcedurePerformFact"); value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
                 if(r.loop().isPresent()){field.accept("loop"); value.accept(r.loop());}
+                if(r.times().isPresent()){field.accept("times");value.accept(r.times());}
                 value.accept(r.gapCodes());
             }
             case SpInput.PerformFact r -> {
