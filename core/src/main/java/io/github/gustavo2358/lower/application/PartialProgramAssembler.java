@@ -68,12 +68,21 @@ final class PartialProgramAssembler {
                 for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
                 evidence.add(origins.source("perform-continuation",p.header().id().handle(),p.normalContinuation().provenance()));
                 var origin=origins.derived(ids.id("origin","procedure-perform",unit.localId(),p.header().id().handle()),List.copyOf(evidence),"perform-range@1/isolated-activation");
-                term=PerformSequenceAssembler.jump("range-entry",p.header().id(),target,origin,unit,ids);
+                var completion=destination;var entry=target;
+                if(p.loop().isPresent()) {
+                    var decisionLabel=new LabelId(unit,ids.id("label","perform-loop-decision",unit.localId(),p.header().id().handle()));
+                    var decision=PerformLoopAssembler.decision(p,target,destination,data,unit,ids,origins,operands,items,uncertainties);
+                    sequences.add(new Sequence(decisionLabel,List.of(),decision,decision.header().origin()));
+                    link(p.header().id(),decision,decisionLabel,statements,items);
+                    completion=decisionLabel;
+                    if(p.loop().get().testMode()==SpInput.PerformTestMode.BEFORE)entry=decisionLabel;
+                }
+                term=PerformSequenceAssembler.jump("range-entry",p.header().id(),entry,origin,unit,ids);
                 link(p.header().id(),term,label,statements,items);
                 var completions=new HashMap<SpInput.StatementId,LabelId>();
                 for(int i=0;i<p.procedures().size();i++) {
                     var paragraph=p.procedures().get(i);
-                    var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):destination;
+                    var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):completion;
                     for(var id:paragraph.completions())completions.put(id,resume);
                 }
                 append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences);

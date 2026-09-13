@@ -10,6 +10,12 @@ final class ProcedurePerformAdmission {
         var result=new HashSet<StatementId>();p.procedures().forEach(r->result.addAll(r.statements()));return result;
     }
     static void validate(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
+        p.loop().ifPresent(l->{
+            c.provenance(l.provenance());c.provenance(l.predicate().provenance());
+            var operands=new HashSet<OperandId>();
+            for(var read:l.conditionReads())CallAdmission.reference(read,p.header(),operands,c);
+            if(p.gapCodes().isEmpty())IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c);
+        });
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());
         });

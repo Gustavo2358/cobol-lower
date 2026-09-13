@@ -157,10 +157,20 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public PerformParagraph { Objects.requireNonNull(id); Objects.requireNonNull(entry); Objects.requireNonNull(provenance);
             statements=List.copyOf(statements); completions=List.copyOf(completions); }
     }
+    public enum PerformTestMode { BEFORE, AFTER }
+    public record PerformLoop(PerformTestMode testMode, String conditionShape, PredicateGuarantee predicate,
+            List<DataReference> conditionReads, Provenance provenance) {
+        public PerformLoop { Objects.requireNonNull(testMode); Objects.requireNonNull(conditionShape); Objects.requireNonNull(predicate);
+            conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(provenance); }
+    }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
-            List<PerformParagraph> procedures, NormalContinuation normalContinuation, List<String> gapCodes) implements StatementFact {
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, List<String> gapCodes) implements StatementFact {
         public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
-            Objects.requireNonNull(normalContinuation); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,Optional.empty(),gapCodes);
+        }
     }
     public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, BASIC_PROCEDURE_PERFORM, OUTSIDE_SLICE }
     public record ProcedureId(UnitKey unit, String handle) {

@@ -21,3 +21,12 @@ has its own IDs; no iteration-count unrolling, solver, lattice or RD change.
 Oracles: source strong updates, explicit-edge inspection, distinct resumes,
 malformed endpoints/membership/completion/resume, permutation and cumulative E2E.
 Historical decoders remain closed and retain their previous semantics.
+
+SP 2.3 adds an optional UNTIL loop: one activation entry Jump, one Branch with
+an Unknown BOOL predicate and its published read dependencies, plus the same
+range body. BEFORE enters the decision; AFTER enters the body. Range completion
+targets the decision, true targets the callsite resume and false targets the
+range entry. There is no predicate pruning, path enumeration or body unrolling.
+Predicate admission and expression projection are shared with IF. An unproved
+condition stays Opaque with its known reads and open control. SP 2.2 and older
+decoders remain unchanged; a 2.2 document cannot carry the new loop field.
