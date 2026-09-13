@@ -24,7 +24,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -152,6 +152,16 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
+    public record PerformParagraph(ProcedureId id, StatementId entry, List<StatementId> statements,
+            List<StatementId> completions, Provenance provenance) {
+        public PerformParagraph { Objects.requireNonNull(id); Objects.requireNonNull(entry); Objects.requireNonNull(provenance);
+            statements=List.copyOf(statements); completions=List.copyOf(completions); }
+    }
+    public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, List<String> gapCodes) implements StatementFact {
+        public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
+            Objects.requireNonNull(normalContinuation); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+    }
     public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, BASIC_PROCEDURE_PERFORM, OUTSIDE_SLICE }
     public record ProcedureId(UnitKey unit, String handle) {
         public ProcedureId { Objects.requireNonNull(unit); Objects.requireNonNull(handle); }

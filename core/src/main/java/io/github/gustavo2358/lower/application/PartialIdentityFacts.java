@@ -119,6 +119,12 @@ final class PartialIdentityFacts {
                 field.accept("referenceOrigin"); value.accept(r.referenceOrigin());
                 field.accept("paragraphOrigin"); value.accept(r.paragraphOrigin());
             }
+            case SpInput.PerformParagraph r -> {
+                field.accept("PerformParagraph"); value.accept(r.id()); value.accept(r.entry()); value.accept(r.statements()); value.accept(r.completions()); value.accept(r.provenance());
+            }
+            case SpInput.ProcedurePerformFact r -> {
+                field.accept("ProcedurePerformFact"); value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation()); value.accept(r.gapCodes());
+            }
             case SpInput.PerformFact r -> {
                 field.accept("PerformFact");
                 field.accept("header"); value.accept(r.header());
