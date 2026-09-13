@@ -50,9 +50,13 @@ public final class RegionalTranslationSuite {
         check(nested.storage().size()==1&&nested.units().getFirst().objects().size()==4,"FILLER has physical coverage but no nominal object");
         check(((Memory.Region)nested.storage().getFirst()).extent().equals(Optional.of(BigInteger.valueOf(14))),"filler contributes two bytes");
         check(nested.units().getFirst().objects().stream().filter(o->o.storage() instanceof Memory.ViewBinding v&&v.offset().equals(BigInteger.valueOf(6))).count()==2,"nested group and leaf start after intermediate FILLER");
-        var copy=lower("copy-capture").publication().orElseThrow();
+        var copyResult=lower("copy-capture");var copy=copyResult.publication().orElseThrow();
         check(copy.storage().size()==2&&copy.storage().stream().allMatch(Memory.Region.class::isInstance),"standalone textual copies use physical views");
         check(instructions(copy).stream().filter(Operations.CopyBytes.class::isInstance).count()==1,"source capture emitted as CopyBytes");
+        var copying=instructions(copy).stream().filter(Operations.CopyBytes.class::isInstance).map(Operations.CopyBytes.class::cast).findFirst().orElseThrow();
+        var x=copyResult.data().stream().filter(d->d.source().handle().equals("data:0")).findFirst().orElseThrow();
+        var y=copyResult.data().stream().filter(d->d.source().handle().equals("data:1")).findFirst().orElseThrow();
+        check(copying.source().region().equals(x.storage())&&copying.destination().region().equals(y.storage())&&copying.length().equals(BigInteger.valueOf(4)),"copy source and destination preserve independent SP correlation");
         check(copy.premises().stream().anyMatch(p->p.assertion() instanceof Proofs.DisjointStorage d&&d.storage().size()==2),"copy retains source allocation disjunction proof");
         var unknown=lower("unknown-prefix").publication().orElseThrow();
         check(unknown.storage().stream().anyMatch(s->s instanceof Memory.Region r&&r.extent().isEmpty()&&r.extentUnknown().isPresent()),"unknown physical extent is retained, never zero");
