@@ -20,6 +20,7 @@ final class PartialIdentityFacts {
                 field.accept("entryInventory"); value.accept(r.entryInventory());
                 field.accept("storageIndependence"); value.accept(r.storageIndependence());
                 field.accept("compositional"); value.accept(r.compositional());
+                if(r.storage().isPresent()){field.accept("storage@1");value.accept(r.storage().get());}
             }
             case SpInput.UnitKey r -> {
                 field.accept("UnitKey");
@@ -199,6 +200,7 @@ final class PartialIdentityFacts {
                 field.accept("binding"); value.accept(r.binding());
                 field.accept("wholeItemAccess"); value.accept(r.wholeItemAccess());
                 field.accept("provenance"); value.accept(r.provenance());
+                if(r.regionalAccess().isPresent()){field.accept("regionalAccess@1");value.accept(r.regionalAccess().get());}
             }
             case SpInput.NormalContinuation r -> {
                 field.accept("NormalContinuation");
@@ -221,6 +223,7 @@ final class PartialIdentityFacts {
                 field.accept("copySemantics"); value.accept(r.copySemantics());
                 field.accept("normalContinuation"); value.accept(r.normalContinuation());
                 field.accept("textAdjustment"); value.accept(r.textAdjustment());
+                if(r.regionalMove().isPresent()){field.accept("regionalMove@1");value.accept(r.regionalMove().get());}
             }
             case SpInput.LiteralCallTarget r -> {
                 field.accept("LiteralCallTarget");
@@ -425,7 +428,7 @@ final class PartialIdentityFacts {
                 field.accept("inputMissingStatements"); value.accept(r.inputMissingStatements());
                 field.accept("readiness"); value.accept(r.readiness());
             }
-            default -> throw new IllegalArgumentException("unsupported SP identity fact");
+            default -> StorageIdentityFacts.write(fact,field,value);
         }
     }
 }

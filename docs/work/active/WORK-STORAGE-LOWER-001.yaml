@@ -8,3 +8,9 @@ scope:
   - Preserve historical SP decoders, scalar/control profiles, strict closure and exact dependency pins.
   - No PICTURE reparsing, offset invention, COBOL reanalysis, separate memory model, W6-W8, merge or auto-merge.
 notes: Promotes translation side of BACKLOG-SP-008/DF-001 handoffs. One persistent draft PR, human review after W5.
+
+progress_w3:
+  contract: docs/domain/regional-storage.md
+  completed: SP 2.7 closed decoder, in-memory closure/codec validation and canonical physical identity; historical readers preserved.
+  evidence: FAST 2340 core checks plus historical adapter suites and 22 regional wire/closure/identity cases.
+  pending: Region/View/byte-operation translation, source gap locality and M1 integration.

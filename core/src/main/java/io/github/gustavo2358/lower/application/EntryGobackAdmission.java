@@ -116,6 +116,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.require(entries.add(entry.id()) && roles.add(entry.role()), Rule.DUPLICATE_ID, entry.id().handle(), entry.provenance(), "Unique entry identity and PRIMARY role");
             entry(entry, c);
         }
+        if (c.diagnostics.isEmpty()) c.regionalStorage=RegionalStorageAdmission.validate(input,c);
     }
 
     private static void entry(EntryFact e, Context c) {
@@ -186,6 +187,7 @@ public final class EntryGobackAdmission implements AdmitInput {
         final List<Diagnostic> diagnostics = new ArrayList<>();
         long entities; long references; long components; boolean truncated;
         Phase phase = Phase.INPUT_VALIDATION;
+        RegionalStorageAdmission.Index regionalStorage;
         Context(SpInput input, Limits limits) { this(input, limits, false); }
         Context(SpInput input, Limits limits, boolean unordered) { this.input = input; this.limits = limits; this.unordered = unordered; }
         DataFact data(DataId id) { references++; return data.get(id); }

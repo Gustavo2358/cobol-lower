@@ -1,0 +1,42 @@
+package io.github.gustavo2358.lower.domain;
+
+import java.math.BigInteger;
+import java.util.*;
+import static io.github.gustavo2358.lower.domain.SpInput.*;
+
+/** Source-owned physical facts, not an AIR memory model. Semantic validity is checked at admission. */
+public final class StorageFacts {
+    private StorageFacts() { }
+    public static final String PROFILE_ID="ibm-enterprise-6.4-fixed-display-1047@1";
+    public static final String CODEC="text.ebcdic.ibm1047@1";
+    public enum Profile { UNSPECIFIED, IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047 }
+    public enum Kind { GROUP, ELEMENTARY, OPAQUE }
+    public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, UNPROVEN }
+    public enum MoveKind { LITERAL_BYTES, COPY_BYTES, MUST_UNKNOWN, UNAVAILABLE }
+    public record NodeId(UnitKey unit,String handle) { public NodeId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
+    public record BaseId(UnitKey unit,String handle) { public BaseId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
+    public record Measure(Optional<BigInteger> value,List<String> gapCodes) {
+        public Measure { Objects.requireNonNull(value);gapCodes=List.copyOf(gapCodes); }
+    }
+    public record Node(NodeId id,Optional<NodeId> parent,int order,boolean filler,Kind kind,Optional<DataId> data,
+            Measure extent,Provenance provenance) {
+        public Node { Objects.requireNonNull(id);Objects.requireNonNull(parent);Objects.requireNonNull(kind);Objects.requireNonNull(data);Objects.requireNonNull(extent);Objects.requireNonNull(provenance); }
+    }
+    public record Base(BaseId id,Measure extent,Allocation allocation,Provenance provenance) {
+        public Base { Objects.requireNonNull(id);Objects.requireNonNull(extent);Objects.requireNonNull(allocation);Objects.requireNonNull(provenance); }
+    }
+    public record View(NodeId node,BaseId base,Measure offset,Measure extent,Optional<String> codec,Provenance provenance) {
+        public View { Objects.requireNonNull(node);Objects.requireNonNull(base);Objects.requireNonNull(offset);Objects.requireNonNull(extent);Objects.requireNonNull(codec);Objects.requireNonNull(provenance); }
+    }
+    public record Access(NodeId view) { public Access { Objects.requireNonNull(view); } }
+    public record Move(MoveKind kind,List<Integer> bytes,List<String> gapCodes) {
+        public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
+    }
+    public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,
+            List<Base> bases,List<View> views,List<String> gapCodes) {
+        public Inventory {
+            Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
+            nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);
+        }
+    }
+}

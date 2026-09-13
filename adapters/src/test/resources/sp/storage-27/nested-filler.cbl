@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. NESTED-FILLER.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-AREA.
+          05 LEAD PIC X(4).
+          05 FILLER PIC X(2).
+          05 CHILD.
+             10 WS-PGM PIC X(8).
+       PROCEDURE DIVISION.
+       MOVE 'ABCD++PGM00001' TO WS-AREA.
+       CALL WS-PGM.
+       GOBACK.
