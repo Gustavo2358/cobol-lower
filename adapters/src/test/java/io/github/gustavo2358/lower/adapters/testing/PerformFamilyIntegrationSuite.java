@@ -27,6 +27,9 @@ public final class PerformFamilyIntegrationSuite {
         for(var name:List.of("t1","t2","t3","through","if-body","evaluate-body","local-jump","terminal","call-body",
                 "thru-1","thru-2","thru-5","thru-40","unknown-body","incoming","escape","overlap","recursive","cycle","partial-end","partial-start","reverse","empty")) {
             var input=decode(fixture(name));var result=PartialIntegrationSuite.lower(input);
+            for(var origin:result.publication().orElseThrow().origins())
+                if(origin instanceof io.github.gustavo2358.air.model.Origins.Derived derived)
+                    check(new HashSet<>(derived.inputs()).size()==derived.inputs().size(),"derived provenance inputs are distinct "+name);
             var reverse=new ArrayList<>(input.statements());Collections.reverse(reverse);
             check(Arrays.equals(codec.encode(result.publication().orElseThrow()),codec.encode(PartialIntegrationSuite.lower(IfInputs.with(input,"statements",reverse)).publication().orElseThrow())),"range physical order independence "+name);
         }

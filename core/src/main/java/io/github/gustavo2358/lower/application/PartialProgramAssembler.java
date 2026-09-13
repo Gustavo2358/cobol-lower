@@ -59,7 +59,7 @@ final class PartialProgramAssembler {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.procedures().getFirst().entry(),unit,activation);
                 var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
-                var evidence=new ArrayList<OriginId>(List.of(source));
+                var evidence=new LinkedHashSet<OriginId>(List.of(source));
                 int endpointOrdinal=0;
                 for(var endpoint:List.of(p.start().orElseThrow(),p.end().orElseThrow())) {
                     evidence.add(origins.source("perform-range-reference",p.header().id().handle()+"/"+(endpointOrdinal++),endpoint.referenceOrigin()));
@@ -67,7 +67,7 @@ final class PartialProgramAssembler {
                 }
                 for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
                 evidence.add(origins.source("perform-continuation",p.header().id().handle(),p.normalContinuation().provenance()));
-                var origin=origins.derived(ids.id("origin","procedure-perform",unit.localId(),p.header().id().handle()),evidence,"perform-range@1/isolated-activation");
+                var origin=origins.derived(ids.id("origin","procedure-perform",unit.localId(),p.header().id().handle()),List.copyOf(evidence),"perform-range@1/isolated-activation");
                 term=PerformSequenceAssembler.jump("range-entry",p.header().id(),target,origin,unit,ids);
                 link(p.header().id(),term,label,statements,items);
                 var completions=new HashMap<SpInput.StatementId,LabelId>();
