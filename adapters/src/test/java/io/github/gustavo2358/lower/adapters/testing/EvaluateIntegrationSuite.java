@@ -8,6 +8,7 @@ import io.github.gustavo2358.lower.adapters.cli.CobolLower;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.application.*;
 import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.testing.IfInputs;
 import java.nio.file.*;
 import java.util.*;
 import static io.github.gustavo2358.lower.testing.CallOracle.check;
@@ -29,6 +30,7 @@ public final class EvaluateIntegrationSuite {
     private static LoweringResult lower(SpInput input) { return PartialIntegrationSuite.lower(input); }
     public static void main(String[] args) throws Exception { run(); }
     public static void run() throws Exception {
+        primaryClosure();
         var codec=new AirJson(); var out=Path.of("target/evaluate"); Files.createDirectories(out);
         for(var name:NAMES) {
             var raw=fixture(name);var input=decode(raw);var r=lower(input);var p=r.publication().orElseThrow();var unit=p.units().getFirst();
@@ -69,6 +71,46 @@ public final class EvaluateIntegrationSuite {
         eval.put("futureField",true);
         check(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(raw)) instanceof SpJsonDecoder.Rejected,"SP2 closed wire rejects unknown field");
         System.out.println("LOWER_EVALUATE_FIXTURES="+NAMES.size());
+    }
+    private static void primaryClosure() throws Exception {
+        var original=PartialIntegrationSuite.fixture("perform-repeated");
+        var perform=(SpInput.PerformFact)original.statements().stream().filter(SpInput.PerformFact.class::isInstance).findFirst().orElseThrow();
+        var call=(SpInput.CallFact)original.statements().stream().filter(SpInput.CallFact.class::isInstance).findFirst().orElseThrow();
+        var goback=(SpInput.GobackFact)original.statements().stream().filter(SpInput.GobackFact.class::isInstance).findFirst().orElseThrow();
+        var body=original.statements().stream().filter(s->perform.targetStatements().contains(s.header().id())).findFirst().orElseThrow();
+        call=IfInputs.with(call,"normalContinuation",IfInputs.with(call.normalContinuation(),"statement",Optional.of(goback.header().id())));
+        // MAIN: PERFORM DEFINE-PGM; CALL WS-PGM; GOBACK. DEFINE-PGM: MOVE 'PROGA' TO WS-PGM.
+        var closed=primaryFacts(original,List.of(perform,call,goback,body));
+        var result=lower(closed);
+        check(result.statements().stream().filter(l->l.source().equals(perform.header().id())).count()==1,"closed primary retains one BASIC activation");
+        check(result.publication().orElseThrow().units().getFirst().sequences().stream().noneMatch(s->s.terminator() instanceof Operations.Opaque),"valid BASIC primary specializes precisely");
+        var openCall=IfInputs.with(call,"normalContinuation",new SpInput.NormalContinuation(SpInput.ContinuationAvailability.UNAVAILABLE,Optional.empty(),call.normalContinuation().provenance()));
+        rejectsPrimary(primaryFacts(closed,List.of(perform,openCall,body)),"MAIN without GOBACK cannot isolate a returning BASIC body");
+        var cycleCall=IfInputs.with(call,"normalContinuation",IfInputs.with(call.normalContinuation(),"statement",Optional.of(perform.header().id())));
+        rejectsPrimary(primaryFacts(closed,List.of(perform,cycleCall,body)),"visited cycle is not a closed returning frontier");
+        for(var name:List.of("if","evaluate")) {
+            var input=name.equals("if")?PartialIntegrationSuite.fixture("compose-1"):decode(fixture("perform"));
+            lower(input); // Closed IF and EVALUATE frontiers remain valid.
+            var leaf=(SpInput.MoveFact)input.statements().stream().filter(s->s instanceof SpInput.MoveFact && s.header().containment().parent().isPresent()).findFirst().orElseThrow();
+            var opened=IfInputs.with(leaf,"normalContinuation",new SpInput.NormalContinuation(SpInput.ContinuationAvailability.UNAVAILABLE,Optional.empty(),leaf.normalContinuation().provenance()));
+            var facts=new ArrayList<>(input.statements());facts.set(facts.indexOf(leaf),opened);
+            rejectsPrimary(IfInputs.with(input,"statements",facts),name+" arm with an open frontier cannot isolate BASIC despite another path reaching GOBACK");
+        }
+        System.out.println("BASIC_CLOSED_PRIMARY_REGRESSION=PASS");
+    }
+    private static SpInput primaryFacts(SpInput original,List<SpInput.StatementFact> facts) {
+        var ids=new HashSet<SpInput.StatementId>();facts.forEach(s->ids.add(s.header().id()));
+        var counts=new EnumMap<SpInput.CoverageStatus,Integer>(SpInput.CoverageStatus.class);facts.forEach(s->counts.merge(s.header().coverage(),1,Integer::sum));
+        var coverage=new SpInput.Coverage(original.coverage().inventoryStatus(),facts.size(),counts.getOrDefault(SpInput.CoverageStatus.MODELED,0),
+            counts.getOrDefault(SpInput.CoverageStatus.PARTIAL,0),counts.getOrDefault(SpInput.CoverageStatus.UNSUPPORTED,0),original.coverage().inputMissingStatements(),original.coverage().readiness());
+        return new SpInput(original.unit(),original.policy(),original.dataDeclarations(),facts,
+            new SpInput.Structure(original.structure().roots().stream().filter(ids::contains).toList(),List.of()),
+            original.gaps().stream().filter(g->ids.contains(g.statement())).toList(),coverage,original.entryInventory(),original.storageIndependence(),original.compositional());
+    }
+    private static void rejectsPrimary(SpInput input,String message) {
+        var result=new CobolLowerer().lower(input,CobolLower.OPTIONS);
+        check(result.status()==LoweringResult.Status.INVALID_INPUT && result.publication().isEmpty()
+            && result.admission().diagnostics().stream().anyMatch(d->d.requirement().equals("BASIC activation contradicts intrinsic body facts")),message+": "+result.status()+" "+result.admission().diagnostics());
     }
     private static void reverseArray(ArrayNode array) { var nodes=new ArrayList<JsonNode>(); array.forEach(nodes::add); Collections.reverse(nodes);array.removeAll();nodes.forEach(array::add); }
     private static JsonNode reverseFields(JsonNode node) {

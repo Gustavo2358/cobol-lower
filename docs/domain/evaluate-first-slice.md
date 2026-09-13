@@ -25,6 +25,15 @@ canonicalization remains independent of control. BASIC activation membership may
 follow EVALUATE/IF entries in the proved primary region; target paragraph, linear
 MOVE body and unique resume requirements stay intact.
 
+A BASIC body can only be specialized when its target is disjoint from a closed
+primary execution region. The primary worklist follows only proved IF/EVALUATE
+entries and normal continuations; GOBACK closes a frontier. A missing successor,
+unproved arm or cycle cannot prove a returning region. Completed shared joins
+remain reusable. The iterative traversal uses linear work/storage in nodes and
+published edges; no source order or new terminal semantics supplies closure.
+The focal regression includes MAIN without GOBACK, open IF/EVALUATE arms and a
+cycle, alongside the valid BASIC primary and EVALUATE cases.
+
 Permanent multiplicity is 1/2/5/40; SP1.8 historical generators keep their original
 families and EvaluateIntegrationSuite covers the SP2 family. Oracles include
 three-way/no-match joins, strong updates, per-arm CALL sites, unknown subject,
