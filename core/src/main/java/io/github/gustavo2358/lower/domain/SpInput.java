@@ -24,13 +24,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
     public enum InventoryStatus { COMPLETE, PARTIAL, INPUT_MISSING }
     public enum ReadinessStatus { SUFFICIENT, PARTIAL, BLOCKED, NOT_APPLICABLE }
-    public enum Branch { ROOT, THEN, ELSE, UNKNOWN }
+    public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, UNKNOWN }
     public enum EntryRole { PRIMARY }
     public enum EntryInventoryScope { PRIMARY_ONLY }
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }
@@ -284,6 +284,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public IfArm { Objects.requireNonNull(presence); Objects.requireNonNull(contentAvailability); Objects.requireNonNull(entry);
             Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
+    public record EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
+        public EvaluateArm { Objects.requireNonNull(selection); statements=List.copyOf(statements); Objects.requireNonNull(control); }
+    }
+    public record EvaluateFact(StatementHeader header, Optional<DataReference> subject, List<EvaluateArm> arms,
+            IfArm otherArm, List<StatementId> otherStatements, NormalContinuation normalContinuation,
+            List<String> gapCodes) implements StatementFact {
+        public EvaluateFact { Objects.requireNonNull(header); Objects.requireNonNull(subject); arms=List.copyOf(arms);
+            Objects.requireNonNull(otherArm); otherStatements=List.copyOf(otherStatements);
+            Objects.requireNonNull(normalContinuation); gapCodes=List.copyOf(gapCodes); }
+    }
+
     public record IfFact(StatementHeader header, String conditionShape, PredicateGuarantee predicateGuarantee,
             List<DataReference> conditionReads, Provenance conditionProvenance, boolean explicitlyTerminated,
             Optional<StatementId> continuation, NormalContinuation normalContinuation, IfArm thenArm, IfArm elseArm,

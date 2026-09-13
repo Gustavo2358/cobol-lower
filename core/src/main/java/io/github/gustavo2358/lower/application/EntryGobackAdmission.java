@@ -58,9 +58,11 @@ public final class EntryGobackAdmission implements AdmitInput {
             var statuses = List.of(h.readiness().lowering().status(), h.readiness().cfg().status(), h.readiness().effectsDataflow().status());
             for (int i = 0; i < 3; i++) if (rank(statuses.get(i)) >= 0) weakest[i] = Math.min(weakest[i], rank(statuses.get(i)));
             var containment = h.containment();
-            boolean child = containment.branch() == Branch.THEN || containment.branch() == Branch.ELSE;
+            boolean child = containment.branch() == Branch.THEN || containment.branch() == Branch.ELSE || containment.branch() == Branch.EVALUATE_ARM;
             c.require(containment.parent().isPresent() == child, Rule.CONTAINMENT, h.id().handle(), h.provenance(), "THEN/ELSE require parent; ROOT/UNKNOWN omit it");
             if (containment.branch() == Branch.ROOT) expectedRoots.add(h.id());
+            if (statement instanceof EvaluateFact)
+                expectedBranches.computeIfAbsent(new BranchKey(h.id(), Branch.EVALUATE_ARM), ignored -> new ArrayList<>());
             if (statement instanceof IfFact || statement instanceof OtherStatement other && other.variant() == Variant.IF) {
                 expectedBranches.computeIfAbsent(new BranchKey(h.id(), Branch.THEN), ignored -> new ArrayList<>());
                 expectedBranches.computeIfAbsent(new BranchKey(h.id(), Branch.ELSE), ignored -> new ArrayList<>());
@@ -85,7 +87,7 @@ public final class EntryGobackAdmission implements AdmitInput {
                 c.require(h.coverage() != CoverageStatus.MODELED && scopes.contains(GapScope.STRUCTURE), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Unknown containment requires non-modeled coverage and STRUCTURE gap");
             if (h.containment().parent().isPresent()) {
                 var parentId = h.containment().parent().orElseThrow(); var parent = c.lookup(parentId);
-                c.require(parentId.unit().equals(unit) && (parent instanceof IfFact || parent instanceof OtherStatement other && other.variant() == Variant.IF) && parent.header().programPoint() < h.programPoint(), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Parent must be an earlier published IF in the same unit");
+                c.require(parentId.unit().equals(unit) && ((parent instanceof IfFact || parent instanceof OtherStatement other && other.variant() == Variant.IF) && h.containment().branch()!=Branch.EVALUATE_ARM || parent instanceof EvaluateFact && h.containment().branch()==Branch.EVALUATE_ARM) && parent.header().programPoint() < h.programPoint(), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Parent must be an earlier published IF in the same unit");
                 expectedBranches.computeIfAbsent(new BranchKey(parentId, h.containment().branch()), ignored -> new ArrayList<>()).add(h.id());
             }
         }
@@ -97,7 +99,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.require(branchKeys.add(key) && expectedBranches.containsKey(key), Rule.STRUCTURE, branch.parent().handle(), null, "One branch inventory per published IF/branch");
             c.lookup(branch.parent());
             for (var child : branch.children()) { c.touch(); c.require(c.lookup(child) != null && child.unit().equals(unit), Rule.STRUCTURE, child.handle(), null, "Branch child is published in the same unit"); }
-            c.require((c.unordered && c.lookup(branch.parent()) instanceof IfFact
+            c.require((c.unordered && (c.lookup(branch.parent()) instanceof IfFact || c.lookup(branch.parent()) instanceof EvaluateFact)
                 ? branch.children().size() == expectedBranches.getOrDefault(key, List.of()).size() && new HashSet<>(branch.children()).equals(new HashSet<>(expectedBranches.getOrDefault(key, List.of())))
                 : branch.children().equals(expectedBranches.get(key))), Rule.STRUCTURE, branch.parent().handle(), null, "Branch children match containment exactly");
         }

@@ -44,3 +44,8 @@ handlers, CFG ou resolução de dependências.
 [IF simples](simple-if-diamond.md) acrescenta diamond fechado/aberto com Unknown BOOL
 e DisjointStorage da prova W2A. Predicado não avaliado; obrigações e PARTIAL mantidos.
 Não habilita IF geral/nested, path pruning, CFG, solver/lattice ou W2D.
+
+SP 2.0: [EVALUATE first slice](evaluate-first-slice.md) implements one simple DATA
+subject, ordered text literals, OTHER and explicit completion. Generic Branch
+uses Unknown BOOL; unsupported variants retain Opaque. No numeric/conversion or
+path-pruning capability is claimed.
