@@ -75,7 +75,11 @@ public final class CapacitySuite {
         check(result.status() == LoweringResult.Status.SUCCESS, "supported SP lowers: " + result.status() + " " + result.admission().diagnostics());
         ScalarSuite.oracle(input, result, Collections.nCopies(MOVES, "PROGA"),
             Collections.nCopies(MOVES, input.dataDeclarations().getFirst().id()));
-        check(result.admission().statistics().entitiesVisited() == 19L * MOVES + 21, "exact admission visits exceed old 250000");
+        System.out.println("CAPACITY_ADMISSION_LEDGER moves=" + MOVES + " statements=" + input.statements().size()
+            + " visits=" + result.admission().statistics().entitiesVisited()
+            + " references=" + result.admission().statistics().referencesChecked());
+        // Historical 19M+21 plus one regional exclusion visit for each MOVE and GOBACK.
+        check(result.admission().statistics().entitiesVisited() == 20L * MOVES + 22, "exact admission ledger 20M+22 exceeds old 250000");
         check(result.admission().statistics().referencesChecked() == 7L * MOVES + 3, "linear reference ledger");
         var p = result.publication().orElseThrow();
         System.out.println("CAPACITY_AIR moves=" + MOVES + " data=1 statements=" + result.statements().size()
