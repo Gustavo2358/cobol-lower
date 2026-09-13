@@ -1,0 +1,76 @@
+{
+  "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+  "rawEvidence": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01",
+  "fixtures": [
+    {
+      "name": "overlay-root",
+      "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "exec:java",
+        "-Dexec.args=--source /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-root.cbl --output /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-root --storage-profile ibm-enterprise-6.4-fixed-display-1047@1"
+      ],
+      "exit_code": 0,
+      "sourceSha256": "d1ffd0c622f80288cdd0b6dcd699cc2efa144a71acf8dcd4fe472301690eea33",
+      "spSha256": "02706b64d215e2ce321e47c288094ae1e81dc1103eba15c53a6d4b11ffb4e466"
+    },
+    {
+      "name": "overlay-reverse",
+      "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "exec:java",
+        "-Dexec.args=--source /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-reverse.cbl --output /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-reverse --storage-profile ibm-enterprise-6.4-fixed-display-1047@1"
+      ],
+      "exit_code": 0,
+      "sourceSha256": "384c9179ad2df46b0244c03219251d909315117fc91f86687ffa57ef95e7fb5f",
+      "spSha256": "a267bdfb6f3f73676e2bba23a607cda39b4e89c9b413b0f4a5f0173d22f4c842"
+    },
+    {
+      "name": "overlay-nested-filler",
+      "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "exec:java",
+        "-Dexec.args=--source /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-nested-filler.cbl --output /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-nested-filler --storage-profile ibm-enterprise-6.4-fixed-display-1047@1"
+      ],
+      "exit_code": 0,
+      "sourceSha256": "86e0565e38508dd4a31755fc4266812c6f3ec81573798f1b71f55f4d414659a8",
+      "spSha256": "22eaf165a0a7da4bdb82cc44413d198deed60d69ed6c0b193c3c9c3ccbe5ee41"
+    },
+    {
+      "name": "overlay-chain",
+      "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "exec:java",
+        "-Dexec.args=--source /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-chain.cbl --output /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-chain --storage-profile ibm-enterprise-6.4-fixed-display-1047@1"
+      ],
+      "exit_code": 0,
+      "sourceSha256": "93d26d887828485db4c185c768994f8d05bd135c907730fb50ab44fc1e3ef9db",
+      "spSha256": "788f01cd37cc404768cf209148ef6753389f84c12d1337ee46a26451f26fc6a1"
+    },
+    {
+      "name": "overlay-unproved",
+      "frontendSha": "0a0e56606a96bca08fb4cdd3cfc8a7be6a57e467",
+      "command": [
+        "mvn",
+        "-B",
+        "-ntp",
+        "exec:java",
+        "-Dexec.args=--source /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-unproved.cbl --output /home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/artefatos-e2e/storage-semantics/ST-20260913-01/w4-sp-products-01/overlay-unproved --storage-profile ibm-enterprise-6.4-fixed-display-1047@1"
+      ],
+      "exit_code": 0,
+      "sourceSha256": "b42a173581e54a1cddd68fe2fb88777193d51974f0f48324a1465fe09b59bb59",
+      "spSha256": "375a9114361fa0d265d9eede57f47192bb1ab1942f446893de294affc7917ace"
+    }
+  ]
+}

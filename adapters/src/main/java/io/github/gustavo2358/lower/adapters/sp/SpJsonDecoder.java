@@ -146,6 +146,12 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire27.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent27(wire); input = Materialize.input(wire);
                 }
+                case "2.8.0" -> {
+                    var wire=mapper.treeToValue(node,Wire28.Document.class);
+                    requirePhysical(wire,"$",meter);
+                    if(!wire.storage().version().equals("1.1.0"))throw new PhysicalShape("$/storage/version");
+                    requireCoherentFacts27(Wire28.common(wire));input=Materialize.input(wire);
+                }
                 case "2.6.0" -> {
                     var wire = mapper.treeToValue(node, Wire26.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent26(wire); input = Materialize.input(wire);
@@ -160,7 +166,7 @@ public final class SpJsonDecoder {
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
-            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
+            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
                 var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
                     : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
                 if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)
@@ -516,6 +522,9 @@ public final class SpJsonDecoder {
 
     private static void requireCoherent27(Wire27.Document wire) {
         if (!wire.storage().version().equals("1.0.0")) throw new PhysicalShape("$/storage/version");
+        requireCoherentFacts27(wire);
+    }
+    private static void requireCoherentFacts27(Wire27.Document wire) {
         wire.storage().nodes().forEach(n->measure27(n.extent()));
         wire.storage().bases().forEach(b->measure27(b.extent()));
         wire.storage().views().forEach(v->{ measure27(v.offset()); measure27(v.extent()); });

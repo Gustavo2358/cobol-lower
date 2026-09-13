@@ -25,7 +25,17 @@ final class RegionalDataTranslator {
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())).toList(),unit,ids,origins,items,uncertainties);
-        if(source.owner().storage().isEmpty()||source.owner().storage().get().profile()==StorageFacts.Profile.UNSPECIFIED)return legacy;
+        if(source.owner().storage().isEmpty())return legacy;
+        var relationOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
+        var allocationEvidence=new HashMap<StorageFacts.BaseId,List<OriginId>>();
+        for(var relation:source.owner().storage().get().relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList()) {
+            var origin=origins.source("storage-relation",relation.id().handle(),relation.provenance());relationOrigins.put(relation.id(),origin);
+            if(relation.status()==StorageFacts.RelationStatus.PROVEN)
+                allocationEvidence.computeIfAbsent(source.views().get(relation.owner()).base(),ignored->new ArrayList<>()).add(origin);
+        }
+        if(source.owner().storage().get().profile()==StorageFacts.Profile.UNSPECIFIED) {
+            relationCoverage(source,Map.of(),relationOrigins,unit,ids,items,uncertainties);return legacy;
+        }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
@@ -36,7 +46,13 @@ final class RegionalDataTranslator {
             if(view!=null)physical.put(view.base(),link.storage());
         }
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList()) {
-            var origin=origins.source("storage-base",base.id().handle(),base.provenance());baseOrigins.put(base.id(),origin);
+            var origin=origins.source("storage-base",base.id().handle(),base.provenance());
+            var relations=allocationEvidence.getOrDefault(base.id(),List.of());
+            if(!relations.isEmpty()) {
+                var inputs=new ArrayList<OriginId>();inputs.add(origin);inputs.addAll(relations);
+                origin=origins.derived(ids.id("origin","shared-source-base",unit.localId(),base.id().handle()),inputs,"storage@1/explicit-shared-location");
+            }
+            baseOrigins.put(base.id(),origin);
             if(physical.containsKey(base.id()))continue;
             boolean privateAllocation=base.allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE;
             // An unproved, unknown base does not establish ordinary persistent storage duration.
@@ -77,7 +93,23 @@ final class RegionalDataTranslator {
                 gap(node.id().handle(),origin,new Scopes.EntityScope(List.of(region)),List.of(region),"STORAGE_VIEW_UNKNOWN",List.copyOf(reasons),unit,ids,items,uncertainties);
             } else items.add(ScalarEvidence.item(unit.publication(),"storage-node",node.id().handle(),viewOrigin,List.of(region)));
         }
+        relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical));
+    }
+    private static void relationCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
+            Map<StorageFacts.RelationId,OriginId> relationOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        var relations=new HashMap<StorageFacts.RelationId,StorageFacts.Relation>();
+        source.owner().storage().orElseThrow().relations().forEach(r->relations.put(r.id(),r));
+        for(var entry:relationOrigins.entrySet()) {
+            var r=relations.get(entry.getKey());var base=physical.get(source.views().get(r.owner()).base());
+            if(r.status()==StorageFacts.RelationStatus.PROVEN&&base!=null)
+                items.add(ScalarEvidence.item(unit.publication(),"storage-relation",r.id().handle(),entry.getValue(),List.of(base)));
+            else {
+                var code=r.status()==StorageFacts.RelationStatus.UNPROVEN?"STORAGE_RELATION_UNPROVEN":"STORAGE_RELATION_UNREPRESENTED";
+                var reasons=r.gapCodes().isEmpty()?List.of("PHYSICAL_BASE_UNAVAILABLE"):r.gapCodes();
+                gap(r.id().handle(),entry.getValue(),new Scopes.UnitScope(unit),List.of(),code,reasons,unit,ids,items,uncertainties);
+            }
+        }
     }
     private static UncertaintyId gap(String key,OriginId origin,Scopes.FactScope scope,List<Id> outputs,String code,List<String> reasons,
             UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {

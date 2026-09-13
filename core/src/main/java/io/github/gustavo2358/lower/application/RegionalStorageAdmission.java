@@ -75,6 +75,26 @@ final class RegionalStorageAdmission {
             node.data().ifPresent(id->byData.put(id,view));
         }
         require(views.size()==nodes.size()&&referencedBases.equals(bases.keySet()),"all physical nodes and bases require explicit view closure");
+        var relationIds=new HashSet<RelationId>();
+        for(var relation:storage.relations()) {
+            c.touch();c.identity(relation.id().unit(),relation.id().handle(),"storage-relation",relation.provenance());c.provenance(relation.provenance());gaps(relation.gapCodes());
+            require(relationIds.add(relation.id()),"duplicate storage relation");
+            var owner=nodes.get(relation.owner());require(owner!=null,"storage relation owner must exist");
+            require(relation.status()==RelationStatus.PROVEN?relation.target().isPresent()&&relation.gapCodes().isEmpty():relation.target().isEmpty()&&!relation.gapCodes().isEmpty(),
+                "proved relation requires target; unproved relation requires explicit uncertainty");
+            if(relation.status()==RelationStatus.PROVEN) {
+                var target=nodes.get(relation.target().orElseThrow());
+                require(target!=null&&target.parent().equals(owner.parent())&&target.order()<owner.order(),"proved storage relation must select an earlier physical sibling");
+                var ov=views.get(owner.id());var tv=views.get(target.id());
+                require(ov.base().equals(tv.base())&&ov.offset().equals(tv.offset()),"proved storage relation must share base and start");
+            }
+        }
+        if(storage.relations().stream().anyMatch(r->r.status()==RelationStatus.UNPROVEN)) {
+            require(storage.bases().stream().noneMatch(b->b.allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE),
+                "unproved storage relation contradicts allocation independence");
+            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+                "unproved storage relation contradicts standalone scalar proof");
+        }
         for(var node:storage.nodes())node.parent().ifPresent(id->{
             var parent=nodes.get(id);var pv=views.get(id);var view=views.get(node.id());
             require(parent.kind()!=Kind.ELEMENTARY&&pv.base().equals(view.base()),"child must belong to a group on the same base");

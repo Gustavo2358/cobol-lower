@@ -11,12 +11,19 @@ final class StorageIdentityFacts {
         return new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),
             s.nodes().stream().sorted(Comparator.comparing(n->n.id().handle())).toList(),
             s.bases().stream().sorted(Comparator.comparing(b->b.id().handle())).toList(),
-            s.views().stream().sorted(Comparator.comparing(v->v.node().handle())).toList(),s.gapCodes());
+            s.views().stream().sorted(Comparator.comparing(v->v.node().handle())).toList(),s.gapCodes(),
+            s.relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList());
     }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
             case StorageFacts.NodeId r -> { field.accept("StorageNodeId");field.accept("unit");value.accept(r.unit());field.accept("handle");value.accept(r.handle()); }
             case StorageFacts.BaseId r -> { field.accept("StorageBaseId");field.accept("unit");value.accept(r.unit());field.accept("handle");value.accept(r.handle()); }
+            case StorageFacts.RelationId r -> { field.accept("StorageRelationId");field.accept("unit");value.accept(r.unit());field.accept("handle");value.accept(r.handle()); }
+            case StorageFacts.Relation r -> {
+                field.accept("StorageRelation");field.accept("id");value.accept(r.id());field.accept("owner");value.accept(r.owner());
+                field.accept("target");value.accept(r.target());field.accept("status");value.accept(r.status());
+                field.accept("provenance");value.accept(r.provenance());field.accept("gapCodes");value.accept(r.gapCodes());
+            }
             case StorageFacts.Measure r -> { field.accept("StorageMeasure");field.accept("value");value.accept(r.value());field.accept("gapCodes");value.accept(r.gapCodes()); }
             case StorageFacts.Node r -> {
                 field.accept("PhysicalNode");field.accept("id");value.accept(r.id());field.accept("parent");value.accept(r.parent());
@@ -40,6 +47,7 @@ final class StorageIdentityFacts {
                 field.accept("StorageInventory");field.accept("profile");value.accept(r.profile());field.accept("profileId");value.accept(r.profileId());
                 field.accept("runtimeCodec");value.accept(r.runtimeCodec());field.accept("nodes");value.accept(r.nodes());field.accept("bases");value.accept(r.bases());
                 field.accept("views");value.accept(r.views());field.accept("gapCodes");value.accept(r.gapCodes());
+                if(!r.relations().isEmpty()){field.accept("relations");value.accept(r.relations());}
             }
             default -> throw new IllegalArgumentException("unsupported SP identity fact");
         }

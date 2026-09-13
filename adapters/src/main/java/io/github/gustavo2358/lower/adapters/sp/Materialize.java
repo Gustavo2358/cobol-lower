@@ -989,6 +989,13 @@ final class Materialize {
             p.readsCompleteness(),p.truthValue(),p.knownReads().stream().map(id->new OperandId(owner,id)).toList(),provenance(p.provenance(),unit),p.gapCodes()),
             condition.references().stream().map(r->reference(r,owner,unit)).toList(),provenance(condition.provenance(),unit));
     }
+    static SpInput input(Wire28.Document d) {
+        var common=input(Wire28.common(d));var s=common.storage().orElseThrow();var unit=common.unit();
+        var relations=d.storage().relations().stream().map(r->new StorageFacts.Relation(new StorageFacts.RelationId(unit,r.id()),
+            new StorageFacts.NodeId(unit,r.owner()),Optional.ofNullable(r.target()).map(id->new StorageFacts.NodeId(unit,id)),r.status(),provenance(r.provenance(),unit),r.gapCodes())).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
+            common.storageIndependence(),common.compositional(),Optional.of(new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),s.nodes(),s.bases(),s.views(),s.gapCodes(),relations)));
+    }
     static SpInput input(Wire27.Document d) {
         var unit = unitKey(d.unit(), null);
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {

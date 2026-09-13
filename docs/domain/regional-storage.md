@@ -141,3 +141,45 @@ do domínio regional de valores e da qualificação integrada em analysis-cfg.
 Gate de tradução `w3-lower-translation-fast-01`: PASS, 106,874s, 2340 checks
 core e suites históricas, 25 casos regionais de closure, oracles de tradução e
 checks de arquitetura/harness. Mutantes da wave e vertical M1 ainda pendentes.
+
+## Decisão W4.2: relações explícitas SP 2.8, sem reanálise de REDEFINES
+
+O produtor fixo adiciona `storage/relations` em SP 2.8.0/storage 1.1.0.
+Wire28 deve reutilizar os tipos Wire27 dos campos inalterados, com envelope
+fechado próprio e inventário obrigatório de relações. Reader 2.7 continua
+aceitando exatamente storage 1.0.0, sem permitir o campo novo silenciosamente.
+A porta em memória recebe id/owner/target/status/provenance/gaps. Status PROVEN
+significa início e base compartilhados; não significa mesma interpretação.
+UNPROVEN conserva alvo ausente e motivo. Os fatos pertencem ao frontend;
+nenhuma busca por nome, REDEFINES textual, PICTURE ou soma de footprints no lower.
+
+A admissão verifica referências e coerência de parent/order/base/start. O alvo
+provado deve ser irmão anterior, portanto ciclos não são admitidos. Não exige
+igualdade de extent ou codec por compartilhar localização. AliasBinding não é
+necessário: objetos continuam ViewBindings sobre o único representante da base.
+Provenance individual da cláusula vira source origin e cobertura. A origem derivada
+da base inclui as relações que explicam seu compartilhamento; cada objeto herda
+a origem da própria declaração, nó, view e base, inclusive relações de FILLER.
+Relação não provada recebe gap explícito, inclusive se a base não for representável.
+
+Identidade canônica ordena relações por ID e inclui todos os seus campos;
+inventário vazio não muda o encoding de publicações históricas 2.7. Custos são
+O(n + relations), mais ordenação canônica; nenhum walk por objeto ou matriz de
+pares. Oracles prévios: JSON real do frontend, base única em root/chain/FILLER,
+leitura e escrita inversas, extent menor/maior, origem da relação alcançável,
+JSON fechado/negativos em memória e round-trip AIR. Codec distinto sobre mesmos
+bytes é contrato AIR-only e continua testado no consumidor language-agnostic.
+
+Implementação W4.2: Wire28 compartilha exclusivamente os records imutáveis da
+parte inalterada de Wire27; validação física precede projeção tipada/materialização.
+Core valida relações e inclui todos os campos na identidade. Region e views
+incluem origem derivada da alocação/relações; cobertura guarda cada cláusula,
+inclusive FILLER. Unproved/unrepresented geram gaps próprios, sem perda quando
+não existe Region AIR representável. A soma de tamanhos nunca entra no lower.
+
+Challenge de consistência encontrou inventário com relação UNPROVEN e falsa
+independência de alocação; também era possível alegar escalar standalone apesar
+da relação aberta. As duas contradições agora são rejeitadas em memória, sem
+assumir que o produtor é confiável. Cinco SPs CLI reais atravessaram AIR com
+round-trip semântico e byte-exato; dez negativos JSON, onze negativos de memória,
+permutação e identidade por alvo de relação passaram nos testes focais.

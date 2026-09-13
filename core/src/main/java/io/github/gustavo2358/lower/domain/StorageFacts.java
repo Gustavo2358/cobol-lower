@@ -13,8 +13,13 @@ public final class StorageFacts {
     public enum Kind { GROUP, ELEMENTARY, OPAQUE }
     public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, UNPROVEN }
     public enum MoveKind { LITERAL_BYTES, COPY_BYTES, MUST_UNKNOWN, UNAVAILABLE }
+    public enum RelationStatus { PROVEN, UNPROVEN }
     public record NodeId(UnitKey unit,String handle) { public NodeId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
     public record BaseId(UnitKey unit,String handle) { public BaseId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
+    public record RelationId(UnitKey unit,String handle) { public RelationId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
+    public record Relation(RelationId id,NodeId owner,Optional<NodeId> target,RelationStatus status,Provenance provenance,List<String> gapCodes) {
+        public Relation { Objects.requireNonNull(id);Objects.requireNonNull(owner);Objects.requireNonNull(target);Objects.requireNonNull(status);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes); }
+    }
     public record Measure(Optional<BigInteger> value,List<String> gapCodes) {
         public Measure { Objects.requireNonNull(value);gapCodes=List.copyOf(gapCodes); }
     }
@@ -33,10 +38,13 @@ public final class StorageFacts {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,
-            List<Base> bases,List<View> views,List<String> gapCodes) {
+            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations) {
         public Inventory {
             Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
-            nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);
+            nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);relations=List.copyOf(relations);
+        }
+        public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes) {
+            this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,List.of());
         }
     }
 }
