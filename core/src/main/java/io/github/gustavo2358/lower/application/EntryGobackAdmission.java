@@ -38,6 +38,8 @@ public final class EntryGobackAdmission implements AdmitInput {
         c.require(!input.policy().policyId().isBlank() && !input.policy().version().isBlank(), Rule.IDENTITY, "policy", null, "Policy identity/version are explicit");
         var points = new HashSet<Integer>();
         for (var data : input.dataDeclarations()) {
+            c.require(data.scalarInteger().isEmpty()||data.scalarText().isEmpty()&&data.scalarInteger().get().digits()>0
+                &&data.provenance().exact()&&data.coverage()==CoverageStatus.MODELED,Rule.PROFILE_FACT,data.id().handle(),data.provenance(),"integer storage proof is exclusive, positive and exact");
             c.touch(); c.identity(data.id().unit(), data.id().handle(), "data", data.provenance());
             c.require(c.data.putIfAbsent(data.id(), data) == null, Rule.DUPLICATE_ID, data.id().handle(), data.provenance(), "Unique DATA identity");
             c.require(!data.canonicalName().isBlank() && data.picture().map(p -> !p.isBlank()).orElse(true), Rule.IDENTITY, data.id().handle(), data.provenance(), "Nonblank DATA text when present");

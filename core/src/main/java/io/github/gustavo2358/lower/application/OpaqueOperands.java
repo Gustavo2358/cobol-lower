@@ -15,6 +15,7 @@ final class OpaqueOperands {
         if(fact instanceof SpInput.OtherStatement o)refs.addAll(o.knownReferences());
         if(fact instanceof SpInput.EvaluateFact e)e.subject().ifPresent(refs::add);
         if(fact instanceof SpInput.IfFact f)refs.addAll(f.conditionReads());
+        if(fact instanceof SpInput.ProcedurePerformFact p){p.loop().ifPresent(l->refs.addAll(l.conditionReads()));p.times().flatMap(SpInput.PerformCount::reference).ifPresent(refs::add);p.varying().ifPresent(v->v.controls().forEach(o->refs.addAll(o.references()))); }
         if(fact instanceof SpInput.MoveFact m) {refs.add(m.target());if(m.source() instanceof SpInput.DataReference r)refs.add(r);}
         var operands=new ArrayList<Operand>();var reads=new ArrayList<OperandId>();var writes=new ArrayList<OperandId>();var evidence=new ArrayList<OriginId>();
         for(var ref:refs) {

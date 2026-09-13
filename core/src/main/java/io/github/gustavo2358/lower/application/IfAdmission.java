@@ -79,17 +79,27 @@ public final class IfAdmission implements AdmitInput {
         admitPredicate(f,c,false);
     }
     static void admitPredicate(IfFact f, EntryGobackAdmission.Context c, boolean compositional) {
-        var predicate = f.predicateGuarantee();
             need(c,(compositional || f.header().containment().equals(new Containment(Optional.empty(),Branch.ROOT)) && f.explicitlyTerminated()
                 && f.profile()==IfProfile.SIMPLE_TEXT_EQUALITY),"root explicitly terminated SIMPLE_TEXT_EQUALITY only; nested outside slice");
-            need(c,predicate.availability()==Availability.KNOWN && predicate.profile()==PredicateProfile.SCALAR_TEXT_EQUALITY
+            admitPredicate(f.header(),f.conditionShape(),f.conditionProvenance(),f.predicateGuarantee(),f.conditionReads(),c);
+    }
+    static void admitPredicate(StatementHeader header,String shape,Provenance origin,PredicateGuarantee predicate,
+            List<DataReference> reads,EntryGobackAdmission.Context c) {
+            admitPredicate(header,shape,origin,predicate,reads,c,false);
+    }
+    static void admitPredicate(StatementHeader header,String shape,Provenance origin,PredicateGuarantee predicate,
+            List<DataReference> reads,EntryGobackAdmission.Context c,boolean allowNumeric) {
+            boolean numeric=allowNumeric && predicate.profile()==PredicateProfile.NUMERIC_RELATION;
+            need(c,predicate.availability()==Availability.KNOWN && (numeric || predicate.profile()==PredicateProfile.SCALAR_TEXT_EQUALITY)
                 && predicate.resultDomain()==PredicateDomain.BOOLEAN && predicate.evaluation()==PredicateEvaluation.PURE
                 && predicate.normalCompletion()==PredicateCompletion.TOTAL && predicate.readsCompleteness()==ReadsCompleteness.COMPLETE
                 && predicate.truthValue()==PredicateTruth.UNKNOWN && predicate.gapCodes().isEmpty() && predicate.provenance().exact()
-                && f.conditionProvenance().exact() && f.conditionShape().equals("RELATION"),"published BOOLEAN/PURE/TOTAL/COMPLETE, truth UNKNOWN");
-            need(c,predicate.knownReads().size()==1 && predicate.knownReads().equals(f.conditionReads().stream().map(DataReference::id).toList()),"all known read occurrences in published order");
-            for(var read:f.conditionReads()) {
-                c.touch();CallAdmission.admitReference(read,OperandRole.READ,f.header(),c);
+                && origin.exact() && shape.equals("RELATION"),"published BOOLEAN/PURE/TOTAL/COMPLETE, truth UNKNOWN");
+            need(c,(numeric?predicate.knownReads().size()<=2:predicate.knownReads().size()==1) && predicate.knownReads().equals(reads.stream().map(DataReference::id).toList()),"all known read occurrences in published order");
+            for(var read:reads) {
+                c.touch();
+                if(numeric)need(c,PerformVaryingAdmission.integerReference(read,OperandRole.READ,c),"whole integer predicate read");
+                else CallAdmission.admitReference(read,OperandRole.READ,header,c);
                 need(c,read.provenance().exact(),"exact predicate read provenance");
             }
     }

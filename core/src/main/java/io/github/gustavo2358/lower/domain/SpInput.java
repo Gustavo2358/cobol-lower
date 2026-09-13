@@ -24,7 +24,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -120,12 +120,16 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText) {
+    public record ScalarInteger(int digits) { }
+    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarInteger> scalarInteger) {
+        public DataFact(DataId id,String canonicalName,Optional<String> picture,Provenance provenance,CoverageStatus coverage,Readiness readiness,Optional<ScalarText> scalarText) {
+            this(id,canonicalName,picture,provenance,coverage,readiness,scalarText,Optional.empty());
+        }
         public DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness) {
             this(id, canonicalName, picture, provenance, coverage, readiness, Optional.empty());
         }
         public DataFact {
-            Objects.requireNonNull(scalarText, "scalarText");
+            Objects.requireNonNull(scalarText, "scalarText");Objects.requireNonNull(scalarInteger);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(canonicalName, "canonicalName");
             Objects.requireNonNull(picture, "picture");
@@ -152,6 +156,43 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
+    public record PerformParagraph(ProcedureId id, StatementId entry, List<StatementId> statements,
+            List<StatementId> completions, Provenance provenance) {
+        public PerformParagraph { Objects.requireNonNull(id); Objects.requireNonNull(entry); Objects.requireNonNull(provenance);
+            statements=List.copyOf(statements); completions=List.copyOf(completions); }
+    }
+    public enum PerformTestMode { BEFORE, AFTER }
+    public record PerformLoop(PerformTestMode testMode, String conditionShape, PredicateGuarantee predicate,
+            List<DataReference> conditionReads, Provenance provenance) {
+        public PerformLoop { Objects.requireNonNull(testMode); Objects.requireNonNull(conditionShape); Objects.requireNonNull(predicate);
+            conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(provenance); }
+    }
+    public enum PerformCountProfile { POSITIVE_INTEGER, INTEGER_ITEM, UNAVAILABLE }
+    public record PerformCount(PerformCountProfile profile,Optional<String> integer,Optional<DataReference> reference,Provenance provenance) {
+        public PerformCount { Objects.requireNonNull(profile);Objects.requireNonNull(integer);Objects.requireNonNull(reference);Objects.requireNonNull(provenance); }
+    }
+    public enum VaryingOperandRole { CONTROL_VARIABLE, FROM, BY }
+    public record VaryingOperand(int level,VaryingOperandRole role,Optional<String> integer,List<DataReference> references,Provenance provenance) {
+        public VaryingOperand { Objects.requireNonNull(role);Objects.requireNonNull(integer);references=List.copyOf(references);Objects.requireNonNull(provenance); }
+    }
+    public record PerformVarying(int levels,List<VaryingOperand> controls) {
+        public PerformVarying { controls=List.copyOf(controls); }
+    }
+    public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes) implements StatementFact {
+        public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times);Objects.requireNonNull(varying); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
+        public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,Optional<PerformCount> times,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,times,Optional.empty(),gapCodes);
+        }
+        public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,Optional.empty(),gapCodes);
+        }
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,Optional.empty(),gapCodes);
+        }
+    }
     public enum PerformProfile { SIMPLE_SINGLE_CALLSITE_PROCEDURE_PERFORM, BASIC_PROCEDURE_PERFORM, OUTSIDE_SLICE }
     public record ProcedureId(UnitKey unit, String handle) {
         public ProcedureId { Objects.requireNonNull(unit); Objects.requireNonNull(handle); }
@@ -265,7 +306,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     }
 
     // Closed SP 1.4 facts. These describe upstream proof, never AIR or evaluated truth.
-    public enum PredicateProfile { SCALAR_TEXT_EQUALITY, UNAVAILABLE }
+    public enum PredicateProfile { SCALAR_TEXT_EQUALITY, NUMERIC_RELATION, UNAVAILABLE }
     public enum PredicateDomain { BOOLEAN, UNKNOWN }
     public enum PredicateEvaluation { PURE, UNKNOWN }
     public enum PredicateCompletion { TOTAL, UNKNOWN }

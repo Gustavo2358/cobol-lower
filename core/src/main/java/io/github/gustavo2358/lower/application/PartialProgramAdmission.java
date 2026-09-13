@@ -8,7 +8,7 @@ import static io.github.gustavo2358.lower.application.Admission.*;
 /** Structural admission is global; semantic precision is selected per occurrence. */
 final class PartialProgramAdmission {
     record Plan(Admission admission, List<DataFact> data, List<StatementFact> statements,
-                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies) { }
+                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges) { }
     Plan plan(SpInput input, AdmitInput.Limits limits) {
         var c = new EntryGobackAdmission.Context(input, limits, true);
         try {
@@ -26,6 +26,7 @@ final class PartialProgramAdmission {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
                 }
+                if (s instanceof ProcedurePerformFact p) ProcedurePerformAdmission.validate(p,c);
                 if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);
                 if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
                 if (s instanceof IfFact f) {
@@ -55,8 +56,11 @@ final class PartialProgramAdmission {
             c.require(input.entryInventory().entries().size()==1 && input.entryInventory().entries().getFirst().start().statement().isPresent(),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
-            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(CallAdmission::scalar).toList());
+            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
+            var rangeCompletions=new HashSet<StatementId>();
+            for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.gapCodes().isEmpty())
+                p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>();
             for(var s:input.statements()) {
                 int before=c.diagnostics.size();
@@ -67,11 +71,11 @@ final class PartialProgramAdmission {
                 } else if(s instanceof CallFact call) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
                 } else if(s instanceof IfFact f && f.predicateGuarantee().availability()==Availability.KNOWN
-                        && f.thenArm().entry().statement().isPresent() && f.normalContinuation().statement().isPresent()
+                        && f.thenArm().entry().statement().isPresent() && (f.normalContinuation().statement().isPresent() || rangeCompletions.contains(f.header().id()))
                         && (f.elseArm().entry().statement().isPresent() || f.elseArm().presence()==ClausePresence.ABSENT)
                         && f.conditionReads().stream().allMatch(r -> mapped.contains(r.wholeItemAccess().map(WholeItemAccess::data).orElse(null)))) {
                     IfAdmission.admitPredicate(f,c,true); eligible=true;
-                } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e);
+                } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e,rangeCompletions.contains(e.header().id()));
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
@@ -108,8 +112,13 @@ final class PartialProgramAdmission {
                 if(!preciseBody)continue; // A semantic body gap is partial, not a contradictory structural proof.
                 precise.add(p.header().id());bodies.put(p.header().id(),List.copyOf(body));bodyMembers.addAll(p.targetStatements());
             }
+            var ranges=new HashMap<StatementId,List<StatementFact>>();
+            for(var s:input.statements())if(s instanceof ProcedurePerformFact p) {
+                var body=ProcedurePerformAdmission.qualify(p,c,precise,primary,input.statements());
+                if(!body.isEmpty()){ranges.put(p.header().id(),body);precise.add(p.header().id());bodyMembers.addAll(ProcedurePerformAdmission.members(p));}
+            }
             for (var s : input.statements()) {
-                if(s instanceof GoToFact g)c.require(g.targetEntry().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,
+                if(s instanceof GoToFact g && !bodyMembers.contains(s.header().id()))c.require(g.targetEntry().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,
                     s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary GO TO incoming edge");
                 var successor=next(s);
                 if (!bodyMembers.contains(s.header().id()) && successor!=null)
@@ -118,7 +127,7 @@ final class PartialProgramAdmission {
             if(!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
             var statements=input.statements().stream().filter(s->!bodyMembers.contains(s.header().id()))
                 .sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
-            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies));
+            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
     }
     private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c,Set<StatementId> precise) {
@@ -137,6 +146,8 @@ final class PartialProgramAdmission {
                 pending.push(new Visit(id,true)); pending.push(new Visit(g.targetEntry().orElseThrow(),false));
                 continue;
             }
+            if(!precise.contains(id) && !(s instanceof PerformFact p && p.profile()==PerformProfile.BASIC_PROCEDURE_PERFORM && p.gapCodes().isEmpty())
+                    && !(s instanceof ProcedurePerformFact p && p.gapCodes().isEmpty()))return List.of();
             var continuation=next(s);
             if(continuation==null || continuation.availability()!=ContinuationAvailability.KNOWN
                     || continuation.statement().isEmpty() || !continuation.provenance().exact())return List.of();
@@ -170,9 +181,10 @@ final class PartialProgramAdmission {
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
     static NormalContinuation next(StatementFact s) {
+        if(s instanceof ProcedurePerformFact p)return p.normalContinuation();
         if(s instanceof EvaluateFact e)return e.normalContinuation();
         if(s instanceof OtherStatement o)return o.normalContinuation();
         return SupportedProgramAdmission.next(s);
     }
-    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of());}
+    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of(),Map.of());}
 }

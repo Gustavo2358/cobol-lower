@@ -10,22 +10,33 @@ final class IfPredicate {
     static Expressions.Unknown translate(SpInput.IfFact fact, OperationId operation, ScalarDataTranslator.Result data,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links,
             List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
-        var owner = new OperationOwner(operation); var key = fact.header().id().handle();
-        var origin = origins.source("if-predicate", key, fact.predicateGuarantee().provenance());
-        var operand = new OperandId(owner, ids.id("operand", "if-predicate", operation.localId(), key));
+        return translate(fact.header().id(),fact.predicateGuarantee(),fact.conditionReads(),"if","simple-if@1/published-whole-item-read",
+            operation,data,ids,origins,links,items,uncertainties);
+    }
+    static Expressions.Unknown translate(SpInput.StatementId statement, SpInput.PredicateGuarantee guarantee,
+            List<SpInput.DataReference> conditionReads,String role,String rule,OperationId operation,ScalarDataTranslator.Result data,
+            LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        return translateReads(statement,guarantee.provenance(),guarantee.knownReads(),conditionReads,role,rule,operation,data,ids,origins,links,items,uncertainties);
+    }
+    static Expressions.Unknown translateReads(SpInput.StatementId statement,SpInput.Provenance provenance,List<SpInput.OperandId> knownReads,
+            List<SpInput.DataReference> conditionReads,String role,String rule,OperationId operation,ScalarDataTranslator.Result data,
+            LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        var owner = new OperationOwner(operation); var key = statement.handle();
+        var origin = origins.source(role+"-predicate", key, provenance);
+        var operand = new OperandId(owner, ids.id("operand", role+"-predicate", operation.localId(), key));
         var reason = new UncertaintyId(operation.unit().publication(), ids.id("uncertainty", "predicate-value-unknown", operation.localId(), key));
         uncertainties.add(new Evidence.Uncertainty(reason, "predicate-value-unknown", List.of(Evidence.Dimension.VALUES),
             new Scopes.EntityScope(List.of(operand)), "Published total pure Boolean predicate; truth value is unknown.", origin));
         var references = new HashMap<SpInput.OperandId, SpInput.DataReference>();
-        fact.conditionReads().forEach(r -> references.put(r.id(), r));
+        conditionReads.forEach(r -> references.put(r.id(), r));
         var dependencies = new ArrayList<Expression>();
-        for (var known : fact.predicateGuarantee().knownReads()) {
+        for (var known : knownReads) {
             var reference = references.get(known); var mapping = data.index().get(reference.wholeItemAccess().orElseThrow().data());
-            var source = origins.source("if-read", known.handle(), reference.provenance());
-            var placeOrigin = origins.derived(ids.id("origin", "if-read-place", operation.localId(), known.handle()),
-                List.of(source, mapping.origin()), "simple-if@1/published-whole-item-read");
-            var readId = new OperandId(owner, ids.id("operand", "if-read", operation.localId(), known.handle()));
-            var placeId = new OperandId(owner, ids.id("operand", "if-read-place", operation.localId(), known.handle()));
+            var source = origins.source(role+"-read", known.handle(), reference.provenance());
+            var placeOrigin = origins.derived(ids.id("origin", role+"-read-place", operation.localId(), known.handle()),
+                List.of(source, mapping.origin()), rule);
+            var readId = new OperandId(owner, ids.id("operand", role+"-read", operation.localId(), known.handle()));
+            var placeId = new OperandId(owner, ids.id("operand", role+"-read-place", operation.localId(), known.handle()));
             var place = new Places.ObjectPlace(new Operand.Header(placeId, Operand.Role.VALUE_READ, placeOrigin), mapping.object());
             var read = new Expressions.Read(new Operand.Header(readId, Operand.Role.VALUE_READ, source), place);
             dependencies.add(read);

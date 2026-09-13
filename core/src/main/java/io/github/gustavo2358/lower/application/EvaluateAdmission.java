@@ -44,8 +44,9 @@ final class EvaluateAdmission {
             }
         }
     }
-    static boolean structured(EvaluateFact e) {
-        return e.header().provenance().exact() && e.normalContinuation().statement().isPresent()
+    static boolean structured(EvaluateFact e) { return structured(e,false); }
+    static boolean structured(EvaluateFact e,boolean completion) {
+        return e.header().provenance().exact() && (e.normalContinuation().statement().isPresent() || completion)
                 && e.arms().stream().allMatch(a -> a.control().entry().statement().isPresent()
                     && a.control().contentAvailability()==Availability.KNOWN && a.control().provenance().exact() && a.selection().provenance().exact())
                 && (e.otherArm().presence()==ClausePresence.ABSENT
