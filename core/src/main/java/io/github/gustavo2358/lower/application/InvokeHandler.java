@@ -29,16 +29,16 @@ final class InvokeHandler {
         Interactions.Target target;
         if (call.target() instanceof SpInput.LiteralCallTarget literal && literal.logicalValue().isPresent()) {
             target = new Interactions.LiteralTarget("program", "cobol.program", literal.logicalValue().orElseThrow().value(), namePolicy, targetOrigin);
-        } else if(call.target() instanceof SpInput.DataCallTarget d && d.reference().wholeItemAccess().filter(w->data.containsKey(w.data())).isPresent()) {
+        } else if(call.target() instanceof SpInput.DataCallTarget d && selected(d.reference()).filter(data::containsKey).isPresent()) {
             var reference = d.reference();
-            var object = data.get(reference.wholeItemAccess().orElseThrow().data()).object();
+            var object = data.get(selected(reference).orElseThrow()).object();
             var owner = new OperationOwner(operation);
             var readId = new OperandId(owner, ids.id("operand", "call-name-read", operation.localId(), reference.id().handle()));
             var placeId = new OperandId(owner, ids.id("operand", "call-name-place", operation.localId(), reference.id().handle()));
             var readOrigin = origins.derived(ids.id("origin", "call-read", operation.localId(), reference.id().handle()),
                 List.of(targetOrigin), "cp6-call@1/target-name-read");
             var placeOrigin = origins.derived(ids.id("origin", "call-place", operation.localId(), reference.id().handle()),
-                List.of(targetOrigin, data.get(reference.wholeItemAccess().orElseThrow().data()).origin()), "cp6-call@1/published-whole-item-access");
+                List.of(targetOrigin, data.get(selected(reference).orElseThrow()).origin()), reference.regionalAccess().isPresent()?"storage@1/published-regional-access":"cp6-call@1/published-whole-item-access");
             var place = new Places.ObjectPlace(new Operand.Header(placeId, Operand.Role.VALUE_READ, placeOrigin), object);
             var read = new Expressions.Read(new Operand.Header(readId, Operand.Role.CALL_TARGET, readOrigin), place);
             target = new Interactions.ComputedTarget("program", "cobol.program", read, namePolicy, targetOrigin);
@@ -74,6 +74,9 @@ final class InvokeHandler {
             List.of(runtime, name, effects, outcomes, contract));
         return new Operations.Invoke(header, "call", target, List.of(), List.of(), signature, List.of(), bounds, alternatives,
             new Interactions.UnknownContract(contract));
+    }
+    private static Optional<SpInput.DataId> selected(SpInput.DataReference reference) {
+        return reference.regionalAccess().isPresent()?reference.binding().selected():reference.wholeItemAccess().map(SpInput.WholeItemAccess::data);
     }
     private static UncertaintyId uncertainty(String code, String reason, List<Evidence.Dimension> dimensions,
             OperationId operation, OriginId origin, LocalIds ids, List<Evidence.Uncertainty> uncertainties) {

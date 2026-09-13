@@ -81,6 +81,24 @@ final class RegionalStorageAdmission {
             if(pv.offset().value().isPresent()&&pv.extent().value().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent())
                 require(view.offset().value().get().compareTo(pv.offset().value().get())>=0&&end(view).compareTo(end(pv))<=0,"child view exceeds published parent extent");
         });
+        var componentSizes=new HashMap<BaseId,Integer>();
+        for(var view:views.values())componentSizes.merge(view.base(),1,Integer::sum);
+        for(var declaration:input.dataDeclarations()) {
+            c.touch();var view=byData.get(declaration.id());
+            if(view==null||!(CallAdmission.scalar(declaration)||PerformCountAdmission.integer(declaration)))continue;
+            var node=nodes.get(view.node());
+            require(node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,
+                "standalone scalar proof contradicts shared or nested physical storage");
+            if(declaration.scalarText().isPresent()&&view.codec().isPresent())require(view.extent().value().orElseThrow()
+                .equals(java.math.BigInteger.valueOf(declaration.scalarText().get().logicalExtent())),"scalar text extent contradicts physical view");
+            require(declaration.scalarInteger().isEmpty()||view.codec().isEmpty(),"scalar integer proof contradicts textual physical interpretation");
+        }
+        input.storageIndependence().filter(p->p.availability()==Availability.KNOWN).ifPresent(proof->{
+            var components=new HashSet<BaseId>();
+            for(var member:proof.members()) { c.touch();var view=byData.get(member);
+                if(view!=null)require(components.add(view.base()),"legacy independence proof contradicts shared physical storage");
+            }
+        });
         var index=new Index(input,nodes,bases,views,byData);
         for(var statement:input.statements()) {
             c.touch();

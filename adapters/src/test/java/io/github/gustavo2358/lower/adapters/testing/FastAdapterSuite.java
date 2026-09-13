@@ -16,7 +16,7 @@ public final class FastAdapterSuite {
             }
         }
         if (cases != 2) throw new AssertionError("fixed W1 focal cases absent");
-        RegionalStorageIntegrationSuite.run();
+        RegionalStorageIntegrationSuite.run(); RegionalTranslationSuite.run();
         EntryLocalizationSuite.run();
         IfIntegrationSuite.focal();
         MoveDataIntegrationSuite.run(); PerformIntegrationSuite.run(); MultiCallIntegrationSuite.run(); EvaluateIntegrationSuite.run(); GoToIntegrationSuite.run(); ConditionalGoToIntegrationSuite.run(); PerformFamilyIntegrationSuite.run(); PerformUntilIntegrationSuite.run(); PerformTimesIntegrationSuite.run(); PerformVaryingIntegrationSuite.run(); PartialIntegrationSuite.run();

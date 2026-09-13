@@ -11,6 +11,6 @@ notes: Promotes translation side of BACKLOG-SP-008/DF-001 handoffs. One persiste
 
 progress_w3:
   contract: docs/domain/regional-storage.md
-  completed: SP 2.7 closed decoder, in-memory closure/codec validation and canonical physical identity; historical readers preserved.
-  evidence: FAST 2340 core checks plus historical adapter suites and 22 regional wire/closure/identity cases.
-  pending: Region/View/byte-operation translation, source gap locality and M1 integration.
+  completed: SP 2.7 decoder/admission/identity, Region/View, byte Assign/CopyBytes/HavocMust and CALL view read; historical readers preserved.
+  evidence: Translation FAST passed (106.874s); 2340 core checks, historical regressions, 25 closure cases, four real fixtures, independent 1/2/5/40 memory cases, adversarials and AIR round-trip.
+  pending: Cumulative source gap locality and M1 values/dependency integration.

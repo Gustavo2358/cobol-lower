@@ -94,3 +94,50 @@ FAST após identidade: 2340 verificações de core, leitores históricos, 22 cas
 regionais e guardas de arquitetura/harness, sem falhas. A suíte regional integra
 o FAST fixo. A tradução física ainda não está implementada neste checkpoint:
 aceitar SP 2.7 com fallback conservador não qualifica group→child nem M1.
+
+
+## Tradução física e operações — ST-W3.2
+
+RegionalDataTranslator recebe o índice preparado na admissão, sem reconstruí-lo.
+Cada base tem no máximo uma representação física: Region para bytes provados ou
+para extensão desconhecida com alocação ordinária provada; Cell abstrata apenas
+para escalar legado isolado cuja representação física não foi publicada. A Cell
+representa esse componente, sem uma Region duplicada. A admissão rejeita prova
+escalar standalone em nó aninhado/grupo/componente compartilhado, comprimento
+textual contraditório e prova de independência legada entre views da mesma base.
+Um único DisjointStorage transporta representantes de bases explicitamente
+independentes. IDs e número de declarações não criam provas de disjunção.
+
+A AIR não tem lifetime desconhecido. Uma base de extent desconhecido e alocação
+UNPROVEN conserva gap de alocação, sem fabricar PERSISTENT/EXTERNAL. Base conhecida
+sob o perfil ordinário ou alocação explícita prova persistência; visibilidade é
+PRIVATE somente com prova local, UNKNOWN nos demais casos. Perfil UNSPECIFIED
+conserva o caminho escalar antigo. Esses limites não autorizam efeito Nop.
+
+Objetos textuais usam ViewBinding IBM1047, com provenance de DATA/nó/view/base.
+FILLER tem cobertura física e origem sem objeto nominal. Extent/offset desconhecidos
+conservam motivos com escopo da base representada; não geram View precisa. MOVE
+literal produz RegionSlice IdentityBytes e BytesValue; cópia produz CopyBytes com
+fallback conservador restrito às bases fonte/destino e continuação explícita.
+MUST_UNKNOWN produz HavocMust de bytes no intervalo publicado. Operações precisas
+podem ser reutilizadas nas ativações PERFORM existentes, sem novo modelo de controle.
+
+O fitting escalar continua uma Assign TEXT quando a prova legada é válida e o
+resultado é codificável no codec declarado. Um resultado lógico contendo `€`, por
+exemplo, não vira AIR inválida nem bytes da JVM: vira havoc sobre o receiver. Isso
+vale também para acesso apenas legado quando há fatos físicos explícitos. Leitura
+escalar de cópia não é usada em View: CopyBytes exige a prova regional; ausência
+dessa prova conserva fallback. CALL usa Read da view selecionada antes de Invoke,
+sem inferir candidato nem política de nome. MEMORY_REGIONS e IBM1047 são required
+somente quando presentes na saída. AirValidator e AirJson permanecem autoridades.
+
+Oracles executáveis adicionais: quatro fixtures CLI, entradas independentes na
+porta em memória com 1/2/5/40 filhos, permutação byte-idêntica de inventário físico,
+FILLER/offset 6, escrita desconhecida somente em [6,14), fitting codificável e não
+codificável, e grupo misturado com escalar INT abstrato. Positivos atravessam
+encode/decode/encode AIR. Nenhum teste do lower afirma resolver CALL: M1 depende
+do domínio regional de valores e da qualificação integrada em analysis-cfg.
+
+Gate de tradução `w3-lower-translation-fast-01`: PASS, 106,874s, 2340 checks
+core e suites históricas, 25 casos regionais de closure, oracles de tradução e
+checks de arquitetura/harness. Mutantes da wave e vertical M1 ainda pendentes.

@@ -53,5 +53,7 @@ path-pruning capability is claimed.
 ## Campanha Storage Semantics ST-W0–ST-W5
 
 [Contrato regional](regional-storage.md): SP 2.7 → Region/View/bytes, com
-validação de fechamento no core e preservação de leitores históricos. Implementação
-em andamento; M1 exige ainda o vertical group→child→CALL e seus gates cumulativos.
+validação de fechamento no core e preservação de leitores históricos. Tradução
+de byte Assign, CopyBytes, HavocMust e CALL como Read de View implementada e
+coberta por oracles de arquivo/memória; M1 ainda exige values/dependências e
+o vertical group→child→CALL com seus gates cumulativos.

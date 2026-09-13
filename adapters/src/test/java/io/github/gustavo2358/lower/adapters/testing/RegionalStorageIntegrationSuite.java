@@ -75,7 +75,17 @@ public final class RegionalStorageIntegrationSuite {
         var permuted=IfInputs.with(base,"storage",Optional.of(IfInputs.with(IfInputs.with(storage,"nodes",reordered),"views",reorderedViews)));
         var permutation=new CobolLowerer().lower(permuted,CobolLower.OPTIONS);
         check(permutation.status()==LoweringResult.Status.SUCCESS&&permutation.publication().orElseThrow().id().equals(before.publication().orElseThrow().id()),"unordered physical inventories have canonical identity");
-        System.out.println("LOWER_REGIONAL_STORAGE_WIRE_CASES=22");
+        var scalarClaim=new SpInput.ScalarText(SpInput.LogicalDomain.TEXT,8,SpInput.StorageClass.WORKING_STORAGE,SpInput.DeclarationScope.LOCAL);
+        var contradictory=new ArrayList<>(base.dataDeclarations());
+        contradictory.set(1,IfInputs.with(contradictory.get(1),"scalarText",Optional.of(scalarClaim)));
+        invalid(IfInputs.with(base,"dataDeclarations",contradictory),"standalone scalar proof contradicts nested physical field");
+        var cdata=new ArrayList<>(copy.dataDeclarations());
+        cdata.set(0,IfInputs.with(cdata.getFirst(),"scalarText",Optional.of(IfInputs.with(cdata.getFirst().scalarText().orElseThrow(),"logicalExtent",5))));
+        invalid(IfInputs.with(copy,"dataDeclarations",cdata),"scalar extent contradicts declared IBM1047 view");
+        var falseProof=new SpInput.IndependentStorageSet(SpInput.Availability.KNOWN,SpInput.StorageIndependenceRule.INDEPENDENT_WORKING_STORAGE_ROOTS,
+            "IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE",base.dataDeclarations().stream().map(SpInput.DataFact::id).toList(),Optional.of(root.provenance()),List.of());
+        invalid(IfInputs.with(base,"storageIndependence",Optional.of(falseProof)),"legacy independence cannot separate two views of the same base");
+        System.out.println("LOWER_REGIONAL_STORAGE_WIRE_CASES=25");
     }
     private static void invalid(SpInput input,String reason) {
         var result=new EntryGobackAdmission().admit(input,CobolLower.OPTIONS.admission());

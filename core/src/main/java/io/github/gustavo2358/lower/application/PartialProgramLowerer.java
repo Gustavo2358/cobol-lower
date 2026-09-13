@@ -27,7 +27,7 @@ final class PartialProgramLowerer implements LowerInput {
         var statements = new ArrayList<LoweringResult.StatementLink>(); var operands = new ArrayList<LoweringResult.OperandLink>();
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
-        var data = ScalarDataTranslator.translate(plan.data(), unit, ids, origins, items, uncertainties);
+        var data = RegionalDataTranslator.translate(plan.data(), plan.storage(), unit, ids, origins, items, uncertainties);
         var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
@@ -61,8 +61,9 @@ final class PartialProgramLowerer implements LowerInput {
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
         var body = new Unit(unit, Optional.empty(), data.objects(), List.of(), List.of(entry), assembly.sequences(), List.of(),
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
-        var premises = StoragePremise.available(input, data, unit, ids, origins);
-        var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(List.of(), List.of()), origins.artifacts(),
+        var premises = new ArrayList<>(StoragePremise.available(input, data, unit, ids, origins));
+        premises.addAll(RegionalDataTranslator.premises(plan.storage(),data,unit,ids,origins));
+        var output = new Publication(publication, SemanticVersion.AIR_2_0_0, RegionalDataTranslator.capabilities(data), origins.artifacts(),
             List.of(body), data.storage(), List.of(), List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
         var assessment = OutputAssessment.assess(output, options.validation());
