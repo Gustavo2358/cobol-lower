@@ -42,7 +42,7 @@ public final class DecoderSuite {
         return (ObjectNode) node.path("entryInventory").path("entries").get(0).path("signature");
     }
     private static void physical(ObjectNode golden, byte[] raw) throws Exception {
-        for (String version : List.of("1.0.0", "1.8.0", "2.0.0")) {
+        for (String version : List.of("1.0.0", "1.9.0", "2.0.0")) {
             var value = golden.deepCopy(); value.put("contractVersion", version);
             rejects(bytes(value), Code.UNSUPPORTED_CONTRACT);
         }

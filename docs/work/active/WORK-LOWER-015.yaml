@@ -1,0 +1,41 @@
+id: WORK-LOWER-015
+title: Lower unsupported regions conservatively
+status: IN_PROGRESS
+scope:
+  - CP6 compositionality and conservative partial lowering
+  - Permanent multiplicity and partial publication contracts
+  - SP1.8 explicit semantics with backward-compatible decoding
+notes: Coordinated with WORK-CFG-038. Draft review only; no merge or auto-merge.
+baseline_merge: 797dcbd6f05f12661299339746c607b5b57ac1ba
+frontend_pin: 15354e946904337a74980ca659119f2eb22df57b
+air_java_pin: b1c45b8f23452082c9f3969b78915976747e87c7
+implementation: >-
+  SP1.8 selects per-statement precision and conservative fallback after structural
+  validation. BASIC bodies specialize by activation. Mandatory unknown whole writes
+  use HavocMust; other unknown regions use Opaque envelopes. CALL targets survive
+  partial surface/signature and unknown names. IF uses only source-certified Boolean
+  predicates. Statement/operand links and localized gaps are retained. Legacy decoder
+  contracts preserve their original semantics. No AST/COBOL parsing in the lower.
+validation: >-
+  FAST PASS including architecture and partial fixtures, /tmp/partial-lower-fast-1.log.
+  Final qualification-local PASS, /tmp/partial-lower-full-5.log: semantic suites,
+  backward decoder contracts, 20,000 MOVE capacity with real AIR validation and
+  deterministic Publication equality, transport/atomicity and architecture.
+  The first attempt exposed a historical future-version test using 1.8; it now
+  uses 1.9 and the unknown-version refusal remains tested. Final productive boundary
+  corrections below were requalified after the integrated findings.
+review_state: IMPLEMENTED / AWAITING HUMAN REVIEW; integrated exact-pin gate in WORK-CFG-038.
+integrated_corrections: >-
+  Unit lineage links the actual initial sequence rather than duplicating entryOrigin.
+  An unknown continuation after a proved write has a control-only Opaque, without
+  repeating memory effects. Mandatory unknown writes remain HavocMust even when
+  their continuation is unknown. Compound PERFORM and DISPLAY handler fixtures
+  preserve source CALL sites and open control.
+  The original PERFORM provenance oracle required the specialized return to retain
+  callsite, resolved target, paragraph, body write and resume. This lineage is now
+  explicit; interior body transfers retain their own structural continuation origin.
+future_family_guard: >-
+  Every typed nonterminal statement family must occur at least N times in each
+  1/2/5/40 composition fixture, which must lower precisely without Opaque. New fact
+  families therefore require updated generators and composition tests. Final test-only
+  guard PASS, /tmp/partial-lower-contract-final.log; production unchanged since Full.

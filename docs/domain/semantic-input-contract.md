@@ -2,6 +2,16 @@
 
 **Fonte:** SRC-SP, documento de domínio e writer público fixados no source lock; SRC-HANDOFF, seções 2–5, 9–12, 15 e 21. Este texto especifica o consumo local, não redefine o formato upstream.
 
+## Contrato atual: SP1.8
+
+O decoder admite explicitamente 1.1–1.8. SP1.8 seleciona a política de
+[compositionality e partial lowering](../architecture/compositional-partial-lowering.md).
+Uma lacuna semântica preserva o programa e ganha representação conservadora.
+BASIC_PROCEDURE_PERFORM tem body intrínseco e resume por ativação; o decoder
+legado conserva a interpretação original de SP1.7. ObservedStatement conserva
+continuação normal comprovada e referências nominais sem inventar efeitos.
+As seções abaixo registram a evolução dos contratos anteriores.
+
 ## Transporte inicial
 
 Nome canônico: `cobol-semantic-product.json`. O alias `semantic-product.json` existe no frontend atual, mas o lowerer não procura nomes alternativos silenciosamente. Um caminho de arquivo é configuração do adapter e não identidade semântica.

@@ -21,16 +21,16 @@ final class InvokeHandler {
             List.of(Evidence.Dimension.DEPENDENCIES), operation, targetOrigin, ids, uncertainties);
         var effects = uncertainty("EFFECT_UNKNOWN", "SP publishes UNKNOWN external effects; all-memory bounds are may-read/may-write.",
             List.of(Evidence.Dimension.EFFECTS, Evidence.Dimension.STORAGE), operation, origin, ids, uncertainties);
-        var outcomes = uncertainty("CONTROL_UNKNOWN", "SP normal continuation is known; other invocation outcomes remain OPEN.",
+        var outcomes = uncertainty("CONTROL_UNKNOWN", "Only the published normal continuation is retained; missing and other invocation outcomes remain OPEN.",
             List.of(Evidence.Dimension.CONTROL), operation, continuation, ids, uncertainties);
         var contract = uncertainty("CONTRACT_UNKNOWN", "External contract authority is not certified.",
             List.of(Evidence.Dimension.CONTROL, Evidence.Dimension.EFFECTS, Evidence.Dimension.DEPENDENCIES), operation, origin, ids, uncertainties);
         var namePolicy = new Interactions.UnknownName(name);
         Interactions.Target target;
-        if (call.target() instanceof SpInput.LiteralCallTarget literal) {
+        if (call.target() instanceof SpInput.LiteralCallTarget literal && literal.logicalValue().isPresent()) {
             target = new Interactions.LiteralTarget("program", "cobol.program", literal.logicalValue().orElseThrow().value(), namePolicy, targetOrigin);
-        } else {
-            var reference = ((SpInput.DataCallTarget) call.target()).reference();
+        } else if(call.target() instanceof SpInput.DataCallTarget d && d.reference().wholeItemAccess().filter(w->data.containsKey(w.data())).isPresent()) {
+            var reference = d.reference();
             var object = data.get(reference.wholeItemAccess().orElseThrow().data()).object();
             var owner = new OperationOwner(operation);
             var readId = new OperandId(owner, ids.id("operand", "call-name-read", operation.localId(), reference.id().handle()));
@@ -45,15 +45,24 @@ final class InvokeHandler {
             links.add(new LoweringResult.OperandLink(reference.id(), readId, readOrigin));
             links.add(new LoweringResult.OperandLink(reference.id(), placeId, placeOrigin));
             items.add(ScalarEvidence.item(unit.publication(), "operand", reference.id().handle(), targetOrigin, List.of(readId, placeId)));
+        } else {
+            var valueReason=uncertainty("CALL_NAME_VALUE_UNAVAILABLE","The published CALL site has an unavailable program-name value.",
+                List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);
+            var operand=new OperandId(new OperationOwner(operation),ids.id("operand","call-name-unknown",operation.localId(),call.target().id().handle()));
+            var unknown=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.CALL_TARGET,targetOrigin),Types.known(Types.Builtin.TEXT),
+                List.of(),new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),valueReason);
+            target=new Interactions.ComputedTarget("program","cobol.program",unknown,namePolicy,targetOrigin);
+            links.add(new LoweringResult.OperandLink(call.target().id(),operand,targetOrigin));
+            items.add(ScalarEvidence.item(unit.publication(),"operand",call.target().id().handle(),targetOrigin,List.of(operand)));
         }
         var signatureOrigin = origins.derived(ids.id("origin", "call-signature", operation.localId(), key),
-            List.of(origin), "cp6-call@1/USING-ABSENT-RETURNING-ABSENT");
+            List.of(origin), "cp6-call@1/published-surface");
         var signature = new Interactions.ExternalSignature(new Interactions.Signature(
-            new Interactions.ParameterInventory(List.of(), Interactions.NoRemainder.INSTANCE),
-            new Interactions.ResultInventory(List.of(), Interactions.NoRemainder.INSTANCE), signatureOrigin));
+            new Interactions.ParameterInventory(List.of(), call.surface().using() == SpInput.ClausePresence.ABSENT ? Interactions.NoRemainder.INSTANCE : new Interactions.UnknownRemainder(contract)),
+            new Interactions.ResultInventory(List.of(), call.surface().returning() == SpInput.ClausePresence.ABSENT ? Interactions.NoRemainder.INSTANCE : new Interactions.UnknownRemainder(contract)), signatureOrigin));
         var memory = new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(), true));
         var bounds = new Interactions.EffectBound(new Interactions.ForeignEffects(memory, memory, List.of()), List.of());
-        var alternatives = new Control.InvocationOutcomes(List.of(new Control.Normal(normal)),
+        var alternatives = new Control.InvocationOutcomes(normal == null ? List.of() : List.of(new Control.Normal(normal)),
             new Scopes.WithinControl(new Scopes.AllControl(unit.publication())));
         var precision = new Evidence.Precision(
             new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(outcomes)),

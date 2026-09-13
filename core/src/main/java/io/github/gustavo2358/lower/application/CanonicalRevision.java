@@ -106,6 +106,25 @@ final class CanonicalRevision {
         }
         return Optional.of(e.finish());
     }
+    static Optional<String> partial(SpInput input, int maximum) {
+        if (maximum < 32) return Optional.empty();
+        var e = new CanonicalRevision(); e.word("compositional-program@1/AIR2/SP1.8/explicit-fields-v1");
+        var canonical=new SpInput(input.unit(),input.policy(),ScalarDataOrder.canonical(input.dataDeclarations()),
+            input.statements().stream().sorted(java.util.Comparator.comparingInt(s->s.header().programPoint())).toList(),
+            input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional());
+        e.recordFact(canonical); return Optional.of(e.finish());
+    }
+    /** Identity only: structurally encode all immutable record components; never infer semantics from text. */
+    private void recordFact(Object value) {
+        if (value instanceof String s) { word("text"); word(s); }
+        else if (value instanceof Enum<?> e) { word("enum"); word(e.getDeclaringClass().getName()); word(e.name()); }
+        else if (value instanceof Integer n) { word("integer"); number(n); }
+        else if (value instanceof Boolean b) { word("boolean"); flag(b); }
+        else if (value instanceof Optional<?> o) { word("optional"); flag(o.isPresent()); o.ifPresent(this::recordFact); }
+        else if (value instanceof List<?> l) { word("list"); number(l.size()); l.forEach(this::recordFact); }
+        else PartialIdentityFacts.write(value,this::word,this::recordFact);
+    }
+
     private static void callFacts(CanonicalRevision e, CallFact call) {
         e.scalarHeader(call.header()); e.symbol(call.syntax());
         e.word(call.target().id().handle()); e.provenance(call.target().provenance());

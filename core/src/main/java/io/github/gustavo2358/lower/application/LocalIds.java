@@ -7,9 +7,16 @@ import java.util.Map;
 final class LocalIds {
     static final String POLICY = "local-xxh3-128-v1";
     private record Identity(String namespace, String role, String owner, String key) { }
-    private final Map<String, Identity> registered = new HashMap<>();
+    private final Map<String, Identity> registered;
+    private final String context;
+    LocalIds() { this(new HashMap<>(), ""); }
+    private LocalIds(Map<String, Identity> registered, String context) { this.registered = registered; this.context = context; }
+    LocalIds activation(String callsite) { return new LocalIds(registered, callsite.length() + ":" + callsite); }
+
+    String sourceKey(String key) { return context.isEmpty() ? key : context + "/" + key; }
 
     String id(String namespace, String role, String owner, String key) {
+        if (!context.isEmpty()) key = context + ":" + key;
         var identity = new Identity(namespace, role, owner, key);
         String digest = CanonicalRevision.local(namespace, role, owner, key);
         var previous = registered.putIfAbsent(digest, identity);

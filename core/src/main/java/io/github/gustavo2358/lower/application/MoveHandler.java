@@ -39,8 +39,8 @@ final class MoveHandler {
         }
         links.add(new LoweringResult.OperandLink(move.source().id(), source, sourceOrigin));
         links.add(new LoweringResult.OperandLink(move.target().id(), target, targetOrigin));
-        items.add(ScalarEvidence.item(unit.publication(), "operand", move.source().id().handle(), sourceOrigin, List.of(source)));
-        items.add(ScalarEvidence.item(unit.publication(), "operand", move.target().id().handle(), targetOrigin, List.of(target)));
+        items.add(ScalarEvidence.item(unit.publication(), "operand", ids.sourceKey(move.source().id().handle()), sourceOrigin, List.of(source)));
+        items.add(ScalarEvidence.item(unit.publication(), "operand", ids.sourceKey(move.target().id().handle()), targetOrigin, List.of(target)));
         return new Operations.Assign(new Operations.Header(operation, origin, Evidence.CoverageStatus.MODELED,
             ScalarEvidence.assign(operation), List.of()), destination, value);
     }

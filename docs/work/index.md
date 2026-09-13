@@ -1,5 +1,8 @@
 # Trabalho — navegação
 
+Atual: [WORK-LOWER-015](active/WORK-LOWER-015.yaml), CP6 compositionality e partial lowering, coordenado com WORK-CFG-038.
+WORK-LOWER-014: DONE / MERGED #16, `797dcbd6f05f12661299339746c607b5b57ac1ba`.
+
 W2B: **DONE / MERGED**, PR #12, product baseline `2b7fa3a5cee865eef5007d6d870618e032047e1e`.
 O blocker administrativo foi resolvido pela [política lean](../engineering/lean-harness.md).
 O índice abaixo contém contexto legado; ele não governa lifecycle ou desenvolvimento.

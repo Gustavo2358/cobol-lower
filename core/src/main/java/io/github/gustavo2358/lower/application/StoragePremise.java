@@ -27,14 +27,14 @@ final class StoragePremise {
     }
     static List<Proofs.Premise> available(SpInput input, ScalarDataTranslator.Result data,
             UnitId unit, LocalIds ids, SourceOrigins origins) {
-        return input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN)
+        return input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN && p.members().stream().filter(data.index()::containsKey).count() >= 2)
             .map(p -> List.of(translate(p, data, unit, ids, origins))).orElseGet(List::of);
     }
     static Proofs.Premise translate(SpInput.IndependentStorageSet proof, ScalarDataTranslator.Result data,
             UnitId unit, LocalIds ids, SourceOrigins origins) {
         var origin = origins.source("storage-independence", unit.localId(), proof.provenance().orElseThrow());
         var members = new ArrayList<StorageId>();
-        for (var member : proof.members()) members.add(data.index().get(member).storage());
+        for (var member : proof.members()) if (data.index().containsKey(member)) members.add(data.index().get(member).storage());
         return new Proofs.Premise(new PremiseId(unit.publication(), ids.id("premise", "sp-storage-independence", unit.localId(), proof.rule().name())),
             proof.authority(), "SP rule: " + proof.rule().name(), origin, new Proofs.DisjointStorage(members));
     }

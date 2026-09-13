@@ -76,9 +76,12 @@ public final class IfAdmission implements AdmitInput {
         } catch(EntryGobackAdmission.LimitReached ex) { return rejected(c,Status.IMPLEMENTATION_LIMIT); }
     }
     static void admitPredicate(IfFact f, EntryGobackAdmission.Context c) {
+        admitPredicate(f,c,false);
+    }
+    static void admitPredicate(IfFact f, EntryGobackAdmission.Context c, boolean compositional) {
         var predicate = f.predicateGuarantee();
-            need(c,f.header().containment().equals(new Containment(Optional.empty(),Branch.ROOT)) && f.explicitlyTerminated()
-                && f.profile()==IfProfile.SIMPLE_TEXT_EQUALITY,"root explicitly terminated SIMPLE_TEXT_EQUALITY only; nested outside slice");
+            need(c,(compositional || f.header().containment().equals(new Containment(Optional.empty(),Branch.ROOT)) && f.explicitlyTerminated()
+                && f.profile()==IfProfile.SIMPLE_TEXT_EQUALITY),"root explicitly terminated SIMPLE_TEXT_EQUALITY only; nested outside slice");
             need(c,predicate.availability()==Availability.KNOWN && predicate.profile()==PredicateProfile.SCALAR_TEXT_EQUALITY
                 && predicate.resultDomain()==PredicateDomain.BOOLEAN && predicate.evaluation()==PredicateEvaluation.PURE
                 && predicate.normalCompletion()==PredicateCompletion.TOTAL && predicate.readsCompleteness()==ReadsCompleteness.COMPLETE
