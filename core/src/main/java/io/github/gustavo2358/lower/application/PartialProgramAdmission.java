@@ -16,7 +16,7 @@ final class PartialProgramAdmission {
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             CallAdmission.validateFacts(input,c);
-            var goToTargets=new HashMap<ProcedureId,GoToFact>();
+            var goToTargets=new HashMap<ProcedureId,GoToAdmission.CanonicalTarget>();
             var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
             for(var s:input.statements()) if(s.header().containment().branch()==Branch.EVALUATE_ARM)
                 s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
@@ -28,6 +28,7 @@ final class PartialProgramAdmission {
                 }
                 if (s instanceof ProcedurePerformFact p) ProcedurePerformAdmission.validate(p,c);
                 if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);
+                if (s instanceof ConditionalGoToFact g) GoToAdmission.validate(g,c,goToTargets);
                 if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
                 if (s instanceof IfFact f) {
                     var operands = new HashSet<OperandId>();
@@ -77,6 +78,7 @@ final class PartialProgramAdmission {
                     IfAdmission.admitPredicate(f,c,true); eligible=true;
                 } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e,rangeCompletions.contains(e.header().id()));
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
+                else if(s instanceof ConditionalGoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
@@ -120,6 +122,8 @@ final class PartialProgramAdmission {
             for (var s : input.statements()) {
                 if(s instanceof GoToFact g && !bodyMembers.contains(s.header().id()))c.require(g.targetEntry().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,
                     s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary GO TO incoming edge");
+                if(s instanceof ConditionalGoToFact g && !bodyMembers.contains(s.header().id()))c.require(g.destinations().stream().noneMatch(d->d.targetEntry().filter(bodyMembers::contains).isPresent()),Rule.STRUCTURE,
+                    s.header().id().handle(),s.header().provenance(),"intrinsic body has no ordinary conditional incoming edge");
                 var successor=next(s);
                 if (!bodyMembers.contains(s.header().id()) && successor!=null)
                     c.require(successor.statement().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary incoming continuation");
@@ -141,6 +145,12 @@ final class PartialProgramAdmission {
             if(!active.add(id))return List.of(); // A cycle does not prove a returning primary region.
             c.touch(); var s=c.lookup(id); if(s==null)return List.of();
             if(s instanceof GobackFact) { active.remove(id); closed.add(id); continue; }
+            if(s instanceof ConditionalGoToFact g) {
+                if(!precise.contains(id))return List.of();
+                pending.push(new Visit(id,true));
+                for(var d:g.destinations())pending.push(new Visit(d.targetEntry().orElseThrow(),false));
+                pending.push(new Visit(g.normalContinuation().statement().orElseThrow(),false));continue;
+            }
             if(s instanceof GoToFact g) {
                 if(!precise.contains(id))return List.of();
                 pending.push(new Visit(id,true)); pending.push(new Visit(g.targetEntry().orElseThrow(),false));
@@ -181,6 +191,7 @@ final class PartialProgramAdmission {
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
     static NormalContinuation next(StatementFact s) {
+        if(s instanceof ConditionalGoToFact g)return g.normalContinuation();
         if(s instanceof ProcedurePerformFact p)return p.normalContinuation();
         if(s instanceof EvaluateFact e)return e.normalContinuation();
         if(s instanceof OtherStatement o)return o.normalContinuation();

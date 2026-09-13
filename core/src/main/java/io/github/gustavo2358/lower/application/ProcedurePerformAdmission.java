@@ -64,6 +64,7 @@ final class ProcedurePerformAdmission {
                 var overlap=members(other);structural&=overlap.equals(members)||Collections.disjoint(overlap,members);
             }
             if(!members.contains(s.header().id())) {
+                if(s instanceof ConditionalGoToFact g)structural&=GoToAdmission.precise(g)&&g.destinations().stream().noneMatch(d->d.targetEntry().filter(members::contains).isPresent());
                 if(s instanceof GoToFact g)structural&=g.targetEntry().isPresent()&&g.targetEntry().filter(members::contains).isEmpty();
                 var next=PartialProgramAdmission.next(s);if(next!=null)structural&=next.statement().filter(members::contains).isEmpty();
             }
@@ -82,6 +83,11 @@ final class ProcedurePerformAdmission {
             supported&=precise.contains(v.id());
             if(s instanceof GobackFact){active.remove(v.id());done.add(v.id());continue;}
             todo.push(new Visit(v.id(),true));
+            if(s instanceof ConditionalGoToFact g) {
+                if(!precise.contains(v.id())){supported=false;continue;}
+                for(var d:g.destinations())todo.push(new Visit(d.targetEntry().orElseThrow(),false));
+                todo.push(new Visit(g.normalContinuation().statement().orElseThrow(),false));continue;
+            }
             if(s instanceof GoToFact g) {
                 if(g.targetEntry().isEmpty()){structural=false;break;}todo.push(new Visit(g.targetEntry().get(),false));continue;
             }

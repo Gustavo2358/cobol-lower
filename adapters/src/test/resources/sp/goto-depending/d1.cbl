@@ -1,0 +1,28 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DEPENDTEST.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-IDX PIC 9(4).
+       01 WS-PGM PIC X(8).
+       01 FLAG PIC X.
+       PROCEDURE DIVISION.
+       MAIN-PARA.
+       GO TO
+       TARGET-A
+       TARGET-B
+       TARGET-C
+       DEPENDING ON WS-IDX.
+       FALLTHROUGH.
+       MOVE 'FALLPGM' TO WS-PGM.
+       GO TO JOIN-PARA.
+       TARGET-A.
+       MOVE 'PROGA' TO WS-PGM.
+       GO TO JOIN-PARA.
+       TARGET-B.
+       MOVE 'PROGB' TO WS-PGM.
+       GO TO JOIN-PARA.
+       TARGET-C.
+       MOVE 'PROGC' TO WS-PGM.
+       JOIN-PARA.
+       CALL WS-PGM.
+       GOBACK.

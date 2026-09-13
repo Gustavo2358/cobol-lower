@@ -33,6 +33,9 @@ final class PartialProgramAssembler {
                 link(m.header().id(),assign,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+            } else if(fact instanceof SpInput.ConditionalGoToFact g) {
+                term=ConditionalGoToLowerer.translate(g,destination,data,unit,ids,origins,operands,uncertainties);
+                link(g.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.GoToFact g) {
                 var source=origins.source("statement",g.header().id().handle(),g.header().provenance());
                 var reference=origins.source("goto-reference",g.header().id().handle(),g.referenceOrigin());

@@ -12,6 +12,7 @@ final class OpaqueOperands {
     static Known translate(SpInput.StatementFact fact,OperationId operation,ScalarDataTranslator.Result data,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.Uncertainty> uncertainties) {
         var refs=new ArrayList<SpInput.DataReference>();
+        if(fact instanceof SpInput.ConditionalGoToFact g)g.selector().ifPresent(refs::add);
         if(fact instanceof SpInput.OtherStatement o)refs.addAll(o.knownReferences());
         if(fact instanceof SpInput.EvaluateFact e)e.subject().ifPresent(refs::add);
         if(fact instanceof SpInput.IfFact f)refs.addAll(f.conditionReads());
