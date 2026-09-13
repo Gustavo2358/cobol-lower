@@ -168,6 +168,7 @@ public final class DecoderSuite {
         check(mapped.entryInventory().entries().get(0).id().handle().equals("entry:91") && mapped.entryInventory().entries().get(0).start().statement().orElseThrow().handle().equals("statement:73") && mapped.structure().roots().get(0).handle().equals("statement:73"), "consistent arbitrary handles preserved");
     }
     public static void main(String[] ignored) throws Exception {
+        EntryLocalizationSuite.run();
         assertions += ScalarWireSuite.run();
         assertions += CallIntegrationSuite.run();
         assertions += IfIntegrationSuite.run();
