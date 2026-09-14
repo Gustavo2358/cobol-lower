@@ -70,7 +70,7 @@ final class ProcedurePerformAdmission {
             if(!members.contains(s.header().id())) {
                 if(s instanceof ConditionalGoToFact g)structural&=GoToAdmission.precise(g)&&g.destinations().stream().noneMatch(d->d.targetEntry().filter(members::contains).isPresent());
                 if(s instanceof GoToFact g)structural&=g.targetEntry().isPresent()&&g.targetEntry().filter(members::contains).isEmpty();
-                var next=PartialProgramAdmission.next(s);if(next!=null)structural&=next.statement().filter(members::contains).isEmpty();
+                var next=PartialProgramAdmission.ordinaryNext(s);if(next!=null)structural&=next.statement().filter(members::contains).isEmpty();
             }
         }
         var boundary=new HashMap<StatementId,Optional<StatementId>>();

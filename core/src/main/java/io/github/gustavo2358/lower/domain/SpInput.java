@@ -301,9 +301,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public CicsOption { Objects.requireNonNull(reference); Objects.requireNonNull(name);Objects.requireNonNull(operand); }
     }
     public record CicsFact(StatementHeader header,CicsCommand command,String rawText,Optional<CallTarget> target,
-        List<CicsOption> options,CicsConditions conditions,NormalContinuation localContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
+        List<CicsOption> options,CicsConditions conditions,NormalContinuation localContinuation,NormalContinuation ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
         public CicsFact { Objects.requireNonNull(header);Objects.requireNonNull(command);Objects.requireNonNull(rawText);Objects.requireNonNull(target);
-            options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes); }
+            options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(ordinaryContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes); }
     }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }

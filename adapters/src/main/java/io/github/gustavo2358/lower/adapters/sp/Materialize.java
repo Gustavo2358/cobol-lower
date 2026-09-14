@@ -1068,7 +1068,7 @@ final class Materialize {
                         Optional.ofNullable(l.logicalValue()).map(x->new LogicalValue(x.logicalDomain(),x.value(),x.logicalExtent())),provenance(l.provenance(),unit));
                 });
                 yield new CicsFact(h,v.command(),v.rawText(),target,v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),
-                    v.conditions(),continuation(v.localContinuation(),unit),v.nameProfile(),v.gapCodes());
+                    v.conditions(),continuation(v.localContinuation(),unit),continuation(v.ordinaryContinuation(),unit),v.nameProfile(),v.gapCodes());
             }
             case Wire211.CallDocument v -> {
                 CallTarget target = switch (v.target()) {

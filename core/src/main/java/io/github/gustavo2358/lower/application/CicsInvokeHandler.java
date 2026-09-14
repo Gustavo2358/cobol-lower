@@ -12,6 +12,9 @@ final class CicsInvokeHandler {
     static void validate(SpInput.CicsFact fact, EntryGobackAdmission.Context c) {
         var h=fact.header(); var seen=new HashSet<SpInput.OperandId>();
         c.require(fact.nameProfile().equals("cics-ts.program@1"),Rule.PROFILE_FACT,h.id().handle(),h.provenance(),"Supported CICS name profile required");
+        CallAdmission.continuation(fact.ordinaryContinuation(),h,c);
+        c.require(fact.localContinuation().statement().isEmpty()||fact.localContinuation().statement().equals(fact.ordinaryContinuation().statement()),Rule.PROFILE_FACT,h.id().handle(),h.provenance(),"CICS local and ordinary continuation agree within a paragraph");
+        c.require(coherentConditions(fact),Rule.PROFILE_FACT,h.id().handle(),h.provenance(),"CICS conditions contradict typed options or gaps");
         fact.target().ifPresent(target->{
             if(target instanceof SpInput.DataCallTarget d)CallAdmission.reference(d.reference(),h,seen,c);
             else {
@@ -21,6 +24,18 @@ final class CicsInvokeHandler {
         });
         for(var o:fact.options())o.reference().ifPresent(r->CallAdmission.reference(r,h,seen,c));
         for(var o:fact.options())c.require(o.start()>=0&&o.end()>=o.start()&&o.end()<=fact.rawText().length(),Rule.PROFILE_FACT,h.id().handle(),h.provenance(),"Option span inside preserved payload");
+    }
+    private static boolean coherentConditions(SpInput.CicsFact fact) {
+        if(fact.conditions()==SpInput.CicsConditions.UNKNOWN)return true;
+        boolean local=fact.options().stream().anyMatch(o->o.name().equals("RESP")||o.name().equals("NOHANDLE"));
+        boolean shape=fact.options().stream().filter(o->o.name().equals("PROGRAM")).count()==1
+            &&fact.options().stream().allMatch(o->Set.of("PROGRAM","COMMAREA","LENGTH","CHANNEL","RESP","RESP2","NOHANDLE","INPUTMSG","INPUTMSGLEN","SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(o.name())
+                &&((o.name().equals("NOHANDLE")||o.name().equals("SYNCONRETURN"))!=o.operand().isPresent())
+                &&(fact.command()!=SpInput.CicsCommand.XCTL||!Set.of("SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(o.name())));
+        var allowed=new HashSet<>(Set.of("CICS_EFFECTS_SIGNATURE_PARTIAL","CICS_HOST_BINDING_UNAVAILABLE","CICS_TARGET_UNKNOWN"));
+        if(fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION)allowed.add("CICS_CONDITION_VALUES_UNKNOWN");
+        return shape&&allowed.containsAll(fact.gapCodes())&&(fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION?local:
+            !local&&fact.options().stream().noneMatch(o->o.name().equals("RESP2")));
     }
     static Operations.Invoke translate(SpInput.CicsFact fact, ScalarDataTranslator.Result data,
             LabelId next, UnitId unit, LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links,
@@ -68,7 +83,7 @@ final class CicsInvokeHandler {
         var memory=new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true));
         var effects=new Interactions.EffectBound(new Interactions.ForeignEffects(memory,memory,List.of()),List.of());
         var external=new Scopes.UnitControl(unit,false,false,true,true,false,true);
-        Scopes.ControlScope remainder=fact.conditions()==SpInput.CicsConditions.DEFAULT_ENTRY_PREFIX?external:fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION&&next!=null
+        Scopes.ControlScope remainder=fact.conditions()==SpInput.CicsConditions.DEFAULT_ENTRY_PREFIX&&(fact.command()!=SpInput.CicsCommand.LINK||next!=null)?external:fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION&&next!=null
             ?new Scopes.ControlUnion(List.of(new Scopes.LabelsControl(List.of(next)),external))
             :new Scopes.UnitControl(unit,true,true,true,true,true,true);
         var outcomes=new Control.InvocationOutcomes(fact.command()==SpInput.CicsCommand.LINK&&next!=null?List.of(new Control.Normal(next)):List.of(),new Scopes.WithinControl(remainder));

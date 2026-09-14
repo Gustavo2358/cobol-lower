@@ -80,7 +80,7 @@ final class Wire211 {
         ClausePresence onException, ClausePresence notOnException, ClausePresence onOverflow) { }
     record CicsOptionDocument(String name,@Nullable String operand,int start,int end,@Nullable ReferenceDocument reference) { }
     record CicsDocument(Wire.StatementHeaderDocument header,CicsCommand command,String rawText,@Nullable TargetDocument target,
-        List<CicsOptionDocument> options,CicsConditions conditions,ContinuationDocument localContinuation,String nameProfile,List<String> gapCodes) implements StatementDocument { }
+        List<CicsOptionDocument> options,CicsConditions conditions,ContinuationDocument localContinuation,ContinuationDocument ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementDocument { }
     record CallDocument(Wire.StatementHeaderDocument header, CallSyntax syntax, TargetDocument target,
         RuntimeTargetKnowledge runtimeTarget, String runtimeUncertaintyCode, ContinuationDocument normalContinuation,
         SurfaceDocument surface, CallEffects effects, CallOutcomes outcomes) implements StatementDocument { }
