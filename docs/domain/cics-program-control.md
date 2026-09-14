@@ -23,3 +23,10 @@ transfer and exceptional/abend exits, with no local label or normal exit.
 Unknown entry context remains open. RESP2 alone cannot select local-error policy.
 Bounded CICS regions reuse paragraph activation overrides; transformed source
 provenance stays inexact, while explicit IDs and syntax proofs justify boundaries.
+
+W4 consumes frontend READ data-area references for group/RENAMES targets without
+broadening elementary-only COBOL CALL admission. Six public producer fixtures
+cover variable, qualification, short-area rejection, constant slice, overlay and
+group reads. Composed local qualification ran semantic/capacity once; reduced
+CICS tests and unchanged-output transport tests cover final deltas. The explicit
+new-logical-level premise is retained in the AIR uncertainty explanation.

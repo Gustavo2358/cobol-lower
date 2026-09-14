@@ -31,7 +31,7 @@ final class CicsInvokeHandler {
         var scope=new Scopes.EntityScope(List.of(operation));
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-contract",operation.localId(),key));
         uncertainties.add(new Evidence.Uncertainty(reason,"CONTRACT_UNKNOWN",List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.STORAGE,Evidence.Dimension.DEPENDENCIES),scope,
-            "Signature/options and foreign effects remain partial; control follows source profile "+fact.conditions()+"; default entry prefix is complete and contains only canonical MOVE predecessors.",origin));
+            "Signature/options and foreign effects remain partial; control follows source profile "+fact.conditions()+"; DEFAULT_ENTRY_PREFIX is conditional on the explicitly declared new CICS logical level and a complete canonical MOVE-only entry prefix.",origin));
         var policy=new Interactions.ExtensionName(NAME.name(),NAME.version());
         Interactions.Target target;
         if(fact.target().orElse(null) instanceof SpInput.LiteralCallTarget literal&&literal.logicalValue().isPresent()) {

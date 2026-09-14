@@ -27,7 +27,7 @@ public final class CicsProgramControlSuite {
     }
     public static void main(String[] args) throws Exception {
         int cases=0;var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);
-        for(String name:List.of("variable","qualified","short","slice","overlay")) {
+        for(String name:List.of("variable","qualified","short","slice","overlay","group")) {
             byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/"+name+".json")){if(in==null)throw new AssertionError(name);raw=in.readAllBytes();}
             var input=((SpJsonDecoder.Decoded)decoder.decode(raw)).input();
             var result=new CobolLowerer().lower(input,CobolLower.OPTIONS);
