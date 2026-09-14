@@ -102,6 +102,24 @@ final class RegionalDataTranslator {
                 gap(node.id().handle(),origin,new Scopes.EntityScope(List.of(region)),List.of(region),"STORAGE_VIEW_UNKNOWN",List.copyOf(reasons),unit,ids,items,uncertainties);
             } else items.add(ScalarEvidence.item(unit.publication(),"storage-node",node.id().handle(),viewOrigin,List.of(region)));
         }
+        // Inventory presence is distinct from admission for precise expression translation.
+        // Unsupported declarations keep an object identity without inventing a typed read.
+        for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
+            if(index.containsKey(declaration.id()))continue;
+            var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
+            var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
+            var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
+            var inputs=new ArrayList<OriginId>();inputs.add(dataOrigin);
+            if(view!=null) {inputs.add(origins.source("storage-view",view.node().handle(),view.provenance()));inputs.add(baseOrigins.get(view.base()));}
+            var objectOrigin=origins.derived(ids.id("origin","unknown-regional-object",unit.localId(),declaration.id().handle()),inputs,"storage@1/unproved-source-view");
+            var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
+                "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
+            var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
+            uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
+            var binding=new Memory.UnknownBinding(base==null?new Scopes.AllMemory(unit.publication(),true):new Scopes.StorageMemory(List.of(base)),reason);
+            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),new Types.UnknownType(typeReason),binding,Memory.Visibility.UNKNOWN,objectOrigin,
+                Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
+        }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
         return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical));

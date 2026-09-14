@@ -38,3 +38,14 @@ Algoritmo: índice O(n), tradução O(c + payload), sem pares de objetos. Oracle
 primeiro CALL lê PGM00001; overwrite seguido de CALL lê OTHERPGM; preserve e
 unknown não publicam literal. IR 03 memória/EntryState e binding JSON1 governam
 condições simultâneas e proíbem reseed por backedge ou retorno local.
+
+## W7.3 — inventário misto
+
+Declarações fora do subconjunto preciso permanecem como objetos AIR com tipo e
+associação desconhecidos. `UnknownBinding` limita a associação à base publicada
+quando ela existe; base sem representação usa `AllMemory`, sem inventar lifetime,
+offset, extensão, codec ou Cell. O índice usado por handlers continua contendo
+apenas objetos admitidos; ter identidade no inventário não prova leitura tipada.
+Uma passagem pelo inventário (O(n)) cria somente os objetos ainda ausentes, com
+origem da declaração/view/base e cobertura ABSTRACTED. O oracle misto exige sete
+objetos e quatro alocações, além de lacunas explícitas e CALL literal preservado.
