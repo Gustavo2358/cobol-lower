@@ -215,6 +215,9 @@ final class PartialIdentityFacts {
                 field.accept("result"); value.accept(r.result());
                 field.accept("provenance"); value.accept(r.provenance());
             }
+            case SpInput.MoveTransfer r -> {
+                field.accept("MoveTransfer");field.accept("source");value.accept(r.source());field.accept("target");value.accept(r.target());field.accept("effect");value.accept(r.effect());
+            }
             case SpInput.MoveFact r -> {
                 field.accept("MoveFact");
                 field.accept("header"); value.accept(r.header());
@@ -224,6 +227,7 @@ final class PartialIdentityFacts {
                 field.accept("normalContinuation"); value.accept(r.normalContinuation());
                 field.accept("textAdjustment"); value.accept(r.textAdjustment());
                 if(r.regionalMove().isPresent()){field.accept("regionalMove@1");value.accept(r.regionalMove().get());}
+                if(!r.additionalTransfers().isEmpty()){field.accept("additionalTransfers@1");value.accept(r.additionalTransfers());}
             }
             case SpInput.LiteralCallTarget r -> {
                 field.accept("LiteralCallTarget");

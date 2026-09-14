@@ -15,7 +15,10 @@ final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
     record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData) {
         Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData); }
-        Optional<View> access(DataReference reference) { return reference.regionalAccess().map(a->views.get(a.view())); }
+        Optional<View> access(DataReference reference) {
+            return reference.regionalAccess().map(a->{var v=views.get(a.view());return a.slice().map(s->new View(v.node(),v.base(),
+                new Measure(Optional.of(s.offset()),List.of()),new Measure(Optional.of(s.extent()),List.of()),v.codec(),v.provenance())).orElse(v);});
+        }
     }
     private RegionalStorageAdmission() { }
     static Index validate(SpInput input,EntryGobackAdmission.Context c) {
@@ -119,6 +122,26 @@ final class RegionalStorageAdmission {
                 if(view!=null)require(components.add(view.base()),"legacy independence proof contradicts shared physical storage");
             }
         });
+        for(var r:storage.renames()) {
+            c.touch();c.identity(r.id().unit(),r.id().handle(),"storage-relation",r.provenance());c.provenance(r.provenance());gaps(r.gapCodes());
+        }
+        RegionalRenamesAdmission.validate(input.unit(),storage,nodes,views,relationIds);
+        var initialNodes=new HashSet<NodeId>();
+        for(var condition:storage.entryState().conditions()) {
+            c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
+            require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
+            require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
+            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
+            require((condition.kind()==InitialKind.UNKNOWN)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            if(condition.kind()!=InitialKind.UNKNOWN) {
+                var view=views.get(condition.node());
+                require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
+                    &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
+                require(condition.kind()==InitialKind.LITERAL_BYTES?storage.entryState().mode()==EntryMode.INITIAL
+                    &&view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size())):storage.entryState().mode()==EntryMode.PRESERVED,
+                    "initial condition contradicts mode or extent");
+            }
+        }
         var index=new Index(input,nodes,bases,views,byData);
         for(var statement:input.statements()) {
             c.touch();
@@ -130,7 +153,10 @@ final class RegionalStorageAdmission {
                         &&ref.binding().candidates().getFirst().equals(ref.binding().selected().get()),"regional access must agree with unique nominal selection");
                     require(view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                         &&view.extent().value().get().signum()>0&&bases.get(view.base()).extent().value().isPresent(),"exact access requires a bounded supported view");
-                    require(ref.role()!=OperandRole.CALL_TARGET||node.kind()==Kind.ELEMENTARY,"regional CALL target requires elementary text");
+                    require(ref.role()!=OperandRole.CALL_TARGET||access.slice().isPresent()||node.kind()==Kind.ELEMENTARY,"regional CALL target requires elementary text");
+                    access.slice().ifPresent(slice->require(slice.offset().signum()>=0&&slice.extent().signum()>0
+                        &&slice.offset().compareTo(view.offset().value().get())>=0
+                        &&slice.offset().add(slice.extent()).compareTo(end(view))<=0,"access slice must remain inside declared view"));
                 });
             }
             if(statement instanceof MoveFact move)validateMove(move,index);
@@ -141,24 +167,35 @@ final class RegionalStorageAdmission {
         if(move.regionalMove().isEmpty()) {
             require(references(move).stream().noneMatch(r->r.regionalAccess().isPresent()),"regional MOVE accesses require an explicit effect");return;
         }
-        var effect=move.regionalMove().get();gaps(effect.gapCodes());
+        require(move.additionalTransfers().isEmpty()||move.copySemantics()==CopySemantics.UNAVAILABLE,"regional sequence cannot claim scalar copy");
+        for(var transfer:move.transfers())validateTransfer(transfer,index);
+        RegionalTransferAdmission.validate(move,index);
+    }
+    private static void validateTransfer(MoveTransfer transfer,Index index) {
+        var effect=transfer.effect();gaps(effect.gapCodes());
         require(effect.bytes().stream().allMatch(b->b>=0&&b<=255),"literal bytes must be octets");
-        require(effect.kind()==MoveKind.LITERAL_BYTES||effect.bytes().isEmpty(),"only literal byte writes carry a payload");
+        require(effect.kind()==MoveKind.LITERAL_BYTES||effect.kind()==MoveKind.FITTED_LITERAL_BYTES||effect.bytes().isEmpty(),"only literal byte writes carry a payload");
         require((effect.kind()==MoveKind.MUST_UNKNOWN||effect.kind()==MoveKind.UNAVAILABLE)==!effect.gapCodes().isEmpty(),"unknown MOVE needs gaps; exact MOVE cannot carry gaps");
         if(effect.kind()==MoveKind.UNAVAILABLE)return;
-        require(move.target().role()==OperandRole.WRITE&&move.target().regionalAccess().isPresent(),"mandatory regional write requires exact WRITE access");
-        var dest=index.access(move.target()).orElseThrow();
-        if(effect.kind()==MoveKind.LITERAL_BYTES) {
-            require(move.source() instanceof LiteralSource l&&l.kind()==LiteralKind.ALPHANUMERIC&&l.logicalValue().isPresent(),"byte write needs a proved logical literal");
-            var literal=((LiteralSource)move.source()).logicalValue().orElseThrow();
+        require(transfer.target().role()==OperandRole.WRITE&&transfer.target().regionalAccess().isPresent(),"mandatory regional write requires exact WRITE access");
+        var dest=index.access(transfer.target()).orElseThrow();
+        if(effect.kind()==MoveKind.LITERAL_BYTES||effect.kind()==MoveKind.FITTED_LITERAL_BYTES) {
+            require(transfer.source() instanceof LiteralSource l&&l.kind()==LiteralKind.ALPHANUMERIC&&l.logicalValue().isPresent(),"byte write needs a proved logical literal");
+            var literal=((LiteralSource)transfer.source()).logicalValue().orElseThrow();
             require(literal.logicalDomain()==LogicalDomain.TEXT&&literal.logicalExtent()==literal.value().codePointCount(0,literal.value().length()),"literal byte write requires coherent TEXT");
-            var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(literal.value()),dest.extent().value().orElseThrow());
+            require(dest.extent().value().orElseThrow().equals(java.math.BigInteger.valueOf(effect.bytes().size())),"literal vector must fill exact destination");
+            String text=literal.value();
+            if(effect.kind()==MoveKind.FITTED_LITERAL_BYTES) {
+                int n=effect.bytes().size(),count=text.codePointCount(0,text.length());
+                text=count>n?text.substring(0,text.offsetByCodePoints(0,n)):text+" ".repeat(n-count);
+            }
+            var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(text),dest.extent().value().orElseThrow());
             require(encoded.status()==MemoryCodecs.Status.EXACT&&encoded.value().orElseThrow().octets().equals(effect.bytes()),"published bytes disagree with logical literal, declared codec or extent");
         }
-        if(effect.kind()==MoveKind.COPY_BYTES) {
-            require(move.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
-            var source=index.access((DataReference)move.source()).orElseThrow();
-            require(source.extent().equals(dest.extent()),"copy requires equal extents");
+        if(effect.kind()==MoveKind.COPY_BYTES||effect.kind()==MoveKind.FIT_TEXT) {
+            require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
+            var source=index.access((DataReference)transfer.source()).orElseThrow();
+            require(effect.kind()!=MoveKind.COPY_BYTES||source.extent().equals(dest.extent()),"copy requires equal extents");
             boolean disjoint=source.base().equals(dest.base())?end(source).compareTo(dest.offset().value().orElseThrow())<=0
                 ||end(dest).compareTo(source.offset().value().orElseThrow())<=0
                 :index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE
@@ -169,7 +206,7 @@ final class RegionalStorageAdmission {
     static List<DataReference> references(StatementFact fact) {
         var result=new ArrayList<DataReference>();
         switch(fact) {
-            case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target()); }
+            case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target());for(var t:m.additionalTransfers()){if(t.source() instanceof DataReference r)result.add(r);result.add(t.target());} }
             case CallFact call -> { if(call.target() instanceof DataCallTarget d)result.add(d.reference()); }
             case IfFact f -> result.addAll(f.conditionReads());
             case EvaluateFact e -> e.subject().ifPresent(result::add);
@@ -189,5 +226,5 @@ final class RegionalStorageAdmission {
     }
     private static void gaps(List<String> codes) { require(codes.stream().noneMatch(String::isBlank),"gap codes must be nonblank"); }
     private static void require(boolean condition,String reason) { if(!condition)throw new Invalid(reason); }
-    private static final class Invalid extends RuntimeException { private static final long serialVersionUID=1L;Invalid(String message){super(message);} }
+    static final class Invalid extends RuntimeException { private static final long serialVersionUID=1L;Invalid(String message){super(message);} }
 }

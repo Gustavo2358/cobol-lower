@@ -24,7 +24,9 @@ final class RegionalDataTranslator {
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
-        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())).toList(),unit,ids,origins,items,uncertainties);
+        var aliasData=new HashSet<SpInput.DataId>();
+        source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
+        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&!aliasData.contains(d.id())).toList(),unit,ids,origins,items,uncertainties);
         if(source.owner().storage().isEmpty())return legacy;
         var relationOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
         var allocationEvidence=new HashMap<StorageFacts.BaseId,List<OriginId>>();
@@ -33,7 +35,14 @@ final class RegionalDataTranslator {
             if(relation.status()==StorageFacts.RelationStatus.PROVEN)
                 allocationEvidence.computeIfAbsent(source.views().get(relation.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
+        var renamesOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
+        for(var r:source.owner().storage().get().renames().stream().sorted(Comparator.comparing(x->x.id().handle())).toList()) {
+            var origin=origins.source("storage-renames",r.id().handle(),r.provenance());renamesOrigins.put(r.id(),origin);
+            if(r.status()==StorageFacts.RelationStatus.PROVEN)
+                allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
+        }
         if(source.owner().storage().get().profile()==StorageFacts.Profile.UNSPECIFIED) {
+            renamesCoverage(source,Map.of(),renamesOrigins,unit,ids,items,uncertainties);
             relationCoverage(source,Map.of(),relationOrigins,unit,ids,items,uncertainties);return legacy;
         }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
@@ -93,8 +102,37 @@ final class RegionalDataTranslator {
                 gap(node.id().handle(),origin,new Scopes.EntityScope(List.of(region)),List.of(region),"STORAGE_VIEW_UNKNOWN",List.copyOf(reasons),unit,ids,items,uncertainties);
             } else items.add(ScalarEvidence.item(unit.publication(),"storage-node",node.id().handle(),viewOrigin,List.of(region)));
         }
+        // Inventory presence is distinct from admission for precise expression translation.
+        // Unsupported declarations keep an object identity without inventing a typed read.
+        for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
+            if(index.containsKey(declaration.id()))continue;
+            var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
+            var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
+            var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
+            var inputs=new ArrayList<OriginId>();inputs.add(dataOrigin);
+            if(view!=null) {inputs.add(origins.source("storage-view",view.node().handle(),view.provenance()));inputs.add(baseOrigins.get(view.base()));}
+            var objectOrigin=origins.derived(ids.id("origin","unknown-regional-object",unit.localId(),declaration.id().handle()),inputs,"storage@1/unproved-source-view");
+            var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
+                "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
+            var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
+            uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
+            var binding=new Memory.UnknownBinding(base==null?new Scopes.AllMemory(unit.publication(),true):new Scopes.StorageMemory(List.of(base)),reason);
+            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),new Types.UnknownType(typeReason),binding,Memory.Visibility.UNKNOWN,objectOrigin,
+                Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
+        }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
+        renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
         return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical));
+    }
+    private static void renamesCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
+            Map<StorageFacts.RelationId,OriginId> renamesOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        for(var r:source.owner().storage().orElseThrow().renames()) {
+            var base=physical.get(source.views().get(r.owner()).base());var origin=renamesOrigins.get(r.id());
+            if(r.status()==StorageFacts.RelationStatus.PROVEN&&base!=null)
+                items.add(ScalarEvidence.item(unit.publication(),"storage-renames",r.id().handle(),origin,List.of(base)));
+            else gap(r.id().handle(),origin,new Scopes.UnitScope(unit),List.of(),"STORAGE_RENAMES_UNPROVEN",
+                r.gapCodes().isEmpty()?List.of("PHYSICAL_BASE_UNAVAILABLE"):r.gapCodes(),unit,ids,items,uncertainties);
+        }
     }
     private static void relationCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
             Map<StorageFacts.RelationId,OriginId> relationOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {

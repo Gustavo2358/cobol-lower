@@ -29,8 +29,8 @@ final class PartialProgramAssembler {
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(precise && fact instanceof SpInput.MoveFact m) {
-                var assign=RegionalMoveHandler.translate(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.add(assign);
-                link(m.header().id(),assign,label,statements,items);
+                var transfers=RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.addAll(transfers);var assign=transfers.getFirst();
+                for(var transfer:transfers)link(m.header().id(),transfer,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
             } else if(fact instanceof SpInput.ConditionalGoToFact g) {
@@ -123,15 +123,15 @@ final class PartialProgramAssembler {
                 for(int i=0;i<body.size();i++) {
                     var move=body.get(i);var here=label(move.header().id(),unit,activation);
                     var resume=i+1<body.size()?label(body.get(i+1).header().id(),unit,activation):destination;
-                    var assign=RegionalMoveHandler.translate(move,plan.fitted().contains(move.header().id()),data,unit,activation,origins,operands,items,uncertainties);
-                    link(move.header().id(),assign,here,statements,items);
+                    var transfers=RegionalMoveHandler.sequence(move,plan.fitted().contains(move.header().id()),data,unit,activation,origins,operands,items,uncertainties);var assign=transfers.getFirst();
+                    for(var transfer:transfers)link(move.header().id(),transfer,here,statements,items);
                     var continuation=i+1<body.size()
                         ? origins.source("continuation",move.header().id().handle(),move.normalContinuation().provenance())
                         : origins.derived(activation.id("origin","activation-return",unit.localId(),move.header().id().handle()),
                             List.of(proof.performOrigin(),proof.referenceOrigin(),proof.paragraphOrigin(),proof.resumeOrigin(),assign.header().origin()),
                             "perform-basic@2/intrinsic-body-end-to-activation-resume");
                     var returning=PerformSequenceAssembler.jump("activation-next",move.header().id(),resume,continuation,unit,activation);
-                    sequences.add(new Sequence(here,List.of(assign),returning,assign.header().origin()));
+                    sequences.add(new Sequence(here,transfers,returning,assign.header().origin()));
                 }
             } else if(precise && fact instanceof SpInput.GobackFact g) {
                 term=GobackHandler.translate(g,unit,ids,origins,uncertainties);link(fact.header().id(),term,label,statements,items);

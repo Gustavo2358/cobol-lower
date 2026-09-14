@@ -12,7 +12,9 @@ final class StorageIdentityFacts {
             s.nodes().stream().sorted(Comparator.comparing(n->n.id().handle())).toList(),
             s.bases().stream().sorted(Comparator.comparing(b->b.id().handle())).toList(),
             s.views().stream().sorted(Comparator.comparing(v->v.node().handle())).toList(),s.gapCodes(),
-            s.relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList());
+            s.relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),
+            s.renames().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),new StorageFacts.EntryState(s.entryState().mode(),
+                s.entryState().conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList()));
     }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
@@ -39,15 +41,23 @@ final class StorageIdentityFacts {
                 field.accept("offset");value.accept(r.offset());field.accept("extent");value.accept(r.extent());
                 field.accept("codec");value.accept(r.codec());field.accept("provenance");value.accept(r.provenance());
             }
-            case StorageFacts.Access r -> { field.accept("RegionalAccess");field.accept("view");value.accept(r.view()); }
+            case StorageFacts.Slice r -> { field.accept("RegionalSlice");field.accept("offset");value.accept(r.offset());field.accept("extent");value.accept(r.extent()); }
+            case StorageFacts.Renames r -> { field.accept("StorageRenames");field.accept("id");value.accept(r.id());field.accept("owner");value.accept(r.owner());field.accept("from");value.accept(r.from());field.accept("through");value.accept(r.through());field.accept("status");value.accept(r.status());field.accept("provenance");value.accept(r.provenance());field.accept("gapCodes");value.accept(r.gapCodes()); }
+            case StorageFacts.Access r -> { field.accept("RegionalAccess");field.accept("view");value.accept(r.view());if(r.slice().isPresent()){field.accept("slice@1");value.accept(r.slice().get());} }
             case StorageFacts.Move r -> {
                 field.accept("RegionalMove");field.accept("kind");value.accept(r.kind());field.accept("bytes");value.accept(r.bytes());field.accept("gapCodes");value.accept(r.gapCodes());
             }
+            case StorageFacts.InitialCondition r -> {
+                field.accept("StorageInitialCondition");value.accept(r.node());value.accept(r.kind());value.accept(r.bytes());value.accept(r.gapCodes());value.accept(r.provenance());
+            }
+            case StorageFacts.EntryState r -> {field.accept("StorageEntryState");value.accept(r.mode());value.accept(r.conditions());}
             case StorageFacts.Inventory r -> {
                 field.accept("StorageInventory");field.accept("profile");value.accept(r.profile());field.accept("profileId");value.accept(r.profileId());
                 field.accept("runtimeCodec");value.accept(r.runtimeCodec());field.accept("nodes");value.accept(r.nodes());field.accept("bases");value.accept(r.bases());
                 field.accept("views");value.accept(r.views());field.accept("gapCodes");value.accept(r.gapCodes());
                 if(!r.relations().isEmpty()){field.accept("relations");value.accept(r.relations());}
+                if(!r.renames().isEmpty()){field.accept("renames@1");value.accept(r.renames());}
+                if(!r.entryState().equals(StorageFacts.EntryState.unknown())){field.accept("entryState@1");value.accept(r.entryState());}
             }
             default -> throw new IllegalArgumentException("unsupported SP identity fact");
         }
