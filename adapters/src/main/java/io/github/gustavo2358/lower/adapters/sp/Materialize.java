@@ -9,6 +9,27 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 /** Mechanical materialization only. Semantic validation belongs to the inner application. */
 final class Materialize {
     private Materialize() { }
+    static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire217.Document wire) {
+        var common=input(Wire217.common(wire));var effects=new java.util.HashMap<StatementId,EffectSummary>();
+        for(var e:wire.statementEffects()) {
+            if(!e.version().equals("1.0.0"))throw new EffectShape("unsupported statement effect version");
+            var statement=new StatementId(common.unit(),e.statement());
+            java.util.function.Function<List<String>,List<OperandId>> operands=xs->xs.stream().map(id->new OperandId(statement,id)).toList();
+            var summary=new EffectSummary(operands.apply(e.knownReads()),operands.apply(e.mayWrites()),operands.apply(e.mustOverwrite()),operands.apply(e.exposedRegions()),
+                e.unknownReadBound(),e.unknownWriteBound(),e.unknownExposureBound(),e.environment(),e.values(),e.proof());
+            if(effects.putIfAbsent(statement,summary)!=null)throw new EffectShape("duplicate statement effect");
+        }
+        var statements=new java.util.ArrayList<StatementFact>();
+        for(var s:common.statements()) {
+            var e=effects.remove(s.header().id());
+            if(e==null)statements.add(s);
+            else if(s instanceof OtherStatement o)statements.add(new OtherStatement(o.header(),o.variant(),o.observedKind(),o.observedShape(),o.gapCode(),o.normalContinuation(),o.knownReferences(),Optional.of(e)));
+            else throw new EffectShape("effect summary requires an observed statement");
+        }
+        if(!effects.isEmpty())throw new EffectShape("unresolved effect owner");
+        return new SpInput(common.unit(),common.policy(),common.dataDeclarations(),statements,common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage());
+    }
     private static OtherStatement observed(StatementHeader header, String kind, String shape, String gapCode) {
         return observed(header, kind, shape, gapCode,
             new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());

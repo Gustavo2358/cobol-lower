@@ -402,15 +402,33 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             members=List.copyOf(members); Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
 
+    public enum EffectBound { NONE, ALL }
+    public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN }
+    public enum EffectValueTransform { NONE, UNKNOWN }
+    public enum EffectProof { DISPLAY_SIMPLE }
+    public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
+            List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
+            EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {
+        public EffectSummary {
+            knownReads=List.copyOf(knownReads);mayWrites=List.copyOf(mayWrites);mustOverwrite=List.copyOf(mustOverwrite);exposedRegions=List.copyOf(exposedRegions);
+            Objects.requireNonNull(unknownReadBound);Objects.requireNonNull(unknownWriteBound);Objects.requireNonNull(unknownExposureBound);
+            Objects.requireNonNull(environment);Objects.requireNonNull(values);Objects.requireNonNull(proof);
+        }
+    }
     public record OtherStatement(StatementHeader header, Variant variant, String observedKind,
                                  Optional<String> observedShape, String gapCode,
-                                 NormalContinuation normalContinuation, List<DataReference> knownReferences) implements StatementFact {
+                                 NormalContinuation normalContinuation, List<DataReference> knownReferences,Optional<EffectSummary> effects) implements StatementFact {
+        public OtherStatement(StatementHeader header,Variant variant,String observedKind,Optional<String> observedShape,String gapCode,
+                NormalContinuation normalContinuation,List<DataReference> knownReferences) {
+            this(header,variant,observedKind,observedShape,gapCode,normalContinuation,knownReferences,Optional.empty());
+        }
         public static OtherStatement unsupported(StatementHeader header, Variant variant) {
             if (variant == Variant.OBSERVED) throw new IllegalArgumentException("observed statement requires observedShape");
             return new OtherStatement(header, variant, variant.name(), Optional.empty(), "SEMANTICS_NOT_AVAILABLE",
                 new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());
         }
         public OtherStatement {
+            Objects.requireNonNull(effects);
             Objects.requireNonNull(header, "header");
             Objects.requireNonNull(variant, "variant");
             Objects.requireNonNull(observedKind); Objects.requireNonNull(observedShape); Objects.requireNonNull(gapCode);

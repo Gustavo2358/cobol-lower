@@ -26,6 +26,18 @@ final class PartialProgramAdmission {
                 if(s instanceof OtherStatement o) {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
+                    o.effects().ifPresent(e->{
+                        var refs=new HashMap<OperandId,DataReference>();o.knownReferences().forEach(r->refs.put(r.id(),r));
+                        for(var ids:List.of(e.knownReads(),e.mayWrites(),e.mustOverwrite(),e.exposedRegions())) {
+                            c.require(new HashSet<>(ids).size()==ids.size(),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand inventory is distinct");
+                            for(var id:ids)c.require(refs.containsKey(id),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand belongs to statement");
+                        }
+                        c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
+                        for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
+                        c.require(e.proof()==EffectProof.DISPLAY_SIMPLE&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
+                            &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
+                            &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
+                    });
                 }
                 if (s instanceof ProcedurePerformFact p) ProcedurePerformAdmission.validate(p,c);
                 if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);

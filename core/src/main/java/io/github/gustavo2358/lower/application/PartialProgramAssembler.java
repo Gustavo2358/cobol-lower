@@ -162,13 +162,20 @@ final class PartialProgramAssembler {
         var code=fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retained with conservative effects and only proved control",origin));
+        var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
+        if(fact instanceof SpInput.OtherStatement o&&o.effects().isPresent()) {
+            var environment=new UncertaintyId(unit.publication(),ids.id("uncertainty","statement-environment",id.localId(),"effects"));
+            uncertainties.add(new Evidence.Uncertainty(environment,"SOURCE_"+o.effects().orElseThrow().environment().name()+"_EFFECT",
+                List.of(Evidence.Dimension.EFFECTS,Evidence.Dimension.DEPENDENCIES),scope,"Memory proof does not close environment effects",origin));
+            effectGaps.add(environment);
+        }
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
         var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
-        var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact),List.of(gap));
-        Scopes.MemoryBound memory=unknownEffects?new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)):Scopes.NoMemory.INSTANCE;
+        var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact),effectGaps);
+        var memory=OpaqueOperands.memory(fact,known,unit.publication(),unknownEffects);
         // AIR has one descriptive identity for an opaque construction; the SP shape is the most specific published identity.
         return new Operations.Opaque(header,fact instanceof SpInput.OtherStatement o?o.observedShape().orElse(o.observedKind()):fact.getClass().getSimpleName(),known.operands(),List.of(),
-            new Envelopes.Envelope(new Envelopes.MemoryEnvelope(known.reads(),memory,known.writes(),memory,List.of()),
+            new Envelopes.Envelope(memory,
                 next==null?new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true)))
                     :new Control.ControlEnvelope(List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),
                 new Envelopes.DependencyEnvelope(List.of(),unknownEffects?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
