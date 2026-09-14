@@ -49,6 +49,7 @@ final class StorageIdentityFacts {
             }
             case StorageFacts.InitialCondition r -> {
                 field.accept("StorageInitialCondition");value.accept(r.node());value.accept(r.kind());value.accept(r.bytes());value.accept(r.gapCodes());value.accept(r.provenance());
+                field.accept("entryProof@1.4");value.accept(r.proof());
             }
             case StorageFacts.EntryState r -> {field.accept("StorageEntryState");value.accept(r.mode());value.accept(r.conditions());}
             case StorageFacts.Inventory r -> {

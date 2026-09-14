@@ -14,7 +14,7 @@ final class RegionalEntryTranslator {
         for(var fact:state.conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList()) {
             var key=fact.node().handle();var origin=origins.source("storage-initial",key,fact.provenance());
             origin=origins.derived(ids.id("origin","storage-entry-profile",entry.localId(),key),List.of(origin),
-                "storage@1/entry-mode="+state.mode().name()+"; source-proved invocation condition");
+                "storage@1.4/entry-mode="+state.mode().name()+"; proof="+fact.proof().name()+"; source-proved invocation condition");
             var view=source.views().get(fact.node());var storage=data.physical().get(view.base());
             Place place=null;
             // A known prefix in an open Region is not a proof of total slice bounds (AIR I-17).

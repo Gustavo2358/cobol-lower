@@ -133,13 +133,18 @@ final class RegionalStorageAdmission {
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
             require(condition.kind()==InitialKind.LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
             require((condition.kind()==InitialKind.UNKNOWN)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            require(condition.kind()==InitialKind.UNKNOWN?condition.proof()==InitialProof.NONE:condition.kind()==InitialKind.PRESERVE?condition.proof()==InitialProof.EXPLICIT_PRESERVED
+                :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
-                require(condition.kind()==InitialKind.LITERAL_BYTES?storage.entryState().mode()==EntryMode.INITIAL
-                    &&view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size())):storage.entryState().mode()==EntryMode.PRESERVED,
+                boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
+                    :condition.proof()==InitialProof.EXPLICIT_PRESERVED?storage.entryState().mode()==EntryMode.PRESERVED:storage.entryState().mode()==EntryMode.UNKNOWN;
+                require(mode&&(condition.kind()!=InitialKind.LITERAL_BYTES||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
                     "initial condition contradicts mode or extent");
+                require(condition.proof()!=InitialProof.DECLARATIVE_INVARIANT||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
+                    "declarative invariant needs independent local storage");
             }
         }
         var index=new Index(input,nodes,bases,views,byData);
