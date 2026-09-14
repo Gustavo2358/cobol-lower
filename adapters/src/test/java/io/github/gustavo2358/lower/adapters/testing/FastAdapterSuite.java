@@ -6,6 +6,7 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        DeclarativeValueSuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {
