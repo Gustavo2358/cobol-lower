@@ -24,3 +24,5 @@ proveniência são próprios por transferência. O encoding de identidade inclui
 agora RENAMES, slices e transferências; regressões mostram mudança de ID quando
 um slice ou a proveniência RENAMES muda. AIR passou a validar o fit regional
 provadamente total e transportar fit_text existente.
+
+W6.4: SP2.11 ordered triples also represent canonical CORRESPONDING pairs. Lower uses each explicit source/target/effect without language matching. Focal oracle corresponding.json proves exactly two fits (source offsets 0/3, destination offsets 4/0, lengths 4/1), unrelated destination bytes untouched, independent physical regions and AIR roundtrip. Display-name changes may change publication identities; physical transfer shape remains equal.
