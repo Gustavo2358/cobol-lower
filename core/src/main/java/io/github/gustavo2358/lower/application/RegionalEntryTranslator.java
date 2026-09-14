@@ -14,7 +14,7 @@ final class RegionalEntryTranslator {
         for(var fact:state.conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList()) {
             var key=fact.node().handle();var origin=origins.source("storage-initial",key,fact.provenance());
             origin=origins.derived(ids.id("origin","storage-entry-profile",entry.localId(),key),List.of(origin),
-                "storage@1.4/entry-mode="+state.mode().name()+"; proof="+fact.proof().name()+"; source-proved invocation condition");
+                (fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES?"storage@1.5/entry-mode=":"storage@1.4/entry-mode=")+state.mode().name()+"; proof="+fact.proof().name()+"; source-proved invocation condition");
             var view=source.views().get(fact.node());var storage=data.physical().get(view.base());
             Place place=null;
             // A known prefix in an open Region is not a proof of total slice bounds (AIR I-17).
@@ -29,10 +29,16 @@ final class RegionalEntryTranslator {
                 if(link!=null)place=new Places.ObjectPlace(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),link.object());
             }
             Entries.InitialValue value=null;
-            if(fact.kind()==StorageFacts.InitialKind.LITERAL_BYTES&&place!=null) {
+            if((fact.kind()==StorageFacts.InitialKind.LITERAL_BYTES||fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES)&&place!=null) {
                 Values.LiteralValue literal=new Values.BytesValue(fact.bytes());
                 if(place instanceof Places.ObjectPlace)literal=MemoryCodecs.decodeText(RegionalStorageAdmission.IBM1047,(Values.BytesValue)literal,view.extent().value().orElseThrow()).value().orElseThrow();
-                value=new Entries.LiteralInitial(new Expressions.Literal(header(entry,key,"value",Operand.Role.VALUE_READ,origin,ids),literal));
+                var expression=new Expressions.Literal(header(entry,key,"value",Operand.Role.VALUE_READ,origin,ids),literal);
+                if(fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES) {
+                    var reason=new UncertaintyId(entry.unit().publication(),ids.id("uncertainty","possible-entry",entry.localId(),key));
+                    uncertainties.add(new Evidence.Uncertainty(reason,"cobol-lower:ENTRY_LIFECYCLE_OPEN",List.of(Evidence.Dimension.VALUES),
+                        new Scopes.EntityScope(List.of(entry)),String.join(",",fact.gapCodes()),origin));
+                    value=new Entries.PossibleLiterals(List.of(expression),reason);
+                } else value=new Entries.LiteralInitial(expression);
             } else if(fact.kind()==StorageFacts.InitialKind.PRESERVE&&place!=null)value=Entries.Preserve.INSTANCE;
             else {
                 var reason=new UncertaintyId(entry.unit().publication(),ids.id("uncertainty","initial-storage",entry.localId(),key));gaps.add(reason);
@@ -43,7 +49,7 @@ final class RegionalEntryTranslator {
             }
             if(place!=null)conditions.add(new Entries.InitialCondition(place,value,origin,List.of()));
             items.add(new Evidence.CoverageItem("storage@1/initial/"+key,origin,place!=null&&fact.kind()!=StorageFacts.InitialKind.UNKNOWN?Evidence.CoverageStatus.MODELED:Evidence.CoverageStatus.ABSTRACTED,
-                storage==null?List.of():List.of(storage),value instanceof Entries.ExternalUnknown v?List.of(v.reason()):List.of(),Optional.empty()));
+                storage==null?List.of():List.of(storage),value instanceof Entries.ExternalUnknown v?List.of(v.reason()):value instanceof Entries.PossibleLiterals v?List.of(v.remainder()):List.of(),Optional.empty()));
         }
         return new Entries.EntryState(conditions,gaps);
     }

@@ -131,19 +131,21 @@ final class RegionalStorageAdmission {
             c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
             require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
-            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
-            require((condition.kind()==InitialKind.UNKNOWN)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
+            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
             require(condition.kind()==InitialKind.UNKNOWN?condition.proof()==InitialProof.NONE:condition.kind()==InitialKind.PRESERVE?condition.proof()==InitialProof.EXPLICIT_PRESERVED
+                :condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
+            require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
             if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
                 boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
                     :condition.proof()==InitialProof.EXPLICIT_PRESERVED?storage.entryState().mode()==EntryMode.PRESERVED:storage.entryState().mode()==EntryMode.UNKNOWN;
-                require(mode&&(condition.kind()!=InitialKind.LITERAL_BYTES||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
+                require(mode&&((condition.kind()!=InitialKind.LITERAL_BYTES&&condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES)||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
                     "initial condition contradicts mode or extent");
-                require(condition.proof()!=InitialProof.DECLARATIVE_INVARIANT||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
+                require((condition.proof()!=InitialProof.DECLARATIVE_INVARIANT&&condition.proof()!=InitialProof.DECLARATIVE_POSSIBILITY)||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
                     "declarative invariant needs independent local storage");
             }
         }

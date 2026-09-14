@@ -89,7 +89,7 @@ public final class SpJsonDecoder {
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
             if (!node.path("schema").textValue().equals("cobol-semantic-product")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
-            if(!java.util.Set.of("2.14.0","2.15.0").contains(node.path("contractVersion").textValue()))
+            if(!java.util.Set.of("2.14.0","2.15.0","2.16.0").contains(node.path("contractVersion").textValue()))
                 for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("CICS_PROGRAM_CONTROL"))return reject(Code.UNSUPPORTED_CONTRACT,"$/statements/CICS_PROGRAM_CONTROL");
             SpInput input;
             switch (node.path("contractVersion").textValue()) {
@@ -148,9 +148,9 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire27.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent27(wire); input = Materialize.input(wire);
                 }
-                case "2.15.0" -> {
+                case "2.15.0", "2.16.0" -> {
                     var wire=mapper.treeToValue(node,Wire215.Document.class);requirePhysical(wire,"$",meter);
-                    if(!wire.storage().version().equals("1.4.0"))throw new PhysicalShape("$/storage/version");
+                    if(!wire.storage().version().equals(node.path("contractVersion").textValue().equals("2.16.0")?"1.5.0":"1.4.0"))throw new PhysicalShape("$/storage/version");
                     requireCoherentFacts211(Wire215.common(wire));input=Materialize.input(wire);
                 }
                 case "2.12.0", "2.14.0" -> {
@@ -196,13 +196,18 @@ public final class SpJsonDecoder {
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
-            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0","2.10.0","2.11.0","2.12.0","2.14.0","2.15.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
+            if(!node.path("contractVersion").textValue().equals("2.16.0")&&input.storage().isPresent())
+                for(var condition:input.storage().get().entryState().conditions())
+                    if(condition.kind()==io.github.gustavo2358.lower.domain.StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES
+                        ||condition.proof()==io.github.gustavo2358.lower.domain.StorageFacts.InitialProof.DECLARATIVE_POSSIBILITY)
+                        throw new PhysicalShape("$/storage/entryState/conditions/possible-requires-SP2.16");
+            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0","2.10.0","2.11.0","2.12.0","2.14.0","2.15.0","2.16.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
                 var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
                     : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
                 if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)
                     throw new PhysicalShape("$/statements/predicate/profile");
             }
-            if(!java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0").contains(node.path("contractVersion").textValue()))for(var statement:input.statements()) {
+            if(!java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0").contains(node.path("contractVersion").textValue()))for(var statement:input.statements()) {
                 if(statement instanceof SpInput.MoveFact m&&m.regionalMove().filter(e->e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.FIT_TEXT||e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.FITTED_LITERAL_BYTES).isPresent())
                     throw new PhysicalShape("$/statements/regionalMove/kind/version");
             }

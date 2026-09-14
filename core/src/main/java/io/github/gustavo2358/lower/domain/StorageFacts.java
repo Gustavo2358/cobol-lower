@@ -48,13 +48,13 @@ public final class StorageFacts {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
     public enum EntryMode { UNKNOWN, INITIAL, PRESERVED }
-    public enum InitialKind { LITERAL_BYTES, PRESERVE, UNKNOWN }
-    public enum InitialProof { NONE, EXPLICIT_INITIAL, EXPLICIT_PRESERVED, PROGRAM_INITIAL, DECLARATIVE_INVARIANT }
+    public enum InitialKind { LITERAL_BYTES, POSSIBLE_LITERAL_BYTES, PRESERVE, UNKNOWN }
+    public enum InitialProof { NONE, EXPLICIT_INITIAL, EXPLICIT_PRESERVED, PROGRAM_INITIAL, DECLARATIVE_INVARIANT, DECLARATIVE_POSSIBILITY }
     public record InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance,InitialProof proof) {
         public InitialCondition {Objects.requireNonNull(proof);Objects.requireNonNull(node);Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
         /** Historic storage 1.3 facts only asserted literal values under explicit INITIAL. */
         public InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance) {
-            this(node,kind,bytes,gapCodes,provenance,kind==InitialKind.UNKNOWN?InitialProof.NONE:kind==InitialKind.PRESERVE?InitialProof.EXPLICIT_PRESERVED:InitialProof.EXPLICIT_INITIAL);
+            this(node,kind,bytes,gapCodes,provenance,kind==InitialKind.UNKNOWN?InitialProof.NONE:kind==InitialKind.PRESERVE?InitialProof.EXPLICIT_PRESERVED:kind==InitialKind.POSSIBLE_LITERAL_BYTES?InitialProof.DECLARATIVE_POSSIBILITY:InitialProof.EXPLICIT_INITIAL);
         }
     }
     public record EntryState(EntryMode mode,List<InitialCondition> conditions) {
