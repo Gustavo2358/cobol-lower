@@ -39,7 +39,7 @@ final class PartialProgramLowerer implements LowerInput {
         }
         var signature = new Interactions.Signature(new Interactions.ParameterInventory(List.of(), signatureRemainder),
             new Interactions.ResultInventory(List.of(), signatureRemainder), entryOrigin);
-        var entry = new Entries.Entry(entryId, Optional.of(assembly.entryLabel()), signature, new Entries.EntryState(List.of(), List.of()), entryOrigin);
+        var entry = new Entries.Entry(entryId, Optional.of(assembly.entryLabel()), signature, RegionalEntryTranslator.translate(plan.storage(),data,entryId,ids,origins,items,uncertainties), entryOrigin);
         var entryLinks = List.of(new LoweringResult.EntryLink(sourceEntry.id(), entryId, assembly.entryLabel(), entryOrigin));
         items.add(ScalarEvidence.item(publication, "entry", sourceEntry.id().handle(), entryOrigin, List.of(entryId)));
         var unitOrigin = origins.derived("unit-origin", List.of(entryOrigin, assembly.entrySequenceOrigin()), "supported-cp6-program@1/selected-unit");

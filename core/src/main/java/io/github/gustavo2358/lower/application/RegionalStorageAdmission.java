@@ -126,6 +126,22 @@ final class RegionalStorageAdmission {
             c.touch();c.identity(r.id().unit(),r.id().handle(),"storage-relation",r.provenance());c.provenance(r.provenance());gaps(r.gapCodes());
         }
         RegionalRenamesAdmission.validate(input.unit(),storage,nodes,views,relationIds);
+        var initialNodes=new HashSet<NodeId>();
+        for(var condition:storage.entryState().conditions()) {
+            c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
+            require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
+            require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
+            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
+            require((condition.kind()==InitialKind.UNKNOWN)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            if(condition.kind()!=InitialKind.UNKNOWN) {
+                var view=views.get(condition.node());
+                require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
+                    &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
+                require(condition.kind()==InitialKind.LITERAL_BYTES?storage.entryState().mode()==EntryMode.INITIAL
+                    &&view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size())):storage.entryState().mode()==EntryMode.PRESERVED,
+                    "initial condition contradicts mode or extent");
+            }
+        }
         var index=new Index(input,nodes,bases,views,byData);
         for(var statement:input.statements()) {
             c.touch();

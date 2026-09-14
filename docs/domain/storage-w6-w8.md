@@ -26,3 +26,15 @@ um slice ou a proveniência RENAMES muda. AIR passou a validar o fit regional
 provadamente total e transportar fit_text existente.
 
 W6.4: SP2.11 ordered triples also represent canonical CORRESPONDING pairs. Lower uses each explicit source/target/effect without language matching. Focal oracle corresponding.json proves exactly two fits (source offsets 0/3, destination offsets 4/0, lengths 4/1), unrelated destination bytes untouched, independent physical regions and AIR roundtrip. Display-name changes may change publication identities; physical transfer shape remains equal.
+
+W7.1 consome SP2.12/storage1.3: modo UNKNOWN/INITIAL/PRESERVED explícito e
+condições com node, kind, bytes, gaps e origem. Lower valida closure, extensão,
+codec e coerência de modo; não deriva VALUE nem primeira invocação. A AIR
+recebe InitialCondition simultânea em EntryState, nunca operações executáveis.
+Campos de inicialização integram identidade canônica. UNKNOWN sem representação
+precisa conserva uncertainty de storage. Premissa de primeira invocação vem do
+perfil explícito do produtor, registrado na origem derivada do entry state.
+Algoritmo: índice O(n), tradução O(c + payload), sem pares de objetos. Oracle:
+primeiro CALL lê PGM00001; overwrite seguido de CALL lê OTHERPGM; preserve e
+unknown não publicam literal. IR 03 memória/EntryState e binding JSON1 governam
+condições simultâneas e proíbem reseed por backedge ou retorno local.

@@ -47,11 +47,23 @@ public final class StorageFacts {
     public record Move(MoveKind kind,List<Integer> bytes,List<String> gapCodes) {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
+    public enum EntryMode { UNKNOWN, INITIAL, PRESERVED }
+    public enum InitialKind { LITERAL_BYTES, PRESERVE, UNKNOWN }
+    public record InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance) {
+        public InitialCondition {Objects.requireNonNull(node);Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
+    }
+    public record EntryState(EntryMode mode,List<InitialCondition> conditions) {
+        public EntryState {Objects.requireNonNull(mode);conditions=List.copyOf(conditions);}
+        public static EntryState unknown() {return new EntryState(EntryMode.UNKNOWN,List.of());}
+    }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,
-            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames) {
+            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames,EntryState entryState) {
         public Inventory {
-            Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
+            Objects.requireNonNull(entryState);Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
             nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);relations=List.copyOf(relations);renames=List.copyOf(renames);
+        }
+        public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames) {
+            this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,relations,renames,EntryState.unknown());
         }
         public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations) {
             this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,relations,List.of());
