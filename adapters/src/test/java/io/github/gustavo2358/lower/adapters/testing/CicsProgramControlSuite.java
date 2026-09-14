@@ -50,6 +50,7 @@ public final class CicsProgramControlSuite {
         byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/link-paragraph.json")){raw=in.readAllBytes();}
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var doc=mapper.readTree(raw);
         for(var f:doc.path("statements"))if(f.path("variant").asText().equals("CICS_PROGRAM_CONTROL"))for(var field:List.of("localContinuation","ordinaryContinuation")) {
+            if(!f.path("conditions").asText().equals("DEFAULT_ENTRY_PREFIX")||!f.path("command").asText().equals("LINK"))throw new AssertionError("expected DEFAULT LINK fixture");
             var continuation=(com.fasterxml.jackson.databind.node.ObjectNode)f.path(field);continuation.put("availability","UNAVAILABLE");continuation.putNull("statement");
         }
         var input=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(mapper.writeValueAsBytes(doc))).input();
@@ -81,8 +82,10 @@ public final class CicsProgramControlSuite {
             var signature=((Interactions.ExternalSignature)invoke.signature()).signature();
             if(!(signature.parameters().remainder() instanceof Interactions.UnknownRemainder)||!(signature.results().remainder() instanceof Interactions.UnknownRemainder))throw new AssertionError("partial signature");
             if(invoke.outcomes().known().stream().noneMatch(Control.Normal.class::isInstance))throw new AssertionError("LINK return");
-            var old=new String(raw,StandardCharsets.UTF_8).replace("2.14.0","2.13.0").getBytes(StandardCharsets.UTF_8);
-            if(decoder.decode(old) instanceof SpJsonDecoder.Decoded)throw new AssertionError("old contract accepted new variant");
+            for(String version:List.of("2.12.0","2.13.0")) {
+                var old=new String(raw,StandardCharsets.UTF_8).replace("2.14.0",version).getBytes(StandardCharsets.UTF_8);
+                if(decoder.decode(old) instanceof SpJsonDecoder.Decoded)throw new AssertionError("old contract accepted new variant: "+version);
+            }
             cases++;
         }
         System.out.println("CICS_LOWER_CASES="+cases);
