@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. UNKNOWN-PREFIX.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-AREA.
+          05 VARIABLE-TABLE OCCURS 1 TO 4
+             DEPENDING ON N.
+             10 ITEM PIC X.
+          05 WS-PGM PIC X(8).
+       01 N PIC 9.
+       PROCEDURE DIVISION.
+       MOVE 'PGM00001' TO WS-PGM.
+       CALL WS-PGM.
+       GOBACK.

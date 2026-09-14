@@ -5,7 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,Optional.empty());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence) {
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, storageIndependence, false);
     }
@@ -13,6 +16,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(storage);
         Objects.requireNonNull(storageIndependence, "storageIndependence");
         Objects.requireNonNull(unit, "unit");
         Objects.requireNonNull(policy, "policy");
@@ -256,8 +260,11 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record WholeItemAccess(DataId data) {
         public WholeItemAccess { Objects.requireNonNull(data); }
     }
-    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) implements MoveSource {
-        public DataReference { Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
+    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess) implements MoveSource {
+        public DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) {
+            this(id,role,binding,wholeItemAccess,provenance,Optional.empty());
+        }
+        public DataReference { Objects.requireNonNull(regionalAccess); Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
     }
     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
         public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }
@@ -267,11 +274,14 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
     }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove) implements StatementFact {
+        public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,Optional.empty());
+        }
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }

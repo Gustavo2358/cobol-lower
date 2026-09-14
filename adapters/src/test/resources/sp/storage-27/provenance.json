@@ -1,0 +1,27 @@
+{
+  "producer": "eeb5d55ee48d643eab2e77276d46b73e9be350d4",
+  "profile": "ibm-enterprise-6.4-fixed-display-1047@1",
+  "kind": "actual CLI output, not synthetic",
+  "fixtures": [
+    {
+      "fixture": "group-child",
+      "source_sha256": "05f4593fdaa706e912cd745569813cb5c83c1fcc4c52be9ce7d8492bdd79e758",
+      "sp_sha256": "dc4d0cf6648159e04b3fcbbfa98db4f0b26ae636a28994e74a45344ce776081a"
+    },
+    {
+      "fixture": "nested-filler",
+      "source_sha256": "7d32c2f1ad15c4351777326d16376237a48c58869d31e59481db54262aff9027",
+      "sp_sha256": "dee307e25e500dfbab7136211609cd8115bf2ba37fb1f671c5cc81ac7f204449"
+    },
+    {
+      "fixture": "copy-capture",
+      "source_sha256": "7867e6a389df08cd7360dca7dd5d12b30a35e58fe3a6d78ee8b599e61b1a2da7",
+      "sp_sha256": "6379aa77a2b9e9fc85a41fe7888a6f338a5146abfd0f5be0546d7a7b3cefbe0d"
+    },
+    {
+      "fixture": "unknown-prefix",
+      "source_sha256": "305eda46aa1501125df8b883b99fc2e032e8248d22a674f492d0f3136ab8a5dc",
+      "sp_sha256": "a83b3aed553682aeb95ae35c2aadbd1fcf8ede6bbecc0edd56edbe270886c8d2"
+    }
+  ]
+}

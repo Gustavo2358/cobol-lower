@@ -17,3 +17,6 @@ Os documentos locais definem a política do lowerer; não substituem as especifi
 [CALL literal/DATA + fitted MOVE](call-lowering.md): CP6 W1C, SP 1.3.0.
 
 [IF simples + storage premise](simple-if-diamond.md): CP6 W2B, SP 1.4.0.
+
+[Storage Semantics regional](regional-storage.md): campanha ST-W0–ST-W5,
+reader SP 2.7 e validação de fatos físicos; integração M1 em andamento.

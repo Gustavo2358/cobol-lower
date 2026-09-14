@@ -18,6 +18,18 @@ G-PERFORMANCE começa por contadores determinísticos: número de visitas/indexa
 
 Mesmo fora do primeiro shape, o decoder/validator pode ser testado com muitos statements GOBACK para assegurar diagnóstico sem truncamento e custo proporcional. Isso não transforma a tradução plural em suporte declarado antes de seu checkpoint.
 
+O ledger atual desse corpus é visits=8N+9, references=N+1 e provenance=3N+3.
+O ledger CP4 original (7N+9 visitas) precede a validação regional ST-W3. A guarda
+que rejeita referências/MOVEs regionais sem inventário de storage examina os N
+statements uma vez, inclusive quando não há storage publicado: exatamente +N
+visitas, sem alteração dos contadores de referências e provenance. O teste mantém
+igualdade exata em N=1/64/128/1024/2048, sem tolerância por tempo de máquina.
+
+No corpus de capacidade com M=20.000 MOVEs e um GOBACK, a mesma passagem
+adiciona M+1 ao ledger histórico 19M+21: visits=20M+22=400.022 e
+references=7M+3=140.003. O oracle relacional, o input acima dos antigos limites
+de bytes/nodes e a igualdade integral de duas publicações continuam obrigatórios.
+
 ## Decisão de otimização
 
 Primeiro demonstrar bottleneck ou custo assintótico, escolher algoritmo com oracle independente e preservar semântica. Não trocar exatidão por heurística de corpus para atingir prazo. Um algoritmo exato mais lento em entradas pequenas pode ser oracle do otimizado, nunca regressão de performance escondida.

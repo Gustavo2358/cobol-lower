@@ -8,7 +8,13 @@ import java.util.*;
 /** One object and one abstract persistent private cell per admitted scalar declaration. */
 final class ScalarDataTranslator {
     record Result(List<Memory.ObjectDeclaration> objects, List<Memory.Storage> storage,
-                  Map<SpInput.DataId, LoweringResult.DataLink> index) { }
+                  Map<SpInput.DataId, LoweringResult.DataLink> index,
+                  Map<SpInput.DataId,Memory.ViewBinding> views,
+                  Map<io.github.gustavo2358.lower.domain.StorageFacts.BaseId,StorageId> physical) {
+        Result(List<Memory.ObjectDeclaration> objects,List<Memory.Storage> storage,Map<SpInput.DataId,LoweringResult.DataLink> index) {
+            this(objects,storage,index,Map.of(),Map.of());
+        }
+    }
     static Result translate(List<SpInput.DataFact> data, UnitId unit, LocalIds ids, SourceOrigins origins,
             List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
         var objects = new ArrayList<Memory.ObjectDeclaration>(); var cells = new ArrayList<Memory.Storage>();

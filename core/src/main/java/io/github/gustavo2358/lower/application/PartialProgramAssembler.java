@@ -29,7 +29,7 @@ final class PartialProgramAssembler {
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(precise && fact instanceof SpInput.MoveFact m) {
-                var assign=MoveHandler.translate(m,data,unit,ids,origins,operands,items);instructions.add(assign);
+                var assign=RegionalMoveHandler.translate(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.add(assign);
                 link(m.header().id(),assign,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
@@ -123,7 +123,7 @@ final class PartialProgramAssembler {
                 for(int i=0;i<body.size();i++) {
                     var move=body.get(i);var here=label(move.header().id(),unit,activation);
                     var resume=i+1<body.size()?label(body.get(i+1).header().id(),unit,activation):destination;
-                    var assign=MoveHandler.translate(move,data,unit,activation,origins,operands,items);
+                    var assign=RegionalMoveHandler.translate(move,plan.fitted().contains(move.header().id()),data,unit,activation,origins,operands,items,uncertainties);
                     link(move.header().id(),assign,here,statements,items);
                     var continuation=i+1<body.size()
                         ? origins.source("continuation",move.header().id().handle(),move.normalContinuation().provenance())

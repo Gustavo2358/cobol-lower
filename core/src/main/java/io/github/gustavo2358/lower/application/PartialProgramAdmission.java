@@ -8,7 +8,7 @@ import static io.github.gustavo2358.lower.application.Admission.*;
 /** Structural admission is global; semantic precision is selected per occurrence. */
 final class PartialProgramAdmission {
     record Plan(Admission admission, List<DataFact> data, List<StatementFact> statements,
-                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges) { }
+                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges, RegionalStorageAdmission.Index storage, Set<StatementId> fitted) { }
     Plan plan(SpInput input, AdmitInput.Limits limits) {
         var c = new EntryGobackAdmission.Context(input, limits, true);
         try {
@@ -57,18 +57,21 @@ final class PartialProgramAdmission {
             c.require(input.entryInventory().entries().size()==1 && input.entryInventory().entries().getFirst().start().statement().isPresent(),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
-            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)).toList());
+            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var rangeCompletions=new HashSet<StatementId>();
             for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.gapCodes().isEmpty())
                 p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
-            var precise=new HashSet<StatementId>();
+            var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();
             for(var s:input.statements()) {
                 int before=c.diagnostics.size();
                 boolean eligible=false;
                 if(s instanceof MoveFact m && mapped.contains(m.target().wholeItemAccess().map(WholeItemAccess::data).orElse(null))
                     && (!(m.source() instanceof DataReference r)||mapped.contains(r.wholeItemAccess().map(WholeItemAccess::data).orElse(null)))) {
-                    CallAdmission.admitMove(m,c); eligible=true;
+                    CallAdmission.admitMove(m,c); eligible=before==c.diagnostics.size()&&RegionalDataTranslator.encodableLiteral(c.regionalStorage,m);
+                    if(eligible&&m.copySemantics()==CopySemantics.FITTED_TEXT)fitted.add(m.header().id());
+                    if(m.source() instanceof DataReference && (RegionalDataTranslator.textual(c.regionalStorage,m.target().wholeItemAccess().orElseThrow().data())
+                        ||RegionalDataTranslator.textual(c.regionalStorage,((DataReference)m.source()).wholeItemAccess().orElseThrow().data())))eligible=false;
                 } else if(s instanceof CallFact call) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
                 } else if(s instanceof IfFact f && f.predicateGuarantee().availability()==Availability.KNOWN
@@ -80,6 +83,9 @@ final class PartialProgramAdmission {
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof ConditionalGoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
+                if(s instanceof MoveFact m&&m.regionalMove().filter(e->e.kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE).isPresent()) {
+                    c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
+                }
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
             }
@@ -131,7 +137,7 @@ final class PartialProgramAdmission {
             if(!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
             var statements=input.statements().stream().filter(s->!bodyMembers.contains(s.header().id()))
                 .sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
-            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges));
+            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges),c.regionalStorage,Set.copyOf(fitted));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
     }
     private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c,Set<StatementId> precise) {
@@ -197,5 +203,5 @@ final class PartialProgramAdmission {
         if(s instanceof OtherStatement o)return o.normalContinuation();
         return SupportedProgramAdmission.next(s);
     }
-    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of(),Map.of());}
+    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of(),Map.of(),c.regionalStorage,Set.of());}
 }

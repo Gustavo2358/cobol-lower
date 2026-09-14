@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COPY-CAPTURE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 X PIC X(4).
+       01 Y PIC X(4).
+       PROCEDURE DIVISION.
+       MOVE 'ABCD' TO X.
+       MOVE X TO Y.
+       MOVE 'WXYZ' TO X.
+       CALL Y.
+       GOBACK.

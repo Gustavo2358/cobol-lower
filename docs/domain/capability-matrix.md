@@ -49,3 +49,11 @@ SP 2.0: [EVALUATE first slice](evaluate-first-slice.md) implements one simple DA
 subject, ordered text literals, OTHER and explicit completion. Generic Branch
 uses Unknown BOOL; unsupported variants retain Opaque. No numeric/conversion or
 path-pruning capability is claimed.
+
+## Campanha Storage Semantics ST-W0–ST-W5
+
+[Contrato regional](regional-storage.md): SP 2.7 → Region/View/bytes, com
+validação de fechamento no core e preservação de leitores históricos. Tradução
+de byte Assign, CopyBytes, HavocMust e CALL como Read de View implementada e
+coberta por oracles de arquivo/memória; M1 ainda exige values/dependências e
+o vertical group→child→CALL com seus gates cumulativos.

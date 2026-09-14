@@ -15,7 +15,9 @@ public final class PerformanceSuite {
             check(result.status() == (n == 1 ? Admission.Status.ADMITTED : Admission.Status.UNSUPPORTED_SLICE), "plural inventory is unsupported, not a prefix");
             check(result.input().orElseThrow().equals(input) && result.input().orElseThrow().statements().size() == n, "entire observed inventory retained");
             var stats = result.statistics();
-            check(stats.entitiesVisited() == 7L * n + 9, "entity ledger 7N+9");
+            // CP4: 7N+9. ST-W3 also inspects every statement to reject regional
+            // references/MOVEs when the publication has no storage inventory: +N.
+            check(stats.entitiesVisited() == 8L * n + 9, "entity ledger 8N+9 including regional exclusion scan");
             check(stats.referencesChecked() == n + 1L, "reference ledger N+1, no repeated scan");
             check(stats.provenanceComponents() == 3L * n + 3, "provenance ledger 3N+3");
             check(!result.diagnosticsTruncated() && result.diagnostics().size() == (n == 1 ? 0 : 1), "shape diagnostic does not hide occurrences");
