@@ -21,12 +21,12 @@ final class RegionalMoveHandler {
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
         var targetOrigin=origins.source("operand",move.target().id().handle(),move.target().provenance());
         var origin=origins.derived(ids.id("origin","regional-move",unit.localId(),key),List.of(statement,sourceOrigin,targetOrigin),"storage@1/published-byte-effect/"+effect.kind());
-        var dest=data.views().get(move.target().binding().selected().orElseThrow());
+        var dest=RegionalPlaces.view(data.views().get(move.target().binding().selected().orElseThrow()),move.target());
         var targetId=new OperandId(new OperationOwner(operation),ids.id("operand","regional-target",operation.localId(),move.target().id().handle()));
         var sourceId=new OperandId(new OperationOwner(operation),ids.id("operand","regional-source",operation.localId(),move.source().id().handle()));
         var header=new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(operation),List.of());
         if(effect.kind()==StorageFacts.MoveKind.COPY_BYTES) {
-            var source=data.views().get(((SpInput.DataReference)move.source()).binding().selected().orElseThrow());
+            var source=RegionalPlaces.view(data.views().get(((SpInput.DataReference)move.source()).binding().selected().orElseThrow()),(SpInput.DataReference)move.source());
             var destinationRange=range(dest,targetId,targetOrigin,ids);var sourceRange=range(source,sourceId,sourceOrigin,ids);
             // The fallback bounds remain conservative even for consumers unable to prove the copy.
             var fallback=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),new Scopes.WithinMemory(new Scopes.StorageMemory(List.of(source.region()))),

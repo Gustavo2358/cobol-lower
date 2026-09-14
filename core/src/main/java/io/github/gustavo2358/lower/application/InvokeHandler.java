@@ -31,7 +31,6 @@ final class InvokeHandler {
             target = new Interactions.LiteralTarget("program", "cobol.program", literal.logicalValue().orElseThrow().value(), namePolicy, targetOrigin);
         } else if(call.target() instanceof SpInput.DataCallTarget d && selected(d.reference()).filter(data::containsKey).isPresent()) {
             var reference = d.reference();
-            var object = data.get(selected(reference).orElseThrow()).object();
             var owner = new OperationOwner(operation);
             var readId = new OperandId(owner, ids.id("operand", "call-name-read", operation.localId(), reference.id().handle()));
             var placeId = new OperandId(owner, ids.id("operand", "call-name-place", operation.localId(), reference.id().handle()));
@@ -39,7 +38,7 @@ final class InvokeHandler {
                 List.of(targetOrigin), "cp6-call@1/target-name-read");
             var placeOrigin = origins.derived(ids.id("origin", "call-place", operation.localId(), reference.id().handle()),
                 List.of(targetOrigin, data.get(selected(reference).orElseThrow()).origin()), reference.regionalAccess().isPresent()?"storage@1/published-regional-access":"cp6-call@1/published-whole-item-access");
-            var place = new Places.ObjectPlace(new Operand.Header(placeId, Operand.Role.VALUE_READ, placeOrigin), object);
+            var place = RegionalPlaces.place(reference,data.get(selected(reference).orElseThrow()),new Operand.Header(placeId, Operand.Role.VALUE_READ, placeOrigin),ids);
             var read = new Expressions.Read(new Operand.Header(readId, Operand.Role.CALL_TARGET, readOrigin), place);
             target = new Interactions.ComputedTarget("program", "cobol.program", read, namePolicy, targetOrigin);
             links.add(new LoweringResult.OperandLink(reference.id(), readId, readOrigin));

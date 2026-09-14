@@ -37,7 +37,13 @@ public final class StorageFacts {
     public record View(NodeId node,BaseId base,Measure offset,Measure extent,Optional<String> codec,Provenance provenance) {
         public View { Objects.requireNonNull(node);Objects.requireNonNull(base);Objects.requireNonNull(offset);Objects.requireNonNull(extent);Objects.requireNonNull(codec);Objects.requireNonNull(provenance); }
     }
-    public record Access(NodeId view) { public Access { Objects.requireNonNull(view); } }
+    public record Slice(BigInteger offset,BigInteger extent) {
+        public Slice { Objects.requireNonNull(offset);Objects.requireNonNull(extent); }
+    }
+    public record Access(NodeId view,Optional<Slice> slice) {
+        public Access { Objects.requireNonNull(view);Objects.requireNonNull(slice); }
+        public Access(NodeId view) { this(view,Optional.empty()); }
+    }
     public record Move(MoveKind kind,List<Integer> bytes,List<String> gapCodes) {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }

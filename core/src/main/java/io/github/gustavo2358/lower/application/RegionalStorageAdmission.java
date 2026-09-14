@@ -15,7 +15,10 @@ final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
     record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData) {
         Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData); }
-        Optional<View> access(DataReference reference) { return reference.regionalAccess().map(a->views.get(a.view())); }
+        Optional<View> access(DataReference reference) {
+            return reference.regionalAccess().map(a->{var v=views.get(a.view());return a.slice().map(s->new View(v.node(),v.base(),
+                new Measure(Optional.of(s.offset()),List.of()),new Measure(Optional.of(s.extent()),List.of()),v.codec(),v.provenance())).orElse(v);});
+        }
     }
     private RegionalStorageAdmission() { }
     static Index validate(SpInput input,EntryGobackAdmission.Context c) {
@@ -134,7 +137,10 @@ final class RegionalStorageAdmission {
                         &&ref.binding().candidates().getFirst().equals(ref.binding().selected().get()),"regional access must agree with unique nominal selection");
                     require(view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                         &&view.extent().value().get().signum()>0&&bases.get(view.base()).extent().value().isPresent(),"exact access requires a bounded supported view");
-                    require(ref.role()!=OperandRole.CALL_TARGET||node.kind()==Kind.ELEMENTARY,"regional CALL target requires elementary text");
+                    require(ref.role()!=OperandRole.CALL_TARGET||access.slice().isPresent()||node.kind()==Kind.ELEMENTARY,"regional CALL target requires elementary text");
+                    access.slice().ifPresent(slice->require(slice.offset().signum()>=0&&slice.extent().signum()>0
+                        &&slice.offset().compareTo(view.offset().value().get())>=0
+                        &&slice.offset().add(slice.extent()).compareTo(end(view))<=0,"access slice must remain inside declared view"));
                 });
             }
             if(statement instanceof MoveFact move)validateMove(move,index);

@@ -7,3 +7,10 @@ nomes COBOL. Projeta ViewBinding sobre Region existente com origem da relação.
 Inventário/ranges finitos; mapas e ancestry memoizada; sem tabela de pares.
 Negativos: alvo ausente, range alterado, segunda base, gaps contraditórios, wire
 incompleto/desconhecido. Oracle: uma região6, alias[0,6), tail[3,6), duas origens.
+
+W6.2 traduz SP2.10: acesso com slice usa offsets absolutos explícitos e
+RegionSlice da AIR, inclusive Read de target CALL. Admission prova bounds
+contra a view declarada. Reader mantém contratos 2.7–2.9 intactos e recusa
+coordenadas não canônicas antes de materializar. Não há aritmética COBOL no
+lower. Oracle: write e CALL em [3,6), dentro de item [2,8); 5 negativos de
+bounds, zero e wire lexical. Complexidade O(1) por acesso indexado.

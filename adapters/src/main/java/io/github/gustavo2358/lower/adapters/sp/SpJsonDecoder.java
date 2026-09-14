@@ -146,6 +146,12 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire27.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent27(wire); input = Materialize.input(wire);
                 }
+                case "2.10.0" -> {
+                    var wire=mapper.treeToValue(node,Wire210.Document.class);
+                    requirePhysical(wire,"$",meter);
+                    if(!wire.storage().version().equals("1.2.0"))throw new PhysicalShape("$/storage/version");
+                    requireCoherentFacts210(wire);input=Materialize.input(wire);
+                }
                 case "2.9.0" -> {
                     var wire=mapper.treeToValue(node,Wire29.Document.class);
                     requirePhysical(wire,"$",meter);
@@ -172,7 +178,7 @@ public final class SpJsonDecoder {
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
-            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
+            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0","2.10.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
                 var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
                     : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
                 if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)
@@ -530,6 +536,40 @@ public final class SpJsonDecoder {
         if (!wire.storage().version().equals("1.0.0")) throw new PhysicalShape("$/storage/version");
         requireCoherentFacts27(wire);
     }
+    private static void requireCoherentFacts210(Wire210.Document wire) {
+        wire.storage().nodes().forEach(n->measure210(n.extent()));
+        wire.storage().bases().forEach(b->measure210(b.extent()));
+        wire.storage().views().forEach(v->{ measure210(v.offset()); measure210(v.extent()); });
+        for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
+            throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
+        for (var statement : wire.statements()) {
+            if (statement instanceof Wire210.EvaluateDocument e) for (var a : e.arms()) {
+                if (!(a.selection() instanceof Wire210.LiteralDocument l) || l.kind()!=SpInput.LiteralKind.ALPHANUMERIC
+                        || l.logicalValue()==null || !l.value().equals(l.logicalValue().value()))
+                    throw new PhysicalShape("$/statements/EVALUATE/arms/selection");
+                logical210(l.logicalValue());
+            }
+            if (statement instanceof Wire210.MoveDocument m && m.source() instanceof Wire210.LiteralDocument literal && literal.logicalValue() != null) {
+                var value = literal.logicalValue();
+                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                    throw new PhysicalShape("$/statements/source/logicalValue");
+                logical210(value);
+            }
+            if (statement instanceof Wire210.MoveDocument m && m.textAdjustment() != null) logical210(m.textAdjustment().result());
+            if (statement instanceof Wire210.CallDocument c && c.target() instanceof Wire210.LiteralTargetDocument l && l.logicalValue() != null) {
+                logical210(l.logicalValue());
+                if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
+            }
+        }
+    }
+    private static void measure210(Wire210.MeasureDocument m) {
+        if (m.value()!=null && !m.value().matches("0|[1-9][0-9]*")) throw new PhysicalShape("$/storage/measure/value");
+    }
+    private static void logical210(Wire210.LogicalDocument value) {
+        if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
+            throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
     private static void requireCoherentFacts27(Wire27.Document wire) {
         wire.storage().nodes().forEach(n->measure27(n.extent()));
         wire.storage().bases().forEach(b->measure27(b.extent()));
@@ -584,6 +624,12 @@ public final class SpJsonDecoder {
 
     private static void requirePhysical(Object value, String location, Meter meter) {
         if (value == null) throw new PhysicalShape(location);
+        if (value instanceof Wire210.SliceDocument slice) {
+            if (slice.offset() == null || !slice.offset().matches("0|[1-9][0-9]*"))
+                throw new PhysicalShape(location + "/offset");
+            if (slice.extent() == null || !slice.extent().matches("0|[1-9][0-9]*"))
+                throw new PhysicalShape(location + "/extent");
+        }
         meter.physical++;
         if (value instanceof List<?> list) {
             for (int i = 0; i < list.size(); i++) requirePhysical(list.get(i), location + "/" + i, meter);
