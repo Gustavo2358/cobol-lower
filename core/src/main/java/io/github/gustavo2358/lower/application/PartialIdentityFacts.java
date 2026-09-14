@@ -8,6 +8,12 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case SpInput.CicsFact r -> {
+                field.accept("CicsFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.target());
+                value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());
+            }
+            case SpInput.CicsOption r -> {field.accept("CicsOption");value.accept(r.name());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.reference());}
+
             case SpInput r -> {
                 field.accept("SpInput");
                 field.accept("unit"); value.accept(r.unit());

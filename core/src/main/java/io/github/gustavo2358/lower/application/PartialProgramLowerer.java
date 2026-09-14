@@ -63,7 +63,9 @@ final class PartialProgramLowerer implements LowerInput {
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
         var premises = new ArrayList<>(StoragePremise.available(input, data, unit, ids, origins));
         premises.addAll(RegionalDataTranslator.premises(plan.storage(),data,unit,ids,origins));
-        var output = new Publication(publication, SemanticVersion.AIR_2_0_0, RegionalDataTranslator.capabilities(data), origins.artifacts(),
+        var required=new ArrayList<>(RegionalDataTranslator.capabilities(data).required());
+        if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),
             List.of(body), data.storage(), List.of(), List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
         var assessment = OutputAssessment.assess(output, options.validation());

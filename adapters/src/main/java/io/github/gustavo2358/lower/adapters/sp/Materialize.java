@@ -1061,6 +1061,15 @@ final class Materialize {
                         logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())),v.additionalTransfers().stream().map(t->new MoveTransfer(source211(t.source(),h.id(),unit),reference(t.target(),h.id(),unit),new StorageFacts.Move(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList());
             }
+            case Wire211.CicsDocument v -> {
+                Optional<CallTarget> target=Optional.ofNullable(v.target()).map(t->switch(t) {
+                    case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));
+                    case Wire211.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(),l.id()),l.text(),l.writtenText(),
+                        Optional.ofNullable(l.logicalValue()).map(x->new LogicalValue(x.logicalDomain(),x.value(),x.logicalExtent())),provenance(l.provenance(),unit));
+                });
+                yield new CicsFact(h,v.command(),v.rawText(),target,v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),
+                    v.conditions(),continuation(v.localContinuation(),unit),continuation(v.ordinaryContinuation(),unit),v.nameProfile(),v.gapCodes());
+            }
             case Wire211.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
                     case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(), h.id(), unit));

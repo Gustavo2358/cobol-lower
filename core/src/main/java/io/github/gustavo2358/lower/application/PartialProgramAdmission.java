@@ -22,6 +22,7 @@ final class PartialProgramAdmission {
                 s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
             for (var s : input.statements()) {
                 var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
+                if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
                 if(s instanceof OtherStatement o) {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
@@ -72,7 +73,7 @@ final class PartialProgramAdmission {
                     if(eligible&&m.copySemantics()==CopySemantics.FITTED_TEXT)fitted.add(m.header().id());
                     if(m.source() instanceof DataReference && (RegionalDataTranslator.textual(c.regionalStorage,m.target().wholeItemAccess().orElseThrow().data())
                         ||RegionalDataTranslator.textual(c.regionalStorage,((DataReference)m.source()).wholeItemAccess().orElseThrow().data())))eligible=false;
-                } else if(s instanceof CallFact call) {
+                } else if(s instanceof CallFact || s instanceof CicsFact) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
                 } else if(s instanceof IfFact f && f.predicateGuarantee().availability()==Availability.KNOWN
                         && f.thenArm().entry().statement().isPresent() && (f.normalContinuation().statement().isPresent() || rangeCompletions.contains(f.header().id()))
@@ -130,7 +131,7 @@ final class PartialProgramAdmission {
                     s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary GO TO incoming edge");
                 if(s instanceof ConditionalGoToFact g && !bodyMembers.contains(s.header().id()))c.require(g.destinations().stream().noneMatch(d->d.targetEntry().filter(bodyMembers::contains).isPresent()),Rule.STRUCTURE,
                     s.header().id().handle(),s.header().provenance(),"intrinsic body has no ordinary conditional incoming edge");
-                var successor=next(s);
+                var successor=ordinaryNext(s);
                 if (!bodyMembers.contains(s.header().id()) && successor!=null)
                     c.require(successor.statement().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary incoming continuation");
             }
@@ -164,7 +165,7 @@ final class PartialProgramAdmission {
             }
             if(!precise.contains(id) && !(s instanceof PerformFact p && p.profile()==PerformProfile.BASIC_PROCEDURE_PERFORM && p.gapCodes().isEmpty())
                     && !(s instanceof ProcedurePerformFact p && p.gapCodes().isEmpty()))return List.of();
-            var continuation=next(s);
+            var continuation=ordinaryNext(s);
             if(continuation==null || continuation.availability()!=ContinuationAvailability.KNOWN
                     || continuation.statement().isEmpty() || !continuation.provenance().exact())return List.of();
             pending.push(new Visit(id,true));
@@ -196,7 +197,11 @@ final class PartialProgramAdmission {
         }
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
+    static NormalContinuation ordinaryNext(StatementFact s) {
+        return s instanceof CicsFact c?c.ordinaryContinuation():next(s);
+    }
     static NormalContinuation next(StatementFact s) {
+        if(s instanceof CicsFact c)return c.localContinuation();
         if(s instanceof ConditionalGoToFact g)return g.normalContinuation();
         if(s instanceof ProcedurePerformFact p)return p.normalContinuation();
         if(s instanceof EvaluateFact e)return e.normalContinuation();

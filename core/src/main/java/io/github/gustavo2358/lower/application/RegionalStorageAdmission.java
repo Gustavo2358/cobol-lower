@@ -207,6 +207,7 @@ final class RegionalStorageAdmission {
         var result=new ArrayList<DataReference>();
         switch(fact) {
             case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target());for(var t:m.additionalTransfers()){if(t.source() instanceof DataReference r)result.add(r);result.add(t.target());} }
+            case CicsFact cics -> {if(cics.target().orElse(null) instanceof DataCallTarget d)result.add(d.reference());cics.options().forEach(o->o.reference().ifPresent(result::add));}
             case CallFact call -> { if(call.target() instanceof DataCallTarget d)result.add(d.reference()); }
             case IfFact f -> result.addAll(f.conditionReads());
             case EvaluateFact e -> e.subject().ifPresent(result::add);

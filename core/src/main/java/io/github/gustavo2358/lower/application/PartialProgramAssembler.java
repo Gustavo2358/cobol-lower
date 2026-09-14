@@ -24,7 +24,7 @@ final class PartialProgramAssembler {
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
             List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences) {
         for(var fact:sourceStatements) {
-            var label=label(fact.header().id(),unit,ids); var next=PartialProgramAdmission.next(fact);
+            var label=label(fact.header().id(),unit,ids); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
@@ -45,6 +45,9 @@ final class PartialProgramAssembler {
                     List.of(source,reference,paragraph,entry),"goto-paragraph@1/explicit-executable-entry");
                 term=PerformSequenceAssembler.jump("goto-target",g.header().id(),label(g.targetEntry().orElseThrow(),unit,ids),origin,unit,ids);
                 link(g.header().id(),term,label,statements,items);
+            } else if(precise && fact instanceof SpInput.CicsFact cics) {
+                term=CicsInvokeHandler.translate(cics,data,destination,unit,ids,origins,operands,items,uncertainties);
+                link(fact.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.CallFact call) {
                 var completion=origins.source("continuation",call.header().id().handle(),call.normalContinuation().provenance());
                 term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties);
