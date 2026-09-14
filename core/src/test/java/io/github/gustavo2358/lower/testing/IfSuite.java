@@ -37,7 +37,9 @@ public final class IfSuite {
         for(var pair:List.of(new Object[]{"availability",Availability.UNAVAILABLE},new Object[]{"members",proof.members().subList(0,2)},new Object[]{"members",List.of(proof.members().getFirst(),proof.members().getFirst())},new Object[]{"members",List.of(new DataId(input.unit(),"data:99"),proof.members().getFirst())},new Object[]{"gapCodes",List.of("gap")},new Object[]{"provenance",Optional.empty()},new Object[]{"authority","invented"}))
             reject(proof(input,Optional.of(with(proof,(String)pair[0],pair[1]))),"storage " + pair[0]);
         var statements=new ArrayList<>(input.statements());var child=(MoveFact)statements.getFirst();
-        statements.set(0,new OtherStatement(child.header(),Variant.OBSERVED));reject(with(input,"statements",statements),"non-MOVE arm child");
+        statements.set(0,new OtherStatement(child.header(),Variant.OBSERVED,"SYNTHETIC",Optional.of("SYNTHETIC_OBSERVED"),
+            "SEMANTICS_NOT_AVAILABLE",new NormalContinuation(ContinuationAvailability.UNAVAILABLE,Optional.empty(),child.header().provenance()),List.of()));
+        reject(with(input,"statements",statements),"non-MOVE arm child");
         var nested=with(f,"header",with(f.header(),"containment",new Containment(Optional.of(f.header().id()),Branch.THEN)));
         reject(branch(input,nested),"nested containment not flattened");
         var call=(CallFact)input.statements().get(input.statements().size()-2);

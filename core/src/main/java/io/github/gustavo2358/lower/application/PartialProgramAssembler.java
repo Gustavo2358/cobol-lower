@@ -166,7 +166,8 @@ final class PartialProgramAssembler {
         var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
         var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact),List.of(gap));
         Scopes.MemoryBound memory=unknownEffects?new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)):Scopes.NoMemory.INSTANCE;
-        return new Operations.Opaque(header,fact instanceof SpInput.OtherStatement o?o.observedKind():fact.getClass().getSimpleName(),known.operands(),List.of(),
+        // AIR has one descriptive identity for an opaque construction; the SP shape is the most specific published identity.
+        return new Operations.Opaque(header,fact instanceof SpInput.OtherStatement o?o.observedShape().orElse(o.observedKind()):fact.getClass().getSimpleName(),known.operands(),List.of(),
             new Envelopes.Envelope(new Envelopes.MemoryEnvelope(known.reads(),memory,known.writes(),memory,List.of()),
                 next==null?new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true)))
                     :new Control.ControlEnvelope(List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),

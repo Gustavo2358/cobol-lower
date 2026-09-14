@@ -87,7 +87,11 @@ public final class InputSuite {
 
         for (Variant variant : Variant.values()) {
             var otherHeader = header(h, secondId, 1, h.containment(), CoverageStatus.UNSUPPORTED, blocked());
-            var larger = body(input, List.of(input.statements().get(0), new OtherStatement(otherHeader, variant)), new Structure(List.of(h.id(), secondId), List.of()), List.of(new Gap(secondId, GapScope.CAPABILITY, "UNSUPPORTED", "known family", h.provenance())), new Coverage(InventoryStatus.COMPLETE, 2, 1, 0, 1, 0, blocked()));
+            var other = variant == Variant.OBSERVED
+                ? new OtherStatement(otherHeader, variant, "SYNTHETIC", Optional.of("SYNTHETIC_OBSERVED"), "UNSUPPORTED",
+                    new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), otherHeader.provenance()), List.of())
+                : OtherStatement.unsupported(otherHeader, variant);
+            var larger = body(input, List.of(input.statements().get(0), other), new Structure(List.of(h.id(), secondId), List.of()), List.of(new Gap(secondId, GapScope.CAPABILITY, "UNSUPPORTED", "known family", h.provenance())), new Coverage(InventoryStatus.COMPLETE, 2, 1, 0, 1, 0, blocked()));
             if (variant == Variant.IF) {
                 expect(larger, Status.INVALID_INPUT, Rule.STRUCTURE);
                 // The public writer emits both branch inventories even when empty.

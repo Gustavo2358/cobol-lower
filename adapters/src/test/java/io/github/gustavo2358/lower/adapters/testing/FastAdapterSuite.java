@@ -1,11 +1,13 @@
 package io.github.gustavo2358.lower.adapters.testing;
 
+import io.github.gustavo2358.lower.adapters.sp.ObservedShapeSuite;
 import java.util.List;
 
 /** Fixed focal wire/codec contracts, without historical or mutation campaign entrypoints. */
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        ObservedShapeSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]);
         int cases = 0;

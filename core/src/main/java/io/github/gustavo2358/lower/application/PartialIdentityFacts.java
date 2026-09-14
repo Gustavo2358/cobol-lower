@@ -368,6 +368,7 @@ final class PartialIdentityFacts {
                 field.accept("header"); value.accept(r.header());
                 field.accept("variant"); value.accept(r.variant());
                 field.accept("observedKind"); value.accept(r.observedKind());
+                field.accept("observedShape"); value.accept(r.observedShape());
                 field.accept("gapCode"); value.accept(r.gapCode());
                 field.accept("normalContinuation"); value.accept(r.normalContinuation());
                 field.accept("knownReferences"); value.accept(r.knownReferences());

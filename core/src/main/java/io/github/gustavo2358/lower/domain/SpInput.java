@@ -402,15 +402,23 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             members=List.copyOf(members); Objects.requireNonNull(provenance); gapCodes=List.copyOf(gapCodes); }
     }
 
-    public record OtherStatement(StatementHeader header, Variant variant, String observedKind, String gapCode,
+    public record OtherStatement(StatementHeader header, Variant variant, String observedKind,
+                                 Optional<String> observedShape, String gapCode,
                                  NormalContinuation normalContinuation, List<DataReference> knownReferences) implements StatementFact {
-        public OtherStatement(StatementHeader header, Variant variant) {
-            this(header, variant, variant.name(), "SEMANTICS_NOT_AVAILABLE", new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());
+        public static OtherStatement unsupported(StatementHeader header, Variant variant) {
+            if (variant == Variant.OBSERVED) throw new IllegalArgumentException("observed statement requires observedShape");
+            return new OtherStatement(header, variant, variant.name(), Optional.empty(), "SEMANTICS_NOT_AVAILABLE",
+                new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());
         }
         public OtherStatement {
             Objects.requireNonNull(header, "header");
             Objects.requireNonNull(variant, "variant");
-            Objects.requireNonNull(observedKind); Objects.requireNonNull(gapCode); Objects.requireNonNull(normalContinuation); knownReferences=List.copyOf(knownReferences);
+            Objects.requireNonNull(observedKind); Objects.requireNonNull(observedShape); Objects.requireNonNull(gapCode);
+            Objects.requireNonNull(normalContinuation); knownReferences=List.copyOf(knownReferences);
+            if (variant == Variant.OBSERVED && observedShape.isEmpty())
+                throw new IllegalArgumentException("observed statement requires observedShape");
+            if (variant != Variant.OBSERVED && observedShape.isPresent())
+                throw new IllegalArgumentException("observedShape belongs only to observed statements");
         }
     }
 
