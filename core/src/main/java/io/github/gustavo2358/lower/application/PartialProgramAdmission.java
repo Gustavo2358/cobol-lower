@@ -22,6 +22,7 @@ final class PartialProgramAdmission {
                 s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
             for (var s : input.statements()) {
                 var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
+                if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
                 if(s instanceof OtherStatement o) {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
@@ -72,7 +73,7 @@ final class PartialProgramAdmission {
                     if(eligible&&m.copySemantics()==CopySemantics.FITTED_TEXT)fitted.add(m.header().id());
                     if(m.source() instanceof DataReference && (RegionalDataTranslator.textual(c.regionalStorage,m.target().wholeItemAccess().orElseThrow().data())
                         ||RegionalDataTranslator.textual(c.regionalStorage,((DataReference)m.source()).wholeItemAccess().orElseThrow().data())))eligible=false;
-                } else if(s instanceof CallFact call) {
+                } else if(s instanceof CallFact || s instanceof CicsFact) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
                 } else if(s instanceof IfFact f && f.predicateGuarantee().availability()==Availability.KNOWN
                         && f.thenArm().entry().statement().isPresent() && (f.normalContinuation().statement().isPresent() || rangeCompletions.contains(f.header().id()))
@@ -197,6 +198,7 @@ final class PartialProgramAdmission {
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
     static NormalContinuation next(StatementFact s) {
+        if(s instanceof CicsFact c)return c.localContinuation();
         if(s instanceof ConditionalGoToFact g)return g.normalContinuation();
         if(s instanceof ProcedurePerformFact p)return p.normalContinuation();
         if(s instanceof EvaluateFact e)return e.normalContinuation();

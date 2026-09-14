@@ -51,8 +51,12 @@ final class ProcedurePerformAdmission {
             &&p.end().filter(t->t.id().equals(p.procedures().getLast().id())).isPresent(),"range endpoints agree with typed order");
         if(p.gapCodes().isEmpty())need(c,p,p.start().isPresent()&&p.end().isPresent()&&!p.procedures().isEmpty()
             &&p.normalContinuation().statement().isPresent()&&p.normalContinuation().provenance().exact()&&p.header().provenance().exact()
-            &&p.start().filter(t->t.referenceOrigin().exact()&&t.paragraphOrigin().exact()).isPresent()
-            &&p.end().filter(t->t.referenceOrigin().exact()&&t.paragraphOrigin().exact()).isPresent(),"closed range has exact endpoints and resume");
+            &&p.start().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent()
+            &&p.end().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent(),"closed range has exact endpoints and resume");
+    }
+    private static boolean cicsParagraph(ProcedurePerformFact p,ProcedureId id,EntryGobackAdmission.Context c) {
+        return p.procedures().stream().filter(r->r.id().equals(id)).anyMatch(r->r.statements().stream().map(c::lookup)
+            .allMatch(s->s!=null&&(s.header().provenance().exact()||s instanceof CicsFact x&&x.conditions()==CicsConditions.LOCAL_CONDITION)));
     }
     static List<StatementFact> qualify(ProcedurePerformFact p,EntryGobackAdmission.Context c,Set<StatementId> precise,Set<StatementId> primary,
             List<StatementFact> inventory) {

@@ -28,7 +28,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -293,6 +293,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
         public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+    }
+
+    public enum CicsCommand { LINK, XCTL }
+    public enum CicsConditions { LOCAL_CONDITION, DEFAULT_ENTRY_PREFIX, UNKNOWN }
+    public record CicsOption(String name,Optional<String> operand,int start,int end,Optional<DataReference> reference) {
+        public CicsOption { Objects.requireNonNull(reference); Objects.requireNonNull(name);Objects.requireNonNull(operand); }
+    }
+    public record CicsFact(StatementHeader header,CicsCommand command,String rawText,Optional<CallTarget> target,
+        List<CicsOption> options,CicsConditions conditions,NormalContinuation localContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
+        public CicsFact { Objects.requireNonNull(header);Objects.requireNonNull(command);Objects.requireNonNull(rawText);Objects.requireNonNull(target);
+            options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes); }
     }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }
