@@ -49,3 +49,6 @@ apenas objetos admitidos; ter identidade no inventário não prova leitura tipad
 Uma passagem pelo inventário (O(n)) cria somente os objetos ainda ausentes, com
 origem da declaração/view/base e cobertura ABSTRACTED. O oracle misto exige sete
 objetos e quatro alocações, além de lacunas explícitas e CALL literal preservado.
+
+## W8 entry bounds correction
+A constant child interval inside a Region of unknown total extent does not satisfy AIR total-slice preconditions. The entry translator retains the unknown Region and all objects, emits the explicit INITIAL_STORAGE_UNKNOWN entry uncertainty/ABSTRACTED coverage, and omits the unproved condition place. It never invents an extent or relaxes AirValidator. The source-produced known-prefix/COMP-suffix fixture verifies successful partial publication, literal CALL retention and semantic/byte AIR JSON round-trip.

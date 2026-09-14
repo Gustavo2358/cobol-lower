@@ -17,7 +17,8 @@ final class RegionalEntryTranslator {
                 "storage@1/entry-mode="+state.mode().name()+"; source-proved invocation condition");
             var view=source.views().get(fact.node());var storage=data.physical().get(view.base());
             Place place=null;
-            if(storage!=null&&represented.get(storage) instanceof Memory.Region&&view.offset().value().isPresent()&&view.extent().value().isPresent()) {
+            // A known prefix in an open Region is not a proof of total slice bounds (AIR I-17).
+            if(storage!=null&&represented.get(storage) instanceof Memory.Region region&&region.extent().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()) {
                 place=new Places.RegionSlice(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),storage,
                     integer(entry,key,"offset",view.offset().value().get(),origin,ids),integer(entry,key,"extent",view.extent().value().get(),origin,ids),
                     Memory.IdentityBytes.INSTANCE,Types.known(Types.Builtin.BYTES));
