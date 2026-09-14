@@ -20,6 +20,10 @@ public final class StorageFacts {
     public record Relation(RelationId id,NodeId owner,Optional<NodeId> target,RelationStatus status,Provenance provenance,List<String> gapCodes) {
         public Relation { Objects.requireNonNull(id);Objects.requireNonNull(owner);Objects.requireNonNull(target);Objects.requireNonNull(status);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes); }
     }
+    public record Renames(RelationId id,NodeId owner,Optional<NodeId> from,Optional<NodeId> through,
+            RelationStatus status,Provenance provenance,List<String> gapCodes) {
+        public Renames { Objects.requireNonNull(id);Objects.requireNonNull(owner);Objects.requireNonNull(from);Objects.requireNonNull(through);Objects.requireNonNull(status);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes); }
+    }
     public record Measure(Optional<BigInteger> value,List<String> gapCodes) {
         public Measure { Objects.requireNonNull(value);gapCodes=List.copyOf(gapCodes); }
     }
@@ -38,10 +42,13 @@ public final class StorageFacts {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,
-            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations) {
+            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames) {
         public Inventory {
             Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
-            nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);relations=List.copyOf(relations);
+            nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);relations=List.copyOf(relations);renames=List.copyOf(renames);
+        }
+        public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations) {
+            this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,relations,List.of());
         }
         public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes) {
             this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,List.of());

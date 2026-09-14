@@ -146,6 +146,12 @@ public final class SpJsonDecoder {
                     var wire = mapper.treeToValue(node, Wire27.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent27(wire); input = Materialize.input(wire);
                 }
+                case "2.9.0" -> {
+                    var wire=mapper.treeToValue(node,Wire29.Document.class);
+                    requirePhysical(wire,"$",meter);
+                    if(!wire.storage().version().equals("1.2.0"))throw new PhysicalShape("$/storage/version");
+                    requireCoherentFacts27(Wire28.common(Wire29.common(wire)));input=Materialize.input(wire);
+                }
                 case "2.8.0" -> {
                     var wire=mapper.treeToValue(node,Wire28.Document.class);
                     requirePhysical(wire,"$",meter);
@@ -166,7 +172,7 @@ public final class SpJsonDecoder {
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
-            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
+            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
                 var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
                     : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
                 if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)

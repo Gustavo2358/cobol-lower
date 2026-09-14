@@ -119,6 +119,10 @@ final class RegionalStorageAdmission {
                 if(view!=null)require(components.add(view.base()),"legacy independence proof contradicts shared physical storage");
             }
         });
+        for(var r:storage.renames()) {
+            c.touch();c.identity(r.id().unit(),r.id().handle(),"storage-relation",r.provenance());c.provenance(r.provenance());gaps(r.gapCodes());
+        }
+        RegionalRenamesAdmission.validate(input.unit(),storage,nodes,views,relationIds);
         var index=new Index(input,nodes,bases,views,byData);
         for(var statement:input.statements()) {
             c.touch();
@@ -189,5 +193,5 @@ final class RegionalStorageAdmission {
     }
     private static void gaps(List<String> codes) { require(codes.stream().noneMatch(String::isBlank),"gap codes must be nonblank"); }
     private static void require(boolean condition,String reason) { if(!condition)throw new Invalid(reason); }
-    private static final class Invalid extends RuntimeException { private static final long serialVersionUID=1L;Invalid(String message){super(message);} }
+    static final class Invalid extends RuntimeException { private static final long serialVersionUID=1L;Invalid(String message){super(message);} }
 }
