@@ -1,6 +1,6 @@
 id: WORK-DVI-001
 title: Admit declarative entry proofs into existing AIR entry values
-status: IN_PROGRESS
+status: DONE
 scope:
   - DVI-W2/W3; SP 2.15.0/storage 1.4.0 admission, identity and provenance
   - Existing AIR LiteralInitial and shared dependency dataflow
