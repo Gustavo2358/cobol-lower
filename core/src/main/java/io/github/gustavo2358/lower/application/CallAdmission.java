@@ -97,6 +97,11 @@ public final class CallAdmission implements AdmitInput {
                         c.provenance(m.source().provenance());
                     }
                     reference(m.target(), m.header(), operands, c);
+                    for(var t:m.additionalTransfers()) {
+                        if(t.source() instanceof DataReference read)reference(read,m.header(),operands,c);
+                        else {operand(t.source().id(),m.header(),operands,c);c.provenance(t.source().provenance());if(t.source() instanceof LiteralSource literal)literal.logicalValue().ifPresent(v->logical(v,m.header(),c));}
+                        reference(t.target(),m.header(),operands,c);
+                    }
                     continuation(m.normalContinuation(), m.header(), c);
                     if (m.source() instanceof LiteralSource literal) literal.logicalValue().ifPresent(v -> logical(v, m.header(), c));
                     c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),

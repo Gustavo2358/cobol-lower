@@ -12,7 +12,7 @@ public final class StorageFacts {
     public enum Profile { UNSPECIFIED, IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047 }
     public enum Kind { GROUP, ELEMENTARY, OPAQUE }
     public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, UNPROVEN }
-    public enum MoveKind { LITERAL_BYTES, COPY_BYTES, MUST_UNKNOWN, UNAVAILABLE }
+    public enum MoveKind { LITERAL_BYTES, FITTED_LITERAL_BYTES, COPY_BYTES, FIT_TEXT, MUST_UNKNOWN, UNAVAILABLE }
     public enum RelationStatus { PROVEN, UNPROVEN }
     public record NodeId(UnitKey unit,String handle) { public NodeId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
     public record BaseId(UnitKey unit,String handle) { public BaseId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }

@@ -32,6 +32,11 @@ public final class SliceStorageSuite {
             slice.put("offset",values.get(0));slice.put("extent",values.get(1));var d=decoder.decode(json.writeValueAsBytes(tree));
             check(d instanceof SpJsonDecoder.Rejected||new CobolLowerer().lower(((SpJsonDecoder.Decoded)d).input(),CobolLower.OPTIONS).publication().isEmpty(),"out-of-item/noncanonical slice rejected: "+values);
         }
+        var changed=(ObjectNode)json.readTree(bytes);
+        ((ObjectNode)changed.path("statements").get(1).path("target").path("reference").path("regionalAccess").path("slice")).put("offset","4");
+        var changedInput=((SpJsonDecoder.Decoded)decoder.decode(json.writeValueAsBytes(changed))).input();
+        var changedPublication=RegionalTranslationSuite.lower(changedInput).publication().orElseThrow();
+        check(!p.id().equals(changedPublication.id()),"changing a slice must change publication identity");
         System.out.println("SLICE_CONTRACT=PASS write/call=[3,6) negatives=5");
     }
     private static void range(Places.RegionSlice slice) {

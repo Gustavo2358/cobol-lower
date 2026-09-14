@@ -14,3 +14,13 @@ contra a view declarada. Reader mantém contratos 2.7–2.9 intactos e recusa
 coordenadas não canônicas antes de materializar. Não há aritmética COBOL no
 lower. Oracle: write e CALL em [3,6), dentro de item [2,8); 5 negativos de
 bounds, zero e wire lexical. Complexidade O(1) por acesso indexado.
+
+W6.3 traduz SP2.11 e suas transferências ordenadas para Assign/FitText/Read,
+CopyBytes ou HavocMust. Padding/truncation são fatos tipados explícitos; literal
+ajustado conserva fonte lógica para validação. Admission valida cada par e usa
+índices ordenados de intervalos para excluir alteração da origem por qualquer
+receiver, O(n log n), sem teto de cardinalidade. IDs de operandos/operações e
+proveniência são próprios por transferência. O encoding de identidade inclui
+agora RENAMES, slices e transferências; regressões mostram mudança de ID quando
+um slice ou a proveniência RENAMES muda. AIR passou a validar o fit regional
+provadamente total e transportar fit_text existente.

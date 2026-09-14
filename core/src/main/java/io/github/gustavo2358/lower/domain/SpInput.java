@@ -273,15 +273,26 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, LogicalValue result, Provenance provenance) {
         public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
     }
+    public record MoveTransfer(MoveSource source,DataReference target,StorageFacts.Move effect) {
+        public MoveTransfer { Objects.requireNonNull(source);Objects.requireNonNull(target);Objects.requireNonNull(effect); }
+    }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) implements StatementFact {
+        public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
+                NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,List.of());
+        }
+        public List<MoveTransfer> transfers() {
+            if(regionalMove.isEmpty())return List.of();
+            var result=new java.util.ArrayList<MoveTransfer>();result.add(new MoveTransfer(source,target,regionalMove.get()));result.addAll(additionalTransfers);return List.copyOf(result);
+        }
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,Optional.empty());
         }
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }

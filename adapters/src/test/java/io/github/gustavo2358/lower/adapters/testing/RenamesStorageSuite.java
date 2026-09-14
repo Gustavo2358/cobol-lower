@@ -36,6 +36,11 @@ public final class RenamesStorageSuite {
                 check(invalid.publication().isEmpty(),"invalid RENAMES rejected at admission: "+mutation);
             } else check(d instanceof SpJsonDecoder.Rejected,"invalid wire rejected: "+mutation);
         }
+        var changed=(ObjectNode)json.readTree(bytes);
+        ((ObjectNode)changed.path("storage").path("renames").get(0).path("provenance")).put("exact",false);
+        var changedInput=((SpJsonDecoder.Decoded)decoder.decode(json.writeValueAsBytes(changed))).input();
+        var changedPublication=RegionalTranslationSuite.lower(changedInput).publication().orElseThrow();
+        check(!p.id().equals(changedPublication.id()),"RENAMES provenance participates in publication identity");
         System.out.println("RENAMES_CONTRACT=PASS negatives=8 physical=[0,6),[3,6)");
     }
 }

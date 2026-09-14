@@ -151,24 +151,35 @@ final class RegionalStorageAdmission {
         if(move.regionalMove().isEmpty()) {
             require(references(move).stream().noneMatch(r->r.regionalAccess().isPresent()),"regional MOVE accesses require an explicit effect");return;
         }
-        var effect=move.regionalMove().get();gaps(effect.gapCodes());
+        require(move.additionalTransfers().isEmpty()||move.copySemantics()==CopySemantics.UNAVAILABLE,"regional sequence cannot claim scalar copy");
+        for(var transfer:move.transfers())validateTransfer(transfer,index);
+        RegionalTransferAdmission.validate(move,index);
+    }
+    private static void validateTransfer(MoveTransfer transfer,Index index) {
+        var effect=transfer.effect();gaps(effect.gapCodes());
         require(effect.bytes().stream().allMatch(b->b>=0&&b<=255),"literal bytes must be octets");
-        require(effect.kind()==MoveKind.LITERAL_BYTES||effect.bytes().isEmpty(),"only literal byte writes carry a payload");
+        require(effect.kind()==MoveKind.LITERAL_BYTES||effect.kind()==MoveKind.FITTED_LITERAL_BYTES||effect.bytes().isEmpty(),"only literal byte writes carry a payload");
         require((effect.kind()==MoveKind.MUST_UNKNOWN||effect.kind()==MoveKind.UNAVAILABLE)==!effect.gapCodes().isEmpty(),"unknown MOVE needs gaps; exact MOVE cannot carry gaps");
         if(effect.kind()==MoveKind.UNAVAILABLE)return;
-        require(move.target().role()==OperandRole.WRITE&&move.target().regionalAccess().isPresent(),"mandatory regional write requires exact WRITE access");
-        var dest=index.access(move.target()).orElseThrow();
-        if(effect.kind()==MoveKind.LITERAL_BYTES) {
-            require(move.source() instanceof LiteralSource l&&l.kind()==LiteralKind.ALPHANUMERIC&&l.logicalValue().isPresent(),"byte write needs a proved logical literal");
-            var literal=((LiteralSource)move.source()).logicalValue().orElseThrow();
+        require(transfer.target().role()==OperandRole.WRITE&&transfer.target().regionalAccess().isPresent(),"mandatory regional write requires exact WRITE access");
+        var dest=index.access(transfer.target()).orElseThrow();
+        if(effect.kind()==MoveKind.LITERAL_BYTES||effect.kind()==MoveKind.FITTED_LITERAL_BYTES) {
+            require(transfer.source() instanceof LiteralSource l&&l.kind()==LiteralKind.ALPHANUMERIC&&l.logicalValue().isPresent(),"byte write needs a proved logical literal");
+            var literal=((LiteralSource)transfer.source()).logicalValue().orElseThrow();
             require(literal.logicalDomain()==LogicalDomain.TEXT&&literal.logicalExtent()==literal.value().codePointCount(0,literal.value().length()),"literal byte write requires coherent TEXT");
-            var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(literal.value()),dest.extent().value().orElseThrow());
+            require(dest.extent().value().orElseThrow().equals(java.math.BigInteger.valueOf(effect.bytes().size())),"literal vector must fill exact destination");
+            String text=literal.value();
+            if(effect.kind()==MoveKind.FITTED_LITERAL_BYTES) {
+                int n=effect.bytes().size(),count=text.codePointCount(0,text.length());
+                text=count>n?text.substring(0,text.offsetByCodePoints(0,n)):text+" ".repeat(n-count);
+            }
+            var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(text),dest.extent().value().orElseThrow());
             require(encoded.status()==MemoryCodecs.Status.EXACT&&encoded.value().orElseThrow().octets().equals(effect.bytes()),"published bytes disagree with logical literal, declared codec or extent");
         }
-        if(effect.kind()==MoveKind.COPY_BYTES) {
-            require(move.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
-            var source=index.access((DataReference)move.source()).orElseThrow();
-            require(source.extent().equals(dest.extent()),"copy requires equal extents");
+        if(effect.kind()==MoveKind.COPY_BYTES||effect.kind()==MoveKind.FIT_TEXT) {
+            require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
+            var source=index.access((DataReference)transfer.source()).orElseThrow();
+            require(effect.kind()!=MoveKind.COPY_BYTES||source.extent().equals(dest.extent()),"copy requires equal extents");
             boolean disjoint=source.base().equals(dest.base())?end(source).compareTo(dest.offset().value().orElseThrow())<=0
                 ||end(dest).compareTo(source.offset().value().orElseThrow())<=0
                 :index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE
@@ -179,7 +190,7 @@ final class RegionalStorageAdmission {
     static List<DataReference> references(StatementFact fact) {
         var result=new ArrayList<DataReference>();
         switch(fact) {
-            case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target()); }
+            case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target());for(var t:m.additionalTransfers()){if(t.source() instanceof DataReference r)result.add(r);result.add(t.target());} }
             case CallFact call -> { if(call.target() instanceof DataCallTarget d)result.add(d.reference()); }
             case IfFact f -> result.addAll(f.conditionReads());
             case EvaluateFact e -> e.subject().ifPresent(result::add);

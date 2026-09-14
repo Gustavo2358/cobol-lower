@@ -10,17 +10,26 @@ import java.util.*;
 /** Byte effects consume admitted SP facts. CopyBytes captures its source before destination writes. */
 final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
+    static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,UnitId unit,
+            LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        var result=new ArrayList<Instruction>();result.add(translate(move,fitted&&move.additionalTransfers().isEmpty(),data,unit,ids,origins,links,items,uncertainties));
+        for(var t:move.additionalTransfers()) {
+            var single=new SpInput.MoveFact(move.header(),t.source(),t.target(),SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(t.effect()));
+            result.add(translate(single,false,data,unit,ids,origins,links,items,uncertainties));
+        }
+        return List.copyOf(result);
+    }
     static Instruction translate(SpInput.MoveFact move,boolean admittedFitting,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,
             List<Evidence.Uncertainty> uncertainties) {
         if(move.regionalMove().isEmpty()||move.regionalMove().get().kind()==StorageFacts.MoveKind.UNAVAILABLE||admittedFitting)
             return MoveHandler.translate(move,data,unit,ids,origins,links,items);
         var effect=move.regionalMove().get();var key=move.header().id().handle();
-        var operation=new OperationId(unit,ids.id("operation","regional-move",unit.localId(),key));
+        var operation=new OperationId(unit,ids.id("operation","regional-move",unit.localId(),key+"/"+move.target().id().handle()));
         var statement=origins.source("statement",key,move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
         var targetOrigin=origins.source("operand",move.target().id().handle(),move.target().provenance());
-        var origin=origins.derived(ids.id("origin","regional-move",unit.localId(),key),List.of(statement,sourceOrigin,targetOrigin),"storage@1/published-byte-effect/"+effect.kind());
+        var origin=origins.derived(ids.id("origin","regional-move",unit.localId(),operation.localId()),List.of(statement,sourceOrigin,targetOrigin),"storage@1/published-byte-effect/"+effect.kind());
         var dest=RegionalPlaces.view(data.views().get(move.target().binding().selected().orElseThrow()),move.target());
         var targetId=new OperandId(new OperationOwner(operation),ids.id("operand","regional-target",operation.localId(),move.target().id().handle()));
         var sourceId=new OperandId(new OperationOwner(operation),ids.id("operand","regional-source",operation.localId(),move.source().id().handle()));
@@ -36,11 +45,23 @@ final class RegionalMoveHandler {
             correlate(move.source().id(),sourceRange.offset().header().id(),sourceOrigin,links,items,unit,ids);
             return new Operations.CopyBytes(header,destinationRange,sourceRange,dest.extent(),fallback);
         }
+        if(effect.kind()==StorageFacts.MoveKind.FIT_TEXT) {
+            var reference=(SpInput.DataReference)move.source();var source=RegionalPlaces.view(data.views().get(reference.binding().selected().orElseThrow()),reference);
+            var srcRange=range(source,sourceId,sourceOrigin,ids);var dstRange=range(dest,targetId,targetOrigin,ids);
+            var placeId=new OperandId(sourceId.owner(),ids.id("operand","fit-read-place",operation.localId(),reference.id().handle()));
+            var readId=new OperandId(sourceId.owner(),ids.id("operand","fit-read",operation.localId(),reference.id().handle()));
+            var srcPlace=new Places.RegionSlice(new Operand.Header(placeId,Operand.Role.VALUE_READ,sourceOrigin),source.region(),srcRange.offset(),srcRange.extent(),source.codec(),Types.known(Types.Builtin.TEXT));
+            var destination=new Places.RegionSlice(new Operand.Header(targetId,Operand.Role.VALUE_WRITE,targetOrigin),dest.region(),dstRange.offset(),dstRange.extent(),dest.codec(),Types.known(Types.Builtin.TEXT));
+            var read=new Expressions.Read(new Operand.Header(readId,Operand.Role.VALUE_READ,sourceOrigin),srcPlace);
+            var fit=new Expressions.FitText(new Operand.Header(sourceId,Operand.Role.VALUE_READ,sourceOrigin),read,dest.extent()," ");
+            correlate(move.source().id(),sourceId,sourceOrigin,links,items,unit,ids);correlate(move.target().id(),targetId,targetOrigin,links,items,unit,ids);
+            return new Operations.Assign(header,destination,fit);
+        }
         var range=range(dest,targetId,targetOrigin,ids);
         var place=new Places.RegionSlice(new Operand.Header(targetId,Operand.Role.VALUE_WRITE,targetOrigin),dest.region(),range.offset(),range.extent(),
             Memory.IdentityBytes.INSTANCE,Types.known(Types.Builtin.BYTES));
         correlate(move.target().id(),targetId,targetOrigin,links,items,unit,ids);
-        if(effect.kind()==StorageFacts.MoveKind.LITERAL_BYTES) {
+        if(effect.kind()==StorageFacts.MoveKind.LITERAL_BYTES||effect.kind()==StorageFacts.MoveKind.FITTED_LITERAL_BYTES) {
             correlate(move.source().id(),sourceId,sourceOrigin,links,items,unit,ids);
             return new Operations.Assign(header,place,new Expressions.Literal(new Operand.Header(sourceId,Operand.Role.VALUE_READ,sourceOrigin),new Values.BytesValue(effect.bytes())));
         }
