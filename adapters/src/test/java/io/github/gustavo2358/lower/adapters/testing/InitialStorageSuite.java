@@ -13,7 +13,9 @@ public final class InitialStorageSuite {
         var bytes=Objects.requireNonNull(InitialStorageSuite.class.getResourceAsStream("/sp/storage-212/value-entry.json")).readAllBytes();
         var mapper=new ObjectMapper();var base=mapper.readTree(bytes);var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes);
         check(decoded instanceof SpJsonDecoder.Decoded,"SP2.12 decode: "+decoded);
-        var p=RegionalTranslationSuite.lower(((SpJsonDecoder.Decoded)decoded).input()).publication().orElseThrow();
+        var input=((SpJsonDecoder.Decoded)decoded).input();
+        check(input.statements().stream().anyMatch(s->s instanceof io.github.gustavo2358.lower.domain.SpInput.PerformFact f&&f.profile()==io.github.gustavo2358.lower.domain.SpInput.PerformProfile.BASIC_PROCEDURE_PERFORM),"fixture must prove BASIC PERFORM, not an opaque observation");
+        var p=RegionalTranslationSuite.lower(input).publication().orElseThrow();
         var state=p.units().getFirst().entries().getFirst().state();check(state.conditions().size()==1,"VALUE needs exactly one initial condition, not a statement");
         var c=state.conditions().getFirst();check(c.value() instanceof Entries.LiteralInitial l&&l.value().value().equals(new Values.BytesValue(List.of(215,199,212,240,240,240,240,241))),"VALUE bytes and explicit initial invocation");
         var place=(Places.RegionSlice)c.place();check(integer(place.offset())==2&&integer(place.length())==8,"initial child range is [2,10)");
