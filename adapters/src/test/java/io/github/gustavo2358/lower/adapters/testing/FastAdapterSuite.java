@@ -8,6 +8,7 @@ public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
         ObservedShapeSuite.main(new String[0]);
+        DisplayEffectsSuite.main(new String[0]); InitializeEffectsSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]);
         int cases = 0;
@@ -22,7 +23,7 @@ public final class FastAdapterSuite {
         if (cases != 2) throw new AssertionError("fixed W1 focal cases absent");
         RegionalStorageIntegrationSuite.run(); RegionalTranslationSuite.run();
         OverlayStorageIntegrationSuite.run();
-        RenamesStorageSuite.main(new String[0]); SliceStorageSuite.main(new String[0]); MoveSequenceStorageSuite.main(new String[0]); CorrespondingStorageSuite.main(new String[0]); InitialStorageSuite.main(new String[0]); PossibleEntrySuite.main(new String[0]); MixedInitialStorageSuite.main(new String[0]); PossibleEntrySuite.main(new String[0]); UnknownEntryBoundsSuite.main(new String[0]);
+        RenamesStorageSuite.main(new String[0]); SliceStorageSuite.main(new String[0]); MoveSequenceStorageSuite.main(new String[0]); CorrespondingStorageSuite.main(new String[0]); InitialStorageSuite.main(new String[0]); PossibleEntrySuite.main(new String[0]); MixedInitialStorageSuite.main(new String[0]); UnknownEntryBoundsSuite.main(new String[0]);
         EntryLocalizationSuite.run();
         IfIntegrationSuite.focal();
         MoveDataIntegrationSuite.run(); PerformIntegrationSuite.run(); MultiCallIntegrationSuite.run(); EvaluateIntegrationSuite.run(); GoToIntegrationSuite.run(); ConditionalGoToIntegrationSuite.run(); PerformFamilyIntegrationSuite.run(); PerformUntilIntegrationSuite.run(); PerformTimesIntegrationSuite.run(); PerformVaryingIntegrationSuite.run(); PartialIntegrationSuite.run();

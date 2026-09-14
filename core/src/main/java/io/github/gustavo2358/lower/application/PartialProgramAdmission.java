@@ -32,9 +32,15 @@ final class PartialProgramAdmission {
                             c.require(new HashSet<>(ids).size()==ids.size(),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand inventory is distinct");
                             for(var id:ids)c.require(refs.containsKey(id),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand belongs to statement");
                         }
+                        for(var id:e.mayWrites())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.WRITE,Rule.PROFILE_FACT,o.header().id().handle(),null,"write role required");
+                        c.require(e.mustOverwrite().isEmpty()||e.proof()==EffectProof.INITIALIZE_TARGETS&&e.unknownWriteBound()==EffectBound.NONE
+                            &&e.unknownExposureBound()==EffectBound.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"only bounded INITIALIZE may prove MUST");
+                        for(var id:e.mustOverwrite())c.require(refs.containsKey(id)&&refs.get(id).regionalAccess().isPresent(),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires exact physical access");
                         c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
+                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE)c.require(e.values()==EffectValueTransform.UNKNOWN
+                            &&(e.unknownWriteBound()!=EffectBound.NONE||!e.mayWrites().isEmpty()),Rule.PROFILE_FACT,o.header().id().handle(),null,"receiving effect cannot silently have no writes or known transform");
                         for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
-                        c.require(e.proof()==EffectProof.DISPLAY_SIMPLE&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
+                        if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
                             &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
                             &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
                     });
