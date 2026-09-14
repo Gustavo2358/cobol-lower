@@ -1,5 +1,7 @@
 # cobol-lower
 
+Storage W6–W8: [qualified profile, tests and limits](docs/engineering/storage-w8-qualification.md). Human review pending; no merge.
+
 CP6 W2B: SP 1.4.0 IF simples → AIR diamond com Branch(Unknown BOOL),
 Assign/Jump, Invoke e Return; premissa DisjointStorage traduzida da prova upstream.
 [Contrato IF](docs/domain/simple-if-diamond.md), [work item W2B](docs/work/active/WORK-LOWER-011/work-item.yaml).
