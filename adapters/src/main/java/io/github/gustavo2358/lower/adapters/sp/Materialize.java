@@ -9,6 +9,14 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 /** Mechanical materialization only. Semantic validation belongs to the inner application. */
 final class Materialize {
     private Materialize() { }
+    private static OtherStatement observed(StatementHeader header, String kind, String shape, String gapCode) {
+        return observed(header, kind, shape, gapCode,
+            new NormalContinuation(ContinuationAvailability.UNAVAILABLE, Optional.empty(), header.provenance()), List.of());
+    }
+    private static OtherStatement observed(StatementHeader header, String kind, String shape, String gapCode,
+            NormalContinuation continuation, List<DataReference> knownReferences) {
+        return new OtherStatement(header, Variant.OBSERVED, kind, Optional.of(shape), gapCode, continuation, knownReferences);
+    }
     static SpInput input(Wire.Document d) {
         var unit = unitKey(d.unit(), null);
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> dataFact(v, unit)).toList(),
@@ -41,9 +49,9 @@ final class Materialize {
                         Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit)),
                     v.copySemantics(), new NormalContinuation(next.availability(), Optional.ofNullable(next.statement()).map(id -> new StatementId(unit, id)), provenance(next.provenance(), unit)));
             }
-            case Wire12.CallDocument v -> new OtherStatement(h, Variant.CALL);
-            case Wire12.IfDocument v -> new OtherStatement(h, Variant.IF);
-            case Wire12.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+            case Wire12.CallDocument v -> OtherStatement.unsupported(h, Variant.CALL);
+            case Wire12.IfDocument v -> OtherStatement.unsupported(h, Variant.IF);
+            case Wire12.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     static SpInput input(Wire13.Document d) {
@@ -82,8 +90,8 @@ final class Materialize {
                 yield new CallFact(h, v.syntax(), target, v.runtimeTarget(), v.runtimeUncertaintyCode(), continuation(v.normalContinuation(), unit),
                     new CallSurface(s.using(), Optional.ofNullable(s.argumentCount()), s.returning(), s.onException(), s.notOnException(), s.onOverflow()), v.effects(), v.outcomes());
             }
-            case Wire13.IfDocument v -> new OtherStatement(h, Variant.IF);
-            case Wire13.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+            case Wire13.IfDocument v -> OtherStatement.unsupported(h, Variant.IF);
+            case Wire13.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     private static LogicalValue logical(Wire13.LogicalDocument value) {
@@ -144,7 +152,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire14.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+            case Wire14.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     private static LogicalValue logical(Wire14.LogicalDocument value) {
@@ -209,7 +217,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire15.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+            case Wire15.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     private static LogicalValue logical(Wire15.LogicalDocument value) {
@@ -279,7 +287,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire16.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED);
+            case Wire16.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     private static LogicalValue logical(Wire16.LogicalDocument value) {
@@ -349,7 +357,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire18.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire18.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire18.LogicalDocument value) {
@@ -426,7 +434,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire20.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire20.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire20.LogicalDocument value) {
@@ -506,7 +514,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire21.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire21.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire21.LogicalDocument value) {
@@ -592,7 +600,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire22.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire22.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire22.LogicalDocument value) {
@@ -678,7 +686,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire23.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire23.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire23.LogicalDocument value) {
@@ -770,7 +778,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire24.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire24.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire24.LogicalDocument value) {
@@ -862,7 +870,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire25.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire25.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire25.LogicalDocument value) {
@@ -959,7 +967,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire26.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire26.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire26.LogicalDocument value) {
@@ -1095,7 +1103,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire211.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire211.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire211.LogicalDocument value) {
@@ -1217,7 +1225,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire210.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire210.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire210.LogicalDocument value) {
@@ -1336,7 +1344,7 @@ final class Materialize {
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
                     continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
             }
-            case Wire27.ObservedDocument v -> new OtherStatement(h, Variant.OBSERVED, v.observedKind(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
+            case Wire27.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
     }
     private static LogicalValue logical(Wire27.LogicalDocument value) {
@@ -1382,10 +1390,10 @@ final class Materialize {
     private static StatementFact statement(Wire.StatementDocument value, UnitKey unit) {
         return switch (value) {
             case Wire.GobackFactDocument v -> gobackFact(v, unit);
-            case Wire.MoveDocument v -> new OtherStatement(statementHeader(v.header(), unit), Variant.MOVE);
-            case Wire.CallDocument v -> new OtherStatement(statementHeader(v.header(), unit), Variant.CALL);
-            case Wire.IfDocument v -> new OtherStatement(statementHeader(v.header(), unit), Variant.IF);
-            case Wire.ObservedDocument v -> new OtherStatement(statementHeader(v.header(), unit), Variant.OBSERVED);
+            case Wire.MoveDocument v -> OtherStatement.unsupported(statementHeader(v.header(), unit), Variant.MOVE);
+            case Wire.CallDocument v -> OtherStatement.unsupported(statementHeader(v.header(), unit), Variant.CALL);
+            case Wire.IfDocument v -> OtherStatement.unsupported(statementHeader(v.header(), unit), Variant.IF);
+            case Wire.ObservedDocument v -> observed(statementHeader(v.header(), unit), v.observedKind(), v.observedShape(), v.gapCode());
         };
     }
     private static UnitKey unitKey(Wire.UnitKeyDocument d, UnitKey unit) {

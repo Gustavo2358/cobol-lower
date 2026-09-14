@@ -118,9 +118,9 @@ public final class ScalarSuite {
         }
         rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m)), "GOBACK absent");
         var terminal = base.statements().getLast().header();
-        rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, new OtherStatement(terminal, Variant.CALL))), "terminal not GOBACK");
+        rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, OtherStatement.unsupported(terminal, Variant.CALL))), "terminal not GOBACK");
         var extra = new StatementHeader(new SpInput.StatementId(base.unit(), "statement:2"), 2, terminal.containment(), terminal.provenance(), terminal.coverage(), terminal.readiness());
-        rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, base.statements().getLast(), new OtherStatement(extra, Variant.CALL))), "unsupported extra occurrence");
+        rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, base.statements().getLast(), OtherStatement.unsupported(extra, Variant.CALL))), "unsupported extra occurrence");
         rejected(ScalarInputs.replace(base, base.dataDeclarations(), List.of(m, base.statements().getLast(), new GobackFact(extra, GobackExit.CURRENT_PROGRAM_INVOCATION, LocalContinuation.NONE))), "unreachable extra GOBACK");
         rejected(ScalarInputs.replace(base, List.of(base.dataDeclarations().get(1)), base.statements()), "referenced DATA absent");
         var tooShort = new LogicalValue(LogicalDomain.TEXT, "PROGA", 4);

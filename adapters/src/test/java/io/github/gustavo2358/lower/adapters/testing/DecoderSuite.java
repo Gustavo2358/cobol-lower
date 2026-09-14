@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
+import io.github.gustavo2358.lower.adapters.sp.ObservedShapeSuite;
 import io.github.gustavo2358.lower.domain.SpInput;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -168,6 +169,7 @@ public final class DecoderSuite {
         check(mapped.entryInventory().entries().get(0).id().handle().equals("entry:91") && mapped.entryInventory().entries().get(0).start().statement().orElseThrow().handle().equals("statement:73") && mapped.structure().roots().get(0).handle().equals("statement:73"), "consistent arbitrary handles preserved");
     }
     public static void main(String[] ignored) throws Exception {
+        assertions += ObservedShapeSuite.run();
         EntryLocalizationSuite.run();
         assertions += ScalarWireSuite.run();
         assertions += CallIntegrationSuite.run();
