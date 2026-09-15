@@ -1,0 +1,11 @@
+# RF-W2 — partial statement memory effects
+
+IN_PROGRESS. SP 2.17 adds an explicit statementEffects inventory (summary 1.0.0) referencing existing observed statements/operands. Wire217 reuses the existing SP statement/storage DTOs; missing inventories, duplicate/unresolved owners, unknown fields and incompatible proof shapes are errors. Old SP forms retain their prior meaning. Empty inventory means no summaries supplied, never an effect-free program.
+
+The lower consumes typed effects and canonical physical references. It does not inspect COBOL text or infer purity from observedKind. DISPLAY_SIMPLE is admitted as a complete no-write/no-exposure storage dimension, with literal or known reference reads and an independent open OUTPUT effect. Unmaterialized reads reopen only the read bound. Unknown summaries keep all-memory bounds. Existing AIR MemoryEnvelope transports known reads, known writes, other bounds and MUST overwrite; there is no parallel effects solver and no AIR contract extension in this wave.
+
+Control remains the existing published continuation plus its open remainder. Output/environment uncertainty remains separately visible. No statement is removed or converted to NOP. Statement IDs include the effect facts in canonical identity. Regional addresses use existing storage admission and views; nominal binding alone is not enough.
+
+NEW focal evidence: two real frontend products (literal/read DISPLAY), source SP→AIR→JSON round-trip, no memory writes, retained environment effects, and six adversarial wire/proof cases. Initial malformed-owner probe exposed an uncaught adapter error; it now returns INPUT_ERROR. FAST is deferred until all RF-W2 adapters stabilize, per the campaign's one-gate-per-wave policy. W1 FAST and eight verticals remain reused evidence for unchanged entry laws.
+
+Typed receiving footprints now cover the focal ACCEPT, INITIALIZE, SET, ADD/COMPUTE, STRING/UNSTRING and INSPECT adapters. Values remain unknown; writes are MAY, with exact whole-elementary INITIALIZE as the only new MUST form. Missing binding/physical materialization opens the write bound; unknown exposure stays all-memory. Group/sliced/nonphysical MUST assertions are rejected bilaterally. NEW focal suites for display/initialize/possible entry/DVI/partial composition passed. No transformation evaluator was added.

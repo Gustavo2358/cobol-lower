@@ -2,7 +2,7 @@ package io.github.gustavo2358.lower.adapters.sp;
 import java.util.List;
 import io.github.gustavo2358.lower.domain.StorageFacts;
 import static io.github.gustavo2358.lower.adapters.sp.Wire.Nullable;
-/** SP2.15 / storage1.4 entry proofs; existing statement shapes stay unchanged. */
+/** SP2.15/storage1.4 and SP2.16/storage1.5 entry proofs (same fields, versioned enum admission); existing statement shapes stay unchanged. */
 final class Wire215 {
     private Wire215() { }
     record Document(String schema,String contractVersion,Wire.UnitKeyDocument unit,Wire.PolicyDocument policy,

@@ -372,6 +372,13 @@ final class PartialIdentityFacts {
                 field.accept("gapCode"); value.accept(r.gapCode());
                 field.accept("normalContinuation"); value.accept(r.normalContinuation());
                 field.accept("knownReferences"); value.accept(r.knownReferences());
+                if(r.effects().isPresent()){field.accept("effects");value.accept(r.effects());}
+            }
+            case SpInput.EffectSummary r -> {
+                field.accept("EffectSummary");
+                value.accept(r.knownReads());value.accept(r.mayWrites());value.accept(r.mustOverwrite());value.accept(r.exposedRegions());
+                value.accept(r.unknownReadBound());value.accept(r.unknownWriteBound());value.accept(r.unknownExposureBound());
+                value.accept(r.environment());value.accept(r.values());value.accept(r.proof());
             }
             case SpInput.Gap r -> {
                 field.accept("Gap");

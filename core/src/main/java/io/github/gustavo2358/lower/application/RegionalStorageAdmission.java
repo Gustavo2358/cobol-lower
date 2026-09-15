@@ -33,7 +33,7 @@ final class RegionalStorageAdmission {
         var views=new LinkedHashMap<NodeId,View>();var byData=new LinkedHashMap<DataId,View>();
         if(input.storage().isEmpty()) {
             for(var statement:input.statements()) {
-                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty(),"regional access requires a storage inventory");
+                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
             return new Index(input,nodes,bases,views,byData);
@@ -92,12 +92,32 @@ final class RegionalStorageAdmission {
                 require(ov.base().equals(tv.base())&&ov.offset().equals(tv.offset()),"proved storage relation must share base and start");
             }
         }
-        if(storage.relations().stream().anyMatch(r->r.status()==RelationStatus.UNPROVEN)) {
-            require(storage.bases().stream().noneMatch(b->b.allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE),
-                "unproved storage relation contradicts allocation independence");
-            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
-                "unproved storage relation contradicts standalone scalar proof");
+        var uncertainBases=new HashSet<BaseId>();
+        boolean unboundedRelation=false;
+        for(var relation:storage.relations())if(relation.status()==RelationStatus.UNPROVEN) {
+            var owner=nodes.get(relation.owner());
+            if(owner.parent().isEmpty())unboundedRelation=true;
+            else uncertainBases.add(views.get(owner.id()).base());
         }
+        if(unboundedRelation) {
+            require(storage.bases().stream().noneMatch(b->b.allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE),
+                "unproved root relation contradicts allocation independence");
+            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+                "unproved root relation contradicts standalone scalar proof");
+        }
+        // The physical parent chain bounds a subordinate overlay to its record.
+        // Do not infer endpoints or precise views inside that uncertain component.
+        for(var base:uncertainBases)require(bases.get(base).extent().value().isEmpty(),
+            "unproved subordinate relation requires unknown component extent");
+        var uncertainData=new HashSet<DataId>();
+        for(var view:views.values())if(uncertainBases.contains(view.base())) {
+            require(view.extent().value().isEmpty()&&view.codec().isEmpty(),
+                "unproved subordinate relation cannot certify component views");
+            nodes.get(view.node()).data().ifPresent(uncertainData::add);
+        }
+        require(input.dataDeclarations().stream().filter(d->uncertainData.contains(d.id()))
+            .allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            "uncertain component contradicts scalar proof");
         for(var node:storage.nodes())node.parent().ifPresent(id->{
             var parent=nodes.get(id);var pv=views.get(id);var view=views.get(node.id());
             require(parent.kind()!=Kind.ELEMENTARY&&pv.base().equals(view.base()),"child must belong to a group on the same base");
@@ -131,19 +151,21 @@ final class RegionalStorageAdmission {
             c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
             require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
-            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
-            require((condition.kind()==InitialKind.UNKNOWN)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            require(condition.kind()==InitialKind.LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
+            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
             require(condition.kind()==InitialKind.UNKNOWN?condition.proof()==InitialProof.NONE:condition.kind()==InitialKind.PRESERVE?condition.proof()==InitialProof.EXPLICIT_PRESERVED
+                :condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
+            require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
             if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
                 boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
                     :condition.proof()==InitialProof.EXPLICIT_PRESERVED?storage.entryState().mode()==EntryMode.PRESERVED:storage.entryState().mode()==EntryMode.UNKNOWN;
-                require(mode&&(condition.kind()!=InitialKind.LITERAL_BYTES||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
+                require(mode&&((condition.kind()!=InitialKind.LITERAL_BYTES&&condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES)||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
                     "initial condition contradicts mode or extent");
-                require(condition.proof()!=InitialProof.DECLARATIVE_INVARIANT||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
+                require((condition.proof()!=InitialProof.DECLARATIVE_INVARIANT&&condition.proof()!=InitialProof.DECLARATIVE_POSSIBILITY)||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
                     "declarative invariant needs independent local storage");
             }
         }
@@ -151,6 +173,19 @@ final class RegionalStorageAdmission {
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {
+                if(!ref.regionalAlternatives().isEmpty()) {
+                    require(ref.role()==OperandRole.CALL_TARGET&&ref.binding().status()==ResolutionStatus.AMBIGUOUS
+                        &&ref.binding().selected().isEmpty()&&ref.regionalAccess().isEmpty()&&ref.wholeItemAccess().isEmpty(),"alternatives require an ambiguous CALL reference");
+                    var selectedViews=new HashSet<NodeId>();
+                    for(var access:ref.regionalAlternatives()) {
+                        var node=nodes.get(access.view());var view=views.get(access.view());
+                        require(node!=null&&view!=null&&node.data().isPresent()&&ref.binding().candidates().contains(node.data().get())
+                            &&selectedViews.add(node.id()),"alternative must identify a distinct supported binding candidate");
+                        require(access.slice().isEmpty()&&node.kind()==Kind.ELEMENTARY&&view.codec().isPresent()
+                            &&view.offset().value().isPresent()&&view.extent().value().isPresent()&&view.extent().value().get().signum()>0
+                            &&bases.get(view.base()).extent().value().isPresent(),"alternative requires exact canonical whole text storage");
+                    }
+                }
                 c.touch();ref.regionalAccess().ifPresent(access->{
                     var node=nodes.get(access.view());var view=views.get(access.view());
                     require(node!=null&&view!=null&&ref.binding().status()==ResolutionStatus.RESOLVED&&ref.binding().candidates().size()==1
@@ -165,6 +200,14 @@ final class RegionalStorageAdmission {
                 });
             }
             if(statement instanceof MoveFact move)validateMove(move,index);
+            if(statement instanceof OtherStatement o&&o.effects().isPresent()) {
+                var refs=new HashMap<OperandId,DataReference>();o.knownReferences().forEach(r->refs.put(r.id(),r));
+                for(var id:o.effects().orElseThrow().mustOverwrite()) {
+                    var ref=refs.get(id);require(ref!=null&&ref.regionalAccess().isPresent(),"effect MUST needs exact regional destination");
+                    var access=ref.regionalAccess().orElseThrow();var node=nodes.get(access.view());
+                    require(node!=null&&node.kind()==Kind.ELEMENTARY&&!node.filler()&&access.slice().isEmpty(),"INITIALIZE MUST is an exact whole elementary receiver");
+                }
+            }
         }
         return index;
     }
