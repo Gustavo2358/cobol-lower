@@ -22,7 +22,7 @@ public final class FastAdapterSuite {
         }
         if (cases != 2) throw new AssertionError("fixed W1 focal cases absent");
         RegionalStorageIntegrationSuite.run(); RegionalTranslationSuite.run();
-        OverlayStorageIntegrationSuite.run();
+        OverlayStorageIntegrationSuite.run(); ScopedStorageSuite.run();
         RenamesStorageSuite.main(new String[0]); SliceStorageSuite.main(new String[0]); MoveSequenceStorageSuite.main(new String[0]); CorrespondingStorageSuite.main(new String[0]); InitialStorageSuite.main(new String[0]); PossibleEntrySuite.main(new String[0]); MixedInitialStorageSuite.main(new String[0]); UnknownEntryBoundsSuite.main(new String[0]);
         EntryLocalizationSuite.run();
         IfIntegrationSuite.focal();
