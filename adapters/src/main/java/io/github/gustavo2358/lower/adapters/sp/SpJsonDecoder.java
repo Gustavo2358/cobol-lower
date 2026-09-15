@@ -99,6 +99,12 @@ public final class SpJsonDecoder {
                 for(var reference:node.findParents("binding"))if(reference.has("role")&&!reference.path("regionalAlternatives").isArray())
                     throw new PhysicalShape("$/reference/regionalAlternatives");
             }
+            // Shared typed reference records also read the prior closed wire profiles.
+            // Those contracts had no physical-alternative field; absent means no such proof,
+            // not an exhaustive empty binding or a no-effect claim. New-version omission rejects above.
+            if(java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0").contains(node.path("contractVersion").textValue()))
+                for(var reference:node.findParents("binding"))if(reference.has("role"))
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)reference).putArray("regionalAlternatives");
             SpInput input;
             switch (node.path("contractVersion").textValue()) {
                 case "1.1.0" -> {
