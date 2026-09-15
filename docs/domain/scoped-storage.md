@@ -17,3 +17,14 @@ Hostile component extents and unbounded relations are rejected. The overlay fami
 continues to reject invented allocation and retains all alias relation provenance.
 The selected source verticals retain PROGA; missing local PROCEDURE COPY still blocks
 entry, with observed candidates kept separately by the frontend CLI.
+
+
+SP 2.18 adds a non-exhaustive `regionalAlternatives` list to DataReference. The reader
+checks version, canonical views, bounds, distinct supported binding candidates and
+CALL_TARGET role. Lowering creates existing AIR Place.Choice with an open all-memory
+remainder and unknown_type(TYPE_UNKNOWN); it does not choose a binding or read VALUE.
+The required `target.possibilities@1` capability explicitly authorizes partial target
+domains. Consumer incompatibility is an explicit failure, never stripping operands.
+AmbiguousTargetSuite freezes actual producer wire plus duplicate, foreign, false
+selection and version-downgrade negatives. Dynamic selectors still provide no invented
+whole-item candidate. The regional solver determines the current value at the call.

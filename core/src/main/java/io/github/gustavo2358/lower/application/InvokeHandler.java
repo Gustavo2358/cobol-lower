@@ -10,6 +10,11 @@ final class InvokeHandler {
     static Operations.Invoke translate(SpInput.CallFact call, Map<SpInput.DataId, LoweringResult.DataLink> data,
             LabelId normal, OriginId continuation, UnitId unit, LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links,
             List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
+        return translate(call,data,normal,continuation,unit,ids,origins,links,items,uncertainties,null);
+    }
+    static Operations.Invoke translate(SpInput.CallFact call, Map<SpInput.DataId, LoweringResult.DataLink> data,
+            LabelId normal, OriginId continuation, UnitId unit, LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links,
+            List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,RegionalStorageAdmission.Index storage) {
         var key = call.header().id().handle();
         var operation = new OperationId(unit, ids.id("operation", "call-invoke", unit.localId(), key));
         var origin = origins.source("statement", key, call.header().provenance());
@@ -44,6 +49,26 @@ final class InvokeHandler {
             links.add(new LoweringResult.OperandLink(reference.id(), readId, readOrigin));
             links.add(new LoweringResult.OperandLink(reference.id(), placeId, placeOrigin));
             items.add(ScalarEvidence.item(unit.publication(), "operand", reference.id().handle(), targetOrigin, List.of(readId, placeId)));
+        } else if(storage!=null&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()) {
+            var reference=d.reference();var owner=new OperationOwner(operation);var choices=new ArrayList<Place>();var outputs=new ArrayList<Id>();
+            var reason=uncertainty("TYPE_UNKNOWN","Canonical whole-text candidates are retained; binding and remaining locations stay open.",
+                List.of(Evidence.Dimension.VALUES,Evidence.Dimension.STORAGE,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);
+            for(var access:reference.regionalAlternatives()) {
+                var link=data.get(storage.nodes().get(access.view()).data().orElseThrow());
+                if(link==null)continue;
+                var id=new OperandId(owner,ids.id("operand","call-choice-item",operation.localId(),access.view().handle()));
+                var choiceOrigin=origins.derived(ids.id("origin","call-choice-item",operation.localId(),access.view().handle()),List.of(targetOrigin,link.origin()),"storage@1/canonical-reference-alternative");
+                choices.add(new Places.ObjectPlace(new Operand.Header(id,Operand.Role.VALUE_READ,choiceOrigin),link.object()));
+                outputs.add(id);links.add(new LoweringResult.OperandLink(reference.id(),id,choiceOrigin));
+            }
+            var placeId=new OperandId(owner,ids.id("operand","call-choice",operation.localId(),reference.id().handle()));
+            var readId=new OperandId(owner,ids.id("operand","call-choice-read",operation.localId(),reference.id().handle()));
+            var place=new Places.Choice(new Operand.Header(placeId,Operand.Role.VALUE_READ,targetOrigin),choices,
+                new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),new Types.UnknownType(reason));
+            var read=new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place);
+            target=new Interactions.ComputedTarget("program","cobol.program",read,namePolicy,targetOrigin);
+            outputs.add(placeId);outputs.add(readId);links.add(new LoweringResult.OperandLink(reference.id(),placeId,targetOrigin));links.add(new LoweringResult.OperandLink(reference.id(),readId,targetOrigin));
+            items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),targetOrigin,outputs));
         } else {
             var valueReason=uncertainty("CALL_NAME_VALUE_UNAVAILABLE","The published CALL site has an unavailable program-name value.",
                 List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);

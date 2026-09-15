@@ -260,11 +260,14 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record WholeItemAccess(DataId data) {
         public WholeItemAccess { Objects.requireNonNull(data); }
     }
-    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess) implements MoveSource {
+    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess,List<StorageFacts.Access> regionalAlternatives) implements MoveSource {
+        public DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess) {
+            this(id,role,binding,wholeItemAccess,provenance,regionalAccess,List.of());
+        }
         public DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) {
             this(id,role,binding,wholeItemAccess,provenance,Optional.empty());
         }
-        public DataReference { Objects.requireNonNull(regionalAccess); Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
+        public DataReference { regionalAlternatives=List.copyOf(regionalAlternatives); Objects.requireNonNull(regionalAccess); Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
     }
     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
         public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }

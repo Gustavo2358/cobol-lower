@@ -1140,7 +1140,8 @@ final class Materialize {
                 Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())),
                 binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
             Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit),
-            Optional.ofNullable(target.regionalAccess()).map(a->new StorageFacts.Access(new StorageFacts.NodeId(unit,a.view()),Optional.ofNullable(a.slice()).map(slice->new StorageFacts.Slice(unsigned(slice.offset()),unsigned(slice.extent()))))));
+            Optional.ofNullable(target.regionalAccess()).map(a->new StorageFacts.Access(new StorageFacts.NodeId(unit,a.view()),Optional.ofNullable(a.slice()).map(slice->new StorageFacts.Slice(unsigned(slice.offset()),unsigned(slice.extent()))))),
+            target.regionalAlternatives()==null?List.of():target.regionalAlternatives().stream().map(x->new StorageFacts.Access(new StorageFacts.NodeId(unit,x.view()),Optional.ofNullable(x.slice()).map(t->new StorageFacts.Slice(unsigned(t.offset()),unsigned(t.extent()))))).toList());
     }
     private static IfArm arm(Wire211.ArmDocument a, UnitKey unit) {
         return new IfArm(a.presence(),a.contentAvailability(),executableStart(a.entry(),unit),provenance(a.provenance(),unit),a.gapCodes());

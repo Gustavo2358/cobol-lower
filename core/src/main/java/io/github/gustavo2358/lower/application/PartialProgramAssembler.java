@@ -50,7 +50,7 @@ final class PartialProgramAssembler {
                 link(fact.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.CallFact call) {
                 var completion=origins.source("continuation",call.header().id().handle(),call.normalContinuation().provenance());
-                term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties);
+                term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties,plan.storage());
                 link(fact.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.EvaluateFact e) {
                 var chain = EvaluateLowerer.chain(e, destination, data, unit, ids, origins, operands, items, uncertainties);

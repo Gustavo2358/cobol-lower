@@ -33,7 +33,7 @@ final class RegionalStorageAdmission {
         var views=new LinkedHashMap<NodeId,View>();var byData=new LinkedHashMap<DataId,View>();
         if(input.storage().isEmpty()) {
             for(var statement:input.statements()) {
-                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty(),"regional access requires a storage inventory");
+                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
             return new Index(input,nodes,bases,views,byData);
@@ -173,6 +173,19 @@ final class RegionalStorageAdmission {
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {
+                if(!ref.regionalAlternatives().isEmpty()) {
+                    require(ref.role()==OperandRole.CALL_TARGET&&ref.binding().status()==ResolutionStatus.AMBIGUOUS
+                        &&ref.binding().selected().isEmpty()&&ref.regionalAccess().isEmpty()&&ref.wholeItemAccess().isEmpty(),"alternatives require an ambiguous CALL reference");
+                    var selectedViews=new HashSet<NodeId>();
+                    for(var access:ref.regionalAlternatives()) {
+                        var node=nodes.get(access.view());var view=views.get(access.view());
+                        require(node!=null&&view!=null&&node.data().isPresent()&&ref.binding().candidates().contains(node.data().get())
+                            &&selectedViews.add(node.id()),"alternative must identify a distinct supported binding candidate");
+                        require(access.slice().isEmpty()&&node.kind()==Kind.ELEMENTARY&&view.codec().isPresent()
+                            &&view.offset().value().isPresent()&&view.extent().value().isPresent()&&view.extent().value().get().signum()>0
+                            &&bases.get(view.base()).extent().value().isPresent(),"alternative requires exact canonical whole text storage");
+                    }
+                }
                 c.touch();ref.regionalAccess().ifPresent(access->{
                     var node=nodes.get(access.view());var view=views.get(access.view());
                     require(node!=null&&view!=null&&ref.binding().status()==ResolutionStatus.RESOLVED&&ref.binding().candidates().size()==1
