@@ -247,6 +247,12 @@ final class RegionalStorageAdmission {
             var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(text),dest.extent().value().orElseThrow());
             require(encoded.status()==MemoryCodecs.Status.EXACT&&encoded.value().orElseThrow().octets().equals(effect.bytes()),"published bytes disagree with logical literal, declared codec or extent");
         }
+        if(effect.kind()==MoveKind.LOGICAL_FIT_TEXT) {
+            require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.logicalWholeItem().isPresent()&&r.binding().selected().equals(r.logicalWholeItem())&&r.provenance().exact(),"logical copy needs canonical whole READ");
+            var ref=(DataReference)transfer.source();var source=index.byData().get(ref.logicalWholeItem().orElseThrow());
+            require(source!=null&&index.nodes().get(source.node()).kind()==Kind.ELEMENTARY&&source.codec().isPresent()&&source.codec().equals(dest.codec())&&source.extent().value().filter(n->n.signum()>0).isPresent(),"logical copy requires supported text shape");
+            require(!source.base().equals(dest.base())&&index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE&&index.bases().get(dest.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"logical copy needs proved independent bases");
+        }
         if(effect.kind()==MoveKind.COPY_BYTES||effect.kind()==MoveKind.FIT_TEXT) {
             require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
             var source=index.access((DataReference)transfer.source()).orElseThrow();

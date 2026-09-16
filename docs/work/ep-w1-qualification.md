@@ -110,3 +110,21 @@ INCIDENT CLASS: pending W2–W5 generic and failure-containment qualification.
 REAL CASE: NOT AVAILABLE.
 
 GO to W2: centralize positive kill authority and execute the five policy mutants.
+
+## W5 independent copy counterproof / SP 2.20 storage 1.7
+
+A sending text item's offset can be unknown while its canonical whole identity,
+logical extent and text codec remain known. `LOGICAL_FIT_TEXT` admits one receiver
+only when source and receiver bases have positive independent allocation proofs.
+Lower emits existing Assign(FitText(Read logical object)); it invents no physical
+source region. Old SP versions, missing identity, inexact provenance and unknown
+alias reject the new transfer. The copied value is evaluated by the same regional
+solver, not by source rewriting or a parallel solver.
+
+The open source repertoire leaves operation preconditions unproved. Lower now has
+an explicit PARTIAL result, containing the publication and actual incomplete
+validation report. It opts into the normative scoped partial assessment only for
+this positive transfer relation. CLI prints PARTIAL and uses the explicit partial
+encoder; ordinary output remains strict. Invalid structures/resource failures are
+not admitted. Bilateral model/codec/CLI and copied-value E2E evidence is recorded in
+the final EP-W5 qualification, including source overwrite capture and later MUST.

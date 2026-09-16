@@ -16,6 +16,7 @@ final class RegionalTransferAdmission {
     }
     static void validate(SpInput.MoveFact move,RegionalStorageAdmission.Index storage) {
         if(move.additionalTransfers().isEmpty())return;
+        require(move.transfers().stream().noneMatch(t->t.effect().kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT),"logical source capture only admits one receiver");
         var writes=new HashMap<StorageFacts.BaseId,List<StorageFacts.View>>();
         for(var transfer:move.transfers()) {
             require(transfer.effect().kind()!=StorageFacts.MoveKind.UNAVAILABLE,"sequence cannot omit an unproved receiver");

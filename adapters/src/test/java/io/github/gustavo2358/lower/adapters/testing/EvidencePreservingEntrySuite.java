@@ -74,6 +74,46 @@ public final class EvidencePreservingEntrySuite {
                 }
             }
         }
+        logicalCopy();
         System.out.println("EP_ENTRY_LOWER=PASS source/entry/target/codec/no invented allocation");
     }
+    private static void logicalCopy() throws Exception {
+        var bytes=Objects.requireNonNull(EvidencePreservingEntrySuite.class.getResourceAsStream("/sp/evidence/logical-copy.json")).readAllBytes();
+        var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);var decoded=decoder.decode(bytes);
+        check(decoded instanceof SpJsonDecoder.Decoded,"SP 2.20 logical copy contract");
+        var result=new CobolLowerer().lower(((SpJsonDecoder.Decoded)decoded).input(),CobolLower.OPTIONS);
+        check(result.status()==LoweringResult.Status.PARTIAL,"open repertoire cannot become success: "+result.status());
+        var p=result.publication().orElseThrow();var validation=result.validation().orElseThrow();
+        check(!validation.isStructurallyValid()&&validation.unprovedOperationPreconditions().isPresent(),"actual incomplete report retained");
+        var assign=p.units().getFirst().sequences().stream().flatMap(s->s.instructions().stream()).filter(Operations.Assign.class::isInstance).map(Operations.Assign.class::cast).findFirst().orElseThrow();
+        check(assign.value() instanceof Expressions.FitText fit&&fit.value() instanceof Expressions.Read read&&read.place() instanceof Places.ObjectPlace,"existing typed copy relation");
+        var source=(Places.ObjectPlace)((Expressions.Read)((Expressions.FitText)assign.value()).value()).place();
+        check(p.units().getFirst().objects().stream().filter(o->o.id().equals(source.object())).allMatch(o->o.storage() instanceof Memory.UnknownBinding),"source binding stays unknown");
+        var codec=new AirJson();
+        try {codec.encode(p);throw new AssertionError("strict encoder accepted incomplete output");}
+        catch(io.github.gustavo2358.air.json.AirJsonException expected){check(expected.code()==io.github.gustavo2358.air.json.AirJsonException.Code.INCOMPLETE_VALIDATION,"strict incomplete report");}
+        var partial=codec.encodeForPartialAnalysis(p);check(codec.decodeForPartialAnalysis(partial.bytes()).publication().equals(p),"partial bilateral roundtrip");
+        var directory=Files.createTempDirectory("ep-logical-copy-");var input=directory.resolve("sp.json");var output=directory.resolve("air.json");Files.write(input,bytes);
+        var log=new java.io.ByteArrayOutputStream();check(CobolLower.run(new String[]{input.toString(),output.toString()},new java.io.PrintStream(log))==0,"partial CLI output");
+        check(log.toString(java.nio.charset.StandardCharsets.UTF_8).contains("PARTIAL")&&codec.decodeForPartialAnalysis(Files.readAllBytes(output)).validation().unprovedOperationPreconditions().isPresent(),"partial result is explicit");
+        var mapper=new ObjectMapper();var tree=mapper.readTree(bytes);
+        var withoutValue=tree.deepCopy();((ObjectNode)withoutValue.path("storage").path("entryState")).set("conditions",mapper.createArrayNode());
+        var noValue=(SpJsonDecoder.Decoded)decoder.decode(mapper.writeValueAsBytes(withoutValue));
+        var noValueResult=new CobolLowerer().lower(noValue.input(),CobolLower.OPTIONS);
+        check(noValueResult.status()==LoweringResult.Status.PARTIAL,"logical identity cannot depend on having VALUE");
+        check(noValueResult.publication().orElseThrow().units().getFirst().entries().getFirst().state().conditions().isEmpty(),"absence of VALUE cannot manufacture an entry candidate");
+        for(var mutation:List.of("old-version","missing-identity","unproved-alias","inexact-source")) {
+            var changed=tree.deepCopy();var ref=(ObjectNode)changed.path("statements").get(0).path("source").path("reference");
+            switch(mutation) {
+                case "old-version"->{((ObjectNode)changed).put("contractVersion","2.19.0");((ObjectNode)changed.path("storage")).put("version","1.6.0");}
+                case "missing-identity"->ref.putNull("logicalWholeItem");
+                case "unproved-alias"->((ObjectNode)changed.path("storage").path("bases").get(0)).put("allocation","UNKNOWN");
+                case "inexact-source"->((ObjectNode)ref.path("provenance")).put("exact",false);
+            }
+            var bad=decoder.decode(mapper.writeValueAsBytes(changed));
+            if(bad instanceof SpJsonDecoder.Decoded d)check(new CobolLowerer().lower(d.input(),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"typed contradiction refused: "+mutation);
+            else check(bad instanceof SpJsonDecoder.Rejected,"wire contradiction refused: "+mutation);
+        }
+    }
+
 }

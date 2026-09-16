@@ -12,7 +12,10 @@ final class RegionalDataTranslator {
     static boolean sourceText(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         return source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
             .stream().flatMap(s->s.entryState().conditions().stream()).anyMatch(c->(c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT)
-                &&source.nodes().get(c.node()).data().filter(data::equals).isPresent());
+                &&source.nodes().get(c.node()).data().filter(data::equals).isPresent())
+            ||source.owner().statements().stream().anyMatch(s->s instanceof SpInput.MoveFact move
+                &&move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
+                &&move.source() instanceof SpInput.DataReference read&&read.logicalWholeItem().filter(data::equals).isPresent());
     }
     static boolean textual(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         var view=source.byData().get(data);

@@ -72,7 +72,8 @@ final class PartialProgramLowerer implements LowerInput {
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),
             List.of(body), data.storage(), List.of(), List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
-        var assessment = OutputAssessment.assess(output, options.validation());
+        boolean logicalCopy=input.statements().stream().anyMatch(s->s instanceof SpInput.MoveFact m&&m.regionalMove().filter(e->e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent());
+        var assessment = logicalCopy?OutputAssessment.assessForPartialAnalysis(output, options.validation()):OutputAssessment.assess(output, options.validation());
         return new LoweringResult(assessment.status(), admission, assessment.publication(), Optional.of(assessment.validation()),
             entryLinks, statements, origins.limitations(), List.copyOf(data.index().values()), operands);
     }

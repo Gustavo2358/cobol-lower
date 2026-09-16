@@ -39,14 +39,17 @@ public final class CobolLower {
             return INPUT;
         }
         var result = ((FileLowering.Lowered) physical).result();
-        if (result.status() != LoweringResult.Status.SUCCESS || result.publication().isEmpty()) {
+        if ((result.status() != LoweringResult.Status.SUCCESS && result.status()!=LoweringResult.Status.PARTIAL) || result.publication().isEmpty()) {
             err.println("Lowering " + result.status());
             for (var diagnostic : result.admission().diagnostics())
                 err.println(diagnostic.rule() + " " + diagnostic.subject() + ": " + diagnostic.requirement());
             return LOWERING;
         }
         try {
-            output.write(result.publication().orElseThrow(), destination);
+            if(result.status()==LoweringResult.Status.PARTIAL) {
+                err.println("Lowering PARTIAL: INCOMPLETE_VALIDATION; scoped operation preconditions remain open");
+                output.writePartial(result.publication().orElseThrow(),destination);
+            } else output.write(result.publication().orElseThrow(), destination);
         } catch (AirJsonException ex) {
             err.println("AIR codec " + ex.code() + " " + ex.path() + ": " + ex.getMessage());
             return CODEC;
