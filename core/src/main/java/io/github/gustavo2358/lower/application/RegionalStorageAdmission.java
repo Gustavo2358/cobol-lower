@@ -157,7 +157,10 @@ final class RegionalStorageAdmission {
                 :condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
-            if(condition.kind()!=InitialKind.UNKNOWN) {
+            if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
+                require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
+                require(storage.entryState().mode()!=EntryMode.PRESERVED,"preserved entry cannot assert declarative possibilities");
+            } else if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");

@@ -33,8 +33,9 @@ public record LoweringResult(Status status, Admission admission, Optional<Public
     public record Limitation(LimitCode code, String subject, String requirement) {
         public Limitation { Objects.requireNonNull(code); Objects.requireNonNull(subject); Objects.requireNonNull(requirement); }
     }
-    public record DataLink(SpInput.DataId source, Ids.ObjectId object, Ids.StorageId storage, Ids.OriginId origin) {
+    public record DataLink(SpInput.DataId source, Ids.ObjectId object, Optional<Ids.StorageId> storage, Ids.OriginId origin) {
         public DataLink { Objects.requireNonNull(source); Objects.requireNonNull(object); Objects.requireNonNull(storage); Objects.requireNonNull(origin); }
+        public DataLink(SpInput.DataId source, Ids.ObjectId object, Ids.StorageId storage, Ids.OriginId origin) {this(source,object,Optional.of(storage),origin);}
     }
     public record OperandLink(SpInput.OperandId source, Ids.OperandId target, Ids.OriginId origin) {
         public OperandLink { Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(origin); }

@@ -28,10 +28,15 @@ final class RegionalEntryTranslator {
                 var link=source.nodes().get(fact.node()).data().map(data.index()::get).orElse(null);
                 if(link!=null)place=new Places.ObjectPlace(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),link.object());
             }
+            if(place==null&&fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES&&state.possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE) {
+                var link=source.nodes().get(fact.node()).data().map(data.index()::get).orElse(null);
+                if(link!=null)place=new Places.ObjectPlace(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),link.object());
+            }
             Entries.InitialValue value=null;
             if((fact.kind()==StorageFacts.InitialKind.LITERAL_BYTES||fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES)&&place!=null) {
                 Values.LiteralValue literal=new Values.BytesValue(fact.bytes());
-                if(place instanceof Places.ObjectPlace)literal=MemoryCodecs.decodeText(RegionalStorageAdmission.IBM1047,(Values.BytesValue)literal,view.extent().value().orElseThrow()).value().orElseThrow();
+                // Decoding source evidence uses its encoded logical size, not a fabricated physical extent.
+                if(place instanceof Places.ObjectPlace)literal=MemoryCodecs.decodeText(RegionalStorageAdmission.IBM1047,(Values.BytesValue)literal,java.math.BigInteger.valueOf(fact.bytes().size())).value().orElseThrow();
                 var expression=new Expressions.Literal(header(entry,key,"value",Operand.Role.VALUE_READ,origin,ids),literal);
                 if(fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES) {
                     var reason=new UncertaintyId(entry.unit().publication(),ids.id("uncertainty","possible-entry",entry.localId(),key));

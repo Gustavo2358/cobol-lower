@@ -57,8 +57,10 @@ public final class StorageFacts {
             this(node,kind,bytes,gapCodes,provenance,kind==InitialKind.UNKNOWN?InitialProof.NONE:kind==InitialKind.PRESERVE?InitialProof.EXPLICIT_PRESERVED:kind==InitialKind.POSSIBLE_LITERAL_BYTES?InitialProof.DECLARATIVE_POSSIBILITY:InitialProof.EXPLICIT_INITIAL);
         }
     }
-    public record EntryState(EntryMode mode,List<InitialCondition> conditions) {
-        public EntryState {Objects.requireNonNull(mode);conditions=List.copyOf(conditions);}
+    public enum PossibilityDomain { BOUNDED_PHYSICAL, LOGICAL_SOURCE }
+    public record EntryState(EntryMode mode,List<InitialCondition> conditions,PossibilityDomain possibilityDomain) {
+        public EntryState {Objects.requireNonNull(possibilityDomain);Objects.requireNonNull(mode);conditions=List.copyOf(conditions);}
+        public EntryState(EntryMode mode,List<InitialCondition> conditions) {this(mode,conditions,PossibilityDomain.BOUNDED_PHYSICAL);}
         public static EntryState unknown() {return new EntryState(EntryMode.UNKNOWN,List.of());}
     }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,

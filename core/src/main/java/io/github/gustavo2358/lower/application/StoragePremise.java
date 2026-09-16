@@ -34,7 +34,7 @@ final class StoragePremise {
             UnitId unit, LocalIds ids, SourceOrigins origins) {
         var origin = origins.source("storage-independence", unit.localId(), proof.provenance().orElseThrow());
         var members = new ArrayList<StorageId>();
-        for (var member : proof.members()) if (data.index().containsKey(member)) members.add(data.index().get(member).storage());
+        for (var member : proof.members()) if (data.index().containsKey(member)) data.index().get(member).storage().ifPresent(members::add);
         return new Proofs.Premise(new PremiseId(unit.publication(), ids.id("premise", "sp-storage-independence", unit.localId(), proof.rule().name())),
             proof.authority(), "SP rule: " + proof.rule().name(), origin, new Proofs.DisjointStorage(members));
     }

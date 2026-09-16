@@ -100,7 +100,7 @@ final class InvokeHandler {
             new Interactions.UnknownContract(contract));
     }
     private static Optional<SpInput.DataId> selected(SpInput.DataReference reference) {
-        return reference.regionalAccess().isPresent()?reference.binding().selected():reference.wholeItemAccess().map(SpInput.WholeItemAccess::data);
+        return reference.logicalWholeItem().or(()->reference.regionalAccess().isPresent()?reference.binding().selected():reference.wholeItemAccess().map(SpInput.WholeItemAccess::data));
     }
     private static UncertaintyId uncertainty(String code, String reason, List<Evidence.Dimension> dimensions,
             OperationId operation, OriginId origin, LocalIds ids, List<Evidence.Uncertainty> uncertainties) {
