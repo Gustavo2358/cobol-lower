@@ -45,6 +45,17 @@ final class RegionalMoveHandler {
             correlate(move.source().id(),sourceRange.offset().header().id(),sourceOrigin,links,items,unit,ids);
             return new Operations.CopyBytes(header,destinationRange,sourceRange,dest.extent(),fallback);
         }
+        if(effect.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT) {
+            var reference=(SpInput.DataReference)move.source();var source=data.index().get(reference.logicalWholeItem().orElseThrow()).object();
+            var sourcePlaceId=new OperandId(sourceId.owner(),ids.id("operand","logical-source",operation.localId(),reference.id().handle()));
+            var readId=new OperandId(sourceId.owner(),ids.id("operand","logical-read",operation.localId(),reference.id().handle()));
+            var read=new Expressions.Read(new Operand.Header(readId,Operand.Role.VALUE_READ,sourceOrigin),new Places.ObjectPlace(new Operand.Header(sourcePlaceId,Operand.Role.VALUE_READ,sourceOrigin),source));
+            var dstRange=range(dest,targetId,targetOrigin,ids);
+            var destination=new Places.RegionSlice(new Operand.Header(targetId,Operand.Role.VALUE_WRITE,targetOrigin),dest.region(),dstRange.offset(),dstRange.extent(),dest.codec(),Types.known(Types.Builtin.TEXT));
+            var fit=new Expressions.FitText(new Operand.Header(sourceId,Operand.Role.VALUE_READ,sourceOrigin),read,dest.extent()," ");
+            correlate(move.source().id(),sourceId,sourceOrigin,links,items,unit,ids);correlate(move.target().id(),targetId,targetOrigin,links,items,unit,ids);
+            return new Operations.Assign(header,destination,fit);
+        }
         if(effect.kind()==StorageFacts.MoveKind.FIT_TEXT) {
             var reference=(SpInput.DataReference)move.source();var source=RegionalPlaces.view(data.views().get(reference.binding().selected().orElseThrow()),reference);
             var srcRange=range(source,sourceId,sourceOrigin,ids);var dstRange=range(dest,targetId,targetOrigin,ids);

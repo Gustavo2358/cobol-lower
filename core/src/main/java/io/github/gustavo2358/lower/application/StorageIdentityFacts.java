@@ -14,7 +14,7 @@ final class StorageIdentityFacts {
             s.views().stream().sorted(Comparator.comparing(v->v.node().handle())).toList(),s.gapCodes(),
             s.relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),
             s.renames().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),new StorageFacts.EntryState(s.entryState().mode(),
-                s.entryState().conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList()));
+                s.entryState().conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList(),s.entryState().possibilityDomain()));
     }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
@@ -49,9 +49,9 @@ final class StorageIdentityFacts {
             }
             case StorageFacts.InitialCondition r -> {
                 field.accept("StorageInitialCondition");value.accept(r.node());value.accept(r.kind());value.accept(r.bytes());value.accept(r.gapCodes());value.accept(r.provenance());
-                field.accept("entryProof@1.4");value.accept(r.proof());
+                field.accept("entryProof@1.4");value.accept(r.proof());if(r.logicalText().isPresent()){field.accept("logicalText@1.6");value.accept(r.logicalText().get());}
             }
-            case StorageFacts.EntryState r -> {field.accept("StorageEntryState");value.accept(r.mode());value.accept(r.conditions());}
+            case StorageFacts.EntryState r -> {field.accept("StorageEntryState");value.accept(r.mode());value.accept(r.conditions());if(r.possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE){field.accept("sourceEvidence@1.6");value.accept(r.possibilityDomain());}}
             case StorageFacts.Inventory r -> {
                 field.accept("StorageInventory");field.accept("profile");value.accept(r.profile());field.accept("profileId");value.accept(r.profileId());
                 field.accept("runtimeCodec");value.accept(r.runtimeCodec());field.accept("nodes");value.accept(r.nodes());field.accept("bases");value.accept(r.bases());

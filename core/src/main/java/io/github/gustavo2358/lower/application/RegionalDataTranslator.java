@@ -9,6 +9,14 @@ import java.util.*;
 /** Project explicit source bases once; never derive offsets, extents or independence from names. */
 final class RegionalDataTranslator {
     private RegionalDataTranslator() { }
+    static boolean sourceText(RegionalStorageAdmission.Index source,SpInput.DataId data) {
+        return source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
+            .stream().flatMap(s->s.entryState().conditions().stream()).anyMatch(c->(c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT)
+                &&source.nodes().get(c.node()).data().filter(data::equals).isPresent())
+            ||source.owner().statements().stream().anyMatch(s->s instanceof SpInput.MoveFact move
+                &&move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
+                &&move.source() instanceof SpInput.DataReference read&&read.logicalWholeItem().filter(data::equals).isPresent());
+    }
     static boolean textual(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         var view=source.byData().get(data);
         return view!=null&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
@@ -41,10 +49,6 @@ final class RegionalDataTranslator {
             if(r.status()==StorageFacts.RelationStatus.PROVEN)
                 allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
-        if(source.owner().storage().get().profile()==StorageFacts.Profile.UNSPECIFIED) {
-            renamesCoverage(source,Map.of(),renamesOrigins,unit,ids,items,uncertainties);
-            relationCoverage(source,Map.of(),relationOrigins,unit,ids,items,uncertainties);return legacy;
-        }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
@@ -52,7 +56,7 @@ final class RegionalDataTranslator {
         // single abstract Cell as this component's representative, without a second allocation.
         for(var link:legacy.index().values()) {
             var view=source.byData().get(link.source());
-            if(view!=null)physical.put(view.base(),link.storage());
+            if(view!=null)physical.put(view.base(),link.storage().orElseThrow());
         }
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList()) {
             var origin=origins.source("storage-base",base.id().handle(),base.provenance());
@@ -114,10 +118,17 @@ final class RegionalDataTranslator {
             var objectOrigin=origins.derived(ids.id("origin","unknown-regional-object",unit.localId(),declaration.id().handle()),inputs,"storage@1/unproved-source-view");
             var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
                 "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
-            var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
-            uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
+            Types.TypeRef type;
+            if(sourceText(source,declaration.id())) {
+                type=Types.known(Types.Builtin.TEXT);
+                index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
+            } else {
+                var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
+                uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
+                type=new Types.UnknownType(typeReason);
+            }
             var binding=new Memory.UnknownBinding(base==null?new Scopes.AllMemory(unit.publication(),true):new Scopes.StorageMemory(List.of(base)),reason);
-            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),new Types.UnknownType(typeReason),binding,Memory.Visibility.UNKNOWN,objectOrigin,
+            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,Memory.Visibility.UNKNOWN,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
         }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);

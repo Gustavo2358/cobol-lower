@@ -12,7 +12,7 @@ public final class StorageFacts {
     public enum Profile { UNSPECIFIED, IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047 }
     public enum Kind { GROUP, ELEMENTARY, OPAQUE }
     public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, UNPROVEN }
-    public enum MoveKind { LITERAL_BYTES, FITTED_LITERAL_BYTES, COPY_BYTES, FIT_TEXT, MUST_UNKNOWN, UNAVAILABLE }
+    public enum MoveKind { LITERAL_BYTES, FITTED_LITERAL_BYTES, COPY_BYTES, FIT_TEXT, LOGICAL_FIT_TEXT, MUST_UNKNOWN, UNAVAILABLE }
     public enum RelationStatus { PROVEN, UNPROVEN }
     public record NodeId(UnitKey unit,String handle) { public NodeId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
     public record BaseId(UnitKey unit,String handle) { public BaseId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }
@@ -48,17 +48,20 @@ public final class StorageFacts {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
     public enum EntryMode { UNKNOWN, INITIAL, PRESERVED }
-    public enum InitialKind { LITERAL_BYTES, POSSIBLE_LITERAL_BYTES, PRESERVE, UNKNOWN }
+    public enum InitialKind { LITERAL_BYTES, POSSIBLE_LITERAL_BYTES, POSSIBLE_LOGICAL_TEXT, PRESERVE, UNKNOWN }
     public enum InitialProof { NONE, EXPLICIT_INITIAL, EXPLICIT_PRESERVED, PROGRAM_INITIAL, DECLARATIVE_INVARIANT, DECLARATIVE_POSSIBILITY }
-    public record InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance,InitialProof proof) {
-        public InitialCondition {Objects.requireNonNull(proof);Objects.requireNonNull(node);Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
+    public record InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance,InitialProof proof,Optional<String> logicalText) {
+        public InitialCondition {Objects.requireNonNull(logicalText);Objects.requireNonNull(proof);Objects.requireNonNull(node);Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
+        public InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance,InitialProof proof) {this(node,kind,bytes,gapCodes,provenance,proof,Optional.empty());}
         /** Historic storage 1.3 facts only asserted literal values under explicit INITIAL. */
         public InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance) {
             this(node,kind,bytes,gapCodes,provenance,kind==InitialKind.UNKNOWN?InitialProof.NONE:kind==InitialKind.PRESERVE?InitialProof.EXPLICIT_PRESERVED:kind==InitialKind.POSSIBLE_LITERAL_BYTES?InitialProof.DECLARATIVE_POSSIBILITY:InitialProof.EXPLICIT_INITIAL);
         }
     }
-    public record EntryState(EntryMode mode,List<InitialCondition> conditions) {
-        public EntryState {Objects.requireNonNull(mode);conditions=List.copyOf(conditions);}
+    public enum PossibilityDomain { BOUNDED_PHYSICAL, LOGICAL_SOURCE }
+    public record EntryState(EntryMode mode,List<InitialCondition> conditions,PossibilityDomain possibilityDomain) {
+        public EntryState {Objects.requireNonNull(possibilityDomain);Objects.requireNonNull(mode);conditions=List.copyOf(conditions);}
+        public EntryState(EntryMode mode,List<InitialCondition> conditions) {this(mode,conditions,PossibilityDomain.BOUNDED_PHYSICAL);}
         public static EntryState unknown() {return new EntryState(EntryMode.UNKNOWN,List.of());}
     }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,

@@ -9,7 +9,7 @@ final class Wire215 {
         List<Wire211.DataDocument> dataDeclarations,List<Wire211.StatementDocument> statements,Wire.StructureDocument structure,
         List<Wire.GapDocument> gaps,Wire.CoverageDocument coverage,Wire.EntryInventoryDocument entryInventory,
         Wire211.StorageDocument storageIndependence,PhysicalStorageDocument storage) { }
-    record InitialDocument(String node,StorageFacts.InitialKind kind,List<Integer> bytes,List<String> gapCodes,Wire.ProvenanceDocument provenance,StorageFacts.InitialProof proof) { }
+    record InitialDocument(String node,StorageFacts.InitialKind kind,List<Integer> bytes,List<String> gapCodes,Wire.ProvenanceDocument provenance,StorageFacts.InitialProof proof,@Nullable String logicalText) { }
     record EntryDocument(StorageFacts.EntryMode mode,List<InitialDocument> conditions) { }
     record PhysicalStorageDocument(String version,StorageFacts.Profile profile,@Nullable String profileId,@Nullable String runtimeCodec,
         List<Wire211.PhysicalNodeDocument> nodes,List<Wire211.BaseDocument> bases,List<Wire211.ViewDocument> views,List<String> gapCodes,

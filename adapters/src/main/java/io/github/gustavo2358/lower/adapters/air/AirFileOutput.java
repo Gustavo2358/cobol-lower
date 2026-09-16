@@ -19,9 +19,11 @@ public final class AirFileOutput {
         this.codec = Objects.requireNonNull(codec);
         this.files = Objects.requireNonNull(files);
     }
-    public void write(Publication publication, Path destination) throws IOException {
+    public void write(Publication publication, Path destination) throws IOException { write(publication,destination,false); }
+    public void writePartial(Publication publication, Path destination) throws IOException { write(publication,destination,true); }
+    private void write(Publication publication, Path destination,boolean partial) throws IOException {
         Objects.requireNonNull(destination);
-        byte[] bytes = codec.encode(publication);
+        byte[] bytes = partial?codec.encodeForPartialAnalysis(publication).bytes():codec.encode(publication);
         Path target = destination.toAbsolutePath();
         Path temporary = files.temporary(target.getParent());
         try {

@@ -22,19 +22,21 @@ public record LoweringResult(Status status, Admission admission, Optional<Public
         Objects.requireNonNull(publication); Objects.requireNonNull(validation);
         data = List.copyOf(data); operands = List.copyOf(operands);
         entries = List.copyOf(entries); statements = List.copyOf(statements); limitations = List.copyOf(limitations);
-        if ((status == Status.SUCCESS) != publication.isPresent()) throw new IllegalArgumentException("atomic publication required");
+        if ((status == Status.SUCCESS || status == Status.PARTIAL) != publication.isPresent()) throw new IllegalArgumentException("atomic publication required");
         if (status == Status.SUCCESS && (admission.status() != Admission.Status.ADMITTED
                 || validation.isEmpty() || !validation.orElseThrow().isStructurallyValid()))
             throw new IllegalArgumentException("success requires admission and real validation report");
+        if(status==Status.PARTIAL&&(admission.status()!=Admission.Status.ADMITTED||validation.isEmpty()||validation.get().status()!=ValidationResult.Status.INCOMPLETE_VALIDATION||validation.get().unprovedOperationPreconditions().isEmpty()))throw new IllegalArgumentException("partial output requires complete scoped preconditions without invalidity");
     }
-    public enum Status { SUCCESS, INVALID_INPUT, BLOCKED_LOWERING, UNSUPPORTED_SLICE, IMPLEMENTATION_LIMIT,
+    public enum Status { SUCCESS, PARTIAL, INVALID_INPUT, BLOCKED_LOWERING, UNSUPPORTED_SLICE, IMPLEMENTATION_LIMIT,
         OUTPUT_INVALID, VALIDATION_INCOMPLETE }
     public enum LimitCode { COORDINATES_UNAVAILABLE, INCLUDE_SITE_UNAVAILABLE, IDENTITY_LIMIT }
     public record Limitation(LimitCode code, String subject, String requirement) {
         public Limitation { Objects.requireNonNull(code); Objects.requireNonNull(subject); Objects.requireNonNull(requirement); }
     }
-    public record DataLink(SpInput.DataId source, Ids.ObjectId object, Ids.StorageId storage, Ids.OriginId origin) {
+    public record DataLink(SpInput.DataId source, Ids.ObjectId object, Optional<Ids.StorageId> storage, Ids.OriginId origin) {
         public DataLink { Objects.requireNonNull(source); Objects.requireNonNull(object); Objects.requireNonNull(storage); Objects.requireNonNull(origin); }
+        public DataLink(SpInput.DataId source, Ids.ObjectId object, Ids.StorageId storage, Ids.OriginId origin) {this(source,object,Optional.of(storage),origin);}
     }
     public record OperandLink(SpInput.OperandId source, Ids.OperandId target, Ids.OriginId origin) {
         public OperandLink { Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(origin); }

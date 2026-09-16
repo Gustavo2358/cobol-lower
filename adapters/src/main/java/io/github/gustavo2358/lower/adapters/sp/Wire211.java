@@ -63,8 +63,8 @@ final class Wire211 {
     sealed interface MoveSourceDocument permits LiteralDocument, DataSourceDocument { }
     record DataSourceDocument(ReferenceDocument reference) implements MoveSourceDocument { }
     record LiteralDocument(String id, LiteralKind kind, String value, Wire.ProvenanceDocument provenance, @Nullable LogicalDocument logicalValue) implements MoveSourceDocument { }
-    record ReferenceDocument(String id, OperandRole role, Wire.BindingDocument binding, Wire.ProvenanceDocument provenance, @Nullable WholeDocument wholeItemAccess, @Nullable RegionalAccessDocument regionalAccess, @Nullable List<RegionalAccessDocument> regionalAlternatives) {
-        ReferenceDocument(String id,OperandRole role,Wire.BindingDocument binding,Wire.ProvenanceDocument provenance,WholeDocument wholeItemAccess,RegionalAccessDocument regionalAccess){this(id,role,binding,provenance,wholeItemAccess,regionalAccess,null);}
+    record ReferenceDocument(String id, OperandRole role, Wire.BindingDocument binding, Wire.ProvenanceDocument provenance, @Nullable WholeDocument wholeItemAccess, @Nullable RegionalAccessDocument regionalAccess, @Nullable List<RegionalAccessDocument> regionalAlternatives, @Nullable String logicalWholeItem) {
+        ReferenceDocument(String id,OperandRole role,Wire.BindingDocument binding,Wire.ProvenanceDocument provenance,WholeDocument wholeItemAccess,RegionalAccessDocument regionalAccess){this(id,role,binding,provenance,wholeItemAccess,regionalAccess,null,null);}
     }
     record ContinuationDocument(ContinuationAvailability availability, @Nullable String statement, Wire.ProvenanceDocument provenance) { }
     record MoveDocument(Wire.StatementHeaderDocument header, MoveSourceDocument source, ReferenceDocument target,

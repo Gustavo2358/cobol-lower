@@ -12,13 +12,14 @@ final class RegionalEntryTranslator {
         var state=source.owner().storage().get().entryState();var conditions=new ArrayList<Entries.InitialCondition>();var gaps=new ArrayList<UncertaintyId>();
         var represented=new HashMap<StorageId,Memory.Storage>();data.storage().forEach(s->represented.put(s.header().id(),s));
         for(var fact:state.conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList()) {
+            boolean possible=fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||fact.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT;
             var key=fact.node().handle();var origin=origins.source("storage-initial",key,fact.provenance());
             origin=origins.derived(ids.id("origin","storage-entry-profile",entry.localId(),key),List.of(origin),
-                (fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES?"storage@1.5/entry-mode=":"storage@1.4/entry-mode=")+state.mode().name()+"; proof="+fact.proof().name()+"; source-proved invocation condition");
+                (possible?"storage@1.5/entry-mode=":"storage@1.4/entry-mode=")+state.mode().name()+"; proof="+fact.proof().name()+"; source-proved invocation condition");
             var view=source.views().get(fact.node());var storage=data.physical().get(view.base());
             Place place=null;
             // A known prefix in an open Region is not a proof of total slice bounds (AIR I-17).
-            if(storage!=null&&represented.get(storage) instanceof Memory.Region region&&region.extent().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()) {
+            if(fact.kind()!=StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT&&storage!=null&&represented.get(storage) instanceof Memory.Region region&&region.extent().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()) {
                 place=new Places.RegionSlice(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),storage,
                     integer(entry,key,"offset",view.offset().value().get(),origin,ids),integer(entry,key,"extent",view.extent().value().get(),origin,ids),
                     Memory.IdentityBytes.INSTANCE,Types.known(Types.Builtin.BYTES));
@@ -28,12 +29,17 @@ final class RegionalEntryTranslator {
                 var link=source.nodes().get(fact.node()).data().map(data.index()::get).orElse(null);
                 if(link!=null)place=new Places.ObjectPlace(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),link.object());
             }
+            if(place==null&&possible&&state.possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE) {
+                var link=source.nodes().get(fact.node()).data().map(data.index()::get).orElse(null);
+                if(link!=null)place=new Places.ObjectPlace(header(entry,key,"place",Operand.Role.VALUE_WRITE,origin,ids),link.object());
+            }
             Entries.InitialValue value=null;
-            if((fact.kind()==StorageFacts.InitialKind.LITERAL_BYTES||fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES)&&place!=null) {
-                Values.LiteralValue literal=new Values.BytesValue(fact.bytes());
-                if(place instanceof Places.ObjectPlace)literal=MemoryCodecs.decodeText(RegionalStorageAdmission.IBM1047,(Values.BytesValue)literal,view.extent().value().orElseThrow()).value().orElseThrow();
+            if((fact.kind()==StorageFacts.InitialKind.LITERAL_BYTES||possible)&&place!=null) {
+                Values.LiteralValue literal=fact.logicalText().<Values.LiteralValue>map(Values.TextValue::new).orElseGet(()->new Values.BytesValue(fact.bytes()));
+                // Decoding source evidence uses its encoded logical size, not a fabricated physical extent.
+                if(place instanceof Places.ObjectPlace&&literal instanceof Values.BytesValue)literal=MemoryCodecs.decodeText(RegionalStorageAdmission.IBM1047,(Values.BytesValue)literal,java.math.BigInteger.valueOf(fact.bytes().size())).value().orElseThrow();
                 var expression=new Expressions.Literal(header(entry,key,"value",Operand.Role.VALUE_READ,origin,ids),literal);
-                if(fact.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES) {
+                if(possible) {
                     var reason=new UncertaintyId(entry.unit().publication(),ids.id("uncertainty","possible-entry",entry.localId(),key));
                     uncertainties.add(new Evidence.Uncertainty(reason,"cobol-lower:ENTRY_LIFECYCLE_OPEN",List.of(Evidence.Dimension.VALUES),
                         new Scopes.EntityScope(List.of(entry)),String.join(",",fact.gapCodes()),origin));

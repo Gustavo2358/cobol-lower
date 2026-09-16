@@ -39,7 +39,7 @@ public final class ScalarSuite {
         var storage = new HashMap<StorageId, Memory.Cell>(); p.storage().forEach(s -> storage.put(s.header().id(), (Memory.Cell) s));
         var origins = new HashMap<OriginId, Origins.Origin>(); p.origins().forEach(o -> origins.put(o.id(), o));
         for (var d : input.dataDeclarations()) {
-            var link = dataLinks.get(d.id()); check(link != null, "DATA identity mapped"); var o = objects.get(link.object()); var cell = storage.get(link.storage());
+            var link = dataLinks.get(d.id()); check(link != null, "DATA identity mapped"); var o = objects.get(link.object()); var cell = storage.get(link.storage().orElseThrow());
             check(o != null && cell != null && o.storage().equals(new Memory.CellBinding(cell.header().id())), "DataId Object Cell join");
             check(o.typeRef().equals(Types.known(Types.Builtin.TEXT)) && cell.typeRef().equals(o.typeRef()), "Object Cell known(text)");
             check(cell.header().owner().equals(Optional.of(u.id())) && cell.header().lifetime() == Memory.Lifetime.PERSISTENT

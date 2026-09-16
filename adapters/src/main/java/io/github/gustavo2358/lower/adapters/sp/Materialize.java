@@ -1036,7 +1036,8 @@ final class Materialize {
     static SpInput input(Wire215.Document d) {
         var common=input(Wire215.common(d));var s=common.storage().orElseThrow();var unit=common.unit();var e=d.storage().entryState();
         var entry=new StorageFacts.EntryState(e.mode(),e.conditions().stream().map(v->new StorageFacts.InitialCondition(new StorageFacts.NodeId(unit,v.node()),
-            v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof())).toList());
+            v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof(),Optional.ofNullable(v.logicalText()))).toList(),
+            java.util.Set.of("2.19.0","2.20.0").contains(d.contractVersion())?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
         return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
             common.storageIndependence(),common.compositional(),Optional.of(new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),s.nodes(),s.bases(),s.views(),s.gapCodes(),s.relations(),s.renames(),entry)));
     }
@@ -1141,7 +1142,7 @@ final class Materialize {
                 binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
             Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit),
             Optional.ofNullable(target.regionalAccess()).map(a->new StorageFacts.Access(new StorageFacts.NodeId(unit,a.view()),Optional.ofNullable(a.slice()).map(slice->new StorageFacts.Slice(unsigned(slice.offset()),unsigned(slice.extent()))))),
-            target.regionalAlternatives()==null?List.of():target.regionalAlternatives().stream().map(x->new StorageFacts.Access(new StorageFacts.NodeId(unit,x.view()),Optional.ofNullable(x.slice()).map(t->new StorageFacts.Slice(unsigned(t.offset()),unsigned(t.extent()))))).toList());
+            target.regionalAlternatives()==null?List.of():target.regionalAlternatives().stream().map(x->new StorageFacts.Access(new StorageFacts.NodeId(unit,x.view()),Optional.ofNullable(x.slice()).map(t->new StorageFacts.Slice(unsigned(t.offset()),unsigned(t.extent()))))).toList(),Optional.ofNullable(target.logicalWholeItem()).map(id->new DataId(unit,id)));
     }
     private static IfArm arm(Wire211.ArmDocument a, UnitKey unit) {
         return new IfArm(a.presence(),a.contentAvailability(),executableStart(a.entry(),unit),provenance(a.provenance(),unit),a.gapCodes());

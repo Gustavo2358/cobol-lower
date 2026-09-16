@@ -150,15 +150,22 @@ final class RegionalStorageAdmission {
         for(var condition:storage.entryState().conditions()) {
             c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
             require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
+            require((condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)==condition.logicalText().isPresent(),"logical text requires its own initial kind");
+            require(condition.kind()!=InitialKind.POSSIBLE_LOGICAL_TEXT||storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE,"logical text requires source evidence contract");
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
             require(condition.kind()==InitialKind.LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
-            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
             require(condition.kind()==InitialKind.UNKNOWN?condition.proof()==InitialProof.NONE:condition.kind()==InitialKind.PRESERVE?condition.proof()==InitialProof.EXPLICIT_PRESERVED
-                :condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
+                :(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
-            if(condition.kind()!=InitialKind.UNKNOWN) {
+            if(condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT) {
+                require(condition.provenance().exact()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"logical source text needs provenance and remainder");
+            } else if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
+                require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
+            } else if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
+                require(storage.entryState().possibilityDomain()!=PossibilityDomain.LOGICAL_SOURCE||condition.kind()!=InitialKind.LITERAL_BYTES||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"strong source initial bytes require proved allocation");
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
                 boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
@@ -239,6 +246,12 @@ final class RegionalStorageAdmission {
             }
             var encoded=MemoryCodecs.encodeText(IBM1047,new Values.TextValue(text),dest.extent().value().orElseThrow());
             require(encoded.status()==MemoryCodecs.Status.EXACT&&encoded.value().orElseThrow().octets().equals(effect.bytes()),"published bytes disagree with logical literal, declared codec or extent");
+        }
+        if(effect.kind()==MoveKind.LOGICAL_FIT_TEXT) {
+            require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.logicalWholeItem().isPresent()&&r.binding().selected().equals(r.logicalWholeItem())&&r.provenance().exact(),"logical copy needs canonical whole READ");
+            var ref=(DataReference)transfer.source();var source=index.byData().get(ref.logicalWholeItem().orElseThrow());
+            require(source!=null&&index.nodes().get(source.node()).kind()==Kind.ELEMENTARY&&source.codec().isPresent()&&source.codec().equals(dest.codec())&&source.extent().value().filter(n->n.signum()>0).isPresent(),"logical copy requires supported text shape");
+            require(!source.base().equals(dest.base())&&index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE&&index.bases().get(dest.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"logical copy needs proved independent bases");
         }
         if(effect.kind()==MoveKind.COPY_BYTES||effect.kind()==MoveKind.FIT_TEXT) {
             require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");

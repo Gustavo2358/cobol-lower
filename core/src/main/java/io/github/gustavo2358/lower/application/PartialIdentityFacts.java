@@ -205,6 +205,7 @@ final class PartialIdentityFacts {
                 field.accept("role"); value.accept(r.role());
                 field.accept("binding"); value.accept(r.binding());
                 field.accept("wholeItemAccess"); value.accept(r.wholeItemAccess());
+                if(r.logicalWholeItem().isPresent()){field.accept("logicalWholeItem@2.19");value.accept(r.logicalWholeItem().get());}
                 field.accept("provenance"); value.accept(r.provenance());
                 if(r.regionalAccess().isPresent()){field.accept("regionalAccess@1");value.accept(r.regionalAccess().get());}
             }
