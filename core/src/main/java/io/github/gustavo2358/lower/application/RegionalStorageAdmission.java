@@ -160,12 +160,12 @@ final class RegionalStorageAdmission {
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
             if(condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT) {
-                require(condition.provenance().exact()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN")&&storage.entryState().mode()!=EntryMode.PRESERVED,"logical source text needs provenance and remainder");
+                require(condition.provenance().exact()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"logical source text needs provenance and remainder");
             } else if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
                 require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
-                require(storage.entryState().mode()!=EntryMode.PRESERVED,"preserved entry cannot assert declarative possibilities");
             } else if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
+                require(storage.entryState().possibilityDomain()!=PossibilityDomain.LOGICAL_SOURCE||condition.kind()!=InitialKind.LITERAL_BYTES||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"strong source initial bytes require proved allocation");
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
                 boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
