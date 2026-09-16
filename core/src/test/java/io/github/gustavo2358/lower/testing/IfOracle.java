@@ -104,7 +104,7 @@ public final class IfOracle {
         var proof=input.storageIndependence().orElseThrow();
         check(p.premises().size()==1 && p.premises().getFirst().assertion() instanceof Proofs.DisjointStorage,"published DisjointStorage premise");
         var premise=p.premises().getFirst();
-        check(((Proofs.DisjointStorage)premise.assertion()).storage().equals(proof.members().stream().map(x -> data.get(x).storage()).toList()),"exact ordered proof members, including extra unused members");
+        check(((Proofs.DisjointStorage)premise.assertion()).storage().equals(proof.members().stream().map(x -> data.get(x).storage().orElseThrow()).toList()),"exact ordered proof members, including extra unused members");
         check(premise.authority().equals(proof.authority()) && premise.justification().equals("SP rule: " + proof.rule().name()),"published authority and descriptive rule");
         check(hasLocation(origins,artifacts,premise.origin(),proof.provenance().orElseThrow().original()),"premise source origin");
         var validation=AirValidator.validate(p);

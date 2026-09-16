@@ -10,6 +10,7 @@ public final class FastAdapterSuite {
         ObservedShapeSuite.main(new String[0]);
         DisplayEffectsSuite.main(new String[0]); InitializeEffectsSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);
+        EvidencePreservingEntrySuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {

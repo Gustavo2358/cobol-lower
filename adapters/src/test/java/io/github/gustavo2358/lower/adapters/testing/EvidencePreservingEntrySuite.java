@@ -5,6 +5,8 @@ import io.github.gustavo2358.air.json.AirJson;
 import io.github.gustavo2358.lower.adapters.cli.CobolLower;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.application.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.nio.file.*;
 import java.util.*;
 import static io.github.gustavo2358.lower.testing.CallOracle.check;
@@ -35,6 +37,22 @@ public final class EvidencePreservingEntrySuite {
                 check(result.data().stream().filter(d->d.object().equals(object)).allMatch(d->d.storage().isEmpty()),"no invented storage identity");
             }
             var codec=new AirJson();check(p.equals(codec.decode(codec.encode(p))),"AIR codec preserves entry and target");
+            if(name.equals("unknown-profile")) {
+                var mapper=new ObjectMapper();var tree=mapper.readTree(bytes);
+                for(var bad:List.of("missing-text","invented-bytes","closed","strong-proof","old-version")) {
+                    var changed=tree.deepCopy();var conditionNode=(ObjectNode)changed.path("storage").path("entryState").path("conditions").get(0);
+                    switch(bad) {
+                        case "missing-text"->conditionNode.remove("logicalText");
+                        case "invented-bytes"->conditionNode.set("bytes",mapper.createArrayNode().add(65));
+                        case "closed"->conditionNode.set("gapCodes",mapper.createArrayNode());
+                        case "strong-proof"->conditionNode.put("proof","DECLARATIVE_INVARIANT");
+                        case "old-version"->{((ObjectNode)changed).put("contractVersion","2.18.0");((ObjectNode)changed.path("storage")).put("version","1.5.0");}
+                    }
+                    var invalid=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(mapper.writeValueAsBytes(changed));
+                    if(invalid instanceof SpJsonDecoder.Decoded v)check(new CobolLowerer().lower(v.input(),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"typed rejection: "+bad);
+                    else check(invalid instanceof SpJsonDecoder.Rejected,"wire rejection: "+bad);
+                }
+            }
         }
         System.out.println("EP_ENTRY_LOWER=PASS source/entry/target/codec/no invented allocation");
     }
