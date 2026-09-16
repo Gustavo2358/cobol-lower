@@ -150,14 +150,18 @@ final class RegionalStorageAdmission {
         for(var condition:storage.entryState().conditions()) {
             c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
             require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
+            require((condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)==condition.logicalText().isPresent(),"logical text requires its own initial kind");
+            require(condition.kind()!=InitialKind.POSSIBLE_LOGICAL_TEXT||storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE,"logical text requires source evidence contract");
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
             require(condition.kind()==InitialKind.LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
-            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
+            require((condition.kind()==InitialKind.UNKNOWN||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)==!condition.gapCodes().isEmpty(),"unknown initial state requires gaps");
             require(condition.kind()==InitialKind.UNKNOWN?condition.proof()==InitialProof.NONE:condition.kind()==InitialKind.PRESERVE?condition.proof()==InitialProof.EXPLICIT_PRESERVED
-                :condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
+                :(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
-            if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
+            if(condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT) {
+                require(condition.provenance().exact()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN")&&storage.entryState().mode()!=EntryMode.PRESERVED,"logical source text needs provenance and remainder");
+            } else if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
                 require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
                 require(storage.entryState().mode()!=EntryMode.PRESERVED,"preserved entry cannot assert declarative possibilities");
             } else if(condition.kind()!=InitialKind.UNKNOWN) {

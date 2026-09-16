@@ -1036,7 +1036,7 @@ final class Materialize {
     static SpInput input(Wire215.Document d) {
         var common=input(Wire215.common(d));var s=common.storage().orElseThrow();var unit=common.unit();var e=d.storage().entryState();
         var entry=new StorageFacts.EntryState(e.mode(),e.conditions().stream().map(v->new StorageFacts.InitialCondition(new StorageFacts.NodeId(unit,v.node()),
-            v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof())).toList(),
+            v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof(),Optional.ofNullable(v.logicalText()))).toList(),
             d.contractVersion().equals("2.19.0")?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
         return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
             common.storageIndependence(),common.compositional(),Optional.of(new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),s.nodes(),s.bases(),s.views(),s.gapCodes(),s.relations(),s.renames(),entry)));

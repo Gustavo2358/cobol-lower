@@ -9,6 +9,12 @@ The latter requires source provenance, profile, bytes and lifecycle remainder;
 physical bounds and independent allocation are separate precision obligations.
 Legacy inputs retain their strict checks; storage 1.6 is negotiated only by SP2.19.
 
+`POSSIBLE_LOGICAL_TEXT` transports the recognized logical candidate when no byte
+profile is selected. It requires nullable-field presence, a logical text value,
+no bytes, source provenance and remainder. Lowering maps it directly to AIR TEXT
+PossibleLiterals on the logical object, without selecting a codec. Other kinds
+have null logicalText. Older SP versions cannot introduce the field or kind.
+
 `logicalWholeItem` identifies a source-proved complete logical access, independent
 of physical layout. It agrees with the resolved declaration and carries exact
 provenance. It does not create a scalar storage guarantee. An unknown physical

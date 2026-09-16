@@ -96,6 +96,12 @@ public final class SpJsonDecoder {
             if(logicalAccessContract)for(var ref:node.findParents("binding"))if(ref.has("role")&&!ref.has("logicalWholeItem"))throw new PhysicalShape("$/reference/logicalWholeItem");
             if(java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0").contains(node.path("contractVersion").textValue()))
                 for(var ref:node.findParents("binding"))if(ref.has("role"))((com.fasterxml.jackson.databind.node.ObjectNode)ref).putNull("logicalWholeItem");
+            for(var condition:node.path("storage").path("entryState").path("conditions")) {
+                if(logicalAccessContract&&!condition.has("logicalText"))throw new PhysicalShape("$/storage/entryState/conditions/logicalText");
+                if(!logicalAccessContract&&condition.has("logicalText"))return reject(Code.UNSUPPORTED_CONTRACT,"$/logicalText requires SP 2.19");
+                if(java.util.Set.of("2.15.0","2.16.0","2.17.0","2.18.0").contains(node.path("contractVersion").textValue()))
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("logicalText");
+            }
             var alternatives=node.findValues("regionalAlternatives");
             if(!java.util.Set.of("2.18.0","2.19.0").contains(node.path("contractVersion").textValue())&&!alternatives.isEmpty())
                 return reject(Code.UNSUPPORTED_CONTRACT,"$/regionalAlternatives requires SP 2.18");

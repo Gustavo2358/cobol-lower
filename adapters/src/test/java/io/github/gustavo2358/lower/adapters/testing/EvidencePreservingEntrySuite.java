@@ -13,7 +13,7 @@ import static io.github.gustavo2358.lower.testing.CallOracle.check;
 public final class EvidencePreservingEntrySuite {
     private EvidencePreservingEntrySuite() { }
     public static void main(String[] args) throws Exception {
-        for(var name:List.of("unknown-offset","unknown-base","unknown-allocation")) {
+        for(var name:List.of("unknown-offset","unknown-base","unknown-allocation","unknown-profile")) {
             var bytes=Objects.requireNonNull(EvidencePreservingEntrySuite.class.getResourceAsStream("/sp/evidence/"+name+".json")).readAllBytes();
             var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes);
             check(decoded instanceof SpJsonDecoder.Decoded,"source evidence contract: "+name+" "+decoded);
