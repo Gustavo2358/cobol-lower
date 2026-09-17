@@ -356,3 +356,18 @@ FAST3 core2340+adapters PASS, Q3 semântica244296/performance39215/arquitetura P
 exit0. Contraprova reforçada KNOWN cruza parágrafo e chega à rejeição STRUCTURE
 específica; FileControlSuite recompilado PASS. Q3 REUSED após alteração só do teste
 e repin, sem delta produtivo. Bundle final/corpus descendentes no consumer.
+
+## W11 C06 — alias READ DATASET
+
+C06-HUMAN-20260917 normaliza READ DATASET no frontend. Decoder conserva name/offsets e consome canonicalName=FILE pelo mesmo
+contrato SP2.28. Dois oráculos SP reais provam literal/computed, provenance,
+namespace cics.file e coexistência Program Control; negativo DSNAME não satisfaz
+identidade canônica FILE. Pin frontend atualizado após F-CICS22/FAST355 PASS.
+
+RED bilateral: o admission existente recusava READ/DATASET por aliases command
+scoped. A regra tipada agora admite somente READ e SET; READNEXT falsificado
+continua recusado pela mesma regra exata. Sem parsing do rawText downstream.
+
+C06 bilateral GREEN: CicsFileControlSuite35 fixtures, negativos wire/memory/alias
+e FAST fixo core2340+adapters+arquitetura PASS (fast-2.log). Q anterior REUSED para
+tradução/efeitos/solver inalterados; somente admissão tipada do alias se ampliou.

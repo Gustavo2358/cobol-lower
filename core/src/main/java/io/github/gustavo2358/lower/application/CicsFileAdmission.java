@@ -22,7 +22,7 @@ final class CicsFileAdmission {
         f.target().ifPresent(t->{if(t instanceof DataCallTarget d){CallAdmission.reference(d.reference(),h,seen,c);require(c,f,d.reference().role()==OperandRole.READ,"input FILE target must read its source");}else{var l=(LiteralCallTarget)t;CallAdmission.operand(l.id(),h,seen,c);c.provenance(l.provenance());l.logicalValue().ifPresent(v->{CallAdmission.logical(v,h,c);require(c,f,l.text().equals(v.value()),"FILE literal agrees with logical value");});}});
         for(var o:f.options()) {
             require(c,f,o.start()>=0&&o.end()>=o.start()&&o.end()<=f.rawText().length(),"option span inside preserved payload");
-            var canonical=f.command().equals("SET")&&o.name().equals("DATASET")?"FILE":f.command().equals("SET")&&o.name().equals("OBJECTNAME")?"DSNAME":o.name();
+            var canonical=Set.of("READ","SET").contains(f.command())&&o.name().equals("DATASET")?"FILE":f.command().equals("SET")&&o.name().equals("OBJECTNAME")?"DSNAME":o.name();
             require(c,f,canonical.equals(o.canonicalName()),"aliases are command scoped");
             require(c,f,(o.reference().isPresent()?1:0)+(o.literal().isPresent()?1:0)+(o.integer().isPresent()?1:0)<=1,"one typed option value");
             require(c,f,o.role()==role(f,o.canonicalName(),names),"typed option role agrees with C-FC contract");

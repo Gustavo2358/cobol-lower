@@ -46,6 +46,29 @@ public final class CicsFileControlSuite {
             if(name.equals("sysid-short"))check(((Interactions.ValueArgument)command.arguments().get(1)).value() instanceof Expressions.Unknown,"four-byte SYSID proof required");
             var control=(Scopes.UnitControl)((Scopes.WithinControl)command.outcomes().remainder()).scope();check(control.labels()==name.equals("handler-open"),"NOHANDLE/RESP delimit handlers, unknown profile retains local bound "+name);
         }
+        // C06-HUMAN-20260917: real SP keeps spelling; lowering consumes canonical facts only.
+        for(var name:List.of("read-dataset-literal","read-dataset-computed")) {
+            var decoded=(SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes(name));
+            var fact=decoded.input().statements().stream().filter(SpInput.CicsFileFact.class::isInstance).map(SpInput.CicsFileFact.class::cast).findFirst().orElseThrow();
+            var option=fact.options().getFirst();
+            check(option.name().equals("DATASET")&&option.canonicalName().equals("FILE")&&option.role()==SpInput.CicsFileRole.READ,"source spelling and canonical role preserved");
+            check(fact.rawText().substring(option.start(),option.end()).startsWith("DATASET("),"source offsets preserved");
+            var publication=lower(name);var commands=files(publication);check(commands.size()==1&&commands.getFirst().action().equals("read"),"exactly one legacy READ FILE");
+            var target=commands.getFirst().target();
+            if(name.endsWith("literal"))check(target instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.file")&&t.name().equals("ACCOUNTS"),"literal is CICS FILE, never DSNAME");
+            else check(target instanceof Interactions.ComputedTarget t&&t.namespace().equals("cics.file")&&t.name() instanceof Expressions.Read,"computed CICS FILE uses general storage read");
+            check(publication.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator).anyMatch(t->t instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget n&&n.namespace().equals("cics.program")&&n.name().equals("PGM")),"Program Control remains independent");
+            var noFile=io.github.gustavo2358.lower.testing.IfInputs.with(option,"canonicalName","DSNAME");
+            var badFact=io.github.gustavo2358.lower.testing.IfInputs.with(fact,"options",fact.options().stream().map(o->o==option?noFile:o).toList());
+            var badInput=io.github.gustavo2358.lower.testing.IfInputs.with(decoded.input(),"statements",decoded.input().statements().stream().map(f->f==fact?badFact:f).toList());
+            check(new CobolLowerer().lower(badInput,CobolLower.OPTIONS).publication().isEmpty(),"DSNAME cannot stand in for canonical FILE identity");
+            var broadened=io.github.gustavo2358.lower.testing.IfInputs.with(fact,"command","READNEXT");
+            broadened=io.github.gustavo2358.lower.testing.IfInputs.with(broadened,"options",fact.options().stream().map(o->o.canonicalName().equals("RIDFLD")?io.github.gustavo2358.lower.testing.IfInputs.with(o,"role",SpInput.CicsFileRole.READ_WRITE):o).toList());
+            var finalBroadened=broadened;
+            var broadenedInput=io.github.gustavo2358.lower.testing.IfInputs.with(decoded.input(),"statements",decoded.input().statements().stream().map(f->f==fact?finalBroadened:f).toList());
+            var rejected=new CobolLowerer().lower(broadenedInput,CobolLower.OPTIONS);
+            check(rejected.publication().isEmpty()&&rejected.admission().diagnostics().stream().anyMatch(d->d.requirement().equals("aliases are command scoped")),"READNEXT DATASET remains outside the authorized alias contract");
+        }
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
         for(var mutation:List.of("old-version","wrong-role","wrong-mode","missing-context","unknown-field","false-local")) {
             var root=(com.fasterxml.jackson.databind.node.ObjectNode)mapper.readTree(bytes("read"));var f=(com.fasterxml.jackson.databind.node.ObjectNode)root.path("statements").findValues("variant").stream().findFirst().map(x->root.path("statements").get(0)).orElseThrow();
@@ -70,7 +93,7 @@ public final class CicsFileControlSuite {
         var badFact=io.github.gustavo2358.lower.testing.IfInputs.with(source,"target",Optional.of(new SpInput.DataCallTarget(badReference)));
         var badInput=io.github.gustavo2358.lower.testing.IfInputs.with(input,"statements",input.statements().stream().map(f->f==source?badFact:f).toList());
         check(new CobolLowerer().lower(badInput,CobolLower.OPTIONS).publication().isEmpty(),"input FILE target must be a read");
-        System.out.println("PASS CicsFileControlSuite 33 fixtures / 12 commands + computed/output + wire and memory negatives");
+        System.out.println("PASS CicsFileControlSuite 35 fixtures / 12 commands + READ DATASET + computed/output + wire and memory negatives");
     }
     static boolean commandMayWriteVisible(Operations.Invoke i){return i.effectBound().otherwise().writes() instanceof Scopes.WithinMemory m&&(m.scope() instanceof Scopes.VisibleMemory||m.scope() instanceof Scopes.MemoryUnion u&&u.members().stream().anyMatch(Scopes.VisibleMemory.class::isInstance));}
     static List<Operations.Invoke> files(Publication p){return p.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast).filter(i->i.target() instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.file")||i.target() instanceof Interactions.ComputedTarget c&&c.namespace().equals("cics.file")).toList();}
