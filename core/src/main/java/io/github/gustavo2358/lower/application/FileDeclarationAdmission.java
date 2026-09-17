@@ -45,7 +45,7 @@ final class FileDeclarationAdmission {
             c.require(use.bindingStatus()!=ResolutionStatus.RESOLVED||use.candidates().size()==1,Rule.PROFILE_FACT,"file-use",null,"resolved file use must have one candidate");
             c.require(new HashSet<>(use.candidates()).size()==use.candidates().size(),Rule.PROFILE_FACT,"file-use",null,"duplicate candidates");
             for(var candidate:use.candidates())c.require(!candidate.id().isBlank()&&(!candidate.owner().equals(input.unit())||files.contains(candidate.id())),Rule.PROFILE_FACT,"file-use",null,"local candidate missing");
-            c.require((use.command()==FileFacts.Command.OPEN)==(use.mode()!=FileFacts.OpenMode.UNSPECIFIED),Rule.PROFILE_FACT,"file-use",null,"file command/mode mismatch");
+            c.require((use.command()==FileFacts.Command.OPEN||use.role()==FileFacts.Role.INPUT||use.role()==FileFacts.Role.OUTPUT)==(use.mode()!=FileFacts.OpenMode.UNSPECIFIED),Rule.PROFILE_FACT,"file-use",null,"file command/mode mismatch");
         }
         FileOperationAdmission.validate(input,c);
     }

@@ -26,7 +26,7 @@ final class PartialProgramAssembler {
         for(var fact:sourceStatements) {
             var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
-            destination=files.completion(fact.header().id(),destination);
+            if(overrides.isEmpty())destination=files.completion(fact.header().id(),destination);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(files.handles(fact)) {
@@ -149,6 +149,11 @@ final class PartialProgramAssembler {
                 instructions.add(havoc);link(m.header().id(),havoc,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+            } else if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.proof()==SpInput.EffectProof.NO_OP).isPresent()) {
+                var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
+                term=destination!=null?PerformSequenceAssembler.jump("no-op-next",fact.header().id(),destination,origin,unit,ids)
+                    :opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+                link(fact.header().id(),term,label,statements,items);
             } else {
                 term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact || fact instanceof SpInput.ProcedurePerformFact || fact instanceof SpInput.EvaluateFact ? null : destination,data,unit,ids,origins,uncertainties,operands,!(fact instanceof SpInput.GoToFact));
                 link(fact.header().id(),term,label,statements,items);
@@ -168,7 +173,7 @@ final class PartialProgramAssembler {
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retained with conservative effects and only proved control",origin));
         var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
-        if(fact instanceof SpInput.OtherStatement o&&o.effects().isPresent()) {
+        if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.environment()!=SpInput.EnvironmentEffect.NONE).isPresent()) {
             var environment=new UncertaintyId(unit.publication(),ids.id("uncertainty","statement-environment",id.localId(),"effects"));
             uncertainties.add(new Evidence.Uncertainty(environment,"SOURCE_"+o.effects().orElseThrow().environment().name()+"_EFFECT",
                 List.of(Evidence.Dimension.EFFECTS,Evidence.Dimension.DEPENDENCIES),scope,"Memory proof does not close environment effects",origin));

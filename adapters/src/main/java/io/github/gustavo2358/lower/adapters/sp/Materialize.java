@@ -11,6 +11,15 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire226.Document wire) {
+        var common=input(Wire226.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);uses.add(new FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),u.effects(),u.control(),wire.fileInventory().operations().uses().get(i).role()));
+        }
+        java.util.function.Function<Wire211.PerformTargetDocument,PerformTarget> endpoint=t->new PerformTarget(new ProcedureId(unit,t.id()),provenance(t.referenceOrigin(),unit),provenance(t.paragraphOrigin(),unit));
+        var plans=wire.fileInventory().sortPlans().stream().map(p->new FileFacts.SortPlan(new StatementId(unit,p.statement()),p.availability(),p.work(),p.inputs(),p.outputs(),p.procedures().stream().map(r->new FileFacts.ProcedurePlan(r.phase(),Optional.ofNullable(r.start()).map(endpoint),Optional.ofNullable(r.end()).map(endpoint),r.roots().stream().map(id->new StatementId(unit,id)).toList(),Optional.ofNullable(r.entry()).map(id->new StatementId(unit,id)),r.completions().stream().map(id->new StatementId(unit,id)).toList(),r.links().stream().map(l->new FileFacts.ProcedureLink(new StatementId(unit,l.from()),new StatementId(unit,l.to()))).toList(),r.gapCodes())).toList(),p.gapCodes())).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes()),inv.declaratives(),Optional.of(new FileFacts.SortInventory(wire.fileInventory().sortAvailability(),plans))));
+    }
     static SpInput input(Wire225.Document wire) {
         var common=input(Wire225.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
         for(int i=0;i<inv.operations().uses().size();i++) {

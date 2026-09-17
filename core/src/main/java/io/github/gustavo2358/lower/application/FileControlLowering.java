@@ -45,6 +45,7 @@ final class FileControlLowering {
     }
     List<Sequence> after(String key,FileFacts.Use use,FileFacts.EffectPlan plan,LabelId next,OriginId origin,LocalIds local,FileMemoryLowering memory) {
         var control=use.control().orElseThrow();var routes=control.routes();var result=new ArrayList<Sequence>();
+        if(routes.size()==1)result.add(new Sequence(memory.label(key+"/select/0"),List.of(),new Operations.Jump(exact(operation(local,key+"/select/0"),origin),memory.label(key+"/event/"+routes.getFirst().event())),origin));
         var effects=new EnumMap<FileFacts.EffectOutcome,List<FileFacts.MemoryStep>>(FileFacts.EffectOutcome.class);plan.outcomes().forEach(o->effects.put(o.outcome(),o.steps()));
         for(int n=0;n<routes.size();n++) {
             var route=routes.get(n);var eventKey=key+"/event/"+route.event();var entry=memory.label(eventKey);var dispatch=memory.label(eventKey+"/dispatch/0");var resume=memory.label(eventKey+"/resume");

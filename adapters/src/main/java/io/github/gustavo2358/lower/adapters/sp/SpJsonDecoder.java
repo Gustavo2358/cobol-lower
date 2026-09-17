@@ -89,13 +89,17 @@ public final class SpJsonDecoder {
             }
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual()) return reject(Code.INPUT_ERROR, "$/schema,contractVersion");
             if (!node.path("schema").textValue().equals("cobol-semantic-product")) return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
-            if(!node.path("contractVersion").asText().equals("2.25.0")&&node.findValues("branch").stream().anyMatch(b->b.asText().equals("FILE_HANDLER")))return reject(Code.UNSUPPORTED_CONTRACT,"$/branch FILE_HANDLER requires SP2.25");
-            if(!java.util.Set.of("2.24.0","2.25.0").contains(node.path("contractVersion").asText()))for(var base:node.path("storage").path("bases"))
+            if(!node.path("contractVersion").asText().equals("2.26.0")) {
+                if(node.path("statementEffects").findValues("proof").stream().anyMatch(p->p.asText().equals("NO_OP")))return reject(Code.UNSUPPORTED_CONTRACT,"$/statementEffects NO_OP requires SP2.26");
+                if(node.path("fileInventory").path("operations").path("uses").findValues("command").stream().anyMatch(c->java.util.Set.of("SORT","MERGE","RELEASE","RETURN").contains(c.asText())))return reject(Code.UNSUPPORTED_CONTRACT,"$/fileInventory SORT family requires SP2.26");
+            }
+            if(!java.util.Set.of("2.25.0","2.26.0").contains(node.path("contractVersion").asText())&&node.findValues("branch").stream().anyMatch(b->b.asText().equals("FILE_HANDLER")))return reject(Code.UNSUPPORTED_CONTRACT,"$/branch FILE_HANDLER requires SP2.25");
+            if(!java.util.Set.of("2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").asText()))for(var base:node.path("storage").path("bases"))
                 if(base.path("allocation").asText().equals("INDEPENDENT_LOCAL_STORAGE"))return reject(Code.UNSUPPORTED_CONTRACT,"$/storage/allocation requires SP 2.24");
-            if(!java.util.Set.of("2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue()))
+            if(!java.util.Set.of("2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue()))
                 for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("CICS_PROGRAM_CONTROL"))return reject(Code.UNSUPPORTED_CONTRACT,"$/statements/CICS_PROGRAM_CONTROL");
-            if(!java.util.Set.of("2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue())&&node.findValues("kind").stream().anyMatch(k->k.asText().equals("LOGICAL_FIT_TEXT")))return reject(Code.UNSUPPORTED_CONTRACT,"$/LOGICAL_FIT_TEXT requires SP 2.20");
-            boolean logicalAccessContract=java.util.Set.of("2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue());
+            if(!java.util.Set.of("2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue())&&node.findValues("kind").stream().anyMatch(k->k.asText().equals("LOGICAL_FIT_TEXT")))return reject(Code.UNSUPPORTED_CONTRACT,"$/LOGICAL_FIT_TEXT requires SP 2.20");
+            boolean logicalAccessContract=java.util.Set.of("2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue());
             if(!logicalAccessContract&&!node.findValues("logicalWholeItem").isEmpty())return reject(Code.UNSUPPORTED_CONTRACT,"$/logicalWholeItem requires SP 2.19");
             if(logicalAccessContract)for(var ref:node.findParents("binding"))if(ref.has("role")&&ref.has("id")&&!ref.has("logicalWholeItem"))throw new PhysicalShape("$/reference/logicalWholeItem");
             if(java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0").contains(node.path("contractVersion").textValue()))
@@ -107,9 +111,9 @@ public final class SpJsonDecoder {
                     ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("logicalText");
             }
             var alternatives=node.findValues("regionalAlternatives");
-            if(!java.util.Set.of("2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue())&&!alternatives.isEmpty())
+            if(!java.util.Set.of("2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue())&&!alternatives.isEmpty())
                 return reject(Code.UNSUPPORTED_CONTRACT,"$/regionalAlternatives requires SP 2.18");
-            if(java.util.Set.of("2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue())) {
+            if(java.util.Set.of("2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue())) {
                 for(var choices:alternatives)if(!choices.isArray())throw new PhysicalShape("$/regionalAlternatives");
                 for(var reference:node.findParents("binding"))if(reference.has("role")&&reference.has("id")&&!reference.path("regionalAlternatives").isArray())
                     throw new PhysicalShape("$/reference/regionalAlternatives");
@@ -176,6 +180,11 @@ public final class SpJsonDecoder {
                 case "2.7.0" -> {
                     var wire = mapper.treeToValue(node, Wire27.Document.class);
                     requirePhysical(wire, "$", meter); requireCoherent27(wire); input = Materialize.input(wire);
+                }
+                case "2.26.0" -> {
+                    var wire=mapper.treeToValue(node,Wire226.Document.class);requirePhysical(wire,"$",meter);
+                    if(!wire.storage().version().equals("1.8.0")||!wire.fileInventory().version().equals("1.5.0"))throw new PhysicalShape("$/storage/version,fileInventory/version");
+                    requireCoherentFacts211(Wire215.common(Wire217.common(Wire221.common(Wire223.common(Wire224.common(Wire225.common(Wire226.common(wire))))))));input=Materialize.input(wire);
                 }
                 case "2.25.0" -> {
                     var wire=mapper.treeToValue(node,Wire225.Document.class);requirePhysical(wire,"$",meter);
@@ -256,18 +265,18 @@ public final class SpJsonDecoder {
                 }
                 default -> { return reject(Code.UNSUPPORTED_CONTRACT, "$/contractVersion"); }
             }
-            if(!java.util.Set.of("2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue())&&input.storage().isPresent())
+            if(!java.util.Set.of("2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue())&&input.storage().isPresent())
                 for(var condition:input.storage().get().entryState().conditions())
                     if(condition.kind()==io.github.gustavo2358.lower.domain.StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES
                         ||condition.proof()==io.github.gustavo2358.lower.domain.StorageFacts.InitialProof.DECLARATIVE_POSSIBILITY)
                         throw new PhysicalShape("$/storage/entryState/conditions/possible-requires-SP2.16");
-            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0","2.10.0","2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
+            if (!java.util.Set.of("2.5.0","2.6.0","2.7.0","2.8.0","2.9.0","2.10.0","2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue())) for (var statement : input.statements()) {
                 var predicate = statement instanceof SpInput.IfFact f ? f.predicateGuarantee()
                     : statement instanceof SpInput.ProcedurePerformFact p ? p.loop().map(SpInput.PerformLoop::predicate).orElse(null) : null;
                 if (predicate != null && predicate.profile()==SpInput.PredicateProfile.NUMERIC_RELATION)
                     throw new PhysicalShape("$/statements/predicate/profile");
             }
-            if(!java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0").contains(node.path("contractVersion").textValue()))for(var statement:input.statements()) {
+            if(!java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0").contains(node.path("contractVersion").textValue()))for(var statement:input.statements()) {
                 if(statement instanceof SpInput.MoveFact m&&m.regionalMove().filter(e->e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.FIT_TEXT||e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.FITTED_LITERAL_BYTES).isPresent())
                     throw new PhysicalShape("$/statements/regionalMove/kind/version");
             }

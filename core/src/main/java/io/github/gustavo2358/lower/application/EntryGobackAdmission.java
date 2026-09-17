@@ -120,6 +120,7 @@ public final class EntryGobackAdmission implements AdmitInput {
         if (c.diagnostics.isEmpty()) c.regionalStorage=RegionalStorageAdmission.validate(input,c);
         if (c.diagnostics.isEmpty()) FileEffectAdmission.validate(input,c);
         if (c.diagnostics.isEmpty()) FileControlAdmission.validate(input,c);
+        if (c.diagnostics.isEmpty()) FileSortAdmission.validate(input,c);
     }
 
     private static void entry(EntryFact e, Context c) {

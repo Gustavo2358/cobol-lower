@@ -46,15 +46,17 @@ final class FileControlAdmission {
                     }
                 }
                 if(p.availability()==Availability.UNAVAILABLE||p.availability()==Availability.INPUT_MISSING){require(p.routes().isEmpty(),"unavailable dispatch asserts no routes");continue;}
+                boolean local=FileFacts.local(use),knownMode=use.command()==Command.OPEN||FileFacts.aggregate(use);
+                var eligible=local?List.<Declarative>of():declarations.values();
                 var selected=new HashSet<String>();
                 boolean knownFile=use.bindingStatus()==ResolutionStatus.RESOLVED&&use.candidates().size()==1;
-                for(var d:declarations.values())if(d.kind()==UseKind.AFTER_EXCEPTION&&knownFile&&d.files().contains(use.candidates().getFirst()))selected.add(d.id());
+                for(var d:eligible)if(d.kind()==UseKind.AFTER_EXCEPTION&&knownFile&&d.files().contains(use.candidates().getFirst()))selected.add(d.id());
                 boolean noUsePossible=false;
                 if(selected.isEmpty()) {
-                    for(var d:declarations.values())if(d.kind()==UseKind.AFTER_EXCEPTION&&d.mode()!=OpenMode.UNSPECIFIED&&(use.command()!=Command.OPEN||d.mode()==use.mode()))selected.add(d.id());
-                    noUsePossible=!selected.isEmpty()&&use.command()!=Command.OPEN;
+                    for(var d:eligible)if(d.kind()==UseKind.AFTER_EXCEPTION&&d.mode()!=OpenMode.UNSPECIFIED&&(!knownMode||d.mode()==use.mode()))selected.add(d.id());
+                    noUsePossible=!selected.isEmpty()&&!knownMode;
                 }
-                for(var d:declarations.values())if(d.kind()==UseKind.AFTER_EXCEPTION&&(!knownFile||d.gapCodes().contains("FILE_USE_BINDING_NOT_PROVEN"))) {selected.add(d.id());noUsePossible=true;}
+                for(var d:eligible)if(d.kind()==UseKind.AFTER_EXCEPTION&&(!knownFile||d.gapCodes().contains("FILE_USE_BINDING_NOT_PROVEN"))) {selected.add(d.id());noUsePossible=true;}
                 noUsePossible|=selected.isEmpty();
                 if(noUsePossible&&!selected.isEmpty())require(p.availability()==Availability.PARTIAL,"unproved USE selection cannot claim known dispatch");
                 var events=EnumSet.noneOf(ControlEvent.class);
@@ -79,11 +81,13 @@ final class FileControlAdmission {
                         require(r.destinations().stream().anyMatch(d->d.kind()!=DestinationKind.USE)==noUsePossible,"unproved/no USE alternative missing or invented");
                     }
                 }
-                require(events.contains(ControlEvent.SUCCESS)&&events.contains(ControlEvent.OTHER_ERROR),"dispatch omits success/error event");
+                require(events.contains(ControlEvent.SUCCESS)&&(local?!events.contains(ControlEvent.OTHER_ERROR):events.contains(ControlEvent.OTHER_ERROR)),"dispatch omits success/error event");
+                if(use.command()==Command.RETURN)require(events.equals(EnumSet.of(ControlEvent.SUCCESS,ControlEvent.END)),"RETURN requires success/END only");
+                if(use.command()==Command.RELEASE)require(events.equals(EnumSet.of(ControlEvent.SUCCESS)),"RELEASE has no READ outcomes");
                 if(use.command()==Command.READ)require(events.contains(ControlEvent.END)||events.contains(ControlEvent.INVALID_KEY),"READ omits exceptional condition");
                 if(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.DELETE_RECORD||use.command()==Command.START)require(events.contains(ControlEvent.INVALID_KEY),"native key event omitted");
                 if(handlers.containsKey(HandlerKind.AT_END_OF_PAGE)||handlers.containsKey(HandlerKind.NOT_AT_END_OF_PAGE))require(events.contains(ControlEvent.END_OF_PAGE)&&use.command()==Command.WRITE,"EOP must be a WRITE event");
-                require(!events.contains(ControlEvent.END)||use.command()==Command.READ,"EOF is a READ event");
+                require(!events.contains(ControlEvent.END)||use.command()==Command.READ||use.command()==Command.RETURN,"EOF is a READ event");
             }
             for(var s:input.statements())if(s.header().containment().branch()==Branch.FILE_HANDLER)require(handlerMembers.contains(s.header().id()),"handler member omitted from surface");
         } catch(Invalid ex) {c.require(false,Admission.Rule.PROFILE_FACT,"file-control",null,ex.getMessage());}

@@ -26,13 +26,13 @@ final class FileEffectAdmission {
             var cases=EnumSet.noneOf(EffectOutcome.class);for(var outcome:e.outcomes())require(cases.add(outcome.outcome()),"duplicate file effect outcome");
             require(cases.equals(EnumSet.allOf(EffectOutcome.class)),"conditional file effect table must preserve every outcome");
             for(var read:e.ioReads())target(read,use,c,references);
-            if(!e.unknownReadBound()&&file!=null&&(use.command()==Command.WRITE||use.command()==Command.REWRITE))
+            if(!e.unknownReadBound()&&file!=null&&(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE))
                 for(var record:file.records())require(e.ioReads().stream().anyMatch(t->t.data().filter(record::equals).isPresent()),"output record read omitted");
             for(var step:e.before()){require(step.role()==MemoryRole.FROM_RECORD,"only FROM transfer precedes I/O");step(step,use,null,file,c,references);}
             require(e.unknownReadBound()||e.before().stream().allMatch(s->s.source().isPresent()&&!s.source().orElseThrow().wholeBase()),"unproved FROM address requires an open read bound");
             var surface=use.surface().orElseThrow();
             boolean from=surface.operands().stream().anyMatch(o->o.role()==FileFacts.OperandRole.FROM);
-            require(e.before().isEmpty()||from&&(use.command()==Command.WRITE||use.command()==Command.REWRITE),"unexpected pre-I/O transfer");
+            require(e.before().isEmpty()||from&&(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE),"unexpected pre-I/O transfer");
             require(e.unknownWriteBound()||!from||e.before().size()==1,"FROM receiver effect omitted");
             for(var step:e.before())require(hasRole(step.destination(),surface,FileFacts.OperandRole.RECORD),"FROM receiver lacks RECORD operand");
             for(var outcome:e.outcomes()) {
@@ -43,16 +43,16 @@ final class FileEffectAdmission {
                     int rank=switch(step.role()){case RECORD,FROM_RECORD->0;case RELATIVE_KEY->1;case RECORD_LENGTH->2;case FILE_STATUS->3;case ADDITIONAL_STATUS->4;case INTO->5;};
                     require(rank>=order,"file memory steps are out of semantic order");order=rank;
                     if(step.role()==MemoryRole.INTO||step.role()==MemoryRole.RECORD_LENGTH||step.role()==MemoryRole.RELATIVE_KEY)
-                        require(use.command()==Command.READ&&outcome.outcome()==EffectOutcome.SUCCESS,"READ receiving effects require success");
+                        require((use.command()==Command.READ||use.command()==Command.RETURN||FileFacts.aggregate(use))&&outcome.outcome()==EffectOutcome.SUCCESS,"READ receiving effects require success");
                     require(!(use.command()==Command.REWRITE&&outcome.outcome()==EffectOutcome.INVALID_KEY&&step.role()==MemoryRole.RECORD),"REWRITE invalid key does not invalidate record");
                     step(step,use,outcome.outcome(),file,c,references);
                     if(step.role()==MemoryRole.INTO)require(hasRole(step.destination(),surface,FileFacts.OperandRole.INTO),"INTO receiver lacks INTO operand");
                 }
                 if(!e.unknownWriteBound()&&file!=null) {
-                    if(use.command()==Command.READ||use.command()==Command.CLOSE)for(var record:file.records())require(outcome.steps().stream().anyMatch(s->s.role()==MemoryRole.RECORD&&s.destination().data().filter(record::equals).isPresent()),"buffer effect omitted");
-                    if(use.command()==Command.READ&&outcome.outcome()==EffectOutcome.SUCCESS&&surface.operands().stream().anyMatch(o->o.role()==FileFacts.OperandRole.INTO))
+                    if(use.command()==Command.READ||use.command()==Command.RETURN||use.command()==Command.CLOSE||FileFacts.aggregate(use))for(var record:file.records())require(outcome.steps().stream().anyMatch(s->s.role()==MemoryRole.RECORD&&s.destination().data().filter(record::equals).isPresent()),"buffer effect omitted");
+                    if((use.command()==Command.READ||use.command()==Command.RETURN||FileFacts.aggregate(use))&&outcome.outcome()==EffectOutcome.SUCCESS&&surface.operands().stream().anyMatch(o->o.role()==FileFacts.OperandRole.INTO))
                         require(roles.contains(MemoryRole.INTO),"INTO receiver effect omitted");
-                    for(var status:file.references())if(status.role()==ReferenceRole.FILE_STATUS||status.role()==ReferenceRole.ADDITIONAL_STATUS) {
+                    for(var status:FileFacts.local(use)?List.<Reference>of():file.references())if(status.role()==ReferenceRole.FILE_STATUS||status.role()==ReferenceRole.ADDITIONAL_STATUS) {
                         var role=status.role()==ReferenceRole.FILE_STATUS?MemoryRole.FILE_STATUS:MemoryRole.ADDITIONAL_STATUS;
                         require(status.binding().selected().isPresent()&&outcome.steps().stream().anyMatch(s->s.role()==role&&s.destination().data().equals(status.binding().selected())),"file status effect omitted");
                     }
@@ -95,7 +95,7 @@ final class FileEffectAdmission {
         if(s.role()==MemoryRole.RECORD||s.role()==MemoryRole.FROM_RECORD)require(file==null||s.destination().data().isEmpty()||file.records().contains(s.destination().data().orElseThrow()),"record effect has wrong FILE owner");
         if(s.role()==MemoryRole.INTO)require(s.destination().reference().isPresent()&&use.surface().orElseThrow().operands().stream().anyMatch(o->o.role()==FileFacts.OperandRole.INTO&&o.references().contains(s.destination().reference().orElseThrow())),"INTO effect must retain receiving operand");
         if(s.kind()==MemoryKind.MAY_UNKNOWN)return;
-        require(use.profile()==SyntaxProfile.N_LR&&file!=null&&file.kind()==Kind.FD&&file.assignment().sourceKind()==NameSource.ASSIGNMENT_NAME,"strong native effect needs N-LR file facts");
+        require(use.profile()==SyntaxProfile.N_LR&&file!=null&&file.kind()==FileFacts.expectedKind(use)&&(FileFacts.local(use)||file.assignment().sourceKind()==NameSource.ASSIGNMENT_NAME),"strong native effect needs N-LR file facts");
         require(s.gapCodes().isEmpty(),"strong effect cannot carry an unresolved proof gap");var destination=exact(s.destination(),c);
         if(s.kind()==MemoryKind.MUST_UNKNOWN) {
             require(s.role()==MemoryRole.FILE_STATUS||s.role()==MemoryRole.INTO,"MUST cannot be inferred from a file verb");

@@ -37,9 +37,10 @@ final class PartialProgramAdmission {
                             &&e.unknownExposureBound()==EffectBound.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"only bounded INITIALIZE may prove MUST");
                         for(var id:e.mustOverwrite())c.require(refs.containsKey(id)&&refs.get(id).regionalAccess().isPresent(),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires exact physical access");
                         c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
-                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE)c.require(e.values()==EffectValueTransform.UNKNOWN
+                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN
                             &&(e.unknownWriteBound()!=EffectBound.NONE||!e.mayWrites().isEmpty()),Rule.PROFILE_FACT,o.header().id().handle(),null,"receiving effect cannot silently have no writes or known transform");
                         for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
+                        if(e.proof()==EffectProof.NO_OP)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE&&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"NO_OP proof has no effects");
                         if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
                             &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
                             &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
@@ -80,6 +81,7 @@ final class PartialProgramAdmission {
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var rangeCompletions=new HashSet<StatementId>();
             input.fileInventory().declaratives().forEach(d->rangeCompletions.addAll(d.completions()));
+            input.fileInventory().sorts().ifPresent(inv->inv.plans().forEach(p->p.procedures().forEach(r->{rangeCompletions.addAll(r.completions());r.links().forEach(l->rangeCompletions.add(l.from()));})));
             for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.gapCodes().isEmpty())
                 p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();

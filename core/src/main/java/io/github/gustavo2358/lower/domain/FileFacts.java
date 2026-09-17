@@ -28,7 +28,21 @@ public final class FileFacts {
             Objects.requireNonNull(optional); Objects.requireNonNull(assignment); Objects.requireNonNull(organization); Objects.requireNonNull(accessMode); Objects.requireNonNull(visibility);
             records=List.copyOf(records); references=List.copyOf(references); origins=List.copyOf(origins); gapCodes=List.copyOf(gapCodes); }
     }
-    public enum Command { OPEN, READ, WRITE, REWRITE, DELETE_RECORD, START, CLOSE }
+    public enum Command { OPEN, READ, WRITE, REWRITE, DELETE_RECORD, START, CLOSE, RELEASE, RETURN, SORT, MERGE }
+    public enum Role { DIRECT, WORK, INPUT, OUTPUT }
+    public enum ProcedurePhase { INPUT, OUTPUT }
+    public static boolean aggregate(Use use){return use.command()==Command.SORT||use.command()==Command.MERGE;}
+    public static boolean local(Use use){return use.command()==Command.RELEASE||use.command()==Command.RETURN||use.role()==Role.WORK;}
+    public static Kind expectedKind(Use use){return local(use)?Kind.SD:Kind.FD;}
+    public record ProcedureLink(StatementId from,StatementId to) {public ProcedureLink {Objects.requireNonNull(from);Objects.requireNonNull(to);}}
+    public record ProcedurePlan(ProcedurePhase phase,Optional<PerformTarget> start,Optional<PerformTarget> end,List<StatementId> roots,
+            Optional<StatementId> entry,List<StatementId> completions,List<ProcedureLink> links,List<String> gapCodes) {
+        public ProcedurePlan {Objects.requireNonNull(phase);Objects.requireNonNull(start);Objects.requireNonNull(end);roots=List.copyOf(roots);Objects.requireNonNull(entry);completions=List.copyOf(completions);links=List.copyOf(links);gapCodes=List.copyOf(gapCodes);}
+    }
+    public record SortPlan(StatementId statement,Availability availability,int work,List<Integer> inputs,List<Integer> outputs,List<ProcedurePlan> procedures,List<String> gapCodes) {
+        public SortPlan {Objects.requireNonNull(statement);Objects.requireNonNull(availability);inputs=List.copyOf(inputs);outputs=List.copyOf(outputs);procedures=List.copyOf(procedures);gapCodes=List.copyOf(gapCodes);}
+    }
+    public record SortInventory(Availability availability,List<SortPlan> plans) {public SortInventory {Objects.requireNonNull(availability);plans=List.copyOf(plans);}}
     public enum OpenMode { INPUT, OUTPUT, IO, EXTEND, UNSPECIFIED }
     public enum SyntaxProfile { N_LR, UNSUPPORTED }
     public record Candidate(String id,UnitKey owner) {public Candidate {Objects.requireNonNull(id);Objects.requireNonNull(owner);}}
@@ -78,7 +92,8 @@ public final class FileFacts {
         public ControlPlan {Objects.requireNonNull(availability);Objects.requireNonNull(continuation);routes=List.copyOf(routes);gapCodes=List.copyOf(gapCodes);}
     }
     public record Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,
-            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects,Optional<ControlPlan> control) {
+            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects,Optional<ControlPlan> control,Role role) {
+        public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects,Optional<ControlPlan> control){this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,surface,effects,control,Role.DIRECT);}
         public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects) {
             this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,surface,effects,Optional.empty());
         }
@@ -88,16 +103,17 @@ public final class FileFacts {
         public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes) {
             this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,Optional.empty());
         }
-        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);Objects.requireNonNull(effects);Objects.requireNonNull(control);}
+        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);Objects.requireNonNull(effects);Objects.requireNonNull(control);Objects.requireNonNull(role);}
     }
     public record Operations(Availability availability,List<Use> uses,List<String> gapCodes) {
         public Operations {Objects.requireNonNull(availability);uses=List.copyOf(uses);gapCodes=List.copyOf(gapCodes);}
         public static Operations unavailable(){return new Operations(Availability.UNAVAILABLE,List.of(),List.of("FILE_OPERATIONS_UNAVAILABLE"));}
     }
-    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations,List<Declarative> declaratives) {
+    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations,List<Declarative> declaratives,Optional<SortInventory> sorts) {
+        public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations,List<Declarative> declaratives){this(availability,declarations,gapCodes,operations,declaratives,Optional.empty());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations){this(availability,declarations,gapCodes,operations,List.of());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes){this(availability,declarations,gapCodes,Operations.unavailable());}
-        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations);declaratives=List.copyOf(declaratives); }
+        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations);declaratives=List.copyOf(declaratives);Objects.requireNonNull(sorts); }
         public static Inventory unavailable() { return new Inventory(Availability.UNAVAILABLE,List.of(),List.of("FILE_INVENTORY_UNAVAILABLE")); }
     }
 }

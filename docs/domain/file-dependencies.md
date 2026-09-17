@@ -180,3 +180,30 @@ qualification-local semântica244296/performance39215 PASS. B-SP seis exports re
 byte a byte PASS; negativos de continuação/seleção/saída crítica/in-memory PASS.
 Pin SP2.25 `1c21f21750aa3572e39fce71ccc156a357699d81`. AIR/IR conservam pins W1.
 Logs `.harness-results/fd-w4/`; E-SELECTED imutável segue no harness CFG.
+
+
+## FD-W5 — SORT/SD em execução
+
+Regra, autoridade, algoritmo e oráculos antes da produção em
+`../analysis-cfg/docs/product/file-dependencies/w5-implementation.md`.
+SP2.26/fileInventory1.5 conserva papéis, participantes e ranges por identidade.
+Decoder/admission bilateral fechado; ASM usa fases e corpos compartilhados.
+Usos SD associam operações locais via resource.bindings existente; nunca criam
+ComputedTarget desconhecido para um nome externo que não pertence ao SD.
+AIR15/I-RB-03 proíbe LocalResource como target executável; a redução respeita
+essa fronteira e não requer nova norma ou codec. Oráculo FileSortSuite precede
+a implementação; RED de versão preservado em `.harness-results/fd-w5`.
+
+
+W5 implementado: SP2.26/fileInventory1.5 com participantes/papéis, fases e ranges;
+Wire226/admission nas duas portas recusam perda de planos e endpoints. Lower usa
+invokes somente para FD externo; SD utiliza Opaque com memória/controle gerais e
+ResourceDeclaration.uses(work/release/return). Sem alteração AIR/codec/norma.
+Branches de fase conservam todos os participantes sem ordem/contagem inventadas;
+procedimentos compartilham corpo, retorno delimitado com gap contextual explícito.
+NO_OP certificado traduz para salto sem efeitos, sem SOURCE_NONE_EFFECT fictício.
+12 fixtures bilaterais, 9 negativos wire + 3 memory e grafo de fases PASS.
+FAST2340 core + adapters PASS; Q-SHARED semântica244296/performance39215 e
+arquitetura PASS. Executada por mudança NO_OP/continuação e composição PERFORM.
+12 exports SP idênticos ao produtor8fd8faad; logs `.harness-results/fd-w5/`.
+E-SELECTED e checkpoint integrados seguem no consumer.

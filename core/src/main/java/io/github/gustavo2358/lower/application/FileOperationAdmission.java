@@ -25,10 +25,10 @@ final class FileOperationAdmission {
             require(c,(use.command()==Command.START)==(surface.keyRelation()!=KeyRelation.UNSPECIFIED),"key relation belongs to START");
             require(c,!surface.explicitTerminator()||use.command()!=Command.OPEN&&use.command()!=Command.CLOSE,"OPEN/CLOSE has no explicit terminator");
             for(var operand:surface.operands()) {
-                c.touch();c.provenance(operand.provenance());require(c,roles.add(operand.role()),"duplicate file operand role");
+                c.touch();c.provenance(operand.provenance());require(c,roles.add(operand.role())||FileFacts.aggregate(use)&&operand.role()==FileFacts.OperandRole.KEY,"duplicate file operand role");
                 boolean allowed=switch(operand.role()) {
-                    case RECORD,FROM->use.command()==Command.WRITE||use.command()==Command.REWRITE;
-                    case INTO->use.command()==Command.READ;case KEY->use.command()==Command.READ||use.command()==Command.START;
+                    case RECORD,FROM->use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE;
+                    case INTO->use.command()==Command.READ||use.command()==Command.RETURN;case KEY->use.command()==Command.READ||use.command()==Command.START||FileFacts.aggregate(use);
                     case ADVANCING->use.command()==Command.WRITE;
                 };
                 require(c,allowed,"operand role does not belong to command");
@@ -42,7 +42,7 @@ final class FileOperationAdmission {
                     if(ref!=null&&ref.binding().selected().isPresent())require(c,use.candidates().size()==1&&use.candidates().getFirst().equals(owners.get(ref.binding().selected().orElseThrow())),"record/file candidate ownership mismatch");
                 }
             }
-            require(c,roles.contains(FileFacts.OperandRole.RECORD)==(use.command()==Command.WRITE||use.command()==Command.REWRITE),"WRITE/REWRITE requires record operand");
+            require(c,roles.contains(FileFacts.OperandRole.RECORD)==(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE),"WRITE/REWRITE requires record operand");
             var options=new HashSet<Option>();
             for(var option:surface.options()) {
                 c.touch();require(c,options.add(option),"duplicate file option");
@@ -60,7 +60,7 @@ final class FileOperationAdmission {
             for(var handler:surface.handlers()) {
                 c.touch();c.provenance(handler.provenance());require(c,kinds.add(handler.kind()),"duplicate handler kind");
                 boolean allowed=switch(handler.kind()) {
-                    case AT_END,NOT_AT_END->use.command()==Command.READ;
+                    case AT_END,NOT_AT_END->use.command()==Command.READ||use.command()==Command.RETURN;
                     case AT_END_OF_PAGE,NOT_AT_END_OF_PAGE->use.command()==Command.WRITE;
                     case INVALID_KEY,NOT_INVALID_KEY->Set.of(Command.READ,Command.WRITE,Command.REWRITE,Command.DELETE_RECORD,Command.START).contains(use.command());
                 };require(c,allowed,"handler kind does not belong to command");
