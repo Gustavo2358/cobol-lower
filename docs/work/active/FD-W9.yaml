@@ -1,8 +1,10 @@
 id: FD-W9
 title: Compor unidades e capturas mantendo owners FILE/CALL
-status: IN_PROGRESS
+status: DONE
 scope: [file-dependencies, compilation-lowering]
 rule: Contrato fonte canônico com parentage/capturas; AIR containingUnit/visibleObjects/AliasBinding e resource.bindings existentes.
 oracle: FileScopeSuite e AIR manual consumer; owner original, uso child, nenhum FILE transitivo por CALL.
 algorithm: IDs separados por unidade; composição explícita e admission bilateral antes da publicação atômica.
 evidence: B-SP seis fontes/nove negativos/permutação e codec PASS; FAST core2340+adapters e qualification-local semântica244296/performance39215/arquitetura exit0; logs fd-w9. Integração CLI final no harness canônico W9.
+
+closeout: Merged and main smoke PASS; core complete; W10 optional/deferred.
