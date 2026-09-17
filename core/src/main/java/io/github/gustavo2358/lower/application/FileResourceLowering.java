@@ -17,6 +17,7 @@ final class FileResourceLowering {
     private final FileMemoryLowering memory;
     private final FileControlLowering control;
     private final FileSortLowering sort;
+    private final FileAuxiliaryLowering auxiliary;
     private final Set<LabelId> sourceEntries=new LinkedHashSet<>();
     private final Map<FileFacts.Candidate,FileFacts.Declaration> declarations=new LinkedHashMap<>();
     private final Map<SpInput.StatementId,List<FileFacts.Use>> byStatement=new HashMap<>();
@@ -26,6 +27,7 @@ final class FileResourceLowering {
         this.memory=new FileMemoryLowering(input,data,unit,ids,origins,gaps);
         this.control=new FileControlLowering(input,unit,ids,origins,gaps);
         this.sort=new FileSortLowering(input,unit,ids,origins,gaps);
+        this.auxiliary=new FileAuxiliaryLowering(input,unit,ids,origins,gaps);
         for(var f:input.fileInventory().declarations())declarations.put(new FileFacts.Candidate(f.id(),f.owner()),f);
         for(var use:input.fileInventory().operations().uses())byStatement.computeIfAbsent(use.statement(),k->new ArrayList<>()).add(use);
         byStatement.values().forEach(uses->uses.sort(Comparator.comparingInt(FileFacts.Use::ordinal)));
@@ -79,6 +81,7 @@ final class FileResourceLowering {
                 new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),
                     plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
                 new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,plan==null,true,true,true,true,true))),new Interactions.UnknownContract(contract));
+            label=auxiliary.prefix(use,label,origin,local,result);
             var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
             if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));
             result.add(new Sequence(invokeLabel,List.of(),invoke,origin));
@@ -115,7 +118,7 @@ final class FileResourceLowering {
             var source=switch(f.assignment().sourceKind()){case ASSIGNMENT_NAME->"cobol.assignment-name";case SORT_COMMENT->"cobol.sort-comment";case UNSUPPORTED->"cobol.unsupported-name";case ABSENT->"cobol.absent-name";};
             result.add(new Interactions.Resource(id,description,origin,Optional.of(new Interactions.ResourceDeclaration(unit,f.logicalFile(),kind,source,objects,associations.getOrDefault(entry.getKey(),List.of())))));
         }
-        return List.copyOf(result);
+        result.addAll(auxiliary.resources());return List.copyOf(result);
     }
     boolean available(){return input.fileInventory().availability()!=SpInput.Availability.UNAVAILABLE;}
 }

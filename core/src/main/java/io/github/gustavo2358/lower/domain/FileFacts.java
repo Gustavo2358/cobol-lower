@@ -8,7 +8,7 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 public final class FileFacts {
     private FileFacts() { }
     public enum Kind { FD, SD, UNKNOWN }
-    public enum Organization { SEQUENTIAL, INDEXED, RELATIVE, UNSPECIFIED, UNSUPPORTED }
+    public enum Organization { SEQUENTIAL, LINE_SEQUENTIAL, INDEXED, RELATIVE, UNSPECIFIED, UNSUPPORTED }
     public enum AccessMode { SEQUENTIAL, RANDOM, DYNAMIC, UNSPECIFIED, UNSUPPORTED }
     public enum Visibility { LOCAL, GLOBAL, EXTERNAL, CONFLICTING }
     public enum ReferenceRole { RECORD_KEY, ALTERNATE_RECORD_KEY, RELATIVE_KEY, FILE_STATUS, ADDITIONAL_STATUS }
@@ -109,11 +109,26 @@ public final class FileFacts {
         public Operations {Objects.requireNonNull(availability);uses=List.copyOf(uses);gapCodes=List.copyOf(gapCodes);}
         public static Operations unavailable(){return new Operations(Availability.UNAVAILABLE,List.of(),List.of("FILE_OPERATIONS_UNAVAILABLE"));}
     }
-    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations,List<Declarative> declaratives,Optional<SortInventory> sorts) {
+    public enum AuxKind { RERUN, SAME_AREA, SAME_RECORD_AREA, SAME_SORT_AREA, SAME_SORT_MERGE_AREA,
+        MULTIPLE_FILE, APPLY_WRITE_ONLY, COMMITMENT_CONTROL, RESERVE, PADDING, RECORD_DELIMITER,
+        PASSWORD, BLOCK, RECORD, LABEL_RECORDS, VALUE_OF, DATA_RECORDS, LINAGE, RECORDING_MODE, CODE_SET, REPORT }
+    public enum AuxEffect { DOCUMENTARY, RECORD_ALIAS, CONDITIONAL_RECORD_ALIAS, BUFFER_ALLOCATION, RECORD_LAYOUT,
+        PAGE_CONTROL, ACCESS_CHECK, CHECKPOINT, OUTSIDE_N_LR }
+    public enum Trigger { NONE, SORT_MERGE, RECORD_COUNT, END_VOLUME, UNSUPPORTED }
+    public record AuxParameter(String role,String value){public AuxParameter{Objects.requireNonNull(role);Objects.requireNonNull(value);}}
+    public record AuxData(String role,Binding binding,Provenance provenance){public AuxData{Objects.requireNonNull(role);Objects.requireNonNull(binding);Objects.requireNonNull(provenance);}}
+    public enum SourceAccessMethod { QSAM, VSAM, LINE_SEQUENTIAL, UNKNOWN }
+    public record AuxReference(ResolutionStatus status,List<Candidate> candidates,SourceAccessMethod accessMethod,Provenance provenance){public AuxReference{Objects.requireNonNull(accessMethod);Objects.requireNonNull(status);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);}}
+    public record AuxClause(String id,AuxKind kind,AuxEffect effect,List<AuxReference> fileReferences,List<AuxData> dataReferences,
+            List<AuxParameter> parameters,Optional<Assignment> checkpoint,Trigger trigger,List<String> gapCodes,Provenance provenance){
+        public AuxClause{Objects.requireNonNull(id);Objects.requireNonNull(kind);Objects.requireNonNull(effect);fileReferences=List.copyOf(fileReferences);dataReferences=List.copyOf(dataReferences);parameters=List.copyOf(parameters);Objects.requireNonNull(checkpoint);Objects.requireNonNull(trigger);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}}
+    public record Auxiliary(Availability availability,List<AuxClause> clauses,List<String> gapCodes){public Auxiliary{Objects.requireNonNull(availability);clauses=List.copyOf(clauses);gapCodes=List.copyOf(gapCodes);}}
+    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations,List<Declarative> declaratives,Optional<SortInventory> sorts,Optional<Auxiliary> auxiliary) {
+        public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations,List<Declarative> declaratives,Optional<SortInventory> sorts){this(availability,declarations,gapCodes,operations,declaratives,sorts,Optional.empty());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations,List<Declarative> declaratives){this(availability,declarations,gapCodes,operations,declaratives,Optional.empty());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations){this(availability,declarations,gapCodes,operations,List.of());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes){this(availability,declarations,gapCodes,Operations.unavailable());}
-        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations);declaratives=List.copyOf(declaratives);Objects.requireNonNull(sorts); }
+        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations);declaratives=List.copyOf(declaratives);Objects.requireNonNull(sorts);Objects.requireNonNull(auxiliary); }
         public static Inventory unavailable() { return new Inventory(Availability.UNAVAILABLE,List.of(),List.of("FILE_INVENTORY_UNAVAILABLE")); }
     }
 }

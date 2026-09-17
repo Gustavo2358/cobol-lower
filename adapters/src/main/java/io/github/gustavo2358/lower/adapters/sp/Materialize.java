@@ -11,6 +11,13 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire227.Document wire){
+        var common=input(Wire227.common(wire));var inv=common.fileInventory();var unit=common.unit();var auxiliary=wire.fileInventory().auxiliary();
+        var clauses=auxiliary.clauses().stream().map(c->new FileFacts.AuxClause(c.id(),c.kind(),c.effect(),c.fileReferences().stream().map(f->new FileFacts.AuxReference(f.status(),f.candidates().stream().map(id->new FileFacts.Candidate(id.id(),unitKey(id.owner(),null))).toList(),f.accessMethod(),provenance(f.provenance(),unit))).toList(),
+            c.dataReferences().stream().map(r->{var b=r.binding();return new FileFacts.AuxData(r.role(),new Binding(ResolutionStatus.valueOf(b.status().name()),b.candidates().stream().map(id->new DataId(unit,id.id())).toList(),Optional.ofNullable(b.selected()).map(id->new DataId(unit,id)),Optional.of(ResolutionReason.valueOf(b.reason().name())),b.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),provenance(r.provenance(),unit));}).toList(),
+            c.parameters(),Optional.ofNullable(c.checkpoint()).map(n->new FileFacts.Assignment(n.availability(),n.profile(),n.original(),n.sourceKind(),Optional.ofNullable(n.externalFileName()),n.gapCodes())),c.trigger(),c.gapCodes(),provenance(c.provenance(),unit))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),inv.operations(),inv.declaratives(),inv.sorts(),Optional.of(new FileFacts.Auxiliary(auxiliary.availability(),clauses,auxiliary.gapCodes()))));
+    }
     static SpInput input(Wire226.Document wire) {
         var common=input(Wire226.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
         for(int i=0;i<inv.operations().uses().size();i++) {

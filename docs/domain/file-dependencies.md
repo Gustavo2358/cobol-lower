@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-H4 aprovado; core N+C autorizado em 2026-09-16. W0–W3 qualificadas local; W4 em implementação; W10 não autorizado.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0–W5 qualificadas local; W6 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -214,3 +214,34 @@ Repin W5 final9d4de9b após oracle de OUTPUT vazio e correção do positivo PERF
 REUSED para esse conteúdo, sem rebuild semântico artificial. Compile+FileSortSuite
 final12 fixtures/negativos/grafo PASS; 12 SPs idênticos ao produtor final. E-SELECTED
 final valida a composição, preservando a execução rejeitada da fixture anterior.
+
+## FD-W6 — SP2.27 / auxiliares declarativos
+
+`fileInventory1.6` preserva fatos tipados, origens, parâmetros e classificação N-LR;
+Wire227 mantém históricos sem auxiliar como UNAVAILABLE. Admission comum valida
+identidades, efeitos/cláusula, checkpoint/trigger e leituras PASSWORD/LINAGE/length.
+Metadata documental não produz execução. LOWER não interpreta parâmetros/texto.
+
+RERUN cria ResourceDeclaration `cobol.checkpoint` com nome source-level quando
+provado, independente de SELECT. Somente trigger tipado e sem gap gera invoke
+`checkpoint`: SORT/MERGE work ou I/O do arquivo nominal de RECORD_COUNT/END_VOLUME.
+Seleção permite zero ou mais ocorrências; contagem/momento fino não são afirmados.
+Checkpoint pode ler estado visível e não sobrescreve memória COBOL; efeitos/controle
+externos limitados e contrato desconhecido explícitos. Fonte sem trigger executável
+não produz site. Nome computado por runtime/alocação jamais é procurado.
+
+Regra/oracle antes do código: campanha canônica W6, IBM SC27-8713-03 2026-04-28.
+Algoritmo acrescenta seletores/invokes por par cláusula/gatilho aplicável; número
+finito de operações fonte, sem limite artificial. Núcleo composicional e AIR15
+permanecem; sem novo consumer FILE/solver ou extensão normativa.
+
+Refinamento N05: LINE_SEQUENTIAL IBM no enum SP2.27, métodos de acesso tipados
+nas referências auxiliares. SAME AREA documental exige QSAM; alias exige VSAM,
+sem interpretar assignment-name no lower. Namespaces externos permanecem iguais.
+
+W6 checkpoint produtor: 19 fixtures reais SP2.27 idênticas byte a byte ao frontend
+4f63f10c697feb76bf26ba8eb0fa663bb94b9b71; negativos wire/memory e codec PASS.
+FAST fixo2340 core+adapters PASS; qualification-local semântica244296/performance39215
+PASS para a mesma produção; o FAST final inclui o pin/fixtures finais. AIR/IR
+permanecem nos pins W1. E-SELECTED é fechado no consumer antes de qualificar W6.
+Logs/REDs preservados em `.harness-results/fd-w6/`.

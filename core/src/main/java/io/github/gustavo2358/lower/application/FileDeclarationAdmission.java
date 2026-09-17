@@ -48,5 +48,6 @@ final class FileDeclarationAdmission {
             c.require((use.command()==FileFacts.Command.OPEN||use.role()==FileFacts.Role.INPUT||use.role()==FileFacts.Role.OUTPUT)==(use.mode()!=FileFacts.OpenMode.UNSPECIFIED),Rule.PROFILE_FACT,"file-use",null,"file command/mode mismatch");
         }
         FileOperationAdmission.validate(input,c);
+        FileAuxiliaryAdmission.validate(input,c);
     }
 }

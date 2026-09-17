@@ -28,6 +28,11 @@ final class FileEffectAdmission {
             for(var read:e.ioReads())target(read,use,c,references);
             if(!e.unknownReadBound()&&file!=null&&(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE))
                 for(var record:file.records())require(e.ioReads().stream().anyMatch(t->t.data().filter(record::equals).isPresent()),"output record read omitted");
+            if(!e.unknownReadBound()&&file!=null)input.fileInventory().auxiliary().ifPresent(aux->{for(var clause:aux.clauses()){
+                boolean selected=clause.fileReferences().stream().anyMatch(f->f.status()==ResolutionStatus.RESOLVED&&f.candidates().contains(new Candidate(file.id(),file.owner())));
+                boolean read=clause.kind()==AuxKind.RECORD&&(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE)||clause.effect()==AuxEffect.ACCESS_CHECK&&use.command()==Command.OPEN||clause.effect()==AuxEffect.PAGE_CONTROL&&(use.command()==Command.WRITE||use.command()==Command.OPEN&&(use.mode()==OpenMode.OUTPUT||use.mode()==OpenMode.EXTEND));
+                if(selected&&read)for(var ref:clause.dataReferences())require(ref.binding().selected().isPresent()&&e.ioReads().stream().anyMatch(t->t.data().equals(ref.binding().selected())),"auxiliary parameter read omitted");
+            }});
             for(var step:e.before()){require(step.role()==MemoryRole.FROM_RECORD,"only FROM transfer precedes I/O");step(step,use,null,file,c,references);}
             require(e.unknownReadBound()||e.before().stream().allMatch(s->s.source().isPresent()&&!s.source().orElseThrow().wholeBase()),"unproved FROM address requires an open read bound");
             var surface=use.surface().orElseThrow();

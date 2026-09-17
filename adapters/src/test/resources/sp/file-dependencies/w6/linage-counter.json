@@ -1,0 +1,1649 @@
+{
+  "schema" : "cobol-semantic-product",
+  "contractVersion" : "2.27.0",
+  "unit" : {
+    "canonicalProgramName" : "AUXIO",
+    "compilationUnitId" : "AUXILIARY.CBL",
+    "structuralPath" : [ 0 ]
+  },
+  "policy" : {
+    "dllMode" : "UNSPECIFIED",
+    "dynamMode" : "UNSPECIFIED",
+    "pgmnameMode" : "UNSPECIFIED",
+    "policyId" : "cobol-explorer/explicit-options",
+    "qualifyMode" : "UNSPECIFIED",
+    "version" : "3.0.0"
+  },
+  "dataDeclarations" : [ {
+    "canonicalName" : "R",
+    "coverage" : "MODELED",
+    "id" : "data:0",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 14,
+        "endLine" : 10,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 10
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 21,
+        "endLine" : 10,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 10
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "TARGET-NAME",
+    "coverage" : "MODELED",
+    "id" : "data:1",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 41,
+        "endLine" : 12,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 12
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 48,
+        "endLine" : 12,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 12
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  } ],
+  "statements" : [ {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:2",
+      "programPoint" : 0,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 12,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 19,
+          "endLine" : 14,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 12,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 19,
+          "endLine" : 14,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "statement" : "statement:3"
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:3",
+      "programPoint" : 1,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 29,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 36,
+          "endLine" : 15,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "R",
+          "id" : "data:0"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:0",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:3:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 6,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 6,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 13,
+          "endLine" : 15,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 13,
+          "startLine" : 15
+        }
+      },
+      "regionalAccess" : {
+        "slice" : null,
+        "view" : "storage-node:8"
+      },
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 29,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 36,
+          "endLine" : 15,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      },
+      "statement" : "statement:0"
+    }
+  }, {
+    "variant" : "MOVE",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "PARTIAL",
+      "id" : "statement:0",
+      "programPoint" : 2,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 38,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 45,
+          "endLine" : 16,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 16
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "canonical normal continuation availability",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "general effects and dataflow are not published",
+          "status" : "PARTIAL"
+        },
+        "lowering" : {
+          "scope" : "canonical elementary MOVE copy capability",
+          "status" : "PARTIAL"
+        }
+      }
+    },
+    "source" : {
+      "variant" : "DATA",
+      "reference" : {
+        "binding" : {
+          "candidates" : [ ],
+          "reason" : "DECLARATION_NOT_FOUND",
+          "selected" : null,
+          "status" : "UNRESOLVED"
+        },
+        "id" : "operand:0:0",
+        "logicalWholeItem" : null,
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 23,
+            "endLine" : 16,
+            "file" : "<preprocessed>",
+            "startColumn" : 5,
+            "startLine" : 16
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 30,
+            "endLine" : 16,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 12,
+            "startLine" : 16
+          }
+        },
+        "regionalAccess" : null,
+        "regionalAlternatives" : [ ],
+        "role" : "READ",
+        "wholeItemAccess" : null
+      }
+    },
+    "target" : {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "TARGET-NAME",
+          "id" : "data:1"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:1",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:0:1",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 38,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 28,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 45,
+          "endLine" : 16,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 35,
+          "startLine" : 16
+        }
+      },
+      "regionalAccess" : {
+        "slice" : null,
+        "view" : "storage-node:11"
+      },
+      "regionalAlternatives" : [ ],
+      "role" : "WRITE",
+      "wholeItemAccess" : null
+    },
+    "copySemantics" : "UNAVAILABLE",
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 38,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 45,
+          "endLine" : 16,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 16
+        }
+      },
+      "statement" : "statement:1"
+    },
+    "textAdjustment" : null,
+    "additionalTransfers" : [ ],
+    "regionalMove" : {
+      "bytes" : [ ],
+      "gapCodes" : [ "SOURCE_NOT_PROVEN" ],
+      "kind" : "MUST_UNKNOWN"
+    }
+  }, {
+    "variant" : "CALL",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "PARTIAL",
+      "id" : "statement:1",
+      "programPoint" : 3,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 15,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 22,
+          "endLine" : 17,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 17
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "conditional local successor after normal return only; other outcomes remain open",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "CALL external effects UNKNOWN; outcome knowledge OPEN",
+          "status" : "PARTIAL"
+        },
+        "lowering" : {
+          "scope" : "CALL source facts for the parameterless whole-text/literal slice; no AIR certification",
+          "status" : "PARTIAL"
+        }
+      }
+    },
+    "syntax" : "IDENTIFIER_OR_EXPRESSION",
+    "target" : {
+      "kind" : "DATA",
+      "reference" : {
+        "binding" : {
+          "candidates" : [ {
+            "canonicalName" : "TARGET-NAME",
+            "id" : "data:1"
+          } ],
+          "reason" : "UNIQUE_VISIBLE_DECLARATION",
+          "selected" : "data:1",
+          "status" : "RESOLVED"
+        },
+        "id" : "operand:1:0",
+        "logicalWholeItem" : "data:1",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 15,
+            "endLine" : 17,
+            "file" : "<preprocessed>",
+            "startColumn" : 5,
+            "startLine" : 17
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 22,
+            "endLine" : 17,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 12,
+            "startLine" : 17
+          }
+        },
+        "regionalAccess" : {
+          "slice" : null,
+          "view" : "storage-node:11"
+        },
+        "regionalAlternatives" : [ ],
+        "role" : "CALL_TARGET",
+        "wholeItemAccess" : null
+      }
+    },
+    "runtimeTarget" : "UNKNOWN",
+    "runtimeUncertaintyCode" : "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN",
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 15,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 22,
+          "endLine" : 17,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 17
+        }
+      },
+      "statement" : "statement:4"
+    },
+    "surface" : {
+      "argumentCount" : 0,
+      "notOnException" : "ABSENT",
+      "onException" : "ABSENT",
+      "onOverflow" : "ABSENT",
+      "returning" : "ABSENT",
+      "using" : "ABSENT"
+    },
+    "effects" : "UNKNOWN",
+    "outcomes" : "OPEN"
+  }, {
+    "variant" : "GOBACK",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "MODELED",
+      "id" : "statement:4",
+      "programPoint" : 4,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 5,
+          "endLine" : 18,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 18
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 12,
+          "endLine" : 18,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 18
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "GOBACK has no local successor",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "GOBACK runtime result and lifecycle effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "GOBACK concludes the current program invocation",
+          "status" : "SUFFICIENT"
+        }
+      }
+    },
+    "exit" : "CURRENT_PROGRAM_INVOCATION",
+    "localContinuation" : "NONE"
+  } ],
+  "structure" : {
+    "branches" : [ ],
+    "roots" : [ "statement:2", "statement:3", "statement:0", "statement:1", "statement:4" ]
+  },
+  "gaps" : [ {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 12,
+        "endLine" : 14,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 14
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 19,
+        "endLine" : 14,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 14
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:2"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 29,
+        "endLine" : 15,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 15
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 36,
+        "endLine" : 15,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 15
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:3"
+  }, {
+    "code" : "SCALAR_WHOLE_ITEM_NOT_PROVEN",
+    "detail" : "canonical elementary MOVE proof unavailable",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 38,
+        "endLine" : 16,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 16
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 45,
+        "endLine" : 16,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 16
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:0"
+  }, {
+    "code" : "MOVE_IDENTITY_NOT_PROVEN",
+    "detail" : "canonical elementary MOVE proof unavailable",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 38,
+        "endLine" : 16,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 16
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 45,
+        "endLine" : 16,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 16
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:0"
+  }, {
+    "code" : "REFERENCE_UNRESOLVED_DECLARATION_NOT_FOUND",
+    "detail" : "UNRESOLVED DATA reference 'LINAGE-COUNTER OF F': DECLARATION_NOT_FOUND",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 23,
+        "endLine" : 16,
+        "file" : "<preprocessed>",
+        "startColumn" : 5,
+        "startLine" : 16
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 30,
+        "endLine" : 16,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 12,
+        "startLine" : 16
+      }
+    },
+    "scope" : "NOMINAL_BINDING",
+    "statement" : "statement:0"
+  }, {
+    "code" : "CALL_WHOLE_ITEM_NOT_PROVEN",
+    "detail" : "nominal binding does not prove whole scalar access",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 15,
+        "endLine" : 17,
+        "file" : "<preprocessed>",
+        "startColumn" : 5,
+        "startLine" : 17
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 22,
+        "endLine" : 17,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 12,
+        "startLine" : 17
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:1"
+  }, {
+    "code" : "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN",
+    "detail" : "CALL identifier/expression binds its data reference, not the runtime program target",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 15,
+        "endLine" : 17,
+        "file" : "<preprocessed>",
+        "startColumn" : 5,
+        "startLine" : 17
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 22,
+        "endLine" : 17,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 12,
+        "startLine" : 17
+      }
+    },
+    "scope" : "RUNTIME_CALL_TARGET",
+    "statement" : "statement:1"
+  } ],
+  "coverage" : {
+    "inputMissingStatements" : 0,
+    "inventoryStatus" : "COMPLETE",
+    "modeledStatements" : 1,
+    "observedStatements" : 5,
+    "partialStatements" : 2,
+    "readiness" : {
+      "cfg" : {
+        "scope" : "complete observed inventory bounded by each statement's structural readiness",
+        "status" : "BLOCKED"
+      },
+      "effectsDataflow" : {
+        "scope" : "report dependency claim bounded by each statement's effects readiness",
+        "status" : "BLOCKED"
+      },
+      "lowering" : {
+        "scope" : "report binding claim combined with every observed statement fact",
+        "status" : "BLOCKED"
+      }
+    },
+    "unsupportedStatements" : 2
+  },
+  "entryInventory" : {
+    "entries" : [ {
+      "availability" : "KNOWN",
+      "coverage" : "MODELED",
+      "gaps" : [ ],
+      "id" : "entry:0",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 18,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 13
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 18,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 13
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "primary entry start only; no sequence or reachability claim",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "entry state, storage and effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "primary entry, canonical executable start and published signature availability",
+          "status" : "SUFFICIENT"
+        }
+      },
+      "role" : "PRIMARY",
+      "signature" : {
+        "availability" : "KNOWN",
+        "parameterCount" : 0,
+        "returningClause" : "ABSENT"
+      },
+      "start" : {
+        "availability" : "KNOWN",
+        "statement" : "statement:2"
+      }
+    } ],
+    "gapCodes" : [ "ALTERNATE_ENTRIES_NOT_PROJECTED" ],
+    "scope" : "PRIMARY_ONLY",
+    "status" : "PARTIAL"
+  },
+  "storageIndependence" : {
+    "authority" : "IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE",
+    "availability" : "UNAVAILABLE",
+    "gapCodes" : [ "STORAGE_INDEPENDENCE_NOT_PROVEN" ],
+    "members" : [ ],
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 41,
+        "endLine" : 12,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 11
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 48,
+        "endLine" : 12,
+        "file" : "auxiliary.cbl",
+        "startColumn" : 7,
+        "startLine" : 11
+      }
+    },
+    "rule" : "INDEPENDENT_WORKING_STORAGE_ROOTS"
+  },
+  "storage" : {
+    "bases" : [ {
+      "allocation" : "INDEPENDENT_LOCAL_STORAGE",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "id" : "storage-base:11",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 41,
+          "endLine" : 12,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 48,
+          "endLine" : 12,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 12
+        }
+      }
+    }, {
+      "allocation" : "INDEPENDENT_LOCAL_STORAGE",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "id" : "storage-base:8",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 10,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 10,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      }
+    } ],
+    "entryState" : {
+      "conditions" : [ {
+        "bytes" : [ 226, 227, 193, 211, 197, 240, 240, 241 ],
+        "gapCodes" : [ "OVERLAPPING_WRITE", "ENTRY_STATE_NOT_PROVEN" ],
+        "kind" : "POSSIBLE_LITERAL_BYTES",
+        "logicalText" : null,
+        "node" : "storage-node:11",
+        "proof" : "DECLARATIVE_POSSIBILITY",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 39,
+            "endLine" : 12,
+            "file" : "<preprocessed>",
+            "startColumn" : 24,
+            "startLine" : 12
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 46,
+            "endLine" : 12,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 31,
+            "startLine" : 12
+          }
+        }
+      } ],
+      "mode" : "UNKNOWN"
+    },
+    "gapCodes" : [ ],
+    "nodes" : [ {
+      "data" : "data:1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "filler" : false,
+      "id" : "storage-node:11",
+      "kind" : "ELEMENTARY",
+      "order" : 0,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 41,
+          "endLine" : 12,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 48,
+          "endLine" : 12,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 12
+        }
+      }
+    }, {
+      "data" : "data:0",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "filler" : false,
+      "id" : "storage-node:8",
+      "kind" : "ELEMENTARY",
+      "order" : 1,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 10,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 10,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      }
+    } ],
+    "profile" : "IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047",
+    "profileId" : "ibm-enterprise-6.4-fixed-display-1047@1",
+    "relations" : [ ],
+    "renames" : [ ],
+    "runtimeCodec" : "text.ebcdic.ibm1047@1",
+    "version" : "1.8.0",
+    "views" : [ {
+      "base" : "storage-base:11",
+      "codec" : "text.ebcdic.ibm1047@1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "node" : "storage-node:11",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 41,
+          "endLine" : 12,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 48,
+          "endLine" : 12,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 12
+        }
+      }
+    }, {
+      "base" : "storage-base:8",
+      "codec" : "text.ebcdic.ibm1047@1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "node" : "storage-node:8",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 10,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 10,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      }
+    } ]
+  },
+  "statementEffects" : [ ],
+  "fileInventory" : {
+    "auxiliary" : {
+      "availability" : "KNOWN",
+      "clauses" : [ {
+        "checkpoint" : null,
+        "dataReferences" : [ ],
+        "effect" : "PAGE_CONTROL",
+        "fileReferences" : [ {
+          "accessMethod" : "QSAM",
+          "candidates" : [ {
+            "id" : "file:0",
+            "owner" : {
+              "canonicalProgramName" : "AUXIO",
+              "compilationUnitId" : "AUXILIARY.CBL",
+              "structuralPath" : [ 0 ]
+            }
+          } ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 13,
+              "endLine" : 9,
+              "file" : "<preprocessed>",
+              "startColumn" : 5,
+              "startLine" : 9
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 20,
+              "endLine" : 9,
+              "file" : "auxiliary.cbl",
+              "startColumn" : 12,
+              "startLine" : 9
+            }
+          },
+          "status" : "RESOLVED"
+        } ],
+        "gapCodes" : [ ],
+        "id" : "file-aux:7",
+        "kind" : "LINAGE",
+        "parameters" : [ {
+          "role" : "page-body",
+          "value" : "60"
+        } ],
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 13,
+            "endLine" : 9,
+            "file" : "<preprocessed>",
+            "startColumn" : 5,
+            "startLine" : 9
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 20,
+            "endLine" : 9,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 12,
+            "startLine" : 9
+          }
+        },
+        "trigger" : "NONE"
+      } ],
+      "gapCodes" : [ ]
+    },
+    "availability" : "KNOWN",
+    "declarations" : [ {
+      "accessMode" : "UNSPECIFIED",
+      "assignment" : {
+        "availability" : "KNOWN",
+        "externalFileName" : "OUTPUTDD",
+        "gapCodes" : [ ],
+        "original" : "OUTPUTDD",
+        "profile" : "ibm-enterprise-cobol-6.4-n-lr@2026-04-28",
+        "sourceKind" : "ASSIGNMENT_NAME"
+      },
+      "gapCodes" : [ ],
+      "id" : "file:0",
+      "kind" : "FD",
+      "logicalFile" : "F",
+      "optional" : false,
+      "organization" : "UNSPECIFIED",
+      "origins" : [ {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 26,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 33,
+          "endLine" : 6,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }, {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 10,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 10,
+          "file" : "auxiliary.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      } ],
+      "owner" : {
+        "canonicalProgramName" : "AUXIO",
+        "compilationUnitId" : "AUXILIARY.CBL",
+        "structuralPath" : [ 0 ]
+      },
+      "records" : [ "data:0" ],
+      "references" : [ ],
+      "visibility" : "LOCAL"
+    } ],
+    "declaratives" : [ ],
+    "gapCodes" : [ ],
+    "operations" : {
+      "availability" : "PARTIAL",
+      "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+      "uses" : [ {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "AUXIO",
+            "compilationUnitId" : "AUXILIARY.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "OPEN",
+        "control" : {
+          "availability" : "KNOWN",
+          "continuation" : "statement:3",
+          "gapCodes" : [ ],
+          "routes" : [ {
+            "criticalExit" : false,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "SUCCESS",
+            "event" : "SUCCESS"
+          }, {
+            "criticalExit" : true,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "OTHER_ERROR",
+            "event" : "OTHER_ERROR"
+          } ]
+        },
+        "effects" : {
+          "availability" : "KNOWN",
+          "before" : [ ],
+          "gapCodes" : [ ],
+          "ioReads" : [ ],
+          "outcomes" : [ {
+            "outcome" : "SUCCESS",
+            "steps" : [ ]
+          }, {
+            "outcome" : "END",
+            "steps" : [ ]
+          }, {
+            "outcome" : "INVALID_KEY",
+            "steps" : [ ]
+          }, {
+            "outcome" : "OTHER_ERROR",
+            "steps" : [ ]
+          } ],
+          "unknownReadBound" : false,
+          "unknownWriteBound" : false
+        },
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "OUTPUT",
+        "operands" : [ ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 12,
+            "endLine" : 14,
+            "file" : "<preprocessed>",
+            "startColumn" : 12,
+            "startLine" : 14
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 19,
+            "endLine" : 14,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 19,
+            "startLine" : 14
+          }
+        },
+        "role" : "DIRECT",
+        "statement" : "statement:2"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "AUXIO",
+            "compilationUnitId" : "AUXILIARY.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "WRITE",
+        "control" : {
+          "availability" : "KNOWN",
+          "continuation" : "statement:0",
+          "gapCodes" : [ ],
+          "routes" : [ {
+            "criticalExit" : false,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "SUCCESS",
+            "event" : "SUCCESS"
+          }, {
+            "criticalExit" : false,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "INVALID_KEY",
+            "event" : "INVALID_KEY"
+          }, {
+            "criticalExit" : true,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "OTHER_ERROR",
+            "event" : "OTHER_ERROR"
+          } ]
+        },
+        "effects" : {
+          "availability" : "KNOWN",
+          "before" : [ ],
+          "gapCodes" : [ ],
+          "ioReads" : [ {
+            "data" : "data:0",
+            "provenance" : {
+              "exact" : true,
+              "expanded" : {
+                "endColumn" : 14,
+                "endLine" : 10,
+                "file" : "<preprocessed>",
+                "startColumn" : 0,
+                "startLine" : 10
+              },
+              "includeChain" : [ ],
+              "original" : {
+                "endColumn" : 21,
+                "endLine" : 10,
+                "file" : "auxiliary.cbl",
+                "startColumn" : 7,
+                "startLine" : 10
+              }
+            },
+            "reference" : null,
+            "regional" : {
+              "slice" : null,
+              "view" : "storage-node:8"
+            },
+            "wholeBase" : true
+          } ],
+          "outcomes" : [ {
+            "outcome" : "SUCCESS",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 14,
+                    "endLine" : 10,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 10
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 21,
+                    "endLine" : 10,
+                    "file" : "auxiliary.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 10
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 29,
+                  "endLine" : 15,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 15
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 36,
+                  "endLine" : 15,
+                  "file" : "auxiliary.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 15
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "END",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 14,
+                    "endLine" : 10,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 10
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 21,
+                    "endLine" : 10,
+                    "file" : "auxiliary.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 10
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 29,
+                  "endLine" : 15,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 15
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 36,
+                  "endLine" : 15,
+                  "file" : "auxiliary.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 15
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "INVALID_KEY",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 14,
+                    "endLine" : 10,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 10
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 21,
+                    "endLine" : 10,
+                    "file" : "auxiliary.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 10
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 29,
+                  "endLine" : 15,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 15
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 36,
+                  "endLine" : 15,
+                  "file" : "auxiliary.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 15
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "OTHER_ERROR",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 14,
+                    "endLine" : 10,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 10
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 21,
+                    "endLine" : 10,
+                    "file" : "auxiliary.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 10
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 29,
+                  "endLine" : 15,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 15
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 36,
+                  "endLine" : 15,
+                  "file" : "auxiliary.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 15
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          } ],
+          "unknownReadBound" : false,
+          "unknownWriteBound" : false
+        },
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 6,
+              "endLine" : 15,
+              "file" : "<preprocessed>",
+              "startColumn" : 6,
+              "startLine" : 15
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 13,
+              "endLine" : 15,
+              "file" : "auxiliary.cbl",
+              "startColumn" : 13,
+              "startLine" : 15
+            }
+          },
+          "references" : [ "operand:3:0" ],
+          "role" : "RECORD",
+          "writtenValue" : null
+        }, {
+          "form" : "LITERAL",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 24,
+              "endLine" : 15,
+              "file" : "<preprocessed>",
+              "startColumn" : 24,
+              "startLine" : 15
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 31,
+              "endLine" : 15,
+              "file" : "auxiliary.cbl",
+              "startColumn" : 31,
+              "startLine" : 15
+            }
+          },
+          "references" : [ ],
+          "role" : "ADVANCING",
+          "writtenValue" : "1"
+        } ],
+        "options" : [ "AFTER_ADVANCING" ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 6,
+            "endLine" : 15,
+            "file" : "<preprocessed>",
+            "startColumn" : 6,
+            "startLine" : 15
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 13,
+            "endLine" : 15,
+            "file" : "auxiliary.cbl",
+            "startColumn" : 13,
+            "startLine" : 15
+          }
+        },
+        "role" : "DIRECT",
+        "statement" : "statement:3"
+      } ]
+    },
+    "sortAvailability" : "KNOWN",
+    "sortPlans" : [ ],
+    "version" : "1.6.0"
+  }
+}
