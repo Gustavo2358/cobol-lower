@@ -2,6 +2,7 @@ package io.github.gustavo2358.lower.adapters.sp;
 
 import io.github.gustavo2358.lower.domain.SpInput;
 import io.github.gustavo2358.lower.domain.StorageFacts;
+import io.github.gustavo2358.lower.domain.FileFacts;
 import java.util.Optional;
 import java.util.List;
 import static io.github.gustavo2358.lower.domain.SpInput.*;
@@ -10,6 +11,83 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire227.Document wire){
+        var common=input(Wire227.common(wire));var inv=common.fileInventory();var unit=common.unit();var auxiliary=wire.fileInventory().auxiliary();
+        var clauses=auxiliary.clauses().stream().map(c->new FileFacts.AuxClause(c.id(),c.kind(),c.effect(),c.fileReferences().stream().map(f->new FileFacts.AuxReference(f.status(),f.candidates().stream().map(id->new FileFacts.Candidate(id.id(),unitKey(id.owner(),null))).toList(),f.accessMethod(),provenance(f.provenance(),unit))).toList(),
+            c.dataReferences().stream().map(r->{var b=r.binding();return new FileFacts.AuxData(r.role(),new Binding(ResolutionStatus.valueOf(b.status().name()),b.candidates().stream().map(id->new DataId(unit,id.id())).toList(),Optional.ofNullable(b.selected()).map(id->new DataId(unit,id)),Optional.of(ResolutionReason.valueOf(b.reason().name())),b.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),provenance(r.provenance(),unit));}).toList(),
+            c.parameters(),Optional.ofNullable(c.checkpoint()).map(n->new FileFacts.Assignment(n.availability(),n.profile(),n.original(),n.sourceKind(),Optional.ofNullable(n.externalFileName()),n.gapCodes())),c.trigger(),c.gapCodes(),provenance(c.provenance(),unit))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),inv.operations(),inv.declaratives(),inv.sorts(),Optional.of(new FileFacts.Auxiliary(auxiliary.availability(),clauses,auxiliary.gapCodes()))));
+    }
+    static SpInput input(Wire226.Document wire) {
+        var common=input(Wire226.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);uses.add(new FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),u.effects(),u.control(),wire.fileInventory().operations().uses().get(i).role()));
+        }
+        java.util.function.Function<Wire211.PerformTargetDocument,PerformTarget> endpoint=t->new PerformTarget(new ProcedureId(unit,t.id()),provenance(t.referenceOrigin(),unit),provenance(t.paragraphOrigin(),unit));
+        var plans=wire.fileInventory().sortPlans().stream().map(p->new FileFacts.SortPlan(new StatementId(unit,p.statement()),p.availability(),p.work(),p.inputs(),p.outputs(),p.procedures().stream().map(r->new FileFacts.ProcedurePlan(r.phase(),Optional.ofNullable(r.start()).map(endpoint),Optional.ofNullable(r.end()).map(endpoint),r.roots().stream().map(id->new StatementId(unit,id)).toList(),Optional.ofNullable(r.entry()).map(id->new StatementId(unit,id)),r.completions().stream().map(id->new StatementId(unit,id)).toList(),r.links().stream().map(l->new FileFacts.ProcedureLink(new StatementId(unit,l.from()),new StatementId(unit,l.to()))).toList(),r.gapCodes())).toList(),p.gapCodes())).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes()),inv.declaratives(),Optional.of(new FileFacts.SortInventory(wire.fileInventory().sortAvailability(),plans))));
+    }
+    static SpInput input(Wire225.Document wire) {
+        var common=input(Wire225.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);var p=wire.fileInventory().operations().uses().get(i).control();
+            var control=new FileFacts.ControlPlan(p.availability(),Optional.ofNullable(p.continuation()).map(id->new StatementId(unit,id)),p.routes().stream().map(r->new FileFacts.ControlRoute(r.event(),r.effects(),r.destinations().stream().map(d->new FileFacts.Destination(d.kind(),Optional.ofNullable(d.handler()),Optional.ofNullable(d.declarative()))).toList(),r.criticalExit())).toList(),p.gapCodes());
+            uses.add(new FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),u.effects(),Optional.of(control)));
+        }
+        var declarations=wire.fileInventory().declaratives().stream().map(d->new FileFacts.Declarative(d.id(),unitKey(d.owner(),null),d.kind(),d.global(),d.mode(),d.files().stream().map(f->new FileFacts.Candidate(f.id(),unitKey(f.owner(),null))).toList(),d.roots().stream().map(id->new StatementId(unit,id)).toList(),Optional.ofNullable(d.entry()).map(id->new StatementId(unit,id)),d.completions().stream().map(id->new StatementId(unit,id)).toList(),d.gapCodes(),provenance(d.provenance(),unit))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes()),declarations));
+    }
+    static SpInput input(Wire224.Document wire) {
+        var common=input(Wire224.common(wire));var inv=common.fileInventory();var unit=common.unit();
+        var uses=new java.util.ArrayList<io.github.gustavo2358.lower.domain.FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);var e=wire.fileInventory().operations().uses().get(i).effects();
+            var plan=new io.github.gustavo2358.lower.domain.FileFacts.EffectPlan(e.availability(),e.ioReads().stream().map(t->fileMemoryTarget(t,u.statement())).toList(),
+                e.before().stream().map(s->fileMemoryStep(s,u.statement())).toList(),e.outcomes().stream().map(o->new io.github.gustavo2358.lower.domain.FileFacts.OutcomeEffects(o.outcome(),o.steps().stream().map(s->fileMemoryStep(s,u.statement())).toList())).toList(),e.unknownReadBound(),e.unknownWriteBound(),e.gapCodes());
+            uses.add(new io.github.gustavo2358.lower.domain.FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),Optional.of(plan)));
+        }
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes())));
+    }
+    private static io.github.gustavo2358.lower.domain.FileFacts.MemoryTarget fileMemoryTarget(Wire224.Target t,StatementId statement) {
+        var unit=statement.unit();return new io.github.gustavo2358.lower.domain.FileFacts.MemoryTarget(Optional.ofNullable(t.data()).map(id->new DataId(unit,id)),
+            Optional.ofNullable(t.regional()).map(r->new StorageFacts.Access(new StorageFacts.NodeId(unit,r.view()),Optional.ofNullable(r.slice()).map(s->new StorageFacts.Slice(unsigned(s.offset()),unsigned(s.extent()))))),
+            t.wholeBase(),Optional.ofNullable(t.reference()).map(id->new OperandId(statement,id)),provenance(t.provenance(),unit));
+    }
+    private static io.github.gustavo2358.lower.domain.FileFacts.MemoryStep fileMemoryStep(Wire224.Step s,StatementId statement) {
+        return new io.github.gustavo2358.lower.domain.FileFacts.MemoryStep(s.role(),s.kind(),fileMemoryTarget(s.destination(),statement),Optional.ofNullable(s.source()).map(t->fileMemoryTarget(t,statement)),s.gapCodes(),provenance(s.provenance(),statement.unit()));
+    }
+    static SpInput input(Wire223.Document wire) {
+        var common=input(Wire223.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
+        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),
+            u.candidates().stream().map(c->new io.github.gustavo2358.lower.domain.FileFacts.Candidate(c.id(),unitKey(c.owner(),null))).toList(),provenance(u.provenance(),unit),u.gapCodes(),Optional.of(new io.github.gustavo2358.lower.domain.FileFacts.Surface(
+                u.operands().stream().map(o->new io.github.gustavo2358.lower.domain.FileFacts.Operand(o.role(),o.form(),o.references().stream().map(r->new OperandId(new StatementId(unit,u.statement()),r)).toList(),Optional.ofNullable(o.writtenValue()),provenance(o.provenance(),unit),o.gapCodes())).toList(),
+                u.options(),u.keyRelation(),u.explicitTerminator(),u.handlers().stream().map(h->new io.github.gustavo2358.lower.domain.FileFacts.Handler(h.kind(),h.statements().stream().map(id->new StatementId(unit,id)).toList(),provenance(h.provenance(),unit))).toList())))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(ops.availability(),uses,ops.gapCodes())));
+    }
+    static SpInput input(Wire222.Document wire) {
+        var common=input(Wire222.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
+        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),io.github.gustavo2358.lower.domain.FileFacts.Command.valueOf(u.command().name()),u.mode(),u.profile(),u.bindingStatus(),
+            u.candidates().stream().map(c->new io.github.gustavo2358.lower.domain.FileFacts.Candidate(c.id(),unitKey(c.owner(),null))).toList(),provenance(u.provenance(),unit),u.gapCodes())).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(ops.availability(),uses,ops.gapCodes())));
+    }
+    static SpInput input(Wire221.Document wire) {
+        var common = input(Wire221.common(wire)); var unit = common.unit(); var inventory = wire.fileInventory();
+        var files = inventory.declarations().stream().map(f -> {
+            var a = f.assignment(); var owner = unitKey(f.owner(), null);
+            return new io.github.gustavo2358.lower.domain.FileFacts.Declaration(f.id(), owner, f.logicalFile(), f.kind(), Optional.ofNullable(f.optional()),
+                new io.github.gustavo2358.lower.domain.FileFacts.Assignment(a.availability(), a.profile(), a.original(), a.sourceKind(), Optional.ofNullable(a.externalFileName()), a.gapCodes()),
+                f.organization(), f.accessMode(), f.visibility(), f.records().stream().map(r -> new DataId(unit,r)).toList(),
+                f.references().stream().map(r -> { var b = r.binding(); return new io.github.gustavo2358.lower.domain.FileFacts.Reference(r.role(),
+                    new Binding(ResolutionStatus.valueOf(b.status().name()),b.candidates().stream().map(c -> new DataId(unit,c.id())).toList(), Optional.ofNullable(b.selected()).map(id -> new DataId(unit,id)),
+                        Optional.of(ResolutionReason.valueOf(b.reason().name())), b.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()), r.duplicates(), provenance(r.provenance(),unit)); }).toList(),
+                f.origins().stream().map(o -> provenance(o,unit)).toList(), f.gapCodes());
+        }).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
+            common.storageIndependence(),common.compositional(),common.storage(),new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inventory.availability(),files,inventory.gapCodes()));
+    }
     static SpInput input(Wire217.Document wire) {
         var common=input(Wire217.common(wire));var effects=new java.util.HashMap<StatementId,EffectSummary>();
         for(var e:wire.statementEffects()) {
@@ -1037,7 +1115,7 @@ final class Materialize {
         var common=input(Wire215.common(d));var s=common.storage().orElseThrow();var unit=common.unit();var e=d.storage().entryState();
         var entry=new StorageFacts.EntryState(e.mode(),e.conditions().stream().map(v->new StorageFacts.InitialCondition(new StorageFacts.NodeId(unit,v.node()),
             v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof(),Optional.ofNullable(v.logicalText()))).toList(),
-            java.util.Set.of("2.19.0","2.20.0").contains(d.contractVersion())?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
+            java.util.Set.of("2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0","2.27.0","2.28.0").contains(d.contractVersion())?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
         return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
             common.storageIndependence(),common.compositional(),Optional.of(new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),s.nodes(),s.bases(),s.views(),s.gapCodes(),s.relations(),s.renames(),entry)));
     }
@@ -1097,6 +1175,15 @@ final class Materialize {
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
                         logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())),v.additionalTransfers().stream().map(t->new MoveTransfer(source211(t.source(),h.id(),unit),reference(t.target(),h.id(),unit),new StorageFacts.Move(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList());
+            }
+            case Wire211.CicsFileDocument v -> {
+                Optional<CallTarget> target=Optional.ofNullable(v.target()).map(t->switch(t) {
+                    case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));
+                    case Wire211.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(),l.id()),l.text(),l.writtenText(),
+                        Optional.ofNullable(l.logicalValue()).map(x->new LogicalValue(x.logicalDomain(),x.value(),x.logicalExtent())),provenance(l.provenance(),unit));
+                });
+                yield new CicsFileFact(h,v.command(),v.rawText(),v.targetMode(),target,v.options().stream().map(o->new CicsFileOption(o.name(),o.canonicalName(),Optional.ofNullable(o.operand()),o.start(),o.end(),o.role(),Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)),Optional.ofNullable(o.literal()),Optional.ofNullable(o.integer()).map(java.math.BigInteger::new))).toList(),
+                    v.conditions(),continuation(v.localContinuation(),unit),continuation(v.ordinaryContinuation(),unit),v.nameProfile(),v.gapCodes());
             }
             case Wire211.CicsDocument v -> {
                 Optional<CallTarget> target=Optional.ofNullable(v.target()).map(t->switch(t) {

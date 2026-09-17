@@ -1,0 +1,380 @@
+# FILE-DEPENDENCIES — lowering composicional
+
+CORE N+C qualificado; closeout/merges autorizados. W10 DEFERRED / OPTIONAL_EXTENSION,
+NOT_PART_OF_CORE, requer nova autorização. [Estado canônico](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
+As seções abaixo registram checkpoints históricos.
+
+H4 aprovado; core N+C autorizado em 2026-09-16. W0–W7 qualificadas local; W8 em implementação; W10 não autorizado.
+[Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
+(workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
+
+O caminho corrente é `CobolLowerer` → `PartialProgramAdmission` →
+`RegionalDataTranslator` → `PartialProgramAssembler` → `PartialProgramLowerer`.
+Não acrescentar file-only lowerer nem usar README de CP3 como retrato do dispatch.
+
+| Wave | Superfície local e obrigação |
+| --- | --- |
+| W0 | SpInput, SpJsonDecoder/admission; preservar assignment-name/external file name, sem inferir DD allocation/bindingMechanism; atualização SP coordenada, sem emitir I/O AIR |
+| W1 | recursos/associações e consumer vertical; ResourceDeclaration neutra com owner/record/use; artifactRelations permanece vazio |
+| W2 | handlers composicionais para operações nativas; vínculo record-owner fornecido pelo SP |
+| W3/W4 | tradução regional/efeitos, status, outcomes e handlers; não inferir MUST pelo verbo |
+| W5/W6 | I/O implícito SORT/MERGE, procedimentos locais, I-O-CONTROL por perfil |
+| W7/W8 | consultas gerais para CICS target no site, effects/condições; W8 literal não espera W7, computados exigem W7 |
+| W9 | unidade selecionada/captures e agregação core, sem re-resolução nominal |
+| W10 posterior | extensão D após core W11/autorização; ASSIGN DYNAMIC/captura OPEN, Report Writer e APIs; não bloqueia core N+C |
+
+Reusar `LocalIds`, `SourceOrigins`, correlações statement/operand e storage.
+Uma origem pode gerar vários usos com papéis; IDs só precisam de determinismo na
+revisão, sem estabilidade longitudinal artificial. `ResourceId` não é Target.
+Não abrir SP/COPY/fontes para completar a Publication no consumer.
+
+[Provas core A1–A4/A6/O1–O5 e decisões](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/contracts.md)
+governam contrato AIR antes de W1 e efeitos antes de W3/W4. Semântica não provada
+permanece localizada e conservadora, preservando nome conhecido e CALL independente.
+A5/captura D só se torna obrigação na extensão W10.
+
+Gates existentes: `python3 -B scripts/harness/lean.py docs` para H;
+`fast` para produção estabilizada; `qualification-local` para checkpoint semântico.
+`scripts/harness/focal.py` compõe `FastSuite` e `FastAdapterSuite` após bootstrap;
+`CallSuite`, `IfSuite`, `InputSuite`, `ManualAir` e testes de adapters são bases de
+oráculo. Não usar selector JUnit em suítes Java main deste repo.
+`LOWER_BUILD_ROOT` isola o build; locks imutáveis continuam obrigatórios.
+
+## FD-W0 — SP 2.21 / inventário declarativo
+
+Execução core autorizada após H4; decoder lê `fileInventory@1.0.0` tipado e
+obrigatório em SP2.21. Inventários históricos sem FILE permanecem UNAVAILABLE,
+sem converter ausência em conjunto vazio. Novo FILE sob versão histórica é
+rejeitado pelo shape fechado; nenhum dual writer ou inferência downstream.
+`FileFacts` conserva owner, FD/SD, nome externo/sourceKind, record ownership,
+chaves/status resolvidos, visibilidade e origens. Admission é comum a file/memory,
+valida IDs/owners/refs/gaps e recusa SD com external name. Não emite FILE AIR em W0.
+
+Oráculo `FileDeclarationSuite`: bytes reais frontend + expectativas manuais,
+contracasos wire/admission (versão, inventário removido, enum, owner, record,
+duplicação, SD, mecanismo externo indevido e disponibilidade incoerente).
+Regressão focal fixa inclui os consumers CALL existentes. Pin final/evidência
+bilateral são atualizados somente após qualificação do produtor.
+
+## FD-W1 — slice estático SP2.22 / AIR resource.bindings@1
+
+SP2.22/fileInventory1.1 acrescenta usos OPEN/READ/CLOSE N-LR tipados; o decoder
+histórico SP2.21 preserva declarações com operações UNAVAILABLE. Admission comum
+recusa refs ausentes, modos incoerentes, duplicações e disponibilidade inválida.
+O lowering composicional emite invoke file com alvo literal quando provado e
+associa owner, registros e usos à declaração. SD usa LocalResource, sem nome
+externo inventado. Nome não provado conserva unknown. Efeitos e controle continuam
+abertos até W3/W4, sem MUST. Nenhuma implementação ASSIGN DYNAMIC.
+
+Registros com tipo ainda desconhecido têm identidade nominal independente do
+índice usado pela tradução precisa de expressões; associá-los não promove seu
+tipo nem altera regras de CALL. Inventário FILE participa da revisão canônica;
+inputs históricos sem inventário conservam sua identidade.
+Complexidade: indexação O(declarações + usos + registros), ordenação por ordinal
+O(usos log usos) por statement; sem busca no fonte, fixpoint ou cutoff novo.
+Oracle FileStaticSliceSuite: fixture real no pin SP, nomes/owner/record/ações
+esperados manualmente, dez mutantes de admission, codec e determinismo. Suites
+CALL/storage/effects existentes continuam no FAST fixo.
+
+## FD-W2 — família nativa / SP2.23
+
+Regra antes da produção: o SP2.23/fileInventory1.2 publica sete comandos N-LR,
+operandos DATA por papel (RECORD/INTO/FROM/KEY/ADVANCING), opções por arquivo,
+comparação START, delimitação e corpos dos handlers por StatementId. A autoridade
+IBM SC27-8713-03, atualização 2026-04-28, está registrada no domínio do produtor;
+o lower traduz esses fatos, sem interpretar fonte. WRITE/REWRITE usam o candidate
+FILE publicado a partir do record owner; FROM nunca cria outro uso FILE.
+DELETE_RECORD vira ação neutra `delete-record`, sem significar apagar dataset.
+
+Admission bilateral fecha referências ao statement/operand/body, enums, papéis,
+opções e disponibilidade. SP2.22 histórico conserva fatos estruturais UNAVAILABLE.
+Invokes permanecem com efeitos/controle abertos até W3/W4; não se presume MUST
+nem fluxo incondicional para handlers. Inventários CALL e FILE coexistem no mesmo
+assembler. Identidade inclui fatos novos somente quando disponíveis, preservando
+revisões históricas. Algoritmo: índices de operandos/statements e varredura de usos
+O(statements + operandos + usos + handlers), sem cutoff; ordenação local por ordinal.
+Oracle FileNativeOperationSuite: sete ações, FROM de outro FD sem leitura extra,
+DELETE único, dois CALL condicionais sem duplicação, falhas de admission em file
+port e memory port e codec/determinismo. Nenhuma mudança AIR é necessária.
+
+Checkpoint lower W2: FileNativeOperationSuite PASS (sete ações, FROM isolado,
+handlers, wire/memory negativos, codec e determinismo); FileStaticSliceSuite e
+FileDeclarationSuite históricos PASS. FAST fixo PASS: 2340 testes core e todas
+as suites adapter/CALL/storage/control, incluindo o novo oracle. Pin SP2.23
+`b559292c97e004504fb867c4724298dc1637b6f2`; AIR/IR permanecem nos pins de W1.
+B-SP native/delete-handlers byte a byte PASS. E-SELECTED registrado no harness
+canônico após executar produtores imutáveis.
+
+## FD-W3 — contrato/algoritmo antes da produção
+
+SP2.24/fileInventory1.3 acrescenta planos de memória: alvos DATA/view/ref canônicos,
+leituras delimitadas, FROM antes de I/O e passos condicionados a SUCCESS/END/
+INVALID_KEY/OTHER_ERROR. São efeitos **se** o outcome ocorre, não prova de que ele
+é possível; Normal AIR continua distinto de status COBOL. Storage1.8 acrescenta
+INDEPENDENT_LOCAL_STORAGE; a prova histórica WS é mantida somente para compatibilidade.
+
+Decoder fechado novo + admission comum às portas devem verificar owners, views,
+intervalos, alias/classe para COPY/FIT e MUST exato; retirar campo obrigatório,
+injetar referência alheia ou elevar MAY sem prova deve falhar. Wire2.23 e anteriores
+conservam effects UNAVAILABLE e a identidade histórica. Lower emite operações gerais
+por fase/outcome, sem reanalisar COBOL; endereço INTO só é usado depois de READ.
+Sem prova de endereço, manter efeito local ao bound publicado, sem MUST fictício.
+Planos são percorridos e indexados por statement/ordinal/target; custo linear nos
+fatos emitidos, sem solver FILE nem limite de ocorrências.
+
+Oráculos antes da produção: FileMemoryEffectsSuite usa fixtures reais SP2.24,
+expectativas manuais de fase/efeito e mutantes bilaterais. RED inicial rejeitou a
+versão; contracasos posteriores detectaram view alheia, receiver omitido e salto
+para fase interna. O1–O5 manuais em CFG exercitam validator/codec/CALL+FILE. W3 só fecha após
+focais, FAST, Q-SHARED e E-SELECTED nos pins finais.
+
+Lowering W3 usa operações AIR gerais: FROM antes do invoke, seleção desconhecida
+de outcome após retorno, MAY regional/por base, MUST apenas para receptor exato
+admitido e cópia/fit já provada. Nenhum result place de invoke antecipa endereço
+INTO. As continuações ainda abertas alcançam entradas de statements do fonte e
+saídas, nunca fases internas de memória; handlers/USE exatos são W4. O assembler
+conserva instruções anteriores ao primeiro terminador e correla cada operação.
+Planos antigos sem effects mantêm representação histórica; novos contratos não
+podem omitir status/buffer/INTO/FROM e alegar bound fechado.
+
+O bound provisório de controle compartilha o conjunto de entradas do fonte em
+memória. Sua serialização repete esse conjunto por continuação FILE: limite
+O(usos FILE × statements) no wire conservador W3. Não há cutoff; W4 deve qualificar
+o controle específico de handlers/USE e medir a redução, sem inventar SLA.
+
+FAST W3 core2340 + adapters PASS; qualification-local semântica244296 e
+performance39215 PASS (contadores do harness, não precisão/recall). O gate de
+saída tinha um fixture antigo que tratava PARTIAL como falha sem Publication,
+contradizendo LoweringResult desde 69c78c5; corrigido o fixture, mantendo o teste
+de CLI PARTIAL real em EvidencePreservingEntrySuite. Pin/E-SELECTED pendentes.
+
+Revalidação final após FROM: FAST e qualification-local PASS (mesmos contadores),
+leitura de FROM alias/não resolvido preservada e mutante sem leitura do record
+de saída rejeitado. Logs `fast-3.log` e `qualification-local-3.log` em fd-w3.
+Pin produtor SP2.24: `a9f8fbe4fb4f9e2097c01b1e8f6f992a5041ee5f`; E-SELECTED pendente no harness canônico.
+
+
+## FD-W4 — contrato fechado de controle e redução conservadora
+
+SP2.25/fileInventory1.4 publica DECLARATIVES e rotas de eventos; Wire225 é fechado,
+sem modificar fixtures históricas. Admission comum verifica owner/body/entry,
+FILE_HANDLER, correspondência com efeitos, precedência file/mode, referências,
+continuação estrutural e possibilidade de erro crítico. Contradições falham também
+na porta em memória. Retirar fatos nunca transforma input incompleto em sucesso.
+
+A regra IBM e o oracle foram fixados no D-EFFECT canônico antes da produção.
+Assembler usa branches para eventos, efeitos W3 ordenados, jumps aos handlers/USE
+compartilhados e opaque de retorno com apenas as continuações dos sites invocadores.
+Não clona CALL/I/O; não adiciona efeito global na entrada/retorno. União de resumes
+é marcada LOCAL_RETURN_CONTEXT_NOT_PROVEN, sem alegar matching de pilha. Erro
+crítico conserva saídas possíveis. Recursão é finita no inventário, sem cutoff.
+A norma local.invoke existe, mas não é necessária para esta redução; a investigação
+codec demonstrou lacuna de transporte/consumer, sem exigir extensão normativa.
+
+Corpos/rotas indexados por identidade; custo proporcional aos fatos/alternativas,
+com validação de seleção O(usos × declarações USE). O bound W3 com todas as entradas
+de statements permanece somente para inputs históricos, não para o novo contrato.
+FileControlSuite verifica seis fixtures do produtor, codec, ausência de duplicação,
+resumes delimitados e mutantes de versão, seleção, status/efeitos, ownership,
+completions e porta em memória. Gates finais/pins ainda pendentes na campanha.
+
+
+W4 estabilizada: FAST fixo core2340 + adapters (incluindo FileControlSuite) PASS;
+qualification-local semântica244296/performance39215 PASS. B-SP seis exports reais
+byte a byte PASS; negativos de continuação/seleção/saída crítica/in-memory PASS.
+Pin SP2.25 `1c21f21750aa3572e39fce71ccc156a357699d81`. AIR/IR conservam pins W1.
+Logs `.harness-results/fd-w4/`; E-SELECTED imutável segue no harness CFG.
+
+
+## FD-W5 — SORT/SD em execução
+
+Regra, autoridade, algoritmo e oráculos antes da produção em
+`../analysis-cfg/docs/product/file-dependencies/w5-implementation.md`.
+SP2.26/fileInventory1.5 conserva papéis, participantes e ranges por identidade.
+Decoder/admission bilateral fechado; ASM usa fases e corpos compartilhados.
+Usos SD associam operações locais via resource.bindings existente; nunca criam
+ComputedTarget desconhecido para um nome externo que não pertence ao SD.
+AIR15/I-RB-03 proíbe LocalResource como target executável; a redução respeita
+essa fronteira e não requer nova norma ou codec. Oráculo FileSortSuite precede
+a implementação; RED de versão preservado em `.harness-results/fd-w5`.
+
+
+W5 implementado: SP2.26/fileInventory1.5 com participantes/papéis, fases e ranges;
+Wire226/admission nas duas portas recusam perda de planos e endpoints. Lower usa
+invokes somente para FD externo; SD utiliza Opaque com memória/controle gerais e
+ResourceDeclaration.uses(work/release/return). Sem alteração AIR/codec/norma.
+Branches de fase conservam todos os participantes sem ordem/contagem inventadas;
+procedimentos compartilham corpo, retorno delimitado com gap contextual explícito.
+NO_OP certificado traduz para salto sem efeitos, sem SOURCE_NONE_EFFECT fictício.
+12 fixtures bilaterais, 9 negativos wire + 3 memory e grafo de fases PASS.
+FAST2340 core + adapters PASS; Q-SHARED semântica244296/performance39215 e
+arquitetura PASS. Executada por mudança NO_OP/continuação e composição PERFORM.
+12 exports SP idênticos ao produtor8fd8faad; logs `.harness-results/fd-w5/`.
+E-SELECTED e checkpoint integrados seguem no consumer.
+
+
+Repin W5 final9d4de9b após oracle de OUTPUT vazio e correção do positivo PERFORM
+(agora com RETURN obrigatório). Produção lower idêntica a88572c01: FAST/Q-SHARED
+REUSED para esse conteúdo, sem rebuild semântico artificial. Compile+FileSortSuite
+final12 fixtures/negativos/grafo PASS; 12 SPs idênticos ao produtor final. E-SELECTED
+final valida a composição, preservando a execução rejeitada da fixture anterior.
+
+## FD-W6 — SP2.27 / auxiliares declarativos
+
+`fileInventory1.6` preserva fatos tipados, origens, parâmetros e classificação N-LR;
+Wire227 mantém históricos sem auxiliar como UNAVAILABLE. Admission comum valida
+identidades, efeitos/cláusula, checkpoint/trigger e leituras PASSWORD/LINAGE/length.
+Metadata documental não produz execução. LOWER não interpreta parâmetros/texto.
+
+RERUN cria ResourceDeclaration `cobol.checkpoint` com nome source-level quando
+provado, independente de SELECT. Somente trigger tipado e sem gap gera invoke
+`checkpoint`: SORT/MERGE work ou I/O do arquivo nominal de RECORD_COUNT/END_VOLUME.
+Seleção permite zero ou mais ocorrências; contagem/momento fino não são afirmados.
+Checkpoint pode ler estado visível e não sobrescreve memória COBOL; efeitos/controle
+externos limitados e contrato desconhecido explícitos. Fonte sem trigger executável
+não produz site. Nome computado por runtime/alocação jamais é procurado.
+
+Regra/oracle antes do código: campanha canônica W6, IBM SC27-8713-03 2026-04-28.
+Algoritmo acrescenta seletores/invokes por par cláusula/gatilho aplicável; número
+finito de operações fonte, sem limite artificial. Núcleo composicional e AIR15
+permanecem; sem novo consumer FILE/solver ou extensão normativa.
+
+Refinamento N05: LINE_SEQUENTIAL IBM no enum SP2.27, métodos de acesso tipados
+nas referências auxiliares. SAME AREA documental exige QSAM; alias exige VSAM,
+sem interpretar assignment-name no lower. Namespaces externos permanecem iguais.
+
+W6 checkpoint produtor: 19 fixtures reais SP2.27 idênticas byte a byte ao frontend
+4f63f10c697feb76bf26ba8eb0fa663bb94b9b71; negativos wire/memory e codec PASS.
+FAST fixo2340 core+adapters PASS; qualification-local semântica244296/performance39215
+PASS para a mesma produção; o FAST final inclui o pin/fixtures finais. AIR/IR
+permanecem nos pins W1. E-SELECTED é fechado no consumer antes de qualificar W6.
+Logs/REDs preservados em `.harness-results/fd-w6/`.
+
+## FD-W8 — entrada CICS File Control
+
+Autoridade, decisões e oráculos em `../analysis-cfg/docs/product/file-dependencies/w8-implementation.md`.
+Reusar assembler/RegionalPlaces/efeitos gerais; fatos canônicos CICS FILE distintos
+de LINK/XCTL. SYSID e INQUIRE NEXT precisam preservar papéis e identidade; protocolo
+AIR/consumer será provado antes de emissão. W7 já qualifica consultas FILE BEFORE.
+
+### W8 — contrato / algoritmo de lowering
+
+SP2.28 reutiliza wire comum com nova variante fechada CICS_FILE_CONTROL; versões
+anteriores rejeitam a variante. Admission bilateral valida aliases/direção por comando,
+owner/operandos, cardinalidade/tipos e coerência de NOHANDLE/RESP. In-memory usa
+as mesmas regras. Contexto C-FC@1 em argumentos/signature AIR gerais: seleção
+DEFAULT/EXPLICIT e SYSID TEXT; browse acrescenta REQID INT (default0). FILE8 e SYSID4
+computados exigem view IBM1047; unknown não inventa padding ou leitura de output.
+
+CicsFileInvokeHandler separado de Program Control, no assembler composicional.
+READ/WRITE etc materializam efeitos/controle com os fatos atuais; O(opções) por
+comando, sem corte semântico. FROM/RIDFLD/length e parâmetros de entrada não
+implicam escrita nem outro FILE READ. Retorno normal com RESP/RESP2 tem MUST
+somente para os quatro bytes provados (API5.6p10). Outros outcomes permanecem MAY.
+INQUIRE NEXT recebe FILE; START/END não fornecem nome individual. SYSID ausência
+não significa local e não é lacuna por configuração externa.
+
+Revisão normativa corrigiu oracle preliminar: LENGTH default depende de NOLENGTH
+(API5.6p9), não publicado pelo SP. Logo INTO/FROM sem comprimento provado conserva
+bound visible, sem inventar alcance apenas pela declaração. Isso limita precisão
+de memória/CALL, não o nome literal FILE. Layout de ponteiro e atributos SPI não
+provados também mantêm bound; INTO e SET conservam operandos distintos. Nenhum MUST
+por verbo. Gaps de valores/outcomes e binding ficam explícitos. 33fixtures/negativos
+wire+memory e codec passaram; FAST/Q/E2E fecham o checkpoint antes de W9.
+
+Checkpoint W8 produtor: SP2.28 pin4356722155b83966d716b47e1d8a918e4a7f9649,
+AIR0035c5af165c90973a3645bae8a7e286511470e5. B-SP33 exports idênticos;
+wire6/memory24+target-role, codec e composição1/2/5/40 PASS. FAST3 core2340 +
+adapters PASS; Q-SHARED semântica244296/performance39215 e arquitetura PASS.
+RED target READ corrigido na admission; falha do gerador de multiplicidade era
+CALL_TARGET legado, substituído por referência READ do oracle FILE. Tentativas
+preservadas; E-SELECTED/W8 integrado qualifica no consumer. Sem mudança IR.
+
+## FD-W9 — composição tipada
+
+Entrada adicional cobol-semantic-compilation1.0 envolve SP2.28 sem alterar o
+formato unitário. CompilationJsonDecoder fecha todas as chaves; CompilationAdmission
+revalida em memória owner/parent/path, inventário, partição DATA own/captured,
+GLOBAL ou destinos implícitos publicados de FILE GLOBAL, metadados e record owner.
+EXTERNAL não cria captura por grafia. Unidades ordenadas por identidade estrutural;
+ordem recebida não muda Publication. Inventory INPUT_MISSING ganha razão global;
+PRIMARY_ONLY/gaps locais continuam presentes, sem alegação de análise interprocedural.
+
+PartialProgramLowerer materializa fragmentos internos sob um PublicationId comum;
+retorno público continua atômico e só ocorre após o AirValidator real. LocalIds
+separa contextos, origens e coverage; nenhuma edição JSON ou parsing COBOL faz joins.
+containingUnit/visibleObjects/AliasBinding existentes fecham capturas. Recursos
+ficam com owner original, usos com unidade executora. File memory nominal whole-base
+usa a área publicada do objeto capturado; não inventa layout ou MUST ancestral.
+Não propaga estado de entrada/execução do pai ao filho. Precisão não publicada
+permanece parcial; aliases não são provas de valores. Sem extensão normativa AIR.
+
+B-SP FileScopeSuite: seis fontes, nove negativos, permutação de unidades, codec e
+owner correto. Encontrou COPY com AST IDs locais sem namespace no produtor, que
+foi recusado e corrigido na fronteira; logs red/green mantidos. Focal atual PASS;
+FAST/Q do produtor PASS; integração CLI final é qualificada no consumer. Complexidade de inventários/refs é linear
+nos fatos, exceto busca de metadata/capturas por unidade e visibilidade ancestral;
+escala observada W11, nenhum cutoff semântico. Sem novo solver.
+
+Checkpoint produtor: frontend d120036cb71f81ff3055ca1a47be32ac88dcad7a,
+AIR5fe0224e5d2514286d6d23d486655334300383da, norma AIR inalterada fb153ae.
+`python3 -B scripts/harness/lean.py fast` (fast-1.log) e `qualification-local`
+(qualification-1.log), ambos exit0: core2340+adapters, semântica244296,
+performance39215 e arquitetura. FileScopeSuite executado no focal e FAST; o full
+usa as suítes semânticas/performance existentes, sem repetir FastAdapterSuite.
+Uma unidade sem entrada utilizável ainda rejeita a composição atomicamente pela
+admission existente; não é omitida. INPUT_MISSING com entrada utilizável conserva
+unidades observadas e gap global, como prova a fixture missing-copy.
+
+## FD-W11 — regressão de negociação de evidência
+
+O corpus final revelou uma enumeração desatualizada no adapter: Materialize
+atribuía LOGICAL_SOURCE somente a SP2.19/2.20, mas o contrato fonte continuou nas
+versões2.21–2.28 da campanha. Evidência possível com layout aberto era recusada
+como se fosse prova física. Correção limitada à negociação; domínio, tradutor,
+solver e validação de prova física não mudam. Não exige versão SP/AIR nova.
+
+Oracle usa unknown-base em todas as oito versões FILE com inventários vazios
+tipados de cada revisão; exige possibilidade lógica em ObjectPlace. Negativo
+SP2.18 conserva BOUNDED_PHYSICAL e recusa ausência de prova. RED real2.21 e
+GREEN8+legado, PossibleEntrySuite seis negativos e FileScopeSuite PASS. FAST2
+core2340+adapters e Q2 semântica205081+performance39215/arquitetura PASS exit0.
+Resultados, repins e corpus finais no harness canônico W11.
+
+W11 / parágrafo FILE: FileControlAdmission compara a continuação ordinary com
+sucessor intrínseco somente quando este está presente. Ausência intrínseca ao
+completar um parágrafo não contradiz ordinary distinta, publicada pelo produtor.
+Alvos ausentes/foreign/self e sucessores conhecidos contraditórios continuam
+rejeitados. ProcedurePerformAdmission mantém a proibição de aresta intrinsic
+atravessando parágrafo; não houve relaxamento de controle/call/efeitos.
+
+Oracle manual WRITE-P/WRITE-END no FileControlSuite e fixture SP2.28: RED pela
+confusão entre relações; GREEN positivo, negativo da aresta ordinary rotulada
+intrinsic, negativos W4 existentes. Probe real CBSTM03A.CBL passa com PARTIAL nas
+quatro etapas. Fonte da fixture: teste FileControlContractTest do frontend W11.
+Sem bump SP/AIR: correção bilateral de significado já contratado. Gates e pins
+finais no harness canônico W11; logs .harness-results/fd-w11/paragraph-*.
+
+Checkpoint W11 parágrafo: frontend aaecf8c1b1851c03dc13b8120e07308079f7e679;
+FAST3 core2340+adapters PASS, Q3 semântica244296/performance39215/arquitetura PASS
+exit0. Contraprova reforçada KNOWN cruza parágrafo e chega à rejeição STRUCTURE
+específica; FileControlSuite recompilado PASS. Q3 REUSED após alteração só do teste
+e repin, sem delta produtivo. Bundle final/corpus descendentes no consumer.
+
+## W11 C06 — alias READ DATASET
+
+C06-HUMAN-20260917 normaliza READ DATASET no frontend. Decoder conserva name/offsets e consome canonicalName=FILE pelo mesmo
+contrato SP2.28. Dois oráculos SP reais provam literal/computed, provenance,
+namespace cics.file e coexistência Program Control; negativo DSNAME não satisfaz
+identidade canônica FILE. Pin frontend atualizado após F-CICS22/FAST355 PASS.
+
+RED bilateral: o admission existente recusava READ/DATASET por aliases command
+scoped. A regra tipada agora admite somente READ e SET; READNEXT falsificado
+continua recusado pela mesma regra exata. Sem parsing do rawText downstream.
+
+C06 bilateral GREEN: CicsFileControlSuite35 fixtures, negativos wire/memory/alias
+e FAST fixo core2340+adapters+arquitetura PASS (fast-2.log). Q anterior REUSED para
+tradução/efeitos/solver inalterados; somente admissão tipada do alias se ampliou.
+
+Closeout: pins main IR3fff18e/AIR135d91f/frontendfe88cc1, somente docs/pin
+diferem das revisões qualificadas; REUSED_WITH_EQUIVALENCE_PROOF.

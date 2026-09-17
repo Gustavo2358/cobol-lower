@@ -1,5 +1,7 @@
 # AGENTS.md
 
+[FILE-DEPENDENCIES — core N+C qualificado](docs/domain/file-dependencies.md): source-only; W0–W9/W11 autorizados, closeout/merges autorizados; W10 DEFERRED/OPTIONAL.
+
 ## Política de engenharia vigente
 
 [LEAN HARNESS / GIT-IS-THE-RECORD](docs/engineering/lean-harness.md) governa o trabalho.
@@ -17,7 +19,7 @@ Não faça merge/auto-merge sem autorização.
 
 ## Missão e estado
 
-Produzir AIR a partir do contrato público do COBOL Semantic Product, sem reanalisar COBOL. O núcleo usa `air-java::Publication`; `analysis-ir` governa seu significado. O repositório contém o slice `minimal-entry-goback@1`, build, adapters e harness executável. A autorização da sessão define o escopo; backlog não amplia capacidades por si mesmo.
+Produzir AIR a partir do contrato público do COBOL Semantic Product, sem reanalisar COBOL. O núcleo usa `air-java::Publication`; `analysis-ir` governa seu significado. O caminho corrente é composicional (`PartialProgramLowerer`), com tradução regional; o slice `minimal-entry-goback@1` permanece como profile histórico. Build, adapters e harness já existem. A autorização da sessão define o escopo; backlog não amplia capacidades por si mesmo.
 
 ## Regras universais
 

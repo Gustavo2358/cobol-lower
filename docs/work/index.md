@@ -1,5 +1,7 @@
 # Trabalho — navegação
 
+[FILE-DEPENDENCIES — CORE N+C](../domain/file-dependencies.md): W0–W7 qualificadas; [W8](active/FD-W8.yaml) em implementação. STOP após W11; W10 não autorizado.
+
 [WORK-STORAGE-W6-W8](WORK-STORAGE-W6-W8.json): W6/W7 G2 and W8 G3 qualified; IN_PROGRESS pending human review/merge. Extends the accepted W0–W5 work item without reopening it.
 
 [WORK-STORAGE-LOWER-001 — Storage Semantics ST-W0..ST-W5](active/WORK-STORAGE-LOWER-001.yaml): IN_PROGRESS; tradução de fatos físicos explícitos, preservando contratos históricos. Revisão humana após a qualificação W5.
@@ -70,3 +72,5 @@ Current: [WORK-LOWER-012](active/WORK-LOWER-012.yaml) — IN_PROGRESS; [MOVE dat
 - [WORK-LOWER-013](active/WORK-LOWER-013.yaml): CP6 PERFORM BASIC, IN_PROGRESS; [profile](../domain/perform-basic.md).
 
 - [WORK-LOWER-014](active/WORK-LOWER-014.yaml): CP6 supported multi-CALL composition, IN_PROGRESS.
+
+[WORK-FD-HARNESS](active/WORK-FD-HARNESS.json): IN_PROGRESS; preparação para revisão, sem merge.

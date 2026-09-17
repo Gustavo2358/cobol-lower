@@ -1,0 +1,10 @@
+id: FD-W8
+title: Lower CICS File Control e contexto source-only
+status: IN_PROGRESS
+scope: [file-dependencies, sp-decoder, partial-lowering]
+rule: CICS TS5.6 API/SPI; fonte e hashes no harness canônico; SP2.28 bilateral, AIR normativo inalterado.
+product: 12 comandos C-FC, target input/output, FILE/SYSID/REQID, effects por direção/outcome e continuations.
+algorithm: Traduzir fatos tipados e storage geral; O(opções) por comando; nenhum parsing de rawText nem solver próprio.
+oracle: CicsFileControlSuite 33 fixtures, positivos/negativos em memória/wire, roundtrip codec; quatro estados/timing integram no consumer.
+limits: Comprimento ou layout não provado não certifica footprint; NOLENGTH não provado impede bound pelo INTO implícito. CALL efeitos/controle preservados.
+evidence: QUALIFIED_LOCAL produtor. B-SP33 byte-identical, focal/codec/negativos/composição1/2/5/40 PASS; FAST3 core2340+adapters PASS; qualification1 semântica244296/performance39215/arquitetura PASS. Logs .harness-results/fd-w8; E-SELECTED final no consumer ainda pendente.

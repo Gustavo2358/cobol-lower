@@ -1,0 +1,1771 @@
+{
+  "schema" : "cobol-semantic-product",
+  "contractVersion" : "2.23.0",
+  "unit" : {
+    "canonicalProgramName" : "FILETEST",
+    "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+    "structuralPath" : [ 0 ]
+  },
+  "policy" : {
+    "dllMode" : "UNSPECIFIED",
+    "dynamMode" : "UNSPECIFIED",
+    "pgmnameMode" : "UNSPECIFIED",
+    "policyId" : "cobol-explorer/explicit-options",
+    "qualifyMode" : "UNSPECIFIED",
+    "version" : "3.0.0"
+  },
+  "dataDeclarations" : [ {
+    "canonicalName" : "R",
+    "coverage" : "MODELED",
+    "id" : "data:0",
+    "picture" : null,
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 0,
+        "endLine" : 14,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 13
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 7,
+        "endLine" : 14,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 13
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "K",
+    "coverage" : "MODELED",
+    "id" : "data:1",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 15,
+        "endLine" : 14,
+        "file" : "<preprocessed>",
+        "startColumn" : 1,
+        "startLine" : 14
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 22,
+        "endLine" : 14,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 8,
+        "startLine" : 14
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "OTHER-R",
+    "coverage" : "MODELED",
+    "id" : "data:2",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 20,
+        "endLine" : 16,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 16
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 27,
+        "endLine" : 16,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 16
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "BUF",
+    "coverage" : "MODELED",
+    "id" : "data:3",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 16,
+        "endLine" : 18,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 18
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 23,
+        "endLine" : 18,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 18
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 8,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  } ],
+  "statements" : [ {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:0",
+      "programPoint" : 0,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 9,
+          "endLine" : 20,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 20
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 16,
+          "endLine" : 20,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 20
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 9,
+          "endLine" : 20,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 20
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 16,
+          "endLine" : 20,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 20
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:1",
+      "programPoint" : 1,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 11,
+          "endLine" : 21,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 21
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 18,
+          "endLine" : 21,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 21
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "K",
+          "id" : "data:1"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:1",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:1:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 11,
+          "endLine" : 21,
+          "file" : "<preprocessed>",
+          "startColumn" : 11,
+          "startLine" : 21
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 18,
+          "endLine" : 21,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 18,
+          "startLine" : 21
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 11,
+          "endLine" : 21,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 21
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 18,
+          "endLine" : 21,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 21
+        }
+      },
+      "statement" : "statement:2"
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:2",
+      "programPoint" : 2,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 19,
+          "endLine" : 22,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 22
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 26,
+          "endLine" : 22,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 22
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "R",
+          "id" : "data:0"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:0",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:2:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 6,
+          "endLine" : 22,
+          "file" : "<preprocessed>",
+          "startColumn" : 6,
+          "startLine" : 22
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 13,
+          "endLine" : 22,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 13,
+          "startLine" : 22
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    }, {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "OTHER-R",
+          "id" : "data:2"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:2",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:2:1",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 19,
+          "endLine" : 22,
+          "file" : "<preprocessed>",
+          "startColumn" : 13,
+          "startLine" : 22
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 26,
+          "endLine" : 22,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 20,
+          "startLine" : 22
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 19,
+          "endLine" : 22,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 22
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 26,
+          "endLine" : 22,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 22
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:3",
+      "programPoint" : 3,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 23,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 23
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 23,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 23
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "R",
+          "id" : "data:0"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:0",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:3:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 8,
+          "endLine" : 23,
+          "file" : "<preprocessed>",
+          "startColumn" : 8,
+          "startLine" : 23
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 23,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 15,
+          "startLine" : 23
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    }, {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "BUF",
+          "id" : "data:3"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:3",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:3:1",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 23,
+          "file" : "<preprocessed>",
+          "startColumn" : 15,
+          "startLine" : 23
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 23,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 22,
+          "startLine" : 23
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 23,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 23
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 23,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 23
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:4",
+      "programPoint" : 4,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 24,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 24
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 24,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 24
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 14,
+          "endLine" : 24,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 24
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 21,
+          "endLine" : 24,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 24
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:5",
+      "programPoint" : 5,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 25,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 25
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 25,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 25
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "K",
+          "id" : "data:1"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:1",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:5:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 25,
+          "file" : "<preprocessed>",
+          "startColumn" : 25,
+          "startLine" : 25
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 25,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 32,
+          "startLine" : 25
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 25,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 25
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 25,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 25
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:6",
+      "programPoint" : 6,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 6,
+          "endLine" : 26,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 26
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 13,
+          "endLine" : 26,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 26
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 6,
+          "endLine" : 26,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 26
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 13,
+          "endLine" : 26,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 26
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "GOBACK",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "MODELED",
+      "id" : "statement:7",
+      "programPoint" : 7,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 5,
+          "endLine" : 27,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 27
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 12,
+          "endLine" : 27,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 27
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "GOBACK has no local successor",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "GOBACK runtime result and lifecycle effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "GOBACK concludes the current program invocation",
+          "status" : "SUFFICIENT"
+        }
+      }
+    },
+    "exit" : "CURRENT_PROGRAM_INVOCATION",
+    "localContinuation" : "NONE"
+  } ],
+  "structure" : {
+    "branches" : [ ],
+    "roots" : [ "statement:0", "statement:1", "statement:2", "statement:3", "statement:4", "statement:5", "statement:6", "statement:7" ]
+  },
+  "gaps" : [ {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 9,
+        "endLine" : 20,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 20
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 16,
+        "endLine" : 20,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 20
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:0"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 11,
+        "endLine" : 21,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 21
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 18,
+        "endLine" : 21,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 21
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:1"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 19,
+        "endLine" : 22,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 22
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 26,
+        "endLine" : 22,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 22
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:2"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 17,
+        "endLine" : 23,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 23
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 24,
+        "endLine" : 23,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 23
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:3"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 14,
+        "endLine" : 24,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 24
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 21,
+        "endLine" : 24,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 24
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:4"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 25,
+        "endLine" : 25,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 25
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 32,
+        "endLine" : 25,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 25
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:5"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 6,
+        "endLine" : 26,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 26
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 13,
+        "endLine" : 26,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 26
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:6"
+  } ],
+  "coverage" : {
+    "inputMissingStatements" : 0,
+    "inventoryStatus" : "COMPLETE",
+    "modeledStatements" : 1,
+    "observedStatements" : 8,
+    "partialStatements" : 0,
+    "readiness" : {
+      "cfg" : {
+        "scope" : "complete observed inventory bounded by each statement's structural readiness",
+        "status" : "BLOCKED"
+      },
+      "effectsDataflow" : {
+        "scope" : "report dependency claim bounded by each statement's effects readiness",
+        "status" : "BLOCKED"
+      },
+      "lowering" : {
+        "scope" : "report binding claim combined with every observed statement fact",
+        "status" : "BLOCKED"
+      }
+    },
+    "unsupportedStatements" : 7
+  },
+  "entryInventory" : {
+    "entries" : [ {
+      "availability" : "KNOWN",
+      "coverage" : "MODELED",
+      "gaps" : [ ],
+      "id" : "entry:0",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 27,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 19
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 27,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 19
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "primary entry start only; no sequence or reachability claim",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "entry state, storage and effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "primary entry, canonical executable start and published signature availability",
+          "status" : "SUFFICIENT"
+        }
+      },
+      "role" : "PRIMARY",
+      "signature" : {
+        "availability" : "KNOWN",
+        "parameterCount" : 0,
+        "returningClause" : "ABSENT"
+      },
+      "start" : {
+        "availability" : "KNOWN",
+        "statement" : "statement:0"
+      }
+    } ],
+    "gapCodes" : [ "ALTERNATE_ENTRIES_NOT_PROJECTED" ],
+    "scope" : "PRIMARY_ONLY",
+    "status" : "PARTIAL"
+  },
+  "storageIndependence" : {
+    "authority" : "IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE",
+    "availability" : "UNAVAILABLE",
+    "gapCodes" : [ "STORAGE_INDEPENDENCE_NOT_PROVEN" ],
+    "members" : [ ],
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 16,
+        "endLine" : 18,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 17
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 23,
+        "endLine" : 18,
+        "file" : "file-declarations.cbl",
+        "startColumn" : 7,
+        "startLine" : 17
+      }
+    },
+    "rule" : "INDEPENDENT_WORKING_STORAGE_ROOTS"
+  },
+  "storage" : {
+    "bases" : [ ],
+    "entryState" : {
+      "conditions" : [ ],
+      "mode" : "UNKNOWN"
+    },
+    "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+    "nodes" : [ ],
+    "profile" : "UNSPECIFIED",
+    "profileId" : null,
+    "relations" : [ ],
+    "renames" : [ ],
+    "runtimeCodec" : null,
+    "version" : "1.7.0",
+    "views" : [ ]
+  },
+  "statementEffects" : [ ],
+  "fileInventory" : {
+    "availability" : "KNOWN",
+    "declarations" : [ {
+      "accessMode" : "DYNAMIC",
+      "assignment" : {
+        "availability" : "KNOWN",
+        "externalFileName" : "CLIENTDD",
+        "gapCodes" : [ ],
+        "original" : "CLIENTDD",
+        "profile" : "ibm-enterprise-cobol-6.4-n-lr@2026-04-28",
+        "sourceKind" : "ASSIGNMENT_NAME"
+      },
+      "gapCodes" : [ ],
+      "id" : "file:0",
+      "kind" : "FD",
+      "logicalFile" : "F",
+      "optional" : false,
+      "organization" : "INDEXED",
+      "origins" : [ {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 12,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 19,
+          "endLine" : 8,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }, {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 15,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 22,
+          "endLine" : 14,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 12
+        }
+      } ],
+      "owner" : {
+        "canonicalProgramName" : "FILETEST",
+        "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+        "structuralPath" : [ 0 ]
+      },
+      "records" : [ "data:0" ],
+      "references" : [ {
+        "binding" : {
+          "candidates" : [ {
+            "canonicalName" : "K",
+            "id" : "data:1"
+          } ],
+          "reason" : "UNIQUE_VISIBLE_DECLARATION",
+          "selected" : "data:1",
+          "status" : "RESOLVED"
+        },
+        "duplicates" : false,
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 12,
+            "endLine" : 8,
+            "file" : "<preprocessed>",
+            "startColumn" : 12,
+            "startLine" : 8
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 19,
+            "endLine" : 8,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 19,
+            "startLine" : 8
+          }
+        },
+        "role" : "RECORD_KEY"
+      } ],
+      "visibility" : "LOCAL"
+    }, {
+      "accessMode" : "UNSPECIFIED",
+      "assignment" : {
+        "availability" : "KNOWN",
+        "externalFileName" : "OTHERDD",
+        "gapCodes" : [ ],
+        "original" : "OTHERDD",
+        "profile" : "ibm-enterprise-cobol-6.4-n-lr@2026-04-28",
+        "sourceKind" : "ASSIGNMENT_NAME"
+      },
+      "gapCodes" : [ ],
+      "id" : "file:1",
+      "kind" : "FD",
+      "logicalFile" : "G",
+      "optional" : false,
+      "organization" : "UNSPECIFIED",
+      "origins" : [ {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 9,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      }, {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 16,
+          "file" : "file-declarations.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      } ],
+      "owner" : {
+        "canonicalProgramName" : "FILETEST",
+        "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+        "structuralPath" : [ 0 ]
+      },
+      "records" : [ "data:2" ],
+      "references" : [ ],
+      "visibility" : "LOCAL"
+    } ],
+    "gapCodes" : [ ],
+    "operations" : {
+      "availability" : "PARTIAL",
+      "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+      "uses" : [ {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "OPEN",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "IO",
+        "operands" : [ ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 9,
+            "endLine" : 20,
+            "file" : "<preprocessed>",
+            "startColumn" : 9,
+            "startLine" : 20
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 16,
+            "endLine" : 20,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 16,
+            "startLine" : 20
+          }
+        },
+        "statement" : "statement:0"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "READ",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 11,
+              "endLine" : 21,
+              "file" : "<preprocessed>",
+              "startColumn" : 11,
+              "startLine" : 21
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 18,
+              "endLine" : 21,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 18,
+              "startLine" : 21
+            }
+          },
+          "references" : [ "operand:1:0" ],
+          "role" : "KEY",
+          "writtenValue" : null
+        } ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 5,
+            "endLine" : 21,
+            "file" : "<preprocessed>",
+            "startColumn" : 5,
+            "startLine" : 21
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 12,
+            "endLine" : 21,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 12,
+            "startLine" : 21
+          }
+        },
+        "statement" : "statement:1"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "WRITE",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 6,
+              "endLine" : 22,
+              "file" : "<preprocessed>",
+              "startColumn" : 6,
+              "startLine" : 22
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 13,
+              "endLine" : 22,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 13,
+              "startLine" : 22
+            }
+          },
+          "references" : [ "operand:2:0" ],
+          "role" : "RECORD",
+          "writtenValue" : null
+        }, {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 19,
+              "endLine" : 22,
+              "file" : "<preprocessed>",
+              "startColumn" : 13,
+              "startLine" : 22
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 26,
+              "endLine" : 22,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 20,
+              "startLine" : 22
+            }
+          },
+          "references" : [ "operand:2:1" ],
+          "role" : "FROM",
+          "writtenValue" : null
+        } ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 6,
+            "endLine" : 22,
+            "file" : "<preprocessed>",
+            "startColumn" : 6,
+            "startLine" : 22
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 13,
+            "endLine" : 22,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 13,
+            "startLine" : 22
+          }
+        },
+        "statement" : "statement:2"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "REWRITE",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 8,
+              "endLine" : 23,
+              "file" : "<preprocessed>",
+              "startColumn" : 8,
+              "startLine" : 23
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 15,
+              "endLine" : 23,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 15,
+              "startLine" : 23
+            }
+          },
+          "references" : [ "operand:3:0" ],
+          "role" : "RECORD",
+          "writtenValue" : null
+        }, {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 17,
+              "endLine" : 23,
+              "file" : "<preprocessed>",
+              "startColumn" : 15,
+              "startLine" : 23
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 24,
+              "endLine" : 23,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 22,
+              "startLine" : 23
+            }
+          },
+          "references" : [ "operand:3:1" ],
+          "role" : "FROM",
+          "writtenValue" : null
+        } ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 8,
+            "endLine" : 23,
+            "file" : "<preprocessed>",
+            "startColumn" : 8,
+            "startLine" : 23
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 15,
+            "endLine" : 23,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 15,
+            "startLine" : 23
+          }
+        },
+        "statement" : "statement:3"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "DELETE_RECORD",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 7,
+            "endLine" : 24,
+            "file" : "<preprocessed>",
+            "startColumn" : 7,
+            "startLine" : 24
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 14,
+            "endLine" : 24,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 14,
+            "startLine" : 24
+          }
+        },
+        "statement" : "statement:4"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "START",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "GREATER",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 25,
+              "endLine" : 25,
+              "file" : "<preprocessed>",
+              "startColumn" : 25,
+              "startLine" : 25
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 32,
+              "endLine" : 25,
+              "file" : "file-declarations.cbl",
+              "startColumn" : 32,
+              "startLine" : 25
+            }
+          },
+          "references" : [ "operand:5:0" ],
+          "role" : "KEY",
+          "writtenValue" : null
+        } ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 6,
+            "endLine" : 25,
+            "file" : "<preprocessed>",
+            "startColumn" : 6,
+            "startLine" : 25
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 13,
+            "endLine" : 25,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 13,
+            "startLine" : 25
+          }
+        },
+        "statement" : "statement:5"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "FILETEST",
+            "compilationUnitId" : "FILE-DECLARATIONS.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "CLOSE",
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 6,
+            "endLine" : 26,
+            "file" : "<preprocessed>",
+            "startColumn" : 6,
+            "startLine" : 26
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 13,
+            "endLine" : 26,
+            "file" : "file-declarations.cbl",
+            "startColumn" : 13,
+            "startLine" : 26
+          }
+        },
+        "statement" : "statement:6"
+      } ]
+    },
+    "version" : "1.2.0"
+  }
+}

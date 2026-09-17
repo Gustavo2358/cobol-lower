@@ -1,5 +1,10 @@
 # cobol-lower
 
+Caminho corrente: `CobolLowerer` prioriza `PartialProgramLowerer` para SP composicional
+(contrato pinado SP 2.20.0/storage 1.7.0). Inclui tradução regional, CICS e evidência
+de entrada. [Roteamento FILE-DEPENDENCIES](docs/domain/file-dependencies.md).
+As descrições CP3/CP6 abaixo documentam profiles anteriores, não o dispatch completo.
+
 Storage W6–W8: [qualified profile, tests and limits](docs/engineering/storage-w8-qualification.md). Human review pending; no merge.
 
 CP6 W2B: SP 1.4.0 IF simples → AIR diamond com Branch(Unknown BOOL),

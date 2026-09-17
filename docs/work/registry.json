@@ -47,6 +47,11 @@
       "id": "WORK-LOWER-015",
       "status": "IN_PROGRESS",
       "path": "docs/work/active/WORK-LOWER-015.yaml"
+    },
+    {
+      "id": "WORK-FD-HARNESS",
+      "status": "IN_PROGRESS",
+      "path": "docs/work/active/WORK-FD-HARNESS.json"
     }
   ],
   "proposals": [],

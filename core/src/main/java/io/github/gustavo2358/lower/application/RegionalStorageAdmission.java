@@ -100,7 +100,7 @@ final class RegionalStorageAdmission {
             else uncertainBases.add(views.get(owner.id()).base());
         }
         if(unboundedRelation) {
-            require(storage.bases().stream().noneMatch(b->b.allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE),
+            require(storage.bases().stream().noneMatch(b->b.allocation().proved()),
                 "unproved root relation contradicts allocation independence");
             require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
                 "unproved root relation contradicts standalone scalar proof");
@@ -165,14 +165,14 @@ final class RegionalStorageAdmission {
                 require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
             } else if(condition.kind()!=InitialKind.UNKNOWN) {
                 var view=views.get(condition.node());
-                require(storage.entryState().possibilityDomain()!=PossibilityDomain.LOGICAL_SOURCE||condition.kind()!=InitialKind.LITERAL_BYTES||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"strong source initial bytes require proved allocation");
+                require(storage.entryState().possibilityDomain()!=PossibilityDomain.LOGICAL_SOURCE||condition.kind()!=InitialKind.LITERAL_BYTES||bases.get(view.base()).allocation().proved(),"strong source initial bytes require proved allocation");
                 require(condition.provenance().exact()&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
                     &&bases.get(view.base()).extent().value().isPresent(),"initial condition needs exact bounded supported view");
                 boolean mode=condition.proof()==InitialProof.EXPLICIT_INITIAL?storage.entryState().mode()==EntryMode.INITIAL
                     :condition.proof()==InitialProof.EXPLICIT_PRESERVED?storage.entryState().mode()==EntryMode.PRESERVED:storage.entryState().mode()==EntryMode.UNKNOWN;
                 require(mode&&((condition.kind()!=InitialKind.LITERAL_BYTES&&condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES)||view.extent().value().get().equals(java.math.BigInteger.valueOf(condition.bytes().size()))),
                     "initial condition contradicts mode or extent");
-                require((condition.proof()!=InitialProof.DECLARATIVE_INVARIANT&&condition.proof()!=InitialProof.DECLARATIVE_POSSIBILITY)||bases.get(view.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,
+                require((condition.proof()!=InitialProof.DECLARATIVE_INVARIANT&&condition.proof()!=InitialProof.DECLARATIVE_POSSIBILITY)||bases.get(view.base()).allocation().proved(),
                     "declarative invariant needs independent local storage");
             }
         }
@@ -251,7 +251,7 @@ final class RegionalStorageAdmission {
             require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.logicalWholeItem().isPresent()&&r.binding().selected().equals(r.logicalWholeItem())&&r.provenance().exact(),"logical copy needs canonical whole READ");
             var ref=(DataReference)transfer.source();var source=index.byData().get(ref.logicalWholeItem().orElseThrow());
             require(source!=null&&index.nodes().get(source.node()).kind()==Kind.ELEMENTARY&&source.codec().isPresent()&&source.codec().equals(dest.codec())&&source.extent().value().filter(n->n.signum()>0).isPresent(),"logical copy requires supported text shape");
-            require(!source.base().equals(dest.base())&&index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE&&index.bases().get(dest.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE,"logical copy needs proved independent bases");
+            require(!source.base().equals(dest.base())&&index.bases().get(source.base()).allocation().proved()&&index.bases().get(dest.base()).allocation().proved(),"logical copy needs proved independent bases");
         }
         if(effect.kind()==MoveKind.COPY_BYTES||effect.kind()==MoveKind.FIT_TEXT) {
             require(transfer.source() instanceof DataReference r&&r.role()==OperandRole.READ&&r.regionalAccess().isPresent(),"byte copy needs exact READ access");
@@ -259,8 +259,8 @@ final class RegionalStorageAdmission {
             require(effect.kind()!=MoveKind.COPY_BYTES||source.extent().equals(dest.extent()),"copy requires equal extents");
             boolean disjoint=source.base().equals(dest.base())?end(source).compareTo(dest.offset().value().orElseThrow())<=0
                 ||end(dest).compareTo(source.offset().value().orElseThrow())<=0
-                :index.bases().get(source.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE
-                    &&index.bases().get(dest.base()).allocation()==Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE;
+                :index.bases().get(source.base()).allocation().proved()
+                    &&index.bases().get(dest.base()).allocation().proved();
             require(disjoint,"COBOL copy requires proved disjoint source and destination ranges");
         }
     }
@@ -268,6 +268,7 @@ final class RegionalStorageAdmission {
         var result=new ArrayList<DataReference>();
         switch(fact) {
             case MoveFact m -> { if(m.source() instanceof DataReference r)result.add(r);result.add(m.target());for(var t:m.additionalTransfers()){if(t.source() instanceof DataReference r)result.add(r);result.add(t.target());} }
+            case CicsFileFact cics -> {if(cics.target().orElse(null) instanceof DataCallTarget d)result.add(d.reference());cics.options().forEach(o->o.reference().ifPresent(result::add));}
             case CicsFact cics -> {if(cics.target().orElse(null) instanceof DataCallTarget d)result.add(d.reference());cics.options().forEach(o->o.reference().ifPresent(result::add));}
             case CallFact call -> { if(call.target() instanceof DataCallTarget d)result.add(d.reference()); }
             case IfFact f -> result.addAll(f.conditionReads());

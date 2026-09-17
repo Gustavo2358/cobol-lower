@@ -5,7 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,FileFacts.Inventory.unavailable());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional) {
         this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,Optional.empty());
     }
@@ -16,6 +19,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(fileInventory);
         Objects.requireNonNull(storage);
         Objects.requireNonNull(storageIndependence, "storageIndependence");
         Objects.requireNonNull(unit, "unit");
@@ -28,13 +32,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
     public enum InventoryStatus { COMPLETE, PARTIAL, INPUT_MISSING }
     public enum ReadinessStatus { SUFFICIENT, PARTIAL, BLOCKED, NOT_APPLICABLE }
-    public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, UNKNOWN }
+    public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, FILE_HANDLER, UNKNOWN }
     public enum EntryRole { PRIMARY }
     public enum EntryInventoryScope { PRIMARY_ONLY }
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }
@@ -312,6 +316,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(ordinaryContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes); }
     }
 
+    public enum CicsFileTargetMode { INPUT, OUTPUT, BROWSE_START, BROWSE_END }
+    public enum CicsFileRole { READ, WRITE, READ_WRITE, NONE, UNKNOWN }
+    public record CicsFileOption(String name,String canonicalName,Optional<String> operand,int start,int end,
+        CicsFileRole role,Optional<DataReference> reference,Optional<String> literal,Optional<java.math.BigInteger> integer) {
+        public CicsFileOption {Objects.requireNonNull(name);Objects.requireNonNull(canonicalName);Objects.requireNonNull(operand);Objects.requireNonNull(role);Objects.requireNonNull(reference);Objects.requireNonNull(literal);Objects.requireNonNull(integer);}
+    }
+    public record CicsFileFact(StatementHeader header,String command,String rawText,CicsFileTargetMode targetMode,Optional<CallTarget> target,
+        List<CicsFileOption> options,CicsConditions conditions,NormalContinuation localContinuation,NormalContinuation ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
+        public CicsFileFact {Objects.requireNonNull(header);Objects.requireNonNull(command);Objects.requireNonNull(rawText);Objects.requireNonNull(targetMode);Objects.requireNonNull(target);options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(ordinaryContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes);}
+    }
+
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }
     public enum RuntimeTargetKnowledge { UNKNOWN }
     public enum ClausePresence { ABSENT, PRESENT, UNKNOWN }
@@ -409,9 +424,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     }
 
     public enum EffectBound { NONE, ALL }
-    public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN }
+    public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum EffectValueTransform { NONE, UNKNOWN }
-    public enum EffectProof { DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS }
+    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS }
     public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
             List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
             EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {

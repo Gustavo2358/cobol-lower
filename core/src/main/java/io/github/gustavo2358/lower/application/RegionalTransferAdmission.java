@@ -28,13 +28,13 @@ final class RegionalTransferAdmission {
             var starts=new ArrayList<BigInteger>();var ends=new ArrayList<BigInteger>();var max=BigInteger.ZERO;
             for(var view:entry.getValue()){starts.add(view.offset().value().orElseThrow());max=max.max(end(view));ends.add(max);}
             indexes.put(entry.getKey(),new Intervals(starts,ends));
-            if(storage.bases().get(entry.getKey()).allocation()!=StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE)unproved.add(entry.getKey());
+            if(!storage.bases().get(entry.getKey()).allocation().proved())unproved.add(entry.getKey());
         }
         for(var transfer:move.transfers())if(transfer.effect().kind()==StorageFacts.MoveKind.COPY_BYTES||transfer.effect().kind()==StorageFacts.MoveKind.FIT_TEXT) {
             var read=storage.access((SpInput.DataReference)transfer.source()).orElseThrow();var same=indexes.get(read.base());
             require(same==null||!same.intersects(read),"a receiver can change a precise sequence source");
             boolean other=writes.size()>(writes.containsKey(read.base())?1:0);
-            require(!other||storage.bases().get(read.base()).allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE
+            require(!other||storage.bases().get(read.base()).allocation().proved()
                 &&unproved.size()==(unproved.contains(read.base())?1:0),"source separation from other bases is unproved");
         }
     }

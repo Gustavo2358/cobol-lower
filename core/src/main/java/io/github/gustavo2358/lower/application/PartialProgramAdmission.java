@@ -23,6 +23,7 @@ final class PartialProgramAdmission {
             for (var s : input.statements()) {
                 var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
                 if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
+                if(s instanceof CicsFileFact x) CicsFileAdmission.validate(x,c);
                 if(s instanceof OtherStatement o) {
                     var operands=new HashSet<OperandId>();
                     for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
@@ -37,9 +38,10 @@ final class PartialProgramAdmission {
                             &&e.unknownExposureBound()==EffectBound.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"only bounded INITIALIZE may prove MUST");
                         for(var id:e.mustOverwrite())c.require(refs.containsKey(id)&&refs.get(id).regionalAccess().isPresent(),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires exact physical access");
                         c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
-                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE)c.require(e.values()==EffectValueTransform.UNKNOWN
+                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN
                             &&(e.unknownWriteBound()!=EffectBound.NONE||!e.mayWrites().isEmpty()),Rule.PROFILE_FACT,o.header().id().handle(),null,"receiving effect cannot silently have no writes or known transform");
                         for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
+                        if(e.proof()==EffectProof.NO_OP)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE&&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"NO_OP proof has no effects");
                         if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
                             &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
                             &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
@@ -79,6 +81,8 @@ final class PartialProgramAdmission {
             var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var rangeCompletions=new HashSet<StatementId>();
+            input.fileInventory().declaratives().forEach(d->rangeCompletions.addAll(d.completions()));
+            input.fileInventory().sorts().ifPresent(inv->inv.plans().forEach(p->p.procedures().forEach(r->{rangeCompletions.addAll(r.completions());r.links().forEach(l->rangeCompletions.add(l.from()));})));
             for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.gapCodes().isEmpty())
                 p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();
@@ -91,7 +95,7 @@ final class PartialProgramAdmission {
                     if(eligible&&m.copySemantics()==CopySemantics.FITTED_TEXT)fitted.add(m.header().id());
                     if(m.source() instanceof DataReference && (RegionalDataTranslator.textual(c.regionalStorage,m.target().wholeItemAccess().orElseThrow().data())
                         ||RegionalDataTranslator.textual(c.regionalStorage,((DataReference)m.source()).wholeItemAccess().orElseThrow().data())))eligible=false;
-                } else if(s instanceof CallFact || s instanceof CicsFact) {
+                } else if(s instanceof CallFact || s instanceof CicsFact || s instanceof CicsFileFact) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
                 } else if(s instanceof IfFact f && f.predicateGuarantee().availability()==Availability.KNOWN
                         && f.thenArm().entry().statement().isPresent() && (f.normalContinuation().statement().isPresent() || rangeCompletions.contains(f.header().id()))
@@ -216,10 +220,11 @@ final class PartialProgramAdmission {
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
     }
     static NormalContinuation ordinaryNext(StatementFact s) {
-        return s instanceof CicsFact c?c.ordinaryContinuation():next(s);
+        return s instanceof CicsFact c?c.ordinaryContinuation():s instanceof CicsFileFact c?c.ordinaryContinuation():next(s);
     }
     static NormalContinuation next(StatementFact s) {
         if(s instanceof CicsFact c)return c.localContinuation();
+        if(s instanceof CicsFileFact c)return c.localContinuation();
         if(s instanceof ConditionalGoToFact g)return g.normalContinuation();
         if(s instanceof ProcedurePerformFact p)return p.normalContinuation();
         if(s instanceof EvaluateFact e)return e.normalContinuation();

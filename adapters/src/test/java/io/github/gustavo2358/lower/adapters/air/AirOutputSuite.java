@@ -94,7 +94,9 @@ public final class AirOutputSuite {
         byte[] old = new AirJson().encode(valid.publication().orElseThrow());
         var files = new CountingFiles(); var writer = new AirFileOutput(new AirJson(), files);
         for (var status : LoweringResult.Status.values()) {
-            if (status == LoweringResult.Status.SUCCESS) continue;
+            // PARTIAL is a publication-bearing outcome, exercised with real scoped
+            // validation and CLI output by EvidencePreservingEntrySuite.
+            if (status == LoweringResult.Status.SUCCESS || status == LoweringResult.Status.PARTIAL) continue;
             // Typed port failure fixture: every status is guarded, including future failures after admission.
             var result = new LoweringResult(status, valid.admission(), Optional.empty(), valid.validation(), List.of(), List.of(), List.of());
             for (boolean existing : List.of(false, true)) {

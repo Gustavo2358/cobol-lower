@@ -1,0 +1,11 @@
+id: FD-W11
+title: Preservar evidência lógica de entrada nas versões FILE do SP
+status: IN_PROGRESS
+scope: [file-dependencies, sp-version-admission]
+rule: SP2.21–2.28 herdam o contrato LOGICAL_SOURCE introduzido em2.19; versões legadas conservam BOUNDED_PHYSICAL.
+oracle: unknown-base manual nos oito contratos FILE deve preservar PossibleLiterals lógico sem inventar layout; SP2.18 recusa a mesma ausência de prova física.
+motivation: CardDemo W11 revelou53 recusas com initial condition needs exact bounded supported view por enumeração de versões desatualizada em Materialize.
+evidence: RED semântico em2.21; EvidencePreservingEntrySuite, PossibleEntrySuite seis negativos e FileScopeSuite PASS. FAST2 core2340+adapters e Q2 semântica205081+performance39215/arquitetura PASS exit0; pins e E2E/corpus descendentes serão atualizados no consumer.
+paragraph_remediation: Distinguir ausência de continuação intrínseca de continuação ordinary FILE publicada; corpus CBSTM03A.
+paragraph_oracle: FileControlSuite positivo/negativo e FileControlContractTest do produtor; sem enfraquecer sucessor conhecido contraditório.
+paragraph_evidence: FAST3 core2340+adapters e Q3 semântica244296/performance39215/arquitetura PASS; contraprova KNOWN recompilada PASS. SRC-SP aaecf8c1, E2E final no consumer.

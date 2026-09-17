@@ -1,5 +1,7 @@
 # Índice do conhecimento
 
+[FILE-DEPENDENCIES — FD-H0–H4 / waves futuras](domain/file-dependencies.md): preparação source-only; STOP humano antes de W0.
+
 O índice é um mapa, não um pacote de contexto obrigatório. Comece pela tarefa e pelo work item.
 
 | Família | Fonte canônica |

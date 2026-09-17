@@ -10,25 +10,30 @@ final class PartialProgramAssembler {
     record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
     static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
-            List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
+            List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         var sequences=new ArrayList<Sequence>();
-        append(plan,plan.statements(),Map.of(),data,unit,ids,origins,statements,operands,items,uncertainties,sequences);
+        append(plan,plan.statements(),Map.of(),data,unit,ids,origins,statements,operands,items,uncertainties,sequences,files);
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
         var entrySequence=sequences.stream().filter(s->s.label().equals(entryLabel)).findFirst().orElseThrow();
-        return new Assembly(List.copyOf(sequences),entryLabel,entrySequence.origin());
+        return new Assembly(files.complete(sequences),entryLabel,entrySequence.origin());
     }
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
             Map<SpInput.StatementId,LabelId> overrides,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
-            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences) {
+            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files) {
         for(var fact:sourceStatements) {
-            var label=label(fact.header().id(),unit,ids); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
+            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
+            if(overrides.isEmpty())destination=files.completion(fact.header().id(),destination);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
-            if(precise && fact instanceof SpInput.MoveFact m) {
+            if(files.handles(fact)) {
+                var chain=files.sequences(fact,destination,ids);term=chain.getFirst().terminator();instructions.addAll(chain.getFirst().instructions());
+                for(int i=1;i<chain.size();i++)sequences.add(chain.get(i));
+                for(var sequence:chain){for(var instruction:sequence.instructions())link(fact.header().id(),instruction,sequence.label(),statements,items);link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);}
+            } else if(precise && fact instanceof SpInput.MoveFact m) {
                 var transfers=RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.addAll(transfers);var assign=transfers.getFirst();
                 for(var transfer:transfers)link(m.header().id(),transfer,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
@@ -45,6 +50,9 @@ final class PartialProgramAssembler {
                     List.of(source,reference,paragraph,entry),"goto-paragraph@1/explicit-executable-entry");
                 term=PerformSequenceAssembler.jump("goto-target",g.header().id(),label(g.targetEntry().orElseThrow(),unit,ids),origin,unit,ids);
                 link(g.header().id(),term,label,statements,items);
+            } else if(precise && fact instanceof SpInput.CicsFileFact cics) {
+                term=CicsFileInvokeHandler.translate(cics,data,destination,unit,ids,origins,operands,items,uncertainties);
+                link(fact.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.CicsFact cics) {
                 term=CicsInvokeHandler.translate(cics,data,destination,unit,ids,origins,operands,items,uncertainties);
                 link(fact.header().id(),term,label,statements,items);
@@ -116,7 +124,7 @@ final class PartialProgramAssembler {
                     var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):completion;
                     for(var id:paragraph.completions())completions.put(id,resume);
                 }
-                append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences);
+                append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
             } else if(precise && fact instanceof SpInput.PerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.targetEntry().orElseThrow(),unit,activation);
@@ -124,7 +132,7 @@ final class PartialProgramAssembler {
                 link(fact.header().id(),term,label,statements,items);
                 var body=plan.bodies().get(p.header().id());
                 for(int i=0;i<body.size();i++) {
-                    var move=body.get(i);var here=label(move.header().id(),unit,activation);
+                    var move=body.get(i);var here=label(move.header().id(),unit,activation);files.sourceEntry(here);
                     var resume=i+1<body.size()?label(body.get(i+1).header().id(),unit,activation):destination;
                     var transfers=RegionalMoveHandler.sequence(move,plan.fitted().contains(move.header().id()),data,unit,activation,origins,operands,items,uncertainties);var assign=transfers.getFirst();
                     for(var transfer:transfers)link(move.header().id(),transfer,here,statements,items);
@@ -144,6 +152,11 @@ final class PartialProgramAssembler {
                 instructions.add(havoc);link(m.header().id(),havoc,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+            } else if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.proof()==SpInput.EffectProof.NO_OP).isPresent()) {
+                var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
+                term=destination!=null?PerformSequenceAssembler.jump("no-op-next",fact.header().id(),destination,origin,unit,ids)
+                    :opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
+                link(fact.header().id(),term,label,statements,items);
             } else {
                 term=opaque(fact,fact instanceof SpInput.IfFact || fact instanceof SpInput.PerformFact || fact instanceof SpInput.ProcedurePerformFact || fact instanceof SpInput.EvaluateFact ? null : destination,data,unit,ids,origins,uncertainties,operands,!(fact instanceof SpInput.GoToFact));
                 link(fact.header().id(),term,label,statements,items);
@@ -163,7 +176,7 @@ final class PartialProgramAssembler {
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retained with conservative effects and only proved control",origin));
         var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
-        if(fact instanceof SpInput.OtherStatement o&&o.effects().isPresent()) {
+        if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.environment()!=SpInput.EnvironmentEffect.NONE).isPresent()) {
             var environment=new UncertaintyId(unit.publication(),ids.id("uncertainty","statement-environment",id.localId(),"effects"));
             uncertainties.add(new Evidence.Uncertainty(environment,"SOURCE_"+o.effects().orElseThrow().environment().name()+"_EFFECT",
                 List.of(Evidence.Dimension.EFFECTS,Evidence.Dimension.DEPENDENCIES),scope,"Memory proof does not close environment effects",origin));

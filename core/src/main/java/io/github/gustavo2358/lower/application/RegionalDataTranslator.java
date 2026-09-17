@@ -50,6 +50,7 @@ final class RegionalDataTranslator {
                 allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
+        var nominal=new LinkedHashMap<>(legacy.nominal());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
         // A proved standalone legacy scalar may have an unknown byte representation. Keep its
@@ -67,7 +68,7 @@ final class RegionalDataTranslator {
             }
             baseOrigins.put(base.id(),origin);
             if(physical.containsKey(base.id()))continue;
-            boolean privateAllocation=base.allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE;
+            boolean privateAllocation=base.allocation().proved();
             // An unproved, unknown base does not establish ordinary persistent storage duration.
             // Retain a source gap rather than invent an AIR lifetime that the wire cannot express.
             if(!privateAllocation&&base.extent().value().isEmpty()) {
@@ -95,9 +96,10 @@ final class RegionalDataTranslator {
                 var objectOrigin=origins.derived(ids.id("origin","regional-object",unit.localId(),node.id().handle()),
                     List.of(dataOrigin,origin,viewOrigin,baseOrigins.get(view.base())),"storage@1/explicit-source-view");
                 var binding=new Memory.ViewBinding(region,view.offset().value().orElseThrow(),view.extent().value().orElseThrow(),RegionalStorageAdmission.IBM1047);
-                var visibility=source.bases().get(view.base()).allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE?Memory.Visibility.PRIVATE:Memory.Visibility.UNKNOWN;
+                var visibility=source.bases().get(view.base()).allocation().proved()?Memory.Visibility.PRIVATE:Memory.Visibility.UNKNOWN;
                 objects.add(new Memory.ObjectDeclaration(object,Optional.of(data.canonicalName()),Types.known(Types.Builtin.TEXT),binding,visibility,objectOrigin,
                     Evidence.CoverageStatus.MODELED,ScalarEvidence.limited(ids,unit.publication(),object,data.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
+                nominal.put(data.id(),object);
                 index.put(data.id(),new LoweringResult.DataLink(data.id(),object,region,dataOrigin));bindings.put(data.id(),binding);
                 items.add(ScalarEvidence.item(unit.publication(),"data",data.id().handle(),dataOrigin,List.of(object,region)));
             }
@@ -115,6 +117,7 @@ final class RegionalDataTranslator {
             var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
             var inputs=new ArrayList<OriginId>();inputs.add(dataOrigin);
             if(view!=null) {inputs.add(origins.source("storage-view",view.node().handle(),view.provenance()));inputs.add(baseOrigins.get(view.base()));}
+            nominal.put(declaration.id(),object);
             var objectOrigin=origins.derived(ids.id("origin","unknown-regional-object",unit.localId(),declaration.id().handle()),inputs,"storage@1/unproved-source-view");
             var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
                 "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
@@ -133,7 +136,7 @@ final class RegionalDataTranslator {
         }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
-        return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical));
+        return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical),Map.copyOf(nominal));
     }
     private static void renamesCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
             Map<StorageFacts.RelationId,OriginId> renamesOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
@@ -176,7 +179,7 @@ final class RegionalDataTranslator {
             UnitId unit,LocalIds ids,SourceOrigins origins) {
         var members=new ArrayList<StorageId>();var evidence=new ArrayList<OriginId>();
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList())
-            if(base.allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE&&data.physical().containsKey(base.id())) {
+            if(base.allocation().proved()&&data.physical().containsKey(base.id())) {
                 members.add(data.physical().get(base.id()));evidence.add(origins.source("storage-base",base.id().handle(),base.provenance()));
             }
         if(members.size()<2)return List.of();

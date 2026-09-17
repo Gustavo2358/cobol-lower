@@ -1,6 +1,7 @@
 package io.github.gustavo2358.lower.application;
 
 import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.domain.FileFacts;
 import java.util.function.Consumer;
 
 /** Explicit SP identity fields. No transport, reflection, or semantic reconstruction. */
@@ -8,12 +9,36 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case SpInput.CicsFileFact r -> {field.accept("CicsFileFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.targetMode());value.accept(r.target());value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());}
+            case SpInput.CicsFileOption r -> {field.accept("CicsFileOption");value.accept(r.name());value.accept(r.canonicalName());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.role());value.accept(r.reference());value.accept(r.literal());value.accept(r.integer());}
             case SpInput.CicsFact r -> {
                 field.accept("CicsFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.target());
                 value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());
             }
             case SpInput.CicsOption r -> {field.accept("CicsOption");value.accept(r.name());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.reference());}
 
+            case FileFacts.Inventory r -> {r.sorts().ifPresent(s->{field.accept("FileSortInventory");value.accept(s);});field.accept("FileInventory");value.accept(r.availability());value.accept(r.declarations());value.accept(r.gapCodes());value.accept(r.operations());if(!r.declaratives().isEmpty()){field.accept("FileDeclaratives");value.accept(r.declaratives());}}
+            case FileFacts.Declaration r -> {field.accept("FileDeclaration");value.accept(r.id());value.accept(r.owner());value.accept(r.logicalFile());value.accept(r.kind());value.accept(r.optional());value.accept(r.assignment());value.accept(r.organization());value.accept(r.accessMode());value.accept(r.visibility());value.accept(r.records());value.accept(r.references());value.accept(r.origins());value.accept(r.gapCodes());}
+            case FileFacts.Assignment r -> {field.accept("FileAssignment");value.accept(r.availability());value.accept(r.profile());value.accept(r.original());value.accept(r.sourceKind());value.accept(r.externalFileName());value.accept(r.gapCodes());}
+            case FileFacts.Reference r -> {field.accept("FileReference");value.accept(r.role());value.accept(r.binding());value.accept(r.duplicates());value.accept(r.provenance());}
+            case FileFacts.Operations r -> {field.accept("FileOperations");value.accept(r.availability());value.accept(r.uses());value.accept(r.gapCodes());}
+            case FileFacts.Use r -> {if(r.role()!=FileFacts.Role.DIRECT){field.accept("FileRole");value.accept(r.role());}field.accept("FileUse");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.command());value.accept(r.mode());value.accept(r.profile());value.accept(r.bindingStatus());value.accept(r.candidates());value.accept(r.provenance());value.accept(r.gapCodes());if(r.surface().isPresent()){field.accept("FileSurface");value.accept(r.surface().orElseThrow());}if(r.effects().isPresent()){field.accept("FileEffects");value.accept(r.effects().orElseThrow());}if(r.control().isPresent()){field.accept("FileControl");value.accept(r.control().orElseThrow());}}
+            case FileFacts.SortInventory r -> {value.accept(r.availability());value.accept(r.plans());}
+            case FileFacts.SortPlan r -> {field.accept("FileSortPlan");value.accept(r.statement());value.accept(r.availability());value.accept(r.work());value.accept(r.inputs());value.accept(r.outputs());value.accept(r.procedures());value.accept(r.gapCodes());}
+            case FileFacts.ProcedurePlan r -> {field.accept("FileProcedurePlan");value.accept(r.phase());value.accept(r.start());value.accept(r.end());value.accept(r.roots());value.accept(r.entry());value.accept(r.completions());value.accept(r.links());value.accept(r.gapCodes());}
+            case FileFacts.ProcedureLink r -> {value.accept(r.from());value.accept(r.to());}
+            case FileFacts.Declarative r -> {field.accept("FileDeclarative");value.accept(r.id());value.accept(r.owner());value.accept(r.kind());value.accept(r.global());value.accept(r.mode());value.accept(r.files());value.accept(r.roots());value.accept(r.entry());value.accept(r.completions());value.accept(r.gapCodes());value.accept(r.provenance());}
+            case FileFacts.ControlPlan r -> {field.accept("FileControlPlan");value.accept(r.availability());value.accept(r.continuation());value.accept(r.routes());value.accept(r.gapCodes());}
+            case FileFacts.ControlRoute r -> {field.accept("FileControlRoute");value.accept(r.event());value.accept(r.effects());value.accept(r.destinations());value.accept(r.criticalExit());}
+            case FileFacts.Destination r -> {field.accept("FileDestination");value.accept(r.kind());value.accept(r.handler());value.accept(r.declarative());}
+            case FileFacts.EffectPlan r -> {field.accept("FileEffectPlan");value.accept(r.availability());value.accept(r.ioReads());value.accept(r.before());value.accept(r.outcomes());value.accept(r.unknownReadBound());value.accept(r.unknownWriteBound());value.accept(r.gapCodes());}
+            case FileFacts.OutcomeEffects r -> {field.accept("FileOutcomeEffects");value.accept(r.outcome());value.accept(r.steps());}
+            case FileFacts.MemoryStep r -> {field.accept("FileMemoryStep");value.accept(r.role());value.accept(r.kind());value.accept(r.destination());value.accept(r.source());value.accept(r.gapCodes());value.accept(r.provenance());}
+            case FileFacts.MemoryTarget r -> {field.accept("FileMemoryTarget");value.accept(r.data());value.accept(r.regional());value.accept(r.wholeBase());value.accept(r.reference());value.accept(r.provenance());}
+            case FileFacts.Surface r -> {field.accept("FileSurface");value.accept(r.operands());value.accept(r.options());value.accept(r.keyRelation());value.accept(r.explicitTerminator());value.accept(r.handlers());}
+            case FileFacts.Operand r -> {field.accept("FileOperand");value.accept(r.role());value.accept(r.form());value.accept(r.references());value.accept(r.writtenValue());value.accept(r.provenance());value.accept(r.gapCodes());}
+            case FileFacts.Handler r -> {field.accept("FileHandler");value.accept(r.kind());value.accept(r.statements());value.accept(r.provenance());}
+            case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
             case SpInput r -> {
                 field.accept("SpInput");
                 field.accept("unit"); value.accept(r.unit());
@@ -26,6 +51,7 @@ final class PartialIdentityFacts {
                 field.accept("entryInventory"); value.accept(r.entryInventory());
                 field.accept("storageIndependence"); value.accept(r.storageIndependence());
                 field.accept("compositional"); value.accept(r.compositional());
+                if(r.fileInventory().availability()!=SpInput.Availability.UNAVAILABLE){field.accept("files@1");value.accept(r.fileInventory());}
                 if(r.storage().isPresent()){field.accept("storage@1");value.accept(r.storage().get());}
             }
             case SpInput.UnitKey r -> {

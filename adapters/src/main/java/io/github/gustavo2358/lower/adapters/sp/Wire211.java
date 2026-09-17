@@ -19,6 +19,7 @@ final class Wire211 {
         @JsonSubTypes.Type(value = MoveDocument.class, name = "MOVE"),
         @JsonSubTypes.Type(value = CallDocument.class, name = "CALL"),
         @JsonSubTypes.Type(value = CicsDocument.class, name = "CICS_PROGRAM_CONTROL"),
+        @JsonSubTypes.Type(value = CicsFileDocument.class, name = "CICS_FILE_CONTROL"),
         @JsonSubTypes.Type(value = IfDocument.class, name = "IF"),
         @JsonSubTypes.Type(value = PerformDocument.class, name = "PERFORM"),
         @JsonSubTypes.Type(value = ProcedurePerformDocument.class, name = "PERFORM_PROCEDURE"),
@@ -27,7 +28,7 @@ final class Wire211 {
         @JsonSubTypes.Type(value = ConditionalGoToDocument.class, name = "GO_TO_DEPENDING_ON"),
         @JsonSubTypes.Type(value = ObservedDocument.class, name = "OBSERVED")
     })
-    sealed interface StatementDocument permits GobackDocument, MoveDocument, CallDocument, CicsDocument, IfDocument, ObservedDocument, PerformDocument, EvaluateDocument, GoToDocument, ConditionalGoToDocument, ProcedurePerformDocument {
+    sealed interface StatementDocument permits GobackDocument, MoveDocument, CallDocument, CicsDocument, CicsFileDocument, IfDocument, ObservedDocument, PerformDocument, EvaluateDocument, GoToDocument, ConditionalGoToDocument, ProcedurePerformDocument {
         Wire.StatementHeaderDocument header();
     }
     record GoToDestinationDocument(int ordinal,@Nullable String target,@Nullable Wire.ProvenanceDocument procedureOrigin,
@@ -80,6 +81,10 @@ final class Wire211 {
         Wire.ProvenanceDocument provenance) implements TargetDocument { }
     record SurfaceDocument(ClausePresence using, @Nullable Integer argumentCount, ClausePresence returning,
         ClausePresence onException, ClausePresence notOnException, ClausePresence onOverflow) { }
+    record CicsFileOptionDocument(String name,String canonicalName,@Nullable String operand,int start,int end,CicsFileRole role,
+        @Nullable ReferenceDocument reference,@Nullable String literal,@Nullable String integer) { }
+    record CicsFileDocument(Wire.StatementHeaderDocument header,String command,String rawText,CicsFileTargetMode targetMode,@Nullable TargetDocument target,
+        List<CicsFileOptionDocument> options,CicsConditions conditions,ContinuationDocument localContinuation,ContinuationDocument ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementDocument { }
     record CicsOptionDocument(String name,@Nullable String operand,int start,int end,@Nullable ReferenceDocument reference) { }
     record CicsDocument(Wire.StatementHeaderDocument header,CicsCommand command,String rawText,@Nullable TargetDocument target,
         List<CicsOptionDocument> options,CicsConditions conditions,ContinuationDocument localContinuation,ContinuationDocument ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementDocument { }

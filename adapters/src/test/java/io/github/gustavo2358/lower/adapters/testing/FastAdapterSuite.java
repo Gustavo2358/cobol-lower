@@ -7,11 +7,13 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        FileDeclarationSuite.main(new String[0]); FileScopeSuite.main(new String[0]);
+        FileStaticSliceSuite.main(new String[0]); FileNativeOperationSuite.main(new String[0]); FileMemoryEffectsSuite.main(new String[0]); FileControlSuite.main(new String[0]); FileSortSuite.main(new String[0]); FileAuxiliarySuite.main(new String[0]);
         ObservedShapeSuite.main(new String[0]);
         DisplayEffectsSuite.main(new String[0]); InitializeEffectsSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);
         EvidencePreservingEntrySuite.main(new String[0]);
-        CicsProgramControlSuite.main(new String[0]);
+        CicsProgramControlSuite.main(new String[0]); CicsFileControlSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {
             try (var stream = FastAdapterSuite.class.getResourceAsStream("/sp/cp6/" + name + ".json")) {

@@ -45,6 +45,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.require(!data.canonicalName().isBlank() && data.picture().map(p -> !p.isBlank()).orElse(true), Rule.IDENTITY, data.id().handle(), data.provenance(), "Nonblank DATA text when present");
             c.provenance(data.provenance()); c.readiness(data.readiness(), data.id().handle(), data.provenance());
         }
+        FileDeclarationAdmission.validate(input, c);
         var counts = new EnumMap<CoverageStatus, Long>(CoverageStatus.class);
         int[] weakest = {3, 3, 3}; int previousPoint = -1;
         var expectedRoots = new ArrayList<StatementId>();
@@ -60,7 +61,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             var statuses = List.of(h.readiness().lowering().status(), h.readiness().cfg().status(), h.readiness().effectsDataflow().status());
             for (int i = 0; i < 3; i++) if (rank(statuses.get(i)) >= 0) weakest[i] = Math.min(weakest[i], rank(statuses.get(i)));
             var containment = h.containment();
-            boolean child = containment.branch() == Branch.THEN || containment.branch() == Branch.ELSE || containment.branch() == Branch.EVALUATE_ARM;
+            boolean child = containment.branch() == Branch.THEN || containment.branch() == Branch.ELSE || containment.branch() == Branch.EVALUATE_ARM || containment.branch()==Branch.FILE_HANDLER;
             c.require(containment.parent().isPresent() == child, Rule.CONTAINMENT, h.id().handle(), h.provenance(), "THEN/ELSE require parent; ROOT/UNKNOWN omit it");
             if (containment.branch() == Branch.ROOT) expectedRoots.add(h.id());
             if (statement instanceof EvaluateFact)
@@ -89,7 +90,7 @@ public final class EntryGobackAdmission implements AdmitInput {
                 c.require(h.coverage() != CoverageStatus.MODELED && scopes.contains(GapScope.STRUCTURE), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Unknown containment requires non-modeled coverage and STRUCTURE gap");
             if (h.containment().parent().isPresent()) {
                 var parentId = h.containment().parent().orElseThrow(); var parent = c.lookup(parentId);
-                c.require(parentId.unit().equals(unit) && ((parent instanceof IfFact || parent instanceof OtherStatement other && other.variant() == Variant.IF) && h.containment().branch()!=Branch.EVALUATE_ARM || parent instanceof EvaluateFact && h.containment().branch()==Branch.EVALUATE_ARM) && parent.header().programPoint() < h.programPoint(), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Parent must be an earlier published IF in the same unit");
+                c.require(parentId.unit().equals(unit) && ((parent instanceof IfFact || parent instanceof OtherStatement other && other.variant() == Variant.IF) && (h.containment().branch()==Branch.THEN||h.containment().branch()==Branch.ELSE) || parent instanceof EvaluateFact && h.containment().branch()==Branch.EVALUATE_ARM || parent instanceof OtherStatement && h.containment().branch()==Branch.FILE_HANDLER) && parent.header().programPoint() < h.programPoint(), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Parent must be an earlier published IF in the same unit");
                 expectedBranches.computeIfAbsent(new BranchKey(parentId, h.containment().branch()), ignored -> new ArrayList<>()).add(h.id());
             }
         }
@@ -117,6 +118,9 @@ public final class EntryGobackAdmission implements AdmitInput {
             entry(entry, c);
         }
         if (c.diagnostics.isEmpty()) c.regionalStorage=RegionalStorageAdmission.validate(input,c);
+        if (c.diagnostics.isEmpty()) FileEffectAdmission.validate(input,c);
+        if (c.diagnostics.isEmpty()) FileControlAdmission.validate(input,c);
+        if (c.diagnostics.isEmpty()) FileSortAdmission.validate(input,c);
     }
 
     private static void entry(EntryFact e, Context c) {

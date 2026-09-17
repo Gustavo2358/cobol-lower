@@ -14,9 +14,10 @@ public final class FileLowering {
     private final LowerInput port;
     public FileLowering(SpFileInput reader, LowerInput port) { this.reader = Objects.requireNonNull(reader); this.port = Objects.requireNonNull(port); }
     public Result lower(Path path, LowerInput.Options options) {
-        return switch (reader.read(path)) {
-            case SpJsonDecoder.Decoded decoded -> new Lowered(port.lower(decoded.input(), options));
-            case SpJsonDecoder.Rejected failure -> new PhysicalFailure(failure.diagnostic());
+        return switch (reader.readDocument(path)) {
+            case CompilationJsonDecoder.Single decoded -> new Lowered(port.lower(decoded.input(), options));
+            case CompilationJsonDecoder.Compilation decoded -> new Lowered(new io.github.gustavo2358.lower.application.CompilationLowerer().lower(decoded.input(),options));
+            case CompilationJsonDecoder.Rejected failure -> new PhysicalFailure(failure.diagnostic());
         };
     }
 }
