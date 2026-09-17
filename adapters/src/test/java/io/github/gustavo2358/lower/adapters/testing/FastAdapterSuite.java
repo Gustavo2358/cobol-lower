@@ -7,6 +7,7 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        FileDeclarationSuite.main(new String[0]);
         ObservedShapeSuite.main(new String[0]);
         DisplayEffectsSuite.main(new String[0]); InitializeEffectsSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);

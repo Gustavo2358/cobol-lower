@@ -1,0 +1,37 @@
+package io.github.gustavo2358.lower.application;
+import java.util.HashSet;
+import io.github.gustavo2358.lower.domain.FileFacts;
+import io.github.gustavo2358.lower.domain.SpInput;
+import static io.github.gustavo2358.lower.domain.SpInput.*;
+import static io.github.gustavo2358.lower.application.Admission.*;
+
+/** Bilateral semantic admission shared by all input ports, including in-memory. */
+final class FileDeclarationAdmission {
+    private FileDeclarationAdmission() { }
+    static void validate(SpInput input, EntryGobackAdmission.Context c) {
+        var inventory=input.fileInventory(); var files=new HashSet<String>(); var records=new HashSet<DataId>();
+        c.require(inventory.availability()==Availability.KNOWN ? inventory.gapCodes().isEmpty() : !inventory.gapCodes().isEmpty(),Rule.PROFILE_FACT,"files",null,"file availability/gaps mismatch");
+        c.require(inventory.availability()!=Availability.UNAVAILABLE || inventory.declarations().isEmpty(),Rule.PROFILE_FACT,"files",null,"unavailable file inventory cannot assert empty knowledge");
+        for(var f:inventory.declarations()) {
+            c.touch(); c.identity(f.owner(),f.id(),"file",null);
+            c.require(files.add(f.id()),Rule.DUPLICATE_ID,f.id(),null,"duplicate file identity");
+            c.require(!f.logicalFile().isBlank()&&!f.origins().isEmpty(),Rule.PROFILE_FACT,f.id(),null,"file name and origins required");
+            for(var origin:f.origins())c.provenance(origin);
+            var a=f.assignment();
+            c.require(a.profile().equals("ibm-enterprise-cobol-6.4-n-lr@2026-04-28"),Rule.PROFILE_FACT,f.id(),null,"unsupported file declaration profile");
+            c.require(a.externalFileName().isPresent()==(a.sourceKind()==FileFacts.NameSource.ASSIGNMENT_NAME),Rule.PROFILE_FACT,f.id(),null,"name/source mismatch");
+            c.require(a.availability()==Availability.KNOWN ? a.gapCodes().isEmpty() : !a.gapCodes().isEmpty(),Rule.PROFILE_FACT,f.id(),null,"name availability/gaps mismatch");
+            c.require(a.externalFileName().isEmpty()||a.availability()==Availability.KNOWN&&!a.externalFileName().get().isBlank(),Rule.PROFILE_FACT,f.id(),null,"unknown cannot claim exact name");
+            c.require(f.kind()!=FileFacts.Kind.SD||a.externalFileName().isEmpty(),Rule.PROFILE_FACT,f.id(),null,"SD cannot assert external file name");
+            for(var record:f.records()) {
+                c.touch();c.require(record.unit().equals(input.unit())&&c.data.containsKey(record)&&records.add(record),Rule.PROFILE_FACT,f.id(),null,"missing or multiply owned file record");
+            }
+            for(var ref:f.references()) {
+                c.touch();c.provenance(ref.provenance()); var b=ref.binding(); var ids=new HashSet<DataId>();
+                for(var id:b.candidates())c.require(c.data.containsKey(id)&&ids.add(id),Rule.PROFILE_FACT,f.id(),null,"missing/duplicate file reference candidate");
+                c.require(b.selected().isPresent()==(b.status()==ResolutionStatus.RESOLVED),Rule.PROFILE_FACT,f.id(),null,"file reference resolution/selection mismatch");
+                c.require(b.selected().isEmpty()||b.candidates().size()==1&&b.candidates().contains(b.selected().get()),Rule.PROFILE_FACT,f.id(),null,"invalid file reference selection");
+            }
+        }
+    }
+}

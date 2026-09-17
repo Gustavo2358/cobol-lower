@@ -10,6 +10,21 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire221.Document wire) {
+        var common = input(Wire221.common(wire)); var unit = common.unit(); var inventory = wire.fileInventory();
+        var files = inventory.declarations().stream().map(f -> {
+            var a = f.assignment(); var owner = unitKey(f.owner(), null);
+            return new io.github.gustavo2358.lower.domain.FileFacts.Declaration(f.id(), owner, f.logicalFile(), f.kind(), Optional.ofNullable(f.optional()),
+                new io.github.gustavo2358.lower.domain.FileFacts.Assignment(a.availability(), a.profile(), a.original(), a.sourceKind(), Optional.ofNullable(a.externalFileName()), a.gapCodes()),
+                f.organization(), f.accessMode(), f.visibility(), f.records().stream().map(r -> new DataId(unit,r)).toList(),
+                f.references().stream().map(r -> { var b = r.binding(); return new io.github.gustavo2358.lower.domain.FileFacts.Reference(r.role(),
+                    new Binding(ResolutionStatus.valueOf(b.status().name()),b.candidates().stream().map(c -> new DataId(unit,c.id())).toList(), Optional.ofNullable(b.selected()).map(id -> new DataId(unit,id)),
+                        Optional.of(ResolutionReason.valueOf(b.reason().name())), b.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()), r.duplicates(), provenance(r.provenance(),unit)); }).toList(),
+                f.origins().stream().map(o -> provenance(o,unit)).toList(), f.gapCodes());
+        }).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
+            common.storageIndependence(),common.compositional(),common.storage(),new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inventory.availability(),files,inventory.gapCodes()));
+    }
     static SpInput input(Wire217.Document wire) {
         var common=input(Wire217.common(wire));var effects=new java.util.HashMap<StatementId,EffectSummary>();
         for(var e:wire.statementEffects()) {

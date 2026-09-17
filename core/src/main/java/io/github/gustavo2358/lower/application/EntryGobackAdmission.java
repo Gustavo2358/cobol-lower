@@ -45,6 +45,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.require(!data.canonicalName().isBlank() && data.picture().map(p -> !p.isBlank()).orElse(true), Rule.IDENTITY, data.id().handle(), data.provenance(), "Nonblank DATA text when present");
             c.provenance(data.provenance()); c.readiness(data.readiness(), data.id().handle(), data.provenance());
         }
+        FileDeclarationAdmission.validate(input, c);
         var counts = new EnumMap<CoverageStatus, Long>(CoverageStatus.class);
         int[] weakest = {3, 3, 3}; int previousPoint = -1;
         var expectedRoots = new ArrayList<StatementId>();

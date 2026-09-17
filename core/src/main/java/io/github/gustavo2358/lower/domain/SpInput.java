@@ -5,7 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,FileFacts.Inventory.unavailable());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional) {
         this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,Optional.empty());
     }
@@ -16,6 +19,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(fileInventory);
         Objects.requireNonNull(storage);
         Objects.requireNonNull(storageIndependence, "storageIndependence");
         Objects.requireNonNull(unit, "unit");

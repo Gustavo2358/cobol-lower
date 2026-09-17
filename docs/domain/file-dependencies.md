@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-FD-H0–H4 prepara; produção ainda não autorizada.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -35,3 +35,19 @@ Gates existentes: `python3 -B scripts/harness/lean.py docs` para H;
 `CallSuite`, `IfSuite`, `InputSuite`, `ManualAir` e testes de adapters são bases de
 oráculo. Não usar selector JUnit em suítes Java main deste repo.
 `LOWER_BUILD_ROOT` isola o build; locks imutáveis continuam obrigatórios.
+
+## FD-W0 — SP 2.21 / inventário declarativo
+
+Execução core autorizada após H4; decoder lê `fileInventory@1.0.0` tipado e
+obrigatório em SP2.21. Inventários históricos sem FILE permanecem UNAVAILABLE,
+sem converter ausência em conjunto vazio. Novo FILE sob versão histórica é
+rejeitado pelo shape fechado; nenhum dual writer ou inferência downstream.
+`FileFacts` conserva owner, FD/SD, nome externo/sourceKind, record ownership,
+chaves/status resolvidos, visibilidade e origens. Admission é comum a file/memory,
+valida IDs/owners/refs/gaps e recusa SD com external name. Não emite FILE AIR em W0.
+
+Oráculo `FileDeclarationSuite`: bytes reais frontend + expectativas manuais,
+contracasos wire/admission (versão, inventário removido, enum, owner, record,
+duplicação, SD, mecanismo externo indevido e disponibilidade incoerente).
+Regressão focal fixa inclui os consumers CALL existentes. Pin final/evidência
+bilateral são atualizados somente após qualificação do produtor.
