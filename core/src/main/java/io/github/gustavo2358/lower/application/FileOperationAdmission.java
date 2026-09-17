@@ -39,7 +39,9 @@ final class FileOperationAdmission {
                 for(var ref:operand.references())require(c,ref.statement().equals(use.statement())&&references.containsKey(ref)&&refs.add(ref),"file operand outside owning observed statement");
                 if(operand.role()==FileFacts.OperandRole.RECORD&&use.bindingStatus()==ResolutionStatus.RESOLVED&&!operand.references().isEmpty()) {
                     var ref=references.get(operand.references().getFirst());
-                    if(ref!=null&&ref.binding().selected().isPresent())require(c,use.candidates().size()==1&&use.candidates().getFirst().equals(owners.get(ref.binding().selected().orElseThrow())),"record/file candidate ownership mismatch");
+                    if(ref!=null&&ref.binding().selected().isPresent())require(c,use.candidates().size()==1&&(use.candidates().getFirst().owner().equals(input.unit())
+                        ?use.candidates().getFirst().equals(owners.get(ref.binding().selected().orElseThrow()))
+                        :!owners.containsKey(ref.binding().selected().orElseThrow())),"record/file candidate ownership mismatch");
                 }
             }
             require(c,roles.contains(FileFacts.OperandRole.RECORD)==(use.command()==Command.WRITE||use.command()==Command.REWRITE||use.command()==Command.RELEASE),"WRITE/REWRITE requires record operand");

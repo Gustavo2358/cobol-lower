@@ -32,6 +32,9 @@ final class FileResourceLowering {
         for(var use:input.fileInventory().operations().uses())byStatement.computeIfAbsent(use.statement(),k->new ArrayList<>()).add(use);
         byStatement.values().forEach(uses->uses.sort(Comparator.comparingInt(FileFacts.Use::ordinal)));
     }
+    void imports(List<FileFacts.Declaration> imported){for(var d:imported)declarations.put(new FileFacts.Candidate(d.id(),d.owner()),d);}
+    Map<FileFacts.Candidate,List<Interactions.ResourceUse>> associations(){return associations;}
+    ResourceId resourceId(String file){return new ResourceId(unit.publication(),ids.id("resource","file-declaration",unit.localId(),file));}
     boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR);}
     void sourceEntry(LabelId label){sourceEntries.add(label);}
     List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
@@ -101,7 +104,7 @@ final class FileResourceLowering {
     List<Interactions.Resource> resources(){
         var result=new ArrayList<Interactions.Resource>();
         for(var entry:declarations.entrySet()){
-            var f=entry.getValue();var id=new ResourceId(unit.publication(),ids.id("resource","file-declaration",unit.localId(),f.id()));
+            var f=entry.getValue();if(!f.owner().equals(input.unit()))continue;var id=resourceId(f.id());
             var evidence=new ArrayList<OriginId>();int ordinal=0;for(var p:f.origins())evidence.add(origins.source("file-declaration",f.id()+"/"+ordinal++,p));
             var origin=origins.derived(ids.id("origin","file-declaration",unit.localId(),f.id()),evidence,"file-declaration@1/typed-owner");
             Interactions.ResourceDescription description;

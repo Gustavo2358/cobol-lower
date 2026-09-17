@@ -285,3 +285,38 @@ adapters PASS; Q-SHARED semântica244296/performance39215 e arquitetura PASS.
 RED target READ corrigido na admission; falha do gerador de multiplicidade era
 CALL_TARGET legado, substituído por referência READ do oracle FILE. Tentativas
 preservadas; E-SELECTED/W8 integrado qualifica no consumer. Sem mudança IR.
+
+## FD-W9 — composição tipada
+
+Entrada adicional cobol-semantic-compilation1.0 envolve SP2.28 sem alterar o
+formato unitário. CompilationJsonDecoder fecha todas as chaves; CompilationAdmission
+revalida em memória owner/parent/path, inventário, partição DATA own/captured,
+GLOBAL ou destinos implícitos publicados de FILE GLOBAL, metadados e record owner.
+EXTERNAL não cria captura por grafia. Unidades ordenadas por identidade estrutural;
+ordem recebida não muda Publication. Inventory INPUT_MISSING ganha razão global;
+PRIMARY_ONLY/gaps locais continuam presentes, sem alegação de análise interprocedural.
+
+PartialProgramLowerer materializa fragmentos internos sob um PublicationId comum;
+retorno público continua atômico e só ocorre após o AirValidator real. LocalIds
+separa contextos, origens e coverage; nenhuma edição JSON ou parsing COBOL faz joins.
+containingUnit/visibleObjects/AliasBinding existentes fecham capturas. Recursos
+ficam com owner original, usos com unidade executora. File memory nominal whole-base
+usa a área publicada do objeto capturado; não inventa layout ou MUST ancestral.
+Não propaga estado de entrada/execução do pai ao filho. Precisão não publicada
+permanece parcial; aliases não são provas de valores. Sem extensão normativa AIR.
+
+B-SP FileScopeSuite: seis fontes, nove negativos, permutação de unidades, codec e
+owner correto. Encontrou COPY com AST IDs locais sem namespace no produtor, que
+foi recusado e corrigido na fronteira; logs red/green mantidos. Focal atual PASS;
+FAST/Q do produtor PASS; integração CLI final é qualificada no consumer. Complexidade de inventários/refs é linear
+nos fatos, exceto busca de metadata/capturas por unidade e visibilidade ancestral;
+escala observada W11, nenhum cutoff semântico. Sem novo solver.
+
+Checkpoint produtor: frontend d120036cb71f81ff3055ca1a47be32ac88dcad7a,
+AIR5fe0224e5d2514286d6d23d486655334300383da, norma AIR inalterada fb153ae.
+`python3 -B scripts/harness/lean.py fast` (fast-1.log) e `qualification-local`
+(qualification-1.log), ambos exit0: core2340+adapters, semântica244296,
+performance39215 e arquitetura. FileScopeSuite executado no FAST e full.
+Uma unidade sem entrada utilizável ainda rejeita a composição atomicamente pela
+admission existente; não é omitida. INPUT_MISSING com entrada utilizável conserva
+unidades observadas e gap global, como prova a fixture missing-copy.

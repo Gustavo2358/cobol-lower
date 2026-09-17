@@ -114,6 +114,13 @@ final class CanonicalRevision {
             input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage().map(StorageIdentityFacts::canonical),input.fileInventory());
         e.recordFact(canonical); return Optional.of(e.finish());
     }
+    static Optional<String> compilation(io.github.gustavo2358.lower.domain.SpCompilation input,int maximum){
+        if(maximum<32)return Optional.empty();var e=new CanonicalRevision();e.word("compilation@1/AIR2/xxh3-128-v1");e.symbol(input.inventoryStatus());e.list(input.unitInventory(),e::unit);
+        e.list(input.units(),u->{e.word(partial(u.product(),maximum).orElseThrow());e.flag(u.parent().isPresent());u.parent().ifPresent(e::unit);
+            e.list(u.ownedData(),d->e.word(d.handle()));e.list(u.globalData(),d->e.word(d.handle()));
+            e.list(u.dataCaptures(),c->{e.word(c.localData().handle());e.unit(c.sourceData().unit());e.word(c.sourceData().handle());});
+            e.list(u.fileCaptures(),c->{e.unit(c.owner());e.word(c.id());});});return Optional.of(e.finish());
+    }
     /** Identity only: structurally encode all immutable record components; never infer semantics from text. */
     private void recordFact(Object value) {
         if (value instanceof String s) { word("text"); word(s); }

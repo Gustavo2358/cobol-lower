@@ -51,6 +51,7 @@ final class FileMemoryLowering {
     }
     private Scopes.MemoryBound visible(){return new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true));}
     private Scopes.MemoryScope scope(FileFacts.MemoryTarget target) {
+        if(target.wholeBase()){var link=target.data().map(data.index()::get).orElse(null);if(link!=null&&link.storage().isPresent())return new Scopes.StorageMemory(List.of(link.storage().get()));}
         var view=target.regional().map(a->views.get(a.view())).orElse(null);
         if(view!=null&&data.physical().containsKey(view.base()))return new Scopes.StorageMemory(List.of(data.physical().get(view.base())));
         var object=target.data().map(data.nominal()::get).orElse(null);
