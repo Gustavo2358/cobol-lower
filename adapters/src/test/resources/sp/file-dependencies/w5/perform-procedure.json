@@ -559,18 +559,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 5,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 37
+          "startLine" : 38
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 12,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 37
+          "startLine" : 38
         }
       },
       "referenceOrigin" : {
@@ -665,18 +665,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 22,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 35
+          "startLine" : 36
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 29,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 35
+          "startLine" : 36
         }
       },
       "statements" : [ "statement:1" ]
@@ -688,21 +688,21 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 5,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 37
+          "startLine" : 38
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 12,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 37
+          "startLine" : 38
         }
       },
-      "statements" : [ "statement:2", "statement:7" ]
+      "statements" : [ "statement:2", "statement:9" ]
     } ],
     "start" : {
       "id" : "procedure:19",
@@ -710,18 +710,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 22,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 35
+          "startLine" : 36
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 29,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 35
+          "startLine" : 36
         }
       },
       "referenceOrigin" : {
@@ -849,7 +849,145 @@
           "startLine" : 33
         }
       },
+      "statement" : "statement:7"
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:7",
+      "programPoint" : 5,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 34,
+          "endLine" : 35,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 35
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 41,
+          "endLine" : 35,
+          "file" : "sort-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 35
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 34,
+          "endLine" : 35,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 35
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 41,
+          "endLine" : 35,
+          "file" : "sort-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 35
+        }
+      },
       "statement" : "statement:1"
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "FILE_HANDLER",
+        "parent" : "statement:7"
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:8",
+      "programPoint" : 6,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 23,
+          "endLine" : 35,
+          "file" : "<preprocessed>",
+          "startColumn" : 16,
+          "startLine" : 35
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 30,
+          "endLine" : 35,
+          "file" : "sort-io.cbl",
+          "startColumn" : 23,
+          "startLine" : 35
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 23,
+          "endLine" : 35,
+          "file" : "<preprocessed>",
+          "startColumn" : 16,
+          "startLine" : 35
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 30,
+          "endLine" : 35,
+          "file" : "sort-io.cbl",
+          "startColumn" : 23,
+          "startLine" : 35
+        }
+      },
+      "statement" : null
     }
   }, {
     "variant" : "MOVE",
@@ -860,23 +998,23 @@
       },
       "coverage" : "PARTIAL",
       "id" : "statement:1",
-      "programPoint" : 5,
+      "programPoint" : 7,
       "provenance" : {
         "exact" : true,
         "expanded" : {
           "endColumn" : 20,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 36
+          "startLine" : 37
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 27,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 36
+          "startLine" : 37
         }
       },
       "readiness" : {
@@ -907,18 +1045,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 14,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 5,
-          "startLine" : 36
+          "startLine" : 37
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 21,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 12,
-          "startLine" : 36
+          "startLine" : 37
         }
       },
       "value" : "SAFE0001"
@@ -939,18 +1077,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 20,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 19,
-          "startLine" : 36
+          "startLine" : 37
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 27,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 26,
-          "startLine" : 36
+          "startLine" : 37
         }
       },
       "regionalAccess" : {
@@ -968,18 +1106,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 20,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 36
+          "startLine" : 37
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 27,
-          "endLine" : 36,
+          "endLine" : 37,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 36
+          "startLine" : 37
         }
       },
       "statement" : null
@@ -1000,23 +1138,23 @@
       },
       "coverage" : "MODELED",
       "id" : "statement:2",
-      "programPoint" : 6,
+      "programPoint" : 8,
       "provenance" : {
         "exact" : true,
         "expanded" : {
           "endColumn" : 13,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 38
+          "startLine" : 39
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 20,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 38
+          "startLine" : 39
         }
       },
       "readiness" : {
@@ -1047,18 +1185,18 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 13,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "<preprocessed>",
           "startColumn" : 5,
-          "startLine" : 38
+          "startLine" : 39
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 20,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "sort-io.cbl",
           "startColumn" : 12,
-          "startLine" : 38
+          "startLine" : 39
         }
       },
       "text" : "FILLPGM",
@@ -1072,21 +1210,21 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 13,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 38
+          "startLine" : 39
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 20,
-          "endLine" : 38,
+          "endLine" : 39,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 38
+          "startLine" : 39
         }
       },
-      "statement" : "statement:7"
+      "statement" : "statement:9"
     },
     "surface" : {
       "argumentCount" : 0,
@@ -1106,24 +1244,24 @@
         "parent" : null
       },
       "coverage" : "UNSUPPORTED",
-      "id" : "statement:7",
-      "programPoint" : 7,
+      "id" : "statement:9",
+      "programPoint" : 9,
       "provenance" : {
         "exact" : true,
         "expanded" : {
           "endColumn" : 3,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 39
+          "startLine" : 40
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 10,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 39
+          "startLine" : 40
         }
       },
       "readiness" : {
@@ -1151,26 +1289,30 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 3,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "<preprocessed>",
           "startColumn" : 0,
-          "startLine" : 39
+          "startLine" : 40
         },
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 10,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
-          "startLine" : 39
+          "startLine" : 40
         }
       },
       "statement" : null
     }
   } ],
   "structure" : {
-    "branches" : [ ],
-    "roots" : [ "statement:3", "statement:0", "statement:4", "statement:5", "statement:6", "statement:1", "statement:2", "statement:7" ]
+    "branches" : [ {
+      "branch" : "FILE_HANDLER",
+      "children" : [ "statement:8" ],
+      "parent" : "statement:7"
+    } ],
+    "roots" : [ "statement:3", "statement:0", "statement:4", "statement:5", "statement:6", "statement:7", "statement:1", "statement:2", "statement:9" ]
   },
   "gaps" : [ {
     "code" : "OBSERVED_STATEMENT_PARTIAL",
@@ -1311,24 +1453,70 @@
     "scope" : "CAPABILITY",
     "statement" : "statement:6"
   }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 34,
+        "endLine" : 35,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 35
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 41,
+        "endLine" : 35,
+        "file" : "sort-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 35
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:7"
+  }, {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Flow statement is structurally modeled and does not itself name a dependency.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 23,
+        "endLine" : 35,
+        "file" : "<preprocessed>",
+        "startColumn" : 16,
+        "startLine" : 35
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 30,
+        "endLine" : 35,
+        "file" : "sort-io.cbl",
+        "startColumn" : 23,
+        "startLine" : 35
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:8"
+  }, {
     "code" : "SCALAR_WHOLE_ITEM_NOT_PROVEN",
     "detail" : "canonical elementary MOVE proof unavailable",
     "provenance" : {
       "exact" : true,
       "expanded" : {
         "endColumn" : 20,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "<preprocessed>",
         "startColumn" : 0,
-        "startLine" : 36
+        "startLine" : 37
       },
       "includeChain" : [ ],
       "original" : {
         "endColumn" : 27,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "sort-io.cbl",
         "startColumn" : 7,
-        "startLine" : 36
+        "startLine" : 37
       }
     },
     "scope" : "CAPABILITY",
@@ -1340,18 +1528,18 @@
       "exact" : true,
       "expanded" : {
         "endColumn" : 20,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "<preprocessed>",
         "startColumn" : 0,
-        "startLine" : 36
+        "startLine" : 37
       },
       "includeChain" : [ ],
       "original" : {
         "endColumn" : 27,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "sort-io.cbl",
         "startColumn" : 7,
-        "startLine" : 36
+        "startLine" : 37
       }
     },
     "scope" : "CAPABILITY",
@@ -1363,18 +1551,18 @@
       "exact" : true,
       "expanded" : {
         "endColumn" : 20,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "<preprocessed>",
         "startColumn" : 0,
-        "startLine" : 36
+        "startLine" : 37
       },
       "includeChain" : [ ],
       "original" : {
         "endColumn" : 27,
-        "endLine" : 36,
+        "endLine" : 37,
         "file" : "sort-io.cbl",
         "startColumn" : 7,
-        "startLine" : 36
+        "startLine" : 37
       }
     },
     "scope" : "STRUCTURE",
@@ -1386,18 +1574,18 @@
       "exact" : true,
       "expanded" : {
         "endColumn" : 13,
-        "endLine" : 38,
+        "endLine" : 39,
         "file" : "<preprocessed>",
         "startColumn" : 5,
-        "startLine" : 38
+        "startLine" : 39
       },
       "includeChain" : [ ],
       "original" : {
         "endColumn" : 20,
-        "endLine" : 38,
+        "endLine" : 39,
         "file" : "sort-io.cbl",
         "startColumn" : 12,
-        "startLine" : 38
+        "startLine" : 39
       }
     },
     "scope" : "RUNTIME_CALL_TARGET",
@@ -1409,28 +1597,28 @@
       "exact" : true,
       "expanded" : {
         "endColumn" : 3,
-        "endLine" : 39,
+        "endLine" : 40,
         "file" : "<preprocessed>",
         "startColumn" : 0,
-        "startLine" : 39
+        "startLine" : 40
       },
       "includeChain" : [ ],
       "original" : {
         "endColumn" : 10,
-        "endLine" : 39,
+        "endLine" : 40,
         "file" : "sort-io.cbl",
         "startColumn" : 7,
-        "startLine" : 39
+        "startLine" : 40
       }
     },
     "scope" : "CAPABILITY",
-    "statement" : "statement:7"
+    "statement" : "statement:9"
   } ],
   "coverage" : {
     "inputMissingStatements" : 0,
     "inventoryStatus" : "COMPLETE",
     "modeledStatements" : 3,
-    "observedStatements" : 8,
+    "observedStatements" : 10,
     "partialStatements" : 3,
     "readiness" : {
       "cfg" : {
@@ -1446,7 +1634,7 @@
         "status" : "BLOCKED"
       }
     },
-    "unsupportedStatements" : 2
+    "unsupportedStatements" : 4
   },
   "entryInventory" : {
     "entries" : [ {
@@ -1458,7 +1646,7 @@
         "exact" : true,
         "expanded" : {
           "endColumn" : 5,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "<preprocessed>",
           "startColumn" : 0,
           "startLine" : 24
@@ -1466,7 +1654,7 @@
         "includeChain" : [ ],
         "original" : {
           "endColumn" : 12,
-          "endLine" : 39,
+          "endLine" : 40,
           "file" : "sort-io.cbl",
           "startColumn" : 7,
           "startLine" : 24
@@ -2087,7 +2275,20 @@
     "mayWrites" : [ ],
     "mustOverwrite" : [ ],
     "proof" : "NO_OP",
-    "statement" : "statement:7",
+    "statement" : "statement:8",
+    "unknownExposureBound" : "NONE",
+    "unknownReadBound" : "NONE",
+    "unknownWriteBound" : "NONE",
+    "values" : "NONE",
+    "version" : "1.0.0"
+  }, {
+    "environment" : "NONE",
+    "exposedRegions" : [ ],
+    "knownReads" : [ ],
+    "mayWrites" : [ ],
+    "mustOverwrite" : [ ],
+    "proof" : "NO_OP",
+    "statement" : "statement:9",
     "unknownExposureBound" : "NONE",
     "unknownReadBound" : "NONE",
     "unknownWriteBound" : "NONE",
@@ -2677,7 +2878,7 @@
         "command" : "RELEASE",
         "control" : {
           "availability" : "KNOWN",
-          "continuation" : "statement:1",
+          "continuation" : "statement:7",
           "gapCodes" : [ ],
           "routes" : [ {
             "criticalExit" : false,
@@ -2990,6 +3191,312 @@
         },
         "role" : "DIRECT",
         "statement" : "statement:6"
+      }, {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "SORTIO",
+            "compilationUnitId" : "SORT-IO.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "RETURN",
+        "control" : {
+          "availability" : "KNOWN",
+          "continuation" : "statement:1",
+          "gapCodes" : [ ],
+          "routes" : [ {
+            "criticalExit" : false,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : null,
+              "kind" : "CONTINUE"
+            } ],
+            "effects" : "SUCCESS",
+            "event" : "SUCCESS"
+          }, {
+            "criticalExit" : false,
+            "destinations" : [ {
+              "declarative" : null,
+              "handler" : "AT_END",
+              "kind" : "HANDLER"
+            } ],
+            "effects" : "END",
+            "event" : "END"
+          } ]
+        },
+        "effects" : {
+          "availability" : "KNOWN",
+          "before" : [ ],
+          "gapCodes" : [ ],
+          "ioReads" : [ ],
+          "outcomes" : [ {
+            "outcome" : "SUCCESS",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 0,
+                    "endLine" : 14,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 13
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 7,
+                    "endLine" : 14,
+                    "file" : "sort-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 13
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:10"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 34,
+                  "endLine" : 35,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 35
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 41,
+                  "endLine" : 35,
+                  "file" : "sort-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 35
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "END",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 0,
+                    "endLine" : 14,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 13
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 7,
+                    "endLine" : 14,
+                    "file" : "sort-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 13
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:10"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 34,
+                  "endLine" : 35,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 35
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 41,
+                  "endLine" : 35,
+                  "file" : "sort-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 35
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "INVALID_KEY",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 0,
+                    "endLine" : 14,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 13
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 7,
+                    "endLine" : 14,
+                    "file" : "sort-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 13
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:10"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 34,
+                  "endLine" : 35,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 35
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 41,
+                  "endLine" : 35,
+                  "file" : "sort-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 35
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "OTHER_ERROR",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 0,
+                    "endLine" : 14,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 13
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 7,
+                    "endLine" : 14,
+                    "file" : "sort-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 13
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:10"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 34,
+                  "endLine" : 35,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 35
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 41,
+                  "endLine" : 35,
+                  "file" : "sort-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 35
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          } ],
+          "unknownReadBound" : false,
+          "unknownWriteBound" : false
+        },
+        "explicitTerminator" : true,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ {
+          "kind" : "AT_END",
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 23,
+              "endLine" : 35,
+              "file" : "<preprocessed>",
+              "startColumn" : 9,
+              "startLine" : 35
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 30,
+              "endLine" : 35,
+              "file" : "sort-io.cbl",
+              "startColumn" : 16,
+              "startLine" : 35
+            }
+          },
+          "statements" : [ "statement:8" ]
+        } ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 7,
+            "endLine" : 35,
+            "file" : "<preprocessed>",
+            "startColumn" : 7,
+            "startLine" : 35
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 14,
+            "endLine" : 35,
+            "file" : "sort-io.cbl",
+            "startColumn" : 14,
+            "startLine" : 35
+          }
+        },
+        "role" : "DIRECT",
+        "statement" : "statement:7"
       } ]
     },
     "sortAvailability" : "KNOWN",
@@ -3084,22 +3591,22 @@
           }
         }
       }, {
-        "completions" : [ ],
+        "completions" : [ "statement:7", "statement:8" ],
         "end" : {
           "id" : "procedure:18",
           "paragraphOrigin" : {
             "exact" : true,
             "expanded" : {
-              "endColumn" : 6,
-              "endLine" : 34,
+              "endColumn" : 36,
+              "endLine" : 35,
               "file" : "<preprocessed>",
               "startColumn" : 0,
               "startLine" : 34
             },
             "includeChain" : [ ],
             "original" : {
-              "endColumn" : 13,
-              "endLine" : 34,
+              "endColumn" : 43,
+              "endLine" : 35,
               "file" : "sort-io.cbl",
               "startColumn" : 7,
               "startLine" : 34
@@ -3124,26 +3631,26 @@
             }
           }
         },
-        "entry" : null,
+        "entry" : "statement:7",
         "gapCodes" : [ ],
         "links" : [ ],
         "phase" : "OUTPUT",
-        "roots" : [ ],
+        "roots" : [ "statement:7" ],
         "start" : {
           "id" : "procedure:18",
           "paragraphOrigin" : {
             "exact" : true,
             "expanded" : {
-              "endColumn" : 6,
-              "endLine" : 34,
+              "endColumn" : 36,
+              "endLine" : 35,
               "file" : "<preprocessed>",
               "startColumn" : 0,
               "startLine" : 34
             },
             "includeChain" : [ ],
             "original" : {
-              "endColumn" : 13,
-              "endLine" : 34,
+              "endColumn" : 43,
+              "endLine" : 35,
               "file" : "sort-io.cbl",
               "startColumn" : 7,
               "startLine" : 34

@@ -207,3 +207,10 @@ FAST2340 core + adapters PASS; Q-SHARED semântica244296/performance39215 e
 arquitetura PASS. Executada por mudança NO_OP/continuação e composição PERFORM.
 12 exports SP idênticos ao produtor8fd8faad; logs `.harness-results/fd-w5/`.
 E-SELECTED e checkpoint integrados seguem no consumer.
+
+
+Repin W5 final9d4de9b após oracle de OUTPUT vazio e correção do positivo PERFORM
+(agora com RETURN obrigatório). Produção lower idêntica a88572c01: FAST/Q-SHARED
+REUSED para esse conteúdo, sem rebuild semântico artificial. Compile+FileSortSuite
+final12 fixtures/negativos/grafo PASS; 12 SPs idênticos ao produtor final. E-SELECTED
+final valida a composição, preservando a execução rejeitada da fixture anterior.
