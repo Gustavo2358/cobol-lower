@@ -316,7 +316,8 @@ Checkpoint produtor: frontend d120036cb71f81ff3055ca1a47be32ac88dcad7a,
 AIR5fe0224e5d2514286d6d23d486655334300383da, norma AIR inalterada fb153ae.
 `python3 -B scripts/harness/lean.py fast` (fast-1.log) e `qualification-local`
 (qualification-1.log), ambos exit0: core2340+adapters, semântica244296,
-performance39215 e arquitetura. FileScopeSuite executado no FAST e full.
+performance39215 e arquitetura. FileScopeSuite executado no focal e FAST; o full
+usa as suítes semânticas/performance existentes, sem repetir FastAdapterSuite.
 Uma unidade sem entrada utilizável ainda rejeita a composição atomicamente pela
 admission existente; não é omitida. INPUT_MISSING com entrada utilizável conserva
 unidades observadas e gap global, como prova a fixture missing-copy.
