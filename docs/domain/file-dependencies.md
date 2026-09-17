@@ -1,5 +1,9 @@
 # FILE-DEPENDENCIES — lowering composicional
 
+CORE N+C qualificado; closeout/merges autorizados. W10 DEFERRED / OPTIONAL_EXTENSION,
+NOT_PART_OF_CORE, requer nova autorização. [Estado canônico](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
+As seções abaixo registram checkpoints históricos.
+
 H4 aprovado; core N+C autorizado em 2026-09-16. W0–W7 qualificadas local; W8 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
@@ -371,3 +375,6 @@ continua recusado pela mesma regra exata. Sem parsing do rawText downstream.
 C06 bilateral GREEN: CicsFileControlSuite35 fixtures, negativos wire/memory/alias
 e FAST fixo core2340+adapters+arquitetura PASS (fast-2.log). Q anterior REUSED para
 tradução/efeitos/solver inalterados; somente admissão tipada do alias se ampliou.
+
+Closeout: pins main IR3fff18e/AIR135d91f/frontendfe88cc1, somente docs/pin
+diferem das revisões qualificadas; REUSED_WITH_EQUIVALENCE_PROOF.
