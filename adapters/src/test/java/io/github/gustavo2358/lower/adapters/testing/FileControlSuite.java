@@ -9,6 +9,7 @@ import java.util.*;
 public final class FileControlSuite {
     public static void main(String[] args)throws Exception {run();}
     public static void run()throws Exception {
+        paragraphCompletion();
         for(var name:List.of("use-and-handler","mode-and-nested-handler","nested-use","implicit-handler","key-status","escape-use")) {
             var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes(name));
             check(decoded instanceof SpJsonDecoder.Decoded,"SP2.25 control facts decode: "+decoded);
@@ -65,5 +66,35 @@ public final class FileControlSuite {
         System.out.println("PASS FileControlSuite");
     }
     static byte[] bytes(String name)throws Exception {try(var in=FileControlSuite.class.getResourceAsStream("/sp/file-dependencies/w4/"+name+".json")){return Objects.requireNonNull(in).readAllBytes();}}
+    static void paragraphCompletion()throws Exception {
+        var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
+        com.fasterxml.jackson.databind.node.ObjectNode root;
+        try(var in=FileControlSuite.class.getResourceAsStream("/sp/file-dependencies/w11/perform-file-paragraph.json")) {
+            root=(com.fasterxml.jackson.databind.node.ObjectNode)mapper.readTree(Objects.requireNonNull(in));
+        }
+        var use=root.path("fileInventory").path("operations").path("uses").get(0);
+        var statement=java.util.stream.StreamSupport.stream(root.path("statements").spliterator(),false)
+            .filter(s->s.path("header").path("id").equals(use.path("statement"))).findFirst().orElseThrow();
+        check(statement.path("normalContinuation").path("statement").isNull(),"manual paragraph-end intrinsic completion");
+        check(!use.path("control").path("continuation").isNull(),"ordinary outcome reaches WRITE-END");
+        var input=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(mapper.writeValueAsBytes(root))).input();
+        var result=new CobolLowerer().lower(input,CobolLower.OPTIONS);
+        check(result.publication().isPresent(),"separate intrinsic/ordinary completion: "+result.admission().diagnostics());
+        var operations=result.publication().orElseThrow().units().getFirst().sequences().stream()
+            .map(q->q.terminator()).filter(io.github.gustavo2358.air.model.Operations.Invoke.class::isInstance)
+            .map(io.github.gustavo2358.air.model.Operations.Invoke.class::cast).toList();
+        check(operations.stream().filter(i->i.action().equals("write")).count()==1,"WRITE occurrence kept in performed paragraph");
+        check(operations.stream().filter(i->i.action().equals("call")).count()==1,"AFTER CALL occurrence kept");
+        ((com.fasterxml.jackson.databind.node.ObjectNode)statement.path("normalContinuation"))
+            .set("statement",use.path("control").path("continuation"));
+        ((com.fasterxml.jackson.databind.node.ObjectNode)statement.path("normalContinuation"))
+            .put("availability","KNOWN");
+        var malformed=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(mapper.writeValueAsBytes(root))).input();
+        var rejected=new CobolLowerer().lower(malformed,CobolLower.OPTIONS);
+        check(rejected.publication().isEmpty(),
+            "ordinary edge cannot be relabeled intrinsic to cross the paragraph");
+        check(rejected.admission().diagnostics().toString().contains("intrinsic normal edge stays in paragraph"),
+            "negative reaches the paragraph structure invariant: "+rejected.admission().diagnostics());
+    }
     static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
 }

@@ -336,3 +336,23 @@ SP2.18 conserva BOUNDED_PHYSICAL e recusa ausência de prova. RED real2.21 e
 GREEN8+legado, PossibleEntrySuite seis negativos e FileScopeSuite PASS. FAST2
 core2340+adapters e Q2 semântica205081+performance39215/arquitetura PASS exit0.
 Resultados, repins e corpus finais no harness canônico W11.
+
+W11 / parágrafo FILE: FileControlAdmission compara a continuação ordinary com
+sucessor intrínseco somente quando este está presente. Ausência intrínseca ao
+completar um parágrafo não contradiz ordinary distinta, publicada pelo produtor.
+Alvos ausentes/foreign/self e sucessores conhecidos contraditórios continuam
+rejeitados. ProcedurePerformAdmission mantém a proibição de aresta intrinsic
+atravessando parágrafo; não houve relaxamento de controle/call/efeitos.
+
+Oracle manual WRITE-P/WRITE-END no FileControlSuite e fixture SP2.28: RED pela
+confusão entre relações; GREEN positivo, negativo da aresta ordinary rotulada
+intrinsic, negativos W4 existentes. Probe real CBSTM03A.CBL passa com PARTIAL nas
+quatro etapas. Fonte da fixture: teste FileControlContractTest do frontend W11.
+Sem bump SP/AIR: correção bilateral de significado já contratado. Gates e pins
+finais no harness canônico W11; logs .harness-results/fd-w11/paragraph-*.
+
+Checkpoint W11 parágrafo: frontend aaecf8c1b1851c03dc13b8120e07308079f7e679;
+FAST3 core2340+adapters PASS, Q3 semântica244296/performance39215/arquitetura PASS
+exit0. Contraprova reforçada KNOWN cruza parágrafo e chega à rejeição STRUCTURE
+específica; FileControlSuite recompilado PASS. Q3 REUSED após alteração só do teste
+e repin, sem delta produtivo. Bundle final/corpus descendentes no consumer.

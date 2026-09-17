@@ -37,7 +37,10 @@ final class FileControlAdmission {
                 require(p.availability()==Availability.KNOWN||!p.gapCodes().isEmpty(),"incomplete control needs gap");
                 p.continuation().ifPresent(id->require(id.unit().equals(input.unit())&&c.lookup(id)!=null&&!id.equals(use.statement()),"file continuation foreign/absent/self"));
                 var ordinary=PartialProgramAdmission.ordinaryNext(c.lookup(use.statement()));
-                if(ordinary!=null)require(p.continuation().equals(ordinary.statement()),"file event continuation contradicts structural completion");
+                // An intrinsic paragraph completion has no next statement; that absence
+                // does not contradict a separately published ordinary FILE continuation.
+                // A known intrinsic successor still constrains the outcome plan.
+                if(ordinary!=null&&ordinary.statement().isPresent())require(p.continuation().equals(ordinary.statement()),"file event continuation contradicts structural completion");
                 var handlers=new EnumMap<HandlerKind,Handler>(HandlerKind.class);
                 for(var h:use.surface().orElseThrow().handlers()) {
                     require(handlers.put(h.kind(),h)==null,"duplicate handler");
