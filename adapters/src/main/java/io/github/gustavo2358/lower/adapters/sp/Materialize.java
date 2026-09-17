@@ -10,9 +10,18 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire223.Document wire) {
+        var common=input(Wire223.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
+        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),
+            u.candidates().stream().map(c->new io.github.gustavo2358.lower.domain.FileFacts.Candidate(c.id(),unitKey(c.owner(),null))).toList(),provenance(u.provenance(),unit),u.gapCodes(),Optional.of(new io.github.gustavo2358.lower.domain.FileFacts.Surface(
+                u.operands().stream().map(o->new io.github.gustavo2358.lower.domain.FileFacts.Operand(o.role(),o.form(),o.references().stream().map(r->new OperandId(new StatementId(unit,u.statement()),r)).toList(),Optional.ofNullable(o.writtenValue()),provenance(o.provenance(),unit),o.gapCodes())).toList(),
+                u.options(),u.keyRelation(),u.explicitTerminator(),u.handlers().stream().map(h->new io.github.gustavo2358.lower.domain.FileFacts.Handler(h.kind(),h.statements().stream().map(id->new StatementId(unit,id)).toList(),provenance(h.provenance(),unit))).toList())))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(ops.availability(),uses,ops.gapCodes())));
+    }
     static SpInput input(Wire222.Document wire) {
         var common=input(Wire222.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
-        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),
+        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),io.github.gustavo2358.lower.domain.FileFacts.Command.valueOf(u.command().name()),u.mode(),u.profile(),u.bindingStatus(),
             u.candidates().stream().map(c->new io.github.gustavo2358.lower.domain.FileFacts.Candidate(c.id(),unitKey(c.owner(),null))).toList(),provenance(u.provenance(),unit),u.gapCodes())).toList();
         return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
             new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(ops.availability(),uses,ops.gapCodes())));

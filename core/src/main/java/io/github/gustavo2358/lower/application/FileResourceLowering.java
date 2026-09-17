@@ -61,9 +61,9 @@ final class FileResourceLowering {
         return List.copyOf(result);
     }
     private static String role(FileFacts.Use use){return switch(use.command()){
-        case READ->"input";case CLOSE->"lifecycle";case OPEN->switch(use.mode()){
+        case READ->"input";case WRITE->"output";case REWRITE->"update";case DELETE_RECORD->"delete-record";case START->"position";case CLOSE->"lifecycle";case OPEN->switch(use.mode()){
             case INPUT->"open-input";case OUTPUT->"open-output";case IO->"open-io";case EXTEND->"open-extend";case UNSPECIFIED->throw new IllegalArgumentException("OPEN mode absent");};};}
-    private static String action(FileFacts.Command c){return switch(c){case OPEN->"open";case READ->"read";case CLOSE->"close";};}
+    private static String action(FileFacts.Command c){return switch(c){case OPEN->"open";case READ->"read";case WRITE->"write";case REWRITE->"rewrite";case DELETE_RECORD->"delete-record";case START->"start";case CLOSE->"close";};}
     private UncertaintyId gap(String role,Id subject,OriginId origin,List<Evidence.Dimension> dimensions,String code){
         var id=new UncertaintyId(unit.publication(),ids.id("uncertainty",role,subject.localId(),code));
         gaps.add(new Evidence.Uncertainty(id,code,dimensions,new Scopes.EntityScope(List.of(subject)),"Source-only file fact; "+code,origin));return id;

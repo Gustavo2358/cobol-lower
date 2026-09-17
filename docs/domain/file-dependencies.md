@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-H4 aprovado; core N+C autorizado em 2026-09-16. W0 qualificado local; W1 em implementação; W10 não autorizado.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0/W1 qualificados local; W2 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -71,3 +71,32 @@ O(usos log usos) por statement; sem busca no fonte, fixpoint ou cutoff novo.
 Oracle FileStaticSliceSuite: fixture real no pin SP, nomes/owner/record/ações
 esperados manualmente, dez mutantes de admission, codec e determinismo. Suites
 CALL/storage/effects existentes continuam no FAST fixo.
+
+## FD-W2 — família nativa / SP2.23
+
+Regra antes da produção: o SP2.23/fileInventory1.2 publica sete comandos N-LR,
+operandos DATA por papel (RECORD/INTO/FROM/KEY/ADVANCING), opções por arquivo,
+comparação START, delimitação e corpos dos handlers por StatementId. A autoridade
+IBM SC27-8713-03, atualização 2026-04-28, está registrada no domínio do produtor;
+o lower traduz esses fatos, sem interpretar fonte. WRITE/REWRITE usam o candidate
+FILE publicado a partir do record owner; FROM nunca cria outro uso FILE.
+DELETE_RECORD vira ação neutra `delete-record`, sem significar apagar dataset.
+
+Admission bilateral fecha referências ao statement/operand/body, enums, papéis,
+opções e disponibilidade. SP2.22 histórico conserva fatos estruturais UNAVAILABLE.
+Invokes permanecem com efeitos/controle abertos até W3/W4; não se presume MUST
+nem fluxo incondicional para handlers. Inventários CALL e FILE coexistem no mesmo
+assembler. Identidade inclui fatos novos somente quando disponíveis, preservando
+revisões históricas. Algoritmo: índices de operandos/statements e varredura de usos
+O(statements + operandos + usos + handlers), sem cutoff; ordenação local por ordinal.
+Oracle FileNativeOperationSuite: sete ações, FROM de outro FD sem leitura extra,
+DELETE único, dois CALL condicionais sem duplicação, falhas de admission em file
+port e memory port e codec/determinismo. Nenhuma mudança AIR é necessária.
+
+Checkpoint lower W2: FileNativeOperationSuite PASS (sete ações, FROM isolado,
+handlers, wire/memory negativos, codec e determinismo); FileStaticSliceSuite e
+FileDeclarationSuite históricos PASS. FAST fixo PASS: 2340 testes core e todas
+as suites adapter/CALL/storage/control, incluindo o novo oracle. Pin SP2.23
+`b559292c97e004504fb867c4724298dc1637b6f2`; AIR/IR permanecem nos pins de W1.
+B-SP native/delete-handlers byte a byte PASS. E-SELECTED registrado no harness
+canônico após executar produtores imutáveis.

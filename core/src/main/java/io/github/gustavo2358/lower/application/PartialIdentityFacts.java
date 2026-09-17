@@ -20,7 +20,10 @@ final class PartialIdentityFacts {
             case FileFacts.Assignment r -> {field.accept("FileAssignment");value.accept(r.availability());value.accept(r.profile());value.accept(r.original());value.accept(r.sourceKind());value.accept(r.externalFileName());value.accept(r.gapCodes());}
             case FileFacts.Reference r -> {field.accept("FileReference");value.accept(r.role());value.accept(r.binding());value.accept(r.duplicates());value.accept(r.provenance());}
             case FileFacts.Operations r -> {field.accept("FileOperations");value.accept(r.availability());value.accept(r.uses());value.accept(r.gapCodes());}
-            case FileFacts.Use r -> {field.accept("FileUse");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.command());value.accept(r.mode());value.accept(r.profile());value.accept(r.bindingStatus());value.accept(r.candidates());value.accept(r.provenance());value.accept(r.gapCodes());}
+            case FileFacts.Use r -> {field.accept("FileUse");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.command());value.accept(r.mode());value.accept(r.profile());value.accept(r.bindingStatus());value.accept(r.candidates());value.accept(r.provenance());value.accept(r.gapCodes());if(r.surface().isPresent()){field.accept("FileSurface");value.accept(r.surface().orElseThrow());}}
+            case FileFacts.Surface r -> {field.accept("FileSurface");value.accept(r.operands());value.accept(r.options());value.accept(r.keyRelation());value.accept(r.explicitTerminator());value.accept(r.handlers());}
+            case FileFacts.Operand r -> {field.accept("FileOperand");value.accept(r.role());value.accept(r.form());value.accept(r.references());value.accept(r.writtenValue());value.accept(r.provenance());value.accept(r.gapCodes());}
+            case FileFacts.Handler r -> {field.accept("FileHandler");value.accept(r.kind());value.accept(r.statements());value.accept(r.provenance());}
             case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
             case SpInput r -> {
                 field.accept("SpInput");

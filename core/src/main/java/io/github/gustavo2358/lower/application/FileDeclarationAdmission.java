@@ -47,5 +47,6 @@ final class FileDeclarationAdmission {
             for(var candidate:use.candidates())c.require(!candidate.id().isBlank()&&(!candidate.owner().equals(input.unit())||files.contains(candidate.id())),Rule.PROFILE_FACT,"file-use",null,"local candidate missing");
             c.require((use.command()==FileFacts.Command.OPEN)==(use.mode()!=FileFacts.OpenMode.UNSPECIFIED),Rule.PROFILE_FACT,"file-use",null,"file command/mode mismatch");
         }
+        FileOperationAdmission.validate(input,c);
     }
 }
