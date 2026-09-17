@@ -10,6 +10,26 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire224.Document wire) {
+        var common=input(Wire224.common(wire));var inv=common.fileInventory();var unit=common.unit();
+        var uses=new java.util.ArrayList<io.github.gustavo2358.lower.domain.FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);var e=wire.fileInventory().operations().uses().get(i).effects();
+            var plan=new io.github.gustavo2358.lower.domain.FileFacts.EffectPlan(e.availability(),e.ioReads().stream().map(t->fileMemoryTarget(t,u.statement())).toList(),
+                e.before().stream().map(s->fileMemoryStep(s,u.statement())).toList(),e.outcomes().stream().map(o->new io.github.gustavo2358.lower.domain.FileFacts.OutcomeEffects(o.outcome(),o.steps().stream().map(s->fileMemoryStep(s,u.statement())).toList())).toList(),e.unknownReadBound(),e.unknownWriteBound(),e.gapCodes());
+            uses.add(new io.github.gustavo2358.lower.domain.FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),Optional.of(plan)));
+        }
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes())));
+    }
+    private static io.github.gustavo2358.lower.domain.FileFacts.MemoryTarget fileMemoryTarget(Wire224.Target t,StatementId statement) {
+        var unit=statement.unit();return new io.github.gustavo2358.lower.domain.FileFacts.MemoryTarget(Optional.ofNullable(t.data()).map(id->new DataId(unit,id)),
+            Optional.ofNullable(t.regional()).map(r->new StorageFacts.Access(new StorageFacts.NodeId(unit,r.view()),Optional.ofNullable(r.slice()).map(s->new StorageFacts.Slice(unsigned(s.offset()),unsigned(s.extent()))))),
+            t.wholeBase(),Optional.ofNullable(t.reference()).map(id->new OperandId(statement,id)),provenance(t.provenance(),unit));
+    }
+    private static io.github.gustavo2358.lower.domain.FileFacts.MemoryStep fileMemoryStep(Wire224.Step s,StatementId statement) {
+        return new io.github.gustavo2358.lower.domain.FileFacts.MemoryStep(s.role(),s.kind(),fileMemoryTarget(s.destination(),statement),Optional.ofNullable(s.source()).map(t->fileMemoryTarget(t,statement)),s.gapCodes(),provenance(s.provenance(),statement.unit()));
+    }
     static SpInput input(Wire223.Document wire) {
         var common=input(Wire223.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
         var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),

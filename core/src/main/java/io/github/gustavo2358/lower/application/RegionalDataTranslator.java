@@ -68,7 +68,7 @@ final class RegionalDataTranslator {
             }
             baseOrigins.put(base.id(),origin);
             if(physical.containsKey(base.id()))continue;
-            boolean privateAllocation=base.allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE;
+            boolean privateAllocation=base.allocation().proved();
             // An unproved, unknown base does not establish ordinary persistent storage duration.
             // Retain a source gap rather than invent an AIR lifetime that the wire cannot express.
             if(!privateAllocation&&base.extent().value().isEmpty()) {
@@ -96,7 +96,7 @@ final class RegionalDataTranslator {
                 var objectOrigin=origins.derived(ids.id("origin","regional-object",unit.localId(),node.id().handle()),
                     List.of(dataOrigin,origin,viewOrigin,baseOrigins.get(view.base())),"storage@1/explicit-source-view");
                 var binding=new Memory.ViewBinding(region,view.offset().value().orElseThrow(),view.extent().value().orElseThrow(),RegionalStorageAdmission.IBM1047);
-                var visibility=source.bases().get(view.base()).allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE?Memory.Visibility.PRIVATE:Memory.Visibility.UNKNOWN;
+                var visibility=source.bases().get(view.base()).allocation().proved()?Memory.Visibility.PRIVATE:Memory.Visibility.UNKNOWN;
                 objects.add(new Memory.ObjectDeclaration(object,Optional.of(data.canonicalName()),Types.known(Types.Builtin.TEXT),binding,visibility,objectOrigin,
                     Evidence.CoverageStatus.MODELED,ScalarEvidence.limited(ids,unit.publication(),object,data.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
                 nominal.put(data.id(),object);
@@ -179,7 +179,7 @@ final class RegionalDataTranslator {
             UnitId unit,LocalIds ids,SourceOrigins origins) {
         var members=new ArrayList<StorageId>();var evidence=new ArrayList<OriginId>();
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList())
-            if(base.allocation()==StorageFacts.Allocation.INDEPENDENT_LOCAL_WORKING_STORAGE&&data.physical().containsKey(base.id())) {
+            if(base.allocation().proved()&&data.physical().containsKey(base.id())) {
                 members.add(data.physical().get(base.id()));evidence.add(origins.source("storage-base",base.id().handle(),base.provenance()));
             }
         if(members.size()<2)return List.of();

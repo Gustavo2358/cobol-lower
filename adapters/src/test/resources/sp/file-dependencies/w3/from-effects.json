@@ -1,0 +1,1215 @@
+{
+  "schema" : "cobol-semantic-product",
+  "contractVersion" : "2.24.0",
+  "unit" : {
+    "canonicalProgramName" : "MEMIO",
+    "compilationUnitId" : "MEMORY-IO.CBL",
+    "structuralPath" : [ 0 ]
+  },
+  "policy" : {
+    "dllMode" : "UNSPECIFIED",
+    "dynamMode" : "UNSPECIFIED",
+    "pgmnameMode" : "UNSPECIFIED",
+    "policyId" : "cobol-explorer/explicit-options",
+    "qualifyMode" : "UNSPECIFIED",
+    "version" : "3.0.0"
+  },
+  "dataDeclarations" : [ {
+    "canonicalName" : "REC",
+    "coverage" : "MODELED",
+    "id" : "data:0",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 16,
+        "endLine" : 11,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 11
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 23,
+        "endLine" : 11,
+        "file" : "memory-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 11
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "OTHER-REC",
+    "coverage" : "MODELED",
+    "id" : "data:1",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 22,
+        "endLine" : 13,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 13
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 29,
+        "endLine" : 13,
+        "file" : "memory-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 13
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "SAFE",
+    "coverage" : "MODELED",
+    "id" : "data:2",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 17,
+        "endLine" : 15,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 15
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 24,
+        "endLine" : 15,
+        "file" : "memory-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 15
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 8,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  } ],
+  "statements" : [ {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "UNSUPPORTED",
+      "id" : "statement:0",
+      "programPoint" : 0,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 17,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 17
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "MODELED_STATEMENT",
+    "observedShape" : "GENERIC_MODELED_STATEMENT",
+    "gapCode" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "REC",
+          "id" : "data:0"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:0",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:0:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 10,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 8,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 17,
+          "endLine" : 17,
+          "file" : "memory-io.cbl",
+          "startColumn" : 15,
+          "startLine" : 17
+        }
+      },
+      "regionalAccess" : {
+        "slice" : null,
+        "view" : "storage-node:8"
+      },
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    }, {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "OTHER-REC",
+          "id" : "data:1"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:1",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:0:1",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 17,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 17,
+          "file" : "memory-io.cbl",
+          "startColumn" : 24,
+          "startLine" : 17
+        }
+      },
+      "regionalAccess" : {
+        "slice" : null,
+        "view" : "storage-node:11"
+      },
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    } ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 25,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 17
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 32,
+          "endLine" : 17,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 17
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "GOBACK",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "MODELED",
+      "id" : "statement:1",
+      "programPoint" : 1,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 5,
+          "endLine" : 18,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 18
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 12,
+          "endLine" : 18,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 18
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "GOBACK has no local successor",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "GOBACK runtime result and lifecycle effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "GOBACK concludes the current program invocation",
+          "status" : "SUFFICIENT"
+        }
+      }
+    },
+    "exit" : "CURRENT_PROGRAM_INVOCATION",
+    "localContinuation" : "NONE"
+  } ],
+  "structure" : {
+    "branches" : [ ],
+    "roots" : [ "statement:0", "statement:1" ]
+  },
+  "gaps" : [ {
+    "code" : "OBSERVED_STATEMENT_UNSUPPORTED",
+    "detail" : "Statement operands and flow clauses are structurally modeled from grammar contexts.",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 25,
+        "endLine" : 17,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 17
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 32,
+        "endLine" : 17,
+        "file" : "memory-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 17
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:0"
+  } ],
+  "coverage" : {
+    "inputMissingStatements" : 0,
+    "inventoryStatus" : "COMPLETE",
+    "modeledStatements" : 1,
+    "observedStatements" : 2,
+    "partialStatements" : 0,
+    "readiness" : {
+      "cfg" : {
+        "scope" : "complete observed inventory bounded by each statement's structural readiness",
+        "status" : "BLOCKED"
+      },
+      "effectsDataflow" : {
+        "scope" : "report dependency claim bounded by each statement's effects readiness",
+        "status" : "BLOCKED"
+      },
+      "lowering" : {
+        "scope" : "report binding claim combined with every observed statement fact",
+        "status" : "BLOCKED"
+      }
+    },
+    "unsupportedStatements" : 1
+  },
+  "entryInventory" : {
+    "entries" : [ {
+      "availability" : "KNOWN",
+      "coverage" : "MODELED",
+      "gaps" : [ ],
+      "id" : "entry:0",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 18,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 18,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 16
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "primary entry start only; no sequence or reachability claim",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "entry state, storage and effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "primary entry, canonical executable start and published signature availability",
+          "status" : "SUFFICIENT"
+        }
+      },
+      "role" : "PRIMARY",
+      "signature" : {
+        "availability" : "KNOWN",
+        "parameterCount" : 0,
+        "returningClause" : "ABSENT"
+      },
+      "start" : {
+        "availability" : "KNOWN",
+        "statement" : "statement:0"
+      }
+    } ],
+    "gapCodes" : [ "ALTERNATE_ENTRIES_NOT_PROJECTED" ],
+    "scope" : "PRIMARY_ONLY",
+    "status" : "PARTIAL"
+  },
+  "storageIndependence" : {
+    "authority" : "IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE",
+    "availability" : "UNAVAILABLE",
+    "gapCodes" : [ "STORAGE_INDEPENDENCE_NOT_PROVEN" ],
+    "members" : [ ],
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 17,
+        "endLine" : 15,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 14
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 24,
+        "endLine" : 15,
+        "file" : "memory-io.cbl",
+        "startColumn" : 7,
+        "startLine" : 14
+      }
+    },
+    "rule" : "INDEPENDENT_WORKING_STORAGE_ROOTS"
+  },
+  "storage" : {
+    "bases" : [ {
+      "allocation" : "INDEPENDENT_LOCAL_STORAGE",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "id" : "storage-base:14",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 15,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      }
+    }, {
+      "allocation" : "INDEPENDENT_LOCAL_STORAGE",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "id" : "storage-base:8",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 16,
+          "endLine" : 11,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 23,
+          "endLine" : 11,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      }
+    }, {
+      "allocation" : "INDEPENDENT_LOCAL_STORAGE",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "id" : "storage-base:11",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 22,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 13
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 29,
+          "endLine" : 13,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 13
+        }
+      }
+    } ],
+    "entryState" : {
+      "conditions" : [ ],
+      "mode" : "UNKNOWN"
+    },
+    "gapCodes" : [ ],
+    "nodes" : [ {
+      "data" : "data:2",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "filler" : false,
+      "id" : "storage-node:14",
+      "kind" : "ELEMENTARY",
+      "order" : 0,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 15,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      }
+    }, {
+      "data" : "data:0",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "filler" : false,
+      "id" : "storage-node:8",
+      "kind" : "ELEMENTARY",
+      "order" : 1,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 16,
+          "endLine" : 11,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 23,
+          "endLine" : 11,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      }
+    }, {
+      "data" : "data:1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "filler" : false,
+      "id" : "storage-node:11",
+      "kind" : "ELEMENTARY",
+      "order" : 2,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 22,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 13
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 29,
+          "endLine" : 13,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 13
+        }
+      }
+    } ],
+    "profile" : "IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047",
+    "profileId" : "ibm-enterprise-6.4-fixed-display-1047@1",
+    "relations" : [ ],
+    "renames" : [ ],
+    "runtimeCodec" : "text.ebcdic.ibm1047@1",
+    "version" : "1.8.0",
+    "views" : [ {
+      "base" : "storage-base:14",
+      "codec" : "text.ebcdic.ibm1047@1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "node" : "storage-node:14",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 24,
+          "endLine" : 15,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      }
+    }, {
+      "base" : "storage-base:8",
+      "codec" : "text.ebcdic.ibm1047@1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "node" : "storage-node:8",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 16,
+          "endLine" : 11,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 23,
+          "endLine" : 11,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      }
+    }, {
+      "base" : "storage-base:11",
+      "codec" : "text.ebcdic.ibm1047@1",
+      "extent" : {
+        "gapCodes" : [ ],
+        "value" : "8"
+      },
+      "node" : "storage-node:11",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 22,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 13
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 29,
+          "endLine" : 13,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 13
+        }
+      }
+    } ]
+  },
+  "statementEffects" : [ ],
+  "fileInventory" : {
+    "availability" : "KNOWN",
+    "declarations" : [ {
+      "accessMode" : "UNSPECIFIED",
+      "assignment" : {
+        "availability" : "KNOWN",
+        "externalFileName" : "OUTDD",
+        "gapCodes" : [ ],
+        "original" : "OUTDD",
+        "profile" : "ibm-enterprise-cobol-6.4-n-lr@2026-04-28",
+        "sourceKind" : "ASSIGNMENT_NAME"
+      },
+      "gapCodes" : [ ],
+      "id" : "file:0",
+      "kind" : "FD",
+      "logicalFile" : "F",
+      "optional" : false,
+      "organization" : "UNSPECIFIED",
+      "origins" : [ {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 23,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 30,
+          "endLine" : 6,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }, {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 16,
+          "endLine" : 11,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 23,
+          "endLine" : 11,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      } ],
+      "owner" : {
+        "canonicalProgramName" : "MEMIO",
+        "compilationUnitId" : "MEMORY-IO.CBL",
+        "structuralPath" : [ 0 ]
+      },
+      "records" : [ "data:0" ],
+      "references" : [ ],
+      "visibility" : "LOCAL"
+    }, {
+      "accessMode" : "UNSPECIFIED",
+      "assignment" : {
+        "availability" : "KNOWN",
+        "externalFileName" : "INDD",
+        "gapCodes" : [ ],
+        "original" : "INDD",
+        "profile" : "ibm-enterprise-cobol-6.4-n-lr@2026-04-28",
+        "sourceKind" : "ASSIGNMENT_NAME"
+      },
+      "gapCodes" : [ ],
+      "id" : "file:1",
+      "kind" : "FD",
+      "logicalFile" : "G",
+      "optional" : false,
+      "organization" : "UNSPECIFIED",
+      "origins" : [ {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 22,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 29,
+          "endLine" : 7,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      }, {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 22,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 29,
+          "endLine" : 13,
+          "file" : "memory-io.cbl",
+          "startColumn" : 7,
+          "startLine" : 12
+        }
+      } ],
+      "owner" : {
+        "canonicalProgramName" : "MEMIO",
+        "compilationUnitId" : "MEMORY-IO.CBL",
+        "structuralPath" : [ 0 ]
+      },
+      "records" : [ "data:1" ],
+      "references" : [ ],
+      "visibility" : "LOCAL"
+    } ],
+    "gapCodes" : [ ],
+    "operations" : {
+      "availability" : "PARTIAL",
+      "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+      "uses" : [ {
+        "bindingStatus" : "RESOLVED",
+        "candidates" : [ {
+          "id" : "file:0",
+          "owner" : {
+            "canonicalProgramName" : "MEMIO",
+            "compilationUnitId" : "MEMORY-IO.CBL",
+            "structuralPath" : [ 0 ]
+          }
+        } ],
+        "command" : "REWRITE",
+        "effects" : {
+          "availability" : "KNOWN",
+          "before" : [ {
+            "destination" : {
+              "data" : "data:0",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 10,
+                  "endLine" : 17,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 8,
+                  "startLine" : 17
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 17,
+                  "endLine" : 17,
+                  "file" : "memory-io.cbl",
+                  "startColumn" : 15,
+                  "startLine" : 17
+                }
+              },
+              "reference" : "operand:0:0",
+              "regional" : {
+                "slice" : null,
+                "view" : "storage-node:8"
+              },
+              "wholeBase" : false
+            },
+            "gapCodes" : [ ],
+            "kind" : "COPY_BYTES",
+            "provenance" : {
+              "exact" : true,
+              "expanded" : {
+                "endColumn" : 25,
+                "endLine" : 17,
+                "file" : "<preprocessed>",
+                "startColumn" : 0,
+                "startLine" : 17
+              },
+              "includeChain" : [ ],
+              "original" : {
+                "endColumn" : 32,
+                "endLine" : 17,
+                "file" : "memory-io.cbl",
+                "startColumn" : 7,
+                "startLine" : 17
+              }
+            },
+            "role" : "FROM_RECORD",
+            "source" : {
+              "data" : "data:1",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 25,
+                  "endLine" : 17,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 17,
+                  "startLine" : 17
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 32,
+                  "endLine" : 17,
+                  "file" : "memory-io.cbl",
+                  "startColumn" : 24,
+                  "startLine" : 17
+                }
+              },
+              "reference" : "operand:0:1",
+              "regional" : {
+                "slice" : null,
+                "view" : "storage-node:11"
+              },
+              "wholeBase" : false
+            }
+          } ],
+          "gapCodes" : [ ],
+          "ioReads" : [ {
+            "data" : "data:0",
+            "provenance" : {
+              "exact" : true,
+              "expanded" : {
+                "endColumn" : 16,
+                "endLine" : 11,
+                "file" : "<preprocessed>",
+                "startColumn" : 0,
+                "startLine" : 11
+              },
+              "includeChain" : [ ],
+              "original" : {
+                "endColumn" : 23,
+                "endLine" : 11,
+                "file" : "memory-io.cbl",
+                "startColumn" : 7,
+                "startLine" : 11
+              }
+            },
+            "reference" : null,
+            "regional" : {
+              "slice" : null,
+              "view" : "storage-node:8"
+            },
+            "wholeBase" : true
+          } ],
+          "outcomes" : [ {
+            "outcome" : "SUCCESS",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 16,
+                    "endLine" : 11,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 11
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 23,
+                    "endLine" : 11,
+                    "file" : "memory-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 11
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 25,
+                  "endLine" : 17,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 17
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 32,
+                  "endLine" : 17,
+                  "file" : "memory-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 17
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "END",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 16,
+                    "endLine" : 11,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 11
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 23,
+                    "endLine" : 11,
+                    "file" : "memory-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 11
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 25,
+                  "endLine" : 17,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 17
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 32,
+                  "endLine" : 17,
+                  "file" : "memory-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 17
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          }, {
+            "outcome" : "INVALID_KEY",
+            "steps" : [ ]
+          }, {
+            "outcome" : "OTHER_ERROR",
+            "steps" : [ {
+              "destination" : {
+                "data" : "data:0",
+                "provenance" : {
+                  "exact" : true,
+                  "expanded" : {
+                    "endColumn" : 16,
+                    "endLine" : 11,
+                    "file" : "<preprocessed>",
+                    "startColumn" : 0,
+                    "startLine" : 11
+                  },
+                  "includeChain" : [ ],
+                  "original" : {
+                    "endColumn" : 23,
+                    "endLine" : 11,
+                    "file" : "memory-io.cbl",
+                    "startColumn" : 7,
+                    "startLine" : 11
+                  }
+                },
+                "reference" : null,
+                "regional" : {
+                  "slice" : null,
+                  "view" : "storage-node:8"
+                },
+                "wholeBase" : true
+              },
+              "gapCodes" : [ ],
+              "kind" : "MAY_UNKNOWN",
+              "provenance" : {
+                "exact" : true,
+                "expanded" : {
+                  "endColumn" : 25,
+                  "endLine" : 17,
+                  "file" : "<preprocessed>",
+                  "startColumn" : 0,
+                  "startLine" : 17
+                },
+                "includeChain" : [ ],
+                "original" : {
+                  "endColumn" : 32,
+                  "endLine" : 17,
+                  "file" : "memory-io.cbl",
+                  "startColumn" : 7,
+                  "startLine" : 17
+                }
+              },
+              "role" : "RECORD",
+              "source" : null
+            } ]
+          } ],
+          "unknownReadBound" : false,
+          "unknownWriteBound" : false
+        },
+        "explicitTerminator" : false,
+        "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+        "handlers" : [ ],
+        "keyRelation" : "UNSPECIFIED",
+        "mode" : "UNSPECIFIED",
+        "operands" : [ {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 10,
+              "endLine" : 17,
+              "file" : "<preprocessed>",
+              "startColumn" : 8,
+              "startLine" : 17
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 17,
+              "endLine" : 17,
+              "file" : "memory-io.cbl",
+              "startColumn" : 15,
+              "startLine" : 17
+            }
+          },
+          "references" : [ "operand:0:0" ],
+          "role" : "RECORD",
+          "writtenValue" : null
+        }, {
+          "form" : "REFERENCE",
+          "gapCodes" : [ ],
+          "provenance" : {
+            "exact" : true,
+            "expanded" : {
+              "endColumn" : 25,
+              "endLine" : 17,
+              "file" : "<preprocessed>",
+              "startColumn" : 17,
+              "startLine" : 17
+            },
+            "includeChain" : [ ],
+            "original" : {
+              "endColumn" : 32,
+              "endLine" : 17,
+              "file" : "memory-io.cbl",
+              "startColumn" : 24,
+              "startLine" : 17
+            }
+          },
+          "references" : [ "operand:0:1" ],
+          "role" : "FROM",
+          "writtenValue" : null
+        } ],
+        "options" : [ ],
+        "ordinal" : 0,
+        "profile" : "N_LR",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 10,
+            "endLine" : 17,
+            "file" : "<preprocessed>",
+            "startColumn" : 8,
+            "startLine" : 17
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 17,
+            "endLine" : 17,
+            "file" : "memory-io.cbl",
+            "startColumn" : 15,
+            "startLine" : 17
+          }
+        },
+        "statement" : "statement:0"
+      } ]
+    },
+    "version" : "1.3.0"
+  }
+}

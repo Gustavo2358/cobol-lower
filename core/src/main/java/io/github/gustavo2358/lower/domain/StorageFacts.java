@@ -11,7 +11,9 @@ public final class StorageFacts {
     public static final String CODEC="text.ebcdic.ibm1047@1";
     public enum Profile { UNSPECIFIED, IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047 }
     public enum Kind { GROUP, ELEMENTARY, OPAQUE }
-    public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, UNPROVEN }
+    public enum Allocation { INDEPENDENT_LOCAL_WORKING_STORAGE, INDEPENDENT_LOCAL_STORAGE, UNPROVEN;
+        public boolean proved(){return this!=UNPROVEN;}
+    }
     public enum MoveKind { LITERAL_BYTES, FITTED_LITERAL_BYTES, COPY_BYTES, FIT_TEXT, LOGICAL_FIT_TEXT, MUST_UNKNOWN, UNAVAILABLE }
     public enum RelationStatus { PROVEN, UNPROVEN }
     public record NodeId(UnitKey unit,String handle) { public NodeId { Objects.requireNonNull(unit);Objects.requireNonNull(handle); } }

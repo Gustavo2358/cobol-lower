@@ -118,6 +118,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             entry(entry, c);
         }
         if (c.diagnostics.isEmpty()) c.regionalStorage=RegionalStorageAdmission.validate(input,c);
+        if (c.diagnostics.isEmpty()) FileEffectAdmission.validate(input,c);
     }
 
     private static void entry(EntryFact e, Context c) {

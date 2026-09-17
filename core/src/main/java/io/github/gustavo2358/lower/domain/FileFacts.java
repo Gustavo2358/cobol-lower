@@ -46,12 +46,31 @@ public final class FileFacts {
     public record Surface(List<Operand> operands,List<Option> options,KeyRelation keyRelation,boolean explicitTerminator,List<Handler> handlers) {
         public Surface {operands=List.copyOf(operands);options=List.copyOf(options);Objects.requireNonNull(keyRelation);handlers=List.copyOf(handlers);}
     }
+    public enum EffectOutcome { SUCCESS, END, INVALID_KEY, OTHER_ERROR }
+    public enum MemoryRole { RECORD, INTO, FROM_RECORD, FILE_STATUS, ADDITIONAL_STATUS, RELATIVE_KEY, RECORD_LENGTH }
+    public enum MemoryKind { MAY_UNKNOWN, MUST_UNKNOWN, COPY_BYTES, FIT_TEXT }
+    public record MemoryTarget(Optional<DataId> data,Optional<StorageFacts.Access> regional,boolean wholeBase,Optional<OperandId> reference,Provenance provenance) {
+        public MemoryTarget {Objects.requireNonNull(data);Objects.requireNonNull(regional);Objects.requireNonNull(reference);Objects.requireNonNull(provenance);}
+    }
+    public record MemoryStep(MemoryRole role,MemoryKind kind,MemoryTarget destination,Optional<MemoryTarget> source,List<String> gapCodes,Provenance provenance) {
+        public MemoryStep {Objects.requireNonNull(role);Objects.requireNonNull(kind);Objects.requireNonNull(destination);Objects.requireNonNull(source);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
+    }
+    public record OutcomeEffects(EffectOutcome outcome,List<MemoryStep> steps) {
+        public OutcomeEffects {Objects.requireNonNull(outcome);steps=List.copyOf(steps);}
+    }
+    public record EffectPlan(Availability availability,List<MemoryTarget> ioReads,List<MemoryStep> before,List<OutcomeEffects> outcomes,
+            boolean unknownReadBound,boolean unknownWriteBound,List<String> gapCodes) {
+        public EffectPlan {Objects.requireNonNull(availability);ioReads=List.copyOf(ioReads);before=List.copyOf(before);outcomes=List.copyOf(outcomes);gapCodes=List.copyOf(gapCodes);}
+    }
     public record Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,
-            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface) {
+            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects) {
+        public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface) {
+            this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,surface,Optional.empty());
+        }
         public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes) {
             this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,Optional.empty());
         }
-        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);}
+        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);Objects.requireNonNull(effects);}
     }
     public record Operations(Availability availability,List<Use> uses,List<String> gapCodes) {
         public Operations {Objects.requireNonNull(availability);uses=List.copyOf(uses);gapCodes=List.copyOf(gapCodes);}

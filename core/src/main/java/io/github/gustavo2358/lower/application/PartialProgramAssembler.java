@@ -17,21 +17,21 @@ final class PartialProgramAssembler {
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
         var entrySequence=sequences.stream().filter(s->s.label().equals(entryLabel)).findFirst().orElseThrow();
-        return new Assembly(List.copyOf(sequences),entryLabel,entrySequence.origin());
+        return new Assembly(files.complete(sequences),entryLabel,entrySequence.origin());
     }
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
             Map<SpInput.StatementId,LabelId> overrides,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
             List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files) {
         for(var fact:sourceStatements) {
-            var label=label(fact.header().id(),unit,ids); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
+            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(files.handles(fact)) {
-                var chain=files.sequences(fact,destination,ids);term=chain.getFirst().terminator();
+                var chain=files.sequences(fact,destination,ids);term=chain.getFirst().terminator();instructions.addAll(chain.getFirst().instructions());
                 for(int i=1;i<chain.size();i++)sequences.add(chain.get(i));
-                for(var sequence:chain)link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);
+                for(var sequence:chain){for(var instruction:sequence.instructions())link(fact.header().id(),instruction,sequence.label(),statements,items);link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);}
             } else if(precise && fact instanceof SpInput.MoveFact m) {
                 var transfers=RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.addAll(transfers);var assign=transfers.getFirst();
                 for(var transfer:transfers)link(m.header().id(),transfer,label,statements,items);
@@ -128,7 +128,7 @@ final class PartialProgramAssembler {
                 link(fact.header().id(),term,label,statements,items);
                 var body=plan.bodies().get(p.header().id());
                 for(int i=0;i<body.size();i++) {
-                    var move=body.get(i);var here=label(move.header().id(),unit,activation);
+                    var move=body.get(i);var here=label(move.header().id(),unit,activation);files.sourceEntry(here);
                     var resume=i+1<body.size()?label(body.get(i+1).header().id(),unit,activation):destination;
                     var transfers=RegionalMoveHandler.sequence(move,plan.fitted().contains(move.header().id()),data,unit,activation,origins,operands,items,uncertainties);var assign=transfers.getFirst();
                     for(var transfer:transfers)link(move.header().id(),transfer,here,statements,items);

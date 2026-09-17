@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-H4 aprovado; core N+C autorizado em 2026-09-16. W0/W1 qualificados local; W2 em implementação; W10 não autorizado.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0–W2 qualificadas local; W3 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -100,3 +100,51 @@ as suites adapter/CALL/storage/control, incluindo o novo oracle. Pin SP2.23
 `b559292c97e004504fb867c4724298dc1637b6f2`; AIR/IR permanecem nos pins de W1.
 B-SP native/delete-handlers byte a byte PASS. E-SELECTED registrado no harness
 canônico após executar produtores imutáveis.
+
+## FD-W3 — contrato/algoritmo antes da produção
+
+SP2.24/fileInventory1.3 acrescenta planos de memória: alvos DATA/view/ref canônicos,
+leituras delimitadas, FROM antes de I/O e passos condicionados a SUCCESS/END/
+INVALID_KEY/OTHER_ERROR. São efeitos **se** o outcome ocorre, não prova de que ele
+é possível; Normal AIR continua distinto de status COBOL. Storage1.8 acrescenta
+INDEPENDENT_LOCAL_STORAGE; a prova histórica WS é mantida somente para compatibilidade.
+
+Decoder fechado novo + admission comum às portas devem verificar owners, views,
+intervalos, alias/classe para COPY/FIT e MUST exato; retirar campo obrigatório,
+injetar referência alheia ou elevar MAY sem prova deve falhar. Wire2.23 e anteriores
+conservam effects UNAVAILABLE e a identidade histórica. Lower emite operações gerais
+por fase/outcome, sem reanalisar COBOL; endereço INTO só é usado depois de READ.
+Sem prova de endereço, manter efeito local ao bound publicado, sem MUST fictício.
+Planos são percorridos e indexados por statement/ordinal/target; custo linear nos
+fatos emitidos, sem solver FILE nem limite de ocorrências.
+
+Oráculos antes da produção: FileMemoryEffectsSuite usa fixtures reais SP2.24,
+expectativas manuais de fase/efeito e mutantes bilaterais. RED inicial rejeitou a
+versão; contracasos posteriores detectaram view alheia, receiver omitido e salto
+para fase interna. O1–O5 manuais em CFG exercitam validator/codec/CALL+FILE. W3 só fecha após
+focais, FAST, Q-SHARED e E-SELECTED nos pins finais.
+
+Lowering W3 usa operações AIR gerais: FROM antes do invoke, seleção desconhecida
+de outcome após retorno, MAY regional/por base, MUST apenas para receptor exato
+admitido e cópia/fit já provada. Nenhum result place de invoke antecipa endereço
+INTO. As continuações ainda abertas alcançam entradas de statements do fonte e
+saídas, nunca fases internas de memória; handlers/USE exatos são W4. O assembler
+conserva instruções anteriores ao primeiro terminador e correla cada operação.
+Planos antigos sem effects mantêm representação histórica; novos contratos não
+podem omitir status/buffer/INTO/FROM e alegar bound fechado.
+
+O bound provisório de controle compartilha o conjunto de entradas do fonte em
+memória. Sua serialização repete esse conjunto por continuação FILE: limite
+O(usos FILE × statements) no wire conservador W3. Não há cutoff; W4 deve qualificar
+o controle específico de handlers/USE e medir a redução, sem inventar SLA.
+
+FAST W3 core2340 + adapters PASS; qualification-local semântica244296 e
+performance39215 PASS (contadores do harness, não precisão/recall). O gate de
+saída tinha um fixture antigo que tratava PARTIAL como falha sem Publication,
+contradizendo LoweringResult desde 69c78c5; corrigido o fixture, mantendo o teste
+de CLI PARTIAL real em EvidencePreservingEntrySuite. Pin/E-SELECTED pendentes.
+
+Revalidação final após FROM: FAST e qualification-local PASS (mesmos contadores),
+leitura de FROM alias/não resolvido preservada e mutante sem leitura do record
+de saída rejeitado. Logs `fast-3.log` e `qualification-local-3.log` em fd-w3.
+Pin produtor SP2.24: `a9f8fbe4fb4f9e2097c01b1e8f6f992a5041ee5f`; E-SELECTED pendente no harness canônico.

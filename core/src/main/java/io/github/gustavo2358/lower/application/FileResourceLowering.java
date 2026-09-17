@@ -14,16 +14,21 @@ final class FileResourceLowering {
     private final LocalIds ids;
     private final SourceOrigins origins;
     private final List<Evidence.Uncertainty> gaps;
+    private final FileMemoryLowering memory;
+    private final Set<LabelId> sourceEntries=new LinkedHashSet<>();
     private final Map<FileFacts.Candidate,FileFacts.Declaration> declarations=new LinkedHashMap<>();
     private final Map<SpInput.StatementId,List<FileFacts.Use>> byStatement=new HashMap<>();
     private final Map<FileFacts.Candidate,List<Interactions.ResourceUse>> associations=new HashMap<>();
     FileResourceLowering(SpInput input,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> gaps){
         this.input=input;this.data=data;this.unit=unit;this.ids=ids;this.origins=origins;this.gaps=gaps;
+        this.memory=new FileMemoryLowering(input,data,unit,ids,origins,gaps);
         for(var f:input.fileInventory().declarations())declarations.put(new FileFacts.Candidate(f.id(),f.owner()),f);
         for(var use:input.fileInventory().operations().uses())byStatement.computeIfAbsent(use.statement(),k->new ArrayList<>()).add(use);
         byStatement.values().forEach(uses->uses.sort(Comparator.comparingInt(FileFacts.Use::ordinal)));
     }
     boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR);}
+    void sourceEntry(LabelId label){sourceEntries.add(label);}
+    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sequences,List.copyOf(sourceEntries));}
     List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){
         var result=new ArrayList<Sequence>();var uses=byStatement.get(fact.header().id());
         for(int n=0;n<uses.size();n++){
@@ -52,10 +57,17 @@ final class FileResourceLowering {
             var header=new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,open,open,open,dependency),opGaps);
             var contract=gap("file-contract",op,origin,List.of(Evidence.Dimension.EFFECTS),"CONTRACT_UNKNOWN");
             var signature=new Interactions.Signature(new Interactions.ParameterInventory(List.of(),Interactions.NoRemainder.INSTANCE),new Interactions.ResultInventory(List.of(),Interactions.NoRemainder.INSTANCE),origin);
+            var plan=use.effects().filter(e->e.availability()==SpInput.Availability.KNOWN||e.availability()==SpInput.Availability.PARTIAL).orElse(null);
+            var memory=this.memory.withIds(local);
+            var after=plan==null?next:memory.label(key+"/select/0");
             var invoke=new Operations.Invoke(header,action(use.command()),target,List.of(),List.of(),new Interactions.ExternalSignature(signature),List.of(),
-                new Interactions.EffectBound(new Interactions.ForeignEffects(new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)),new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)),List.of()),List.of()),
-                new Control.InvocationOutcomes(next==null?List.of():List.of(new Control.Normal(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true))),new Interactions.UnknownContract(contract));
-            result.add(new Sequence(label,List.of(),invoke,origin));
+                new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),
+                    plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
+                new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,plan==null,true,true,true,true,true))),new Interactions.UnknownContract(contract));
+            var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
+            if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));
+            result.add(new Sequence(invokeLabel,List.of(),invoke,origin));
+            if(plan!=null)result.addAll(memory.after(key,plan,next,origin));
             if(declaration!=null)associations.computeIfAbsent(candidate,k->new ArrayList<>()).add(new Interactions.ResourceUse(op,role(use),origin));
         }
         return List.copyOf(result);
