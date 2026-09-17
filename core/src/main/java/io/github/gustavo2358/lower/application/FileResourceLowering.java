@@ -15,6 +15,7 @@ final class FileResourceLowering {
     private final SourceOrigins origins;
     private final List<Evidence.Uncertainty> gaps;
     private final FileMemoryLowering memory;
+    private final FileControlLowering control;
     private final Set<LabelId> sourceEntries=new LinkedHashSet<>();
     private final Map<FileFacts.Candidate,FileFacts.Declaration> declarations=new LinkedHashMap<>();
     private final Map<SpInput.StatementId,List<FileFacts.Use>> byStatement=new HashMap<>();
@@ -22,13 +23,15 @@ final class FileResourceLowering {
     FileResourceLowering(SpInput input,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> gaps){
         this.input=input;this.data=data;this.unit=unit;this.ids=ids;this.origins=origins;this.gaps=gaps;
         this.memory=new FileMemoryLowering(input,data,unit,ids,origins,gaps);
+        this.control=new FileControlLowering(input,unit,ids,origins,gaps);
         for(var f:input.fileInventory().declarations())declarations.put(new FileFacts.Candidate(f.id(),f.owner()),f);
         for(var use:input.fileInventory().operations().uses())byStatement.computeIfAbsent(use.statement(),k->new ArrayList<>()).add(use);
         byStatement.values().forEach(uses->uses.sort(Comparator.comparingInt(FileFacts.Use::ordinal)));
     }
     boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR);}
     void sourceEntry(LabelId label){sourceEntries.add(label);}
-    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sequences,List.copyOf(sourceEntries));}
+    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(control.complete(sequences),List.copyOf(sourceEntries));}
+    LabelId completion(SpInput.StatementId statement,LabelId ordinary){return control.completion(statement,ordinary);}
     List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){
         var result=new ArrayList<Sequence>();var uses=byStatement.get(fact.header().id());
         for(int n=0;n<uses.size();n++){
@@ -44,6 +47,7 @@ final class FileResourceLowering {
             FileFacts.Candidate candidate=use.bindingStatus()==SpInput.ResolutionStatus.RESOLVED?use.candidates().getFirst():null;
             var declaration=declarations.get(candidate);Interactions.Target target;
             var opGaps=new ArrayList<UncertaintyId>(List.of(gap));
+            use.control().ifPresent(c->{for(var code:c.gapCodes())opGaps.add(gap("file-control-input",op,origin,List.of(Evidence.Dimension.CONTROL),code));});
             Evidence.Claim dependency;
             if(declaration!=null&&declaration.kind()!=FileFacts.Kind.SD&&declaration.assignment().externalFileName().isPresent()){
                 target=new Interactions.LiteralTarget("file","cobol.external-file-name",declaration.assignment().externalFileName().orElseThrow(),Interactions.ExactName.INSTANCE,ref);
@@ -67,7 +71,7 @@ final class FileResourceLowering {
             var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
             if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));
             result.add(new Sequence(invokeLabel,List.of(),invoke,origin));
-            if(plan!=null)result.addAll(memory.after(key,plan,next,origin));
+            if(plan!=null)result.addAll(use.control().filter(c->!c.routes().isEmpty()).isPresent()?control.after(key,use,plan,next,origin,local,memory):memory.after(key,plan,next,origin));
             if(declaration!=null)associations.computeIfAbsent(candidate,k->new ArrayList<>()).add(new Interactions.ResourceUse(op,role(use),origin));
         }
         return List.copyOf(result);

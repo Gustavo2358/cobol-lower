@@ -26,6 +26,7 @@ final class PartialProgramAssembler {
         for(var fact:sourceStatements) {
             var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
+            destination=files.completion(fact.header().id(),destination);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(files.handles(fact)) {

@@ -38,7 +38,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
     public enum InventoryStatus { COMPLETE, PARTIAL, INPUT_MISSING }
     public enum ReadinessStatus { SUFFICIENT, PARTIAL, BLOCKED, NOT_APPLICABLE }
-    public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, UNKNOWN }
+    public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, FILE_HANDLER, UNKNOWN }
     public enum EntryRole { PRIMARY }
     public enum EntryInventoryScope { PRIMARY_ONLY }
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }

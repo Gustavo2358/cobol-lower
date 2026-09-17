@@ -2,6 +2,7 @@ package io.github.gustavo2358.lower.adapters.sp;
 
 import io.github.gustavo2358.lower.domain.SpInput;
 import io.github.gustavo2358.lower.domain.StorageFacts;
+import io.github.gustavo2358.lower.domain.FileFacts;
 import java.util.Optional;
 import java.util.List;
 import static io.github.gustavo2358.lower.domain.SpInput.*;
@@ -10,6 +11,16 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire225.Document wire) {
+        var common=input(Wire225.common(wire));var inv=common.fileInventory();var unit=common.unit();var uses=new java.util.ArrayList<FileFacts.Use>();
+        for(int i=0;i<inv.operations().uses().size();i++) {
+            var u=inv.operations().uses().get(i);var p=wire.fileInventory().operations().uses().get(i).control();
+            var control=new FileFacts.ControlPlan(p.availability(),Optional.ofNullable(p.continuation()).map(id->new StatementId(unit,id)),p.routes().stream().map(r->new FileFacts.ControlRoute(r.event(),r.effects(),r.destinations().stream().map(d->new FileFacts.Destination(d.kind(),Optional.ofNullable(d.handler()),Optional.ofNullable(d.declarative()))).toList(),r.criticalExit())).toList(),p.gapCodes());
+            uses.add(new FileFacts.Use(u.statement(),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),u.candidates(),u.provenance(),u.gapCodes(),u.surface(),u.effects(),Optional.of(control)));
+        }
+        var declarations=wire.fileInventory().declaratives().stream().map(d->new FileFacts.Declarative(d.id(),unitKey(d.owner(),null),d.kind(),d.global(),d.mode(),d.files().stream().map(f->new FileFacts.Candidate(f.id(),unitKey(f.owner(),null))).toList(),d.roots().stream().map(id->new StatementId(unit,id)).toList(),Optional.ofNullable(d.entry()).map(id->new StatementId(unit,id)),d.completions().stream().map(id->new StatementId(unit,id)).toList(),d.gapCodes(),provenance(d.provenance(),unit))).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),new FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new FileFacts.Operations(inv.operations().availability(),uses,inv.operations().gapCodes()),declarations));
+    }
     static SpInput input(Wire224.Document wire) {
         var common=input(Wire224.common(wire));var inv=common.fileInventory();var unit=common.unit();
         var uses=new java.util.ArrayList<io.github.gustavo2358.lower.domain.FileFacts.Use>();

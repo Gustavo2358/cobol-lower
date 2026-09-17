@@ -79,6 +79,7 @@ final class PartialProgramAdmission {
             var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var rangeCompletions=new HashSet<StatementId>();
+            input.fileInventory().declaratives().forEach(d->rangeCompletions.addAll(d.completions()));
             for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.gapCodes().isEmpty())
                 p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();

@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-H4 aprovado; core N+C autorizado em 2026-09-16. W0–W2 qualificadas local; W3 em implementação; W10 não autorizado.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0–W3 qualificadas local; W4 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -148,3 +148,35 @@ Revalidação final após FROM: FAST e qualification-local PASS (mesmos contador
 leitura de FROM alias/não resolvido preservada e mutante sem leitura do record
 de saída rejeitado. Logs `fast-3.log` e `qualification-local-3.log` em fd-w3.
 Pin produtor SP2.24: `a9f8fbe4fb4f9e2097c01b1e8f6f992a5041ee5f`; E-SELECTED pendente no harness canônico.
+
+
+## FD-W4 — contrato fechado de controle e redução conservadora
+
+SP2.25/fileInventory1.4 publica DECLARATIVES e rotas de eventos; Wire225 é fechado,
+sem modificar fixtures históricas. Admission comum verifica owner/body/entry,
+FILE_HANDLER, correspondência com efeitos, precedência file/mode, referências,
+continuação estrutural e possibilidade de erro crítico. Contradições falham também
+na porta em memória. Retirar fatos nunca transforma input incompleto em sucesso.
+
+A regra IBM e o oracle foram fixados no D-EFFECT canônico antes da produção.
+Assembler usa branches para eventos, efeitos W3 ordenados, jumps aos handlers/USE
+compartilhados e opaque de retorno com apenas as continuações dos sites invocadores.
+Não clona CALL/I/O; não adiciona efeito global na entrada/retorno. União de resumes
+é marcada LOCAL_RETURN_CONTEXT_NOT_PROVEN, sem alegar matching de pilha. Erro
+crítico conserva saídas possíveis. Recursão é finita no inventário, sem cutoff.
+A norma local.invoke existe, mas não é necessária para esta redução; a investigação
+codec demonstrou lacuna de transporte/consumer, sem exigir extensão normativa.
+
+Corpos/rotas indexados por identidade; custo proporcional aos fatos/alternativas,
+com validação de seleção O(usos × declarações USE). O bound W3 com todas as entradas
+de statements permanece somente para inputs históricos, não para o novo contrato.
+FileControlSuite verifica seis fixtures do produtor, codec, ausência de duplicação,
+resumes delimitados e mutantes de versão, seleção, status/efeitos, ownership,
+completions e porta em memória. Gates finais/pins ainda pendentes na campanha.
+
+
+W4 estabilizada: FAST fixo core2340 + adapters (incluindo FileControlSuite) PASS;
+qualification-local semântica244296/performance39215 PASS. B-SP seis exports reais
+byte a byte PASS; negativos de continuação/seleção/saída crítica/in-memory PASS.
+Pin SP2.25 `1c21f21750aa3572e39fce71ccc156a357699d81`. AIR/IR conservam pins W1.
+Logs `.harness-results/fd-w4/`; E-SELECTED imutável segue no harness CFG.

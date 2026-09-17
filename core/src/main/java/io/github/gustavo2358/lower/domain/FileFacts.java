@@ -62,23 +62,42 @@ public final class FileFacts {
             boolean unknownReadBound,boolean unknownWriteBound,List<String> gapCodes) {
         public EffectPlan {Objects.requireNonNull(availability);ioReads=List.copyOf(ioReads);before=List.copyOf(before);outcomes=List.copyOf(outcomes);gapCodes=List.copyOf(gapCodes);}
     }
+    public enum UseKind { AFTER_EXCEPTION, DEBUGGING }
+    public enum ControlEvent { SUCCESS, END, INVALID_KEY, OTHER_ERROR, END_OF_PAGE }
+    public enum DestinationKind { CONTINUE, HANDLER, USE }
+    public record Declarative(String id,UnitKey owner,UseKind kind,boolean global,OpenMode mode,List<Candidate> files,List<StatementId> roots,Optional<StatementId> entry,List<StatementId> completions,List<String> gapCodes,Provenance provenance) {
+        public Declarative {Objects.requireNonNull(id);Objects.requireNonNull(owner);Objects.requireNonNull(kind);Objects.requireNonNull(mode);files=List.copyOf(files);roots=List.copyOf(roots);Objects.requireNonNull(entry);completions=List.copyOf(completions);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}
+    }
+    public record Destination(DestinationKind kind,Optional<HandlerKind> handler,Optional<String> declarative) {
+        public Destination {Objects.requireNonNull(kind);Objects.requireNonNull(handler);Objects.requireNonNull(declarative);}
+    }
+    public record ControlRoute(ControlEvent event,EffectOutcome effects,List<Destination> destinations,boolean criticalExit) {
+        public ControlRoute {Objects.requireNonNull(event);Objects.requireNonNull(effects);destinations=List.copyOf(destinations);}
+    }
+    public record ControlPlan(Availability availability,Optional<StatementId> continuation,List<ControlRoute> routes,List<String> gapCodes) {
+        public ControlPlan {Objects.requireNonNull(availability);Objects.requireNonNull(continuation);routes=List.copyOf(routes);gapCodes=List.copyOf(gapCodes);}
+    }
     public record Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,
-            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects) {
+            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects,Optional<ControlPlan> control) {
+        public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface,Optional<EffectPlan> effects) {
+            this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,surface,effects,Optional.empty());
+        }
         public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes,Optional<Surface> surface) {
             this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,surface,Optional.empty());
         }
         public Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes) {
             this(statement,ordinal,command,mode,profile,bindingStatus,candidates,provenance,gapCodes,Optional.empty());
         }
-        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);Objects.requireNonNull(effects);}
+        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(surface);Objects.requireNonNull(effects);Objects.requireNonNull(control);}
     }
     public record Operations(Availability availability,List<Use> uses,List<String> gapCodes) {
         public Operations {Objects.requireNonNull(availability);uses=List.copyOf(uses);gapCodes=List.copyOf(gapCodes);}
         public static Operations unavailable(){return new Operations(Availability.UNAVAILABLE,List.of(),List.of("FILE_OPERATIONS_UNAVAILABLE"));}
     }
-    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations) {
+    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations,List<Declarative> declaratives) {
+        public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes,Operations operations){this(availability,declarations,gapCodes,operations,List.of());}
         public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes){this(availability,declarations,gapCodes,Operations.unavailable());}
-        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations); }
+        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations);declaratives=List.copyOf(declaratives); }
         public static Inventory unavailable() { return new Inventory(Availability.UNAVAILABLE,List.of(),List.of("FILE_INVENTORY_UNAVAILABLE")); }
     }
 }
