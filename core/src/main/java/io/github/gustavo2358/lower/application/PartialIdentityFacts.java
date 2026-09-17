@@ -9,6 +9,8 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case SpInput.CicsFileFact r -> {field.accept("CicsFileFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.targetMode());value.accept(r.target());value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());}
+            case SpInput.CicsFileOption r -> {field.accept("CicsFileOption");value.accept(r.name());value.accept(r.canonicalName());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.role());value.accept(r.reference());value.accept(r.literal());value.accept(r.integer());}
             case SpInput.CicsFact r -> {
                 field.accept("CicsFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.target());
                 value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());

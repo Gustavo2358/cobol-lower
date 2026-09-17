@@ -56,7 +56,7 @@ final class ProcedurePerformAdmission {
     }
     private static boolean cicsParagraph(ProcedurePerformFact p,ProcedureId id,EntryGobackAdmission.Context c) {
         return p.procedures().stream().filter(r->r.id().equals(id)).anyMatch(r->r.statements().stream().map(c::lookup)
-            .allMatch(s->s!=null&&(s.header().provenance().exact()||s instanceof CicsFact x&&x.conditions()==CicsConditions.LOCAL_CONDITION)));
+            .allMatch(s->s!=null&&(s.header().provenance().exact()||s instanceof CicsFact x&&x.conditions()==CicsConditions.LOCAL_CONDITION||s instanceof CicsFileFact f&&f.conditions()==CicsConditions.LOCAL_CONDITION)));
     }
     static List<StatementFact> qualify(ProcedurePerformFact p,EntryGobackAdmission.Context c,Set<StatementId> precise,Set<StatementId> primary,
             List<StatementFact> inventory) {

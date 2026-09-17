@@ -32,7 +32,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         Objects.requireNonNull(entryInventory, "entryInventory");
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -314,6 +314,17 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         List<CicsOption> options,CicsConditions conditions,NormalContinuation localContinuation,NormalContinuation ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
         public CicsFact { Objects.requireNonNull(header);Objects.requireNonNull(command);Objects.requireNonNull(rawText);Objects.requireNonNull(target);
             options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(ordinaryContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes); }
+    }
+
+    public enum CicsFileTargetMode { INPUT, OUTPUT, BROWSE_START, BROWSE_END }
+    public enum CicsFileRole { READ, WRITE, READ_WRITE, NONE, UNKNOWN }
+    public record CicsFileOption(String name,String canonicalName,Optional<String> operand,int start,int end,
+        CicsFileRole role,Optional<DataReference> reference,Optional<String> literal,Optional<java.math.BigInteger> integer) {
+        public CicsFileOption {Objects.requireNonNull(name);Objects.requireNonNull(canonicalName);Objects.requireNonNull(operand);Objects.requireNonNull(role);Objects.requireNonNull(reference);Objects.requireNonNull(literal);Objects.requireNonNull(integer);}
+    }
+    public record CicsFileFact(StatementHeader header,String command,String rawText,CicsFileTargetMode targetMode,Optional<CallTarget> target,
+        List<CicsFileOption> options,CicsConditions conditions,NormalContinuation localContinuation,NormalContinuation ordinaryContinuation,String nameProfile,List<String> gapCodes) implements StatementFact {
+        public CicsFileFact {Objects.requireNonNull(header);Objects.requireNonNull(command);Objects.requireNonNull(rawText);Objects.requireNonNull(targetMode);Objects.requireNonNull(target);options=List.copyOf(options);Objects.requireNonNull(conditions);Objects.requireNonNull(localContinuation);Objects.requireNonNull(ordinaryContinuation);Objects.requireNonNull(nameProfile);gapCodes=List.copyOf(gapCodes);}
     }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }

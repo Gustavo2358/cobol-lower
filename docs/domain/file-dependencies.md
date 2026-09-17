@@ -1,6 +1,6 @@
 # FILE-DEPENDENCIES — lowering composicional
 
-H4 aprovado; core N+C autorizado em 2026-09-16. W0–W5 qualificadas local; W6 em implementação; W10 não autorizado.
+H4 aprovado; core N+C autorizado em 2026-09-16. W0–W7 qualificadas local; W8 em implementação; W10 não autorizado.
 [Campanha, brief e waves](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 
@@ -245,3 +245,43 @@ FAST fixo2340 core+adapters PASS; qualification-local semântica244296/performan
 PASS para a mesma produção; o FAST final inclui o pin/fixtures finais. AIR/IR
 permanecem nos pins W1. E-SELECTED é fechado no consumer antes de qualificar W6.
 Logs/REDs preservados em `.harness-results/fd-w6/`.
+
+## FD-W8 — entrada CICS File Control
+
+Autoridade, decisões e oráculos em `../analysis-cfg/docs/product/file-dependencies/w8-implementation.md`.
+Reusar assembler/RegionalPlaces/efeitos gerais; fatos canônicos CICS FILE distintos
+de LINK/XCTL. SYSID e INQUIRE NEXT precisam preservar papéis e identidade; protocolo
+AIR/consumer será provado antes de emissão. W7 já qualifica consultas FILE BEFORE.
+
+### W8 — contrato / algoritmo de lowering
+
+SP2.28 reutiliza wire comum com nova variante fechada CICS_FILE_CONTROL; versões
+anteriores rejeitam a variante. Admission bilateral valida aliases/direção por comando,
+owner/operandos, cardinalidade/tipos e coerência de NOHANDLE/RESP. In-memory usa
+as mesmas regras. Contexto C-FC@1 em argumentos/signature AIR gerais: seleção
+DEFAULT/EXPLICIT e SYSID TEXT; browse acrescenta REQID INT (default0). FILE8 e SYSID4
+computados exigem view IBM1047; unknown não inventa padding ou leitura de output.
+
+CicsFileInvokeHandler separado de Program Control, no assembler composicional.
+READ/WRITE etc materializam efeitos/controle com os fatos atuais; O(opções) por
+comando, sem corte semântico. FROM/RIDFLD/length e parâmetros de entrada não
+implicam escrita nem outro FILE READ. Retorno normal com RESP/RESP2 tem MUST
+somente para os quatro bytes provados (API5.6p10). Outros outcomes permanecem MAY.
+INQUIRE NEXT recebe FILE; START/END não fornecem nome individual. SYSID ausência
+não significa local e não é lacuna por configuração externa.
+
+Revisão normativa corrigiu oracle preliminar: LENGTH default depende de NOLENGTH
+(API5.6p9), não publicado pelo SP. Logo INTO/FROM sem comprimento provado conserva
+bound visible, sem inventar alcance apenas pela declaração. Isso limita precisão
+de memória/CALL, não o nome literal FILE. Layout de ponteiro e atributos SPI não
+provados também mantêm bound; INTO e SET conservam operandos distintos. Nenhum MUST
+por verbo. Gaps de valores/outcomes e binding ficam explícitos. 33fixtures/negativos
+wire+memory e codec passaram; FAST/Q/E2E fecham o checkpoint antes de W9.
+
+Checkpoint W8 produtor: SP2.28 pin4356722155b83966d716b47e1d8a918e4a7f9649,
+AIR0035c5af165c90973a3645bae8a7e286511470e5. B-SP33 exports idênticos;
+wire6/memory24+target-role, codec e composição1/2/5/40 PASS. FAST3 core2340 +
+adapters PASS; Q-SHARED semântica244296/performance39215 e arquitetura PASS.
+RED target READ corrigido na admission; falha do gerador de multiplicidade era
+CALL_TARGET legado, substituído por referência READ do oracle FILE. Tentativas
+preservadas; E-SELECTED/W8 integrado qualifica no consumer. Sem mudança IR.
