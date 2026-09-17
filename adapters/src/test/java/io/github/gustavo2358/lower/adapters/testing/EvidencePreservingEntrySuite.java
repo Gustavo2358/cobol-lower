@@ -15,6 +15,7 @@ import static io.github.gustavo2358.lower.testing.CallOracle.check;
 public final class EvidencePreservingEntrySuite {
     private EvidencePreservingEntrySuite() { }
     public static void main(String[] args) throws Exception {
+        fileContractVersionsPreserveLogicalEvidence();
         for(var name:List.of("unknown-offset","unknown-base","unknown-allocation","unknown-profile","preserved-profile","preserved-logical","initial-allocation","strong-invariant","exact-overwrite")) {
             var bytes=Objects.requireNonNull(EvidencePreservingEntrySuite.class.getResourceAsStream("/sp/evidence/"+name+".json")).readAllBytes();
             var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes);
@@ -76,6 +77,35 @@ public final class EvidencePreservingEntrySuite {
         }
         logicalCopy();
         System.out.println("EP_ENTRY_LOWER=PASS source/entry/target/codec/no invented allocation");
+    }
+    private static void fileContractVersionsPreserveLogicalEvidence() throws Exception {
+        var mapper=new ObjectMapper();
+        var source=mapper.readTree(Objects.requireNonNull(EvidencePreservingEntrySuite.class.getResourceAsStream("/sp/evidence/unknown-base.json")).readAllBytes());
+        var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);
+        for(int minor=21;minor<=28;minor++) {
+            var document=source.deepCopy();((ObjectNode)document).put("contractVersion","2."+minor+".0");
+            ((ObjectNode)document.path("storage")).put("version",minor>=24?"1.8.0":"1.7.0");
+            var files=((ObjectNode)document).putObject("fileInventory");
+            files.put("version","1."+Math.min(minor-21,6)+".0");files.put("availability","KNOWN");files.putArray("declarations");files.putArray("gapCodes");
+            if(minor>=22){var operations=files.putObject("operations");operations.put("availability","KNOWN");operations.putArray("uses");operations.putArray("gapCodes");}
+            if(minor>=25)files.putArray("declaratives");
+            if(minor>=26){files.put("sortAvailability","KNOWN");files.putArray("sortPlans");}
+            if(minor>=27){var auxiliary=files.putObject("auxiliary");auxiliary.put("availability","KNOWN");auxiliary.putArray("clauses");auxiliary.putArray("gapCodes");}
+            var decoded=decoder.decode(mapper.writeValueAsBytes(document));
+            check(decoded instanceof SpJsonDecoder.Decoded,"current file contract must decode: "+minor+" "+decoded);
+            var input=((SpJsonDecoder.Decoded)decoded).input();
+            check(input.storage().orElseThrow().entryState().possibilityDomain()==io.github.gustavo2358.lower.domain.StorageFacts.PossibilityDomain.LOGICAL_SOURCE,"SP2."+minor+" retains source evidence independently of physical view");
+            var result=RegionalTranslationSuite.lower(input);check(result.publication().isPresent(),"current contract keeps unknown-base candidate");
+            var condition=result.publication().orElseThrow().units().getFirst().entries().getFirst().state().conditions().getFirst();
+            check(condition.place() instanceof Places.ObjectPlace&&condition.value() instanceof Entries.PossibleLiterals,"no physical binding or strong value invented");
+        }
+        var legacy=source.deepCopy();((ObjectNode)legacy).put("contractVersion","2.18.0");((ObjectNode)legacy.path("storage")).put("version","1.5.0");
+        for(var reference:legacy.findParents("logicalWholeItem"))((ObjectNode)reference).remove("logicalWholeItem");
+        for(var condition:legacy.path("storage").path("entryState").path("conditions"))((ObjectNode)condition).remove("logicalText");
+        var old=decoder.decode(mapper.writeValueAsBytes(legacy));check(old instanceof SpJsonDecoder.Decoded,"legacy bounded-physical shape remains readable");
+        var input=((SpJsonDecoder.Decoded)old).input();
+        check(input.storage().orElseThrow().entryState().possibilityDomain()==io.github.gustavo2358.lower.domain.StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL,"legacy domain is not promoted");
+        check(new CobolLowerer().lower(input,CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"legacy requires its physical view proof");
     }
     private static void logicalCopy() throws Exception {
         var bytes=Objects.requireNonNull(EvidencePreservingEntrySuite.class.getResourceAsStream("/sp/evidence/logical-copy.json")).readAllBytes();

@@ -321,3 +321,18 @@ usa as suítes semânticas/performance existentes, sem repetir FastAdapterSuite.
 Uma unidade sem entrada utilizável ainda rejeita a composição atomicamente pela
 admission existente; não é omitida. INPUT_MISSING com entrada utilizável conserva
 unidades observadas e gap global, como prova a fixture missing-copy.
+
+## FD-W11 — regressão de negociação de evidência
+
+O corpus final revelou uma enumeração desatualizada no adapter: Materialize
+atribuía LOGICAL_SOURCE somente a SP2.19/2.20, mas o contrato fonte continuou nas
+versões2.21–2.28 da campanha. Evidência possível com layout aberto era recusada
+como se fosse prova física. Correção limitada à negociação; domínio, tradutor,
+solver e validação de prova física não mudam. Não exige versão SP/AIR nova.
+
+Oracle usa unknown-base em todas as oito versões FILE com inventários vazios
+tipados de cada revisão; exige possibilidade lógica em ObjectPlace. Negativo
+SP2.18 conserva BOUNDED_PHYSICAL e recusa ausência de prova. RED real2.21 e
+GREEN8+legado, PossibleEntrySuite seis negativos e FileScopeSuite PASS. FAST2
+core2340+adapters e Q2 semântica205081+performance39215/arquitetura PASS exit0.
+Resultados, repins e corpus finais no harness canônico W11.

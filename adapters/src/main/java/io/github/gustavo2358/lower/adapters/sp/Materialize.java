@@ -1115,7 +1115,7 @@ final class Materialize {
         var common=input(Wire215.common(d));var s=common.storage().orElseThrow();var unit=common.unit();var e=d.storage().entryState();
         var entry=new StorageFacts.EntryState(e.mode(),e.conditions().stream().map(v->new StorageFacts.InitialCondition(new StorageFacts.NodeId(unit,v.node()),
             v.kind(),v.bytes(),v.gapCodes(),provenance(v.provenance(),unit),v.proof(),Optional.ofNullable(v.logicalText()))).toList(),
-            java.util.Set.of("2.19.0","2.20.0").contains(d.contractVersion())?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
+            java.util.Set.of("2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0","2.27.0","2.28.0").contains(d.contractVersion())?StorageFacts.PossibilityDomain.LOGICAL_SOURCE:StorageFacts.PossibilityDomain.BOUNDED_PHYSICAL);
         return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),
             common.storageIndependence(),common.compositional(),Optional.of(new StorageFacts.Inventory(s.profile(),s.profileId(),s.runtimeCodec(),s.nodes(),s.bases(),s.views(),s.gapCodes(),s.relations(),s.renames(),entry)));
     }
