@@ -27,7 +27,7 @@ public final class FileDeclarationSuite {
         check(f.origins().size()==2&&f.records().size()==1&&input.dataDeclarations().stream().anyMatch(d->d.id().equals(f.records().get(0))),"two origins and resolved record owner");
         var result=new io.github.gustavo2358.lower.application.CobolLowerer().lower(input,CobolLower.OPTIONS);
         check(result.status()!=io.github.gustavo2358.lower.application.LoweringResult.Status.INVALID_INPUT,"declaration admitted in memory");
-        result.publication().ifPresent(p -> check(p.resources().isEmpty(),"W0 emits no AIR FILE resources"));
+        result.publication().ifPresent(p -> check(p.resources().size()==1&&p.resources().getFirst().declaration().orElseThrow().uses().isEmpty(),"W1 transports the W0 declaration without executable use"));
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var base=(com.fasterxml.jackson.databind.node.ObjectNode)mapper.readTree(bytes);
         for(var mutation:java.util.List.of("missing","version","superseded","variant","owner","record","duplicate","sd","mechanism","unknown-exact")) {
             var document=base.deepCopy();var file=(com.fasterxml.jackson.databind.node.ObjectNode)document.path("fileInventory").path("declarations").get(0);

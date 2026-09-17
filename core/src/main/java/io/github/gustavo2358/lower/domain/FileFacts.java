@@ -28,8 +28,21 @@ public final class FileFacts {
             Objects.requireNonNull(optional); Objects.requireNonNull(assignment); Objects.requireNonNull(organization); Objects.requireNonNull(accessMode); Objects.requireNonNull(visibility);
             records=List.copyOf(records); references=List.copyOf(references); origins=List.copyOf(origins); gapCodes=List.copyOf(gapCodes); }
     }
-    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes) {
-        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes); }
+    public enum Command { OPEN, READ, CLOSE }
+    public enum OpenMode { INPUT, OUTPUT, IO, EXTEND, UNSPECIFIED }
+    public enum SyntaxProfile { N_LR, UNSUPPORTED }
+    public record Candidate(String id,UnitKey owner) {public Candidate {Objects.requireNonNull(id);Objects.requireNonNull(owner);}}
+    public record Use(StatementId statement,int ordinal,Command command,OpenMode mode,SyntaxProfile profile,
+            ResolutionStatus bindingStatus,List<Candidate> candidates,Provenance provenance,List<String> gapCodes) {
+        public Use {Objects.requireNonNull(statement);Objects.requireNonNull(command);Objects.requireNonNull(mode);Objects.requireNonNull(profile);Objects.requireNonNull(bindingStatus);candidates=List.copyOf(candidates);Objects.requireNonNull(provenance);gapCodes=List.copyOf(gapCodes);}
+    }
+    public record Operations(Availability availability,List<Use> uses,List<String> gapCodes) {
+        public Operations {Objects.requireNonNull(availability);uses=List.copyOf(uses);gapCodes=List.copyOf(gapCodes);}
+        public static Operations unavailable(){return new Operations(Availability.UNAVAILABLE,List.of(),List.of("FILE_OPERATIONS_UNAVAILABLE"));}
+    }
+    public record Inventory(Availability availability, List<Declaration> declarations, List<String> gapCodes, Operations operations) {
+        public Inventory(Availability availability,List<Declaration> declarations,List<String> gapCodes){this(availability,declarations,gapCodes,Operations.unavailable());}
+        public Inventory { Objects.requireNonNull(availability); declarations=List.copyOf(declarations); gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(operations); }
         public static Inventory unavailable() { return new Inventory(Availability.UNAVAILABLE,List.of(),List.of("FILE_INVENTORY_UNAVAILABLE")); }
     }
 }

@@ -10,6 +10,13 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 final class Materialize {
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
+    static SpInput input(Wire222.Document wire) {
+        var common=input(Wire222.common(wire));var inv=common.fileInventory();var unit=common.unit();var ops=wire.fileInventory().operations();
+        var uses=ops.uses().stream().map(u->new io.github.gustavo2358.lower.domain.FileFacts.Use(new StatementId(unit,u.statement()),u.ordinal(),u.command(),u.mode(),u.profile(),u.bindingStatus(),
+            u.candidates().stream().map(c->new io.github.gustavo2358.lower.domain.FileFacts.Candidate(c.id(),unitKey(c.owner(),null))).toList(),provenance(u.provenance(),unit),u.gapCodes())).toList();
+        return new SpInput(unit,common.policy(),common.dataDeclarations(),common.statements(),common.structure(),common.gaps(),common.coverage(),common.entryInventory(),common.storageIndependence(),common.compositional(),common.storage(),
+            new io.github.gustavo2358.lower.domain.FileFacts.Inventory(inv.availability(),inv.declarations(),inv.gapCodes(),new io.github.gustavo2358.lower.domain.FileFacts.Operations(ops.availability(),uses,ops.gapCodes())));
+    }
     static SpInput input(Wire221.Document wire) {
         var common = input(Wire221.common(wire)); var unit = common.unit(); var inventory = wire.fileInventory();
         var files = inventory.declarations().stream().map(f -> {

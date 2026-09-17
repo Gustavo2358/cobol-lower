@@ -28,7 +28,8 @@ final class PartialProgramLowerer implements LowerInput {
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
         var data = RegionalDataTranslator.translate(plan.data(), plan.storage(), unit, ids, origins, items, uncertainties);
-        var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties);
+        var files=new FileResourceLowering(input,data,unit,ids,origins,uncertainties);
+        var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties,files);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
         if(sourceEntry.signature().availability()!=SpInput.Availability.KNOWN) {
@@ -69,8 +70,10 @@ final class PartialProgramLowerer implements LowerInput {
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
         if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        var resources=files.resources();
+        if(files.available())required.add(Capabilities.RESOURCE_BINDINGS);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),
-            List.of(body), data.storage(), List.of(), List.of(), origins.origins(),
+            List.of(body), data.storage(), resources, List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
         boolean logicalCopy=input.statements().stream().anyMatch(s->s instanceof SpInput.MoveFact m&&m.regionalMove().filter(e->e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent());
         var assessment = logicalCopy?OutputAssessment.assessForPartialAnalysis(output, options.validation()):OutputAssessment.assess(output, options.validation());

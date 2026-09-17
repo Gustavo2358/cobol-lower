@@ -33,5 +33,19 @@ final class FileDeclarationAdmission {
                 c.require(b.selected().isEmpty()||b.candidates().size()==1&&b.candidates().contains(b.selected().get()),Rule.PROFILE_FACT,f.id(),null,"invalid file reference selection");
             }
         }
+        var operations=inventory.operations();
+        c.require(operations.availability()==Availability.KNOWN ? operations.gapCodes().isEmpty() : !operations.gapCodes().isEmpty(),Rule.PROFILE_FACT,"file-uses",null,"operation availability/gaps mismatch");
+        c.require(operations.availability()!=Availability.UNAVAILABLE||operations.uses().isEmpty(),Rule.PROFILE_FACT,"file-uses",null,"unavailable operations cannot assert uses");
+        var statementIds=input.statements().stream().map(s->s.header().id()).collect(java.util.stream.Collectors.toSet());
+        var ordinals=new HashSet<java.util.Map.Entry<StatementId,Integer>>();
+        for(var use:inventory.operations().uses()) {
+            c.touch();c.provenance(use.provenance());
+            c.require(statementIds.contains(use.statement())&&use.statement().unit().equals(input.unit()),Rule.PROFILE_FACT,"file-use",null,"file use refers to absent/foreign statement");
+            c.require(use.ordinal()>=0&&ordinals.add(java.util.Map.entry(use.statement(),use.ordinal())),Rule.PROFILE_FACT,"file-use",null,"duplicate/negative file use ordinal");
+            c.require(use.bindingStatus()!=ResolutionStatus.RESOLVED||use.candidates().size()==1,Rule.PROFILE_FACT,"file-use",null,"resolved file use must have one candidate");
+            c.require(new HashSet<>(use.candidates()).size()==use.candidates().size(),Rule.PROFILE_FACT,"file-use",null,"duplicate candidates");
+            for(var candidate:use.candidates())c.require(!candidate.id().isBlank()&&(!candidate.owner().equals(input.unit())||files.contains(candidate.id())),Rule.PROFILE_FACT,"file-use",null,"local candidate missing");
+            c.require((use.command()==FileFacts.Command.OPEN)==(use.mode()!=FileFacts.OpenMode.UNSPECIFIED),Rule.PROFILE_FACT,"file-use",null,"file command/mode mismatch");
+        }
     }
 }

@@ -10,9 +10,9 @@ final class PartialProgramAssembler {
     record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
     static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
-            List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
+            List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         var sequences=new ArrayList<Sequence>();
-        append(plan,plan.statements(),Map.of(),data,unit,ids,origins,statements,operands,items,uncertainties,sequences);
+        append(plan,plan.statements(),Map.of(),data,unit,ids,origins,statements,operands,items,uncertainties,sequences,files);
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
@@ -22,13 +22,17 @@ final class PartialProgramAssembler {
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
             Map<SpInput.StatementId,LabelId> overrides,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
-            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences) {
+            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files) {
         for(var fact:sourceStatements) {
             var label=label(fact.header().id(),unit,ids); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
-            if(precise && fact instanceof SpInput.MoveFact m) {
+            if(files.handles(fact)) {
+                var chain=files.sequences(fact,destination,ids);term=chain.getFirst().terminator();
+                for(int i=1;i<chain.size();i++)sequences.add(chain.get(i));
+                for(var sequence:chain)link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);
+            } else if(precise && fact instanceof SpInput.MoveFact m) {
                 var transfers=RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,unit,ids,origins,operands,items,uncertainties);instructions.addAll(transfers);var assign=transfers.getFirst();
                 for(var transfer:transfers)link(m.header().id(),transfer,label,statements,items);
                 term=destination!=null ? PerformSequenceAssembler.jump("sequential",m.header().id(),destination,assign.header().origin(),unit,ids)
@@ -116,7 +120,7 @@ final class PartialProgramAssembler {
                     var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):completion;
                     for(var id:paragraph.completions())completions.put(id,resume);
                 }
-                append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences);
+                append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
             } else if(precise && fact instanceof SpInput.PerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.targetEntry().orElseThrow(),unit,activation);

@@ -1,6 +1,7 @@
 package io.github.gustavo2358.lower.application;
 
 import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.domain.FileFacts;
 import java.util.function.Consumer;
 
 /** Explicit SP identity fields. No transport, reflection, or semantic reconstruction. */
@@ -14,6 +15,13 @@ final class PartialIdentityFacts {
             }
             case SpInput.CicsOption r -> {field.accept("CicsOption");value.accept(r.name());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.reference());}
 
+            case FileFacts.Inventory r -> {field.accept("FileInventory");value.accept(r.availability());value.accept(r.declarations());value.accept(r.gapCodes());value.accept(r.operations());}
+            case FileFacts.Declaration r -> {field.accept("FileDeclaration");value.accept(r.id());value.accept(r.owner());value.accept(r.logicalFile());value.accept(r.kind());value.accept(r.optional());value.accept(r.assignment());value.accept(r.organization());value.accept(r.accessMode());value.accept(r.visibility());value.accept(r.records());value.accept(r.references());value.accept(r.origins());value.accept(r.gapCodes());}
+            case FileFacts.Assignment r -> {field.accept("FileAssignment");value.accept(r.availability());value.accept(r.profile());value.accept(r.original());value.accept(r.sourceKind());value.accept(r.externalFileName());value.accept(r.gapCodes());}
+            case FileFacts.Reference r -> {field.accept("FileReference");value.accept(r.role());value.accept(r.binding());value.accept(r.duplicates());value.accept(r.provenance());}
+            case FileFacts.Operations r -> {field.accept("FileOperations");value.accept(r.availability());value.accept(r.uses());value.accept(r.gapCodes());}
+            case FileFacts.Use r -> {field.accept("FileUse");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.command());value.accept(r.mode());value.accept(r.profile());value.accept(r.bindingStatus());value.accept(r.candidates());value.accept(r.provenance());value.accept(r.gapCodes());}
+            case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
             case SpInput r -> {
                 field.accept("SpInput");
                 field.accept("unit"); value.accept(r.unit());
@@ -26,6 +34,7 @@ final class PartialIdentityFacts {
                 field.accept("entryInventory"); value.accept(r.entryInventory());
                 field.accept("storageIndependence"); value.accept(r.storageIndependence());
                 field.accept("compositional"); value.accept(r.compositional());
+                if(r.fileInventory().availability()!=SpInput.Availability.UNAVAILABLE){field.accept("files@1");value.accept(r.fileInventory());}
                 if(r.storage().isPresent()){field.accept("storage@1");value.accept(r.storage().get());}
             }
             case SpInput.UnitKey r -> {

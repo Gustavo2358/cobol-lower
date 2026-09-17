@@ -111,7 +111,7 @@ final class CanonicalRevision {
         var e = new CanonicalRevision(); e.word("compositional-program@1/AIR2/SP1.8/explicit-fields-v1");
         var canonical=new SpInput(input.unit(),input.policy(),ScalarDataOrder.canonical(input.dataDeclarations()),
             input.statements().stream().sorted(java.util.Comparator.comparingInt(s->s.header().programPoint())).toList(),
-            input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage().map(StorageIdentityFacts::canonical));
+            input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage().map(StorageIdentityFacts::canonical),input.fileInventory());
         e.recordFact(canonical); return Optional.of(e.finish());
     }
     /** Identity only: structurally encode all immutable record components; never infer semantics from text. */
