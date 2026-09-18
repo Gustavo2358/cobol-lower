@@ -1,3 +1,5 @@
+# Historical W1 property; continued by [logical storage W2](logical-text-w2.md)
+
 # Logical text W1
 
 id: logical-text-w1; status: IN_PROGRESS; scope: literal-to-group projection without physical profile.

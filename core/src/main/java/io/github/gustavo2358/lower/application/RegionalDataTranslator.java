@@ -34,7 +34,7 @@ final class RegionalDataTranslator {
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
-        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&!aliasData.contains(d.id())).toList(),unit,ids,origins,items,uncertainties);
+        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
         if(source.owner().storage().isEmpty())return legacy;
         var relationOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
         var allocationEvidence=new HashMap<StorageFacts.BaseId,List<OriginId>>();

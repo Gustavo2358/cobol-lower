@@ -18,9 +18,16 @@ public final class LogicalTextStorageSuite {
         check(input.storage().orElseThrow().runtimeCodec().isEmpty(),"no encoding selected");
         var p=RegionalTranslationSuite.lower(input).publication().orElseThrow();
         check(p.storage().stream().allMatch(Memory.Cell.class::isInstance),"logical AIR has no physical Region");
-        var values=RegionalTranslationSuite.instructions(p).stream().filter(Operations.Assign.class::isInstance).map(Operations.Assign.class::cast)
-            .map(Operations.Assign::value).map(Expressions.Literal.class::cast).map(Expressions.Literal::value).map(Values.TextValue.class::cast).map(Values.TextValue::value).sorted().toList();
-        check(values.equals(List.of("1234","PROGA   ")),"parent fitting then child projection");
+        var values=new HashSet<String>();
+        for(var sequence:p.units().getFirst().sequences()) {
+            var state=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+            for(var instruction:sequence.instructions())if(instruction instanceof Operations.Assign assign) {
+                var value=interpret(assign.value(),state);
+                state.put(((Places.ObjectPlace)assign.destination()).object(),value);
+                if(value!=null)values.add(value);
+            }
+        }
+        check(values.equals(Set.of("PROGA   1234","1234","PROGA   ")),"root snapshot and child character projections");
         var json=new com.fasterxml.jackson.databind.ObjectMapper();
         for(var mutation:List.of("missing","negative","escape","root","omit-child","unknown-field","old-version")) {
             var tree=(com.fasterxml.jackson.databind.node.ObjectNode)json.readTree(bytes);var storage=(com.fasterxml.jackson.databind.node.ObjectNode)tree.path("storage");
@@ -37,4 +44,20 @@ public final class LogicalTextStorageSuite {
         }
         System.out.println("LOGICAL_TEXT_STORAGE=PASS noPhysicalProfile roundtrip=true negativeCases=7");
     }
+    private static String interpret(Expression expression,Map<io.github.gustavo2358.air.model.Ids.ObjectId,String> state) {
+        if(expression instanceof Expressions.Literal l)return ((Values.TextValue)l.value()).value();
+        if(expression instanceof Expressions.Read r)return state.get(((Places.ObjectPlace)r.place()).object());
+        if(expression instanceof Expressions.FitText f) {
+            var text=interpret(f.value(),state);if(text==null)return null;
+            return (text+f.pad().repeat(f.length().intValueExact())).substring(0,f.length().intValueExact());
+        }
+        if(expression instanceof Expressions.SliceText s) {
+            var text=interpret(s.value(),state);if(text==null)return null;
+            int start=((Values.IntValue)((Expressions.Literal)s.start()).value()).value().intValueExact();
+            int count=((Values.IntValue)((Expressions.Literal)s.count()).value()).value().intValueExact();return text.substring(start,start+count);
+        }
+        var b=(Expressions.Binary)expression;var left=interpret(b.left(),state);var right=interpret(b.right(),state);
+        return left==null||right==null?null:left+right;
+    }
+
 }

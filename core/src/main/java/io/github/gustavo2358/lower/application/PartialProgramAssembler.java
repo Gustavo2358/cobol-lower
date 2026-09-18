@@ -17,6 +17,13 @@ final class PartialProgramAssembler {
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
         var entrySequence=sequences.stream().filter(s->s.label().equals(entryLabel)).findFirst().orElseThrow();
+        var initial=LogicalTextMove.initial(plan.storage().logical(),data,unit,ids,origins);
+        if(!initial.isEmpty()) {
+            var bootstrap=new LabelId(unit,ids.id("label","logical-root-entry",unit.localId(),"entry"));
+            var origin=initial.getFirst().header().origin();
+            sequences.add(new Sequence(bootstrap,initial,PerformSequenceAssembler.jump("logical-root-entry",input.entryInventory().entries().getFirst().start().statement().orElseThrow(),entryLabel,origin,unit,ids),origin));
+            return new Assembly(files.complete(sequences),bootstrap,origin);
+        }
         return new Assembly(files.complete(sequences),entryLabel,entrySequence.origin());
     }
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,

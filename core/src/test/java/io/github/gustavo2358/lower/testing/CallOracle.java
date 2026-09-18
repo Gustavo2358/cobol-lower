@@ -28,7 +28,7 @@ public final class CallOracle {
         var invoke = (Operations.Invoke) first.terminator();
         check(invoke.action().equals("call"), "call action");
         check(invoke.outcomes().known().equals(List.of(new Control.Normal(next.label()))), "explicit normal destination");
-        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.AllControl(publication.id()))), "open all-control remainder");
+        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.UnitControl(publication.units().getFirst().id(),false,true,true,true,true,true))), "open nonlocal CALL remainder");
         check(invoke.arguments().isEmpty() && invoke.results().isEmpty() && invoke.effectOperands().isEmpty(), "zero operands, no invented target effect operand");
         check(invoke.signature() instanceof Interactions.ExternalSignature, "external signature");
         var signature = ((Interactions.ExternalSignature) invoke.signature()).signature();
