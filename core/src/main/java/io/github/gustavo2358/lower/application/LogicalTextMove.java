@@ -29,11 +29,15 @@ final class LogicalTextMove {
             var origin=origins.source("logical-initial-root",root.node().handle(),logical.nodes.get(root.node()).provenance());var f=new ExpressionsFor(id,origin);
             Expression value=null;BigInteger cursor=BigInteger.ZERO;
             for(var leaf:logical.leaves(root)) {
-                if(leaf.start().compareTo(cursor)<0)continue;
+                var end=LogicalTextIndex.end(leaf);if(end.compareTo(cursor)<=0)continue;
+                var start=leaf.start().max(cursor);var length=end.subtract(start);
                 var node=logical.nodes.get(leaf.node());
                 Expression part=node.data().filter(data.index()::containsKey).map(d->f.fit(f.read(data.index().get(d).object()),leaf.length()))
                     .orElseGet(()->f.slice(f.read(rootObject),leaf.start(),leaf.length()));
-                value=value==null?part:f.concat(value,part);cursor=LogicalTextIndex.end(leaf);
+                // An overlapping longer view still contributes its uncovered tail.
+                // Omitting it and fitting the shorter concatenation would invent spaces.
+                if(start.compareTo(leaf.start())>0)part=f.slice(part,start.subtract(leaf.start()),length);
+                value=value==null?part:f.concat(value,part);cursor=end;
             }
             if(value==null)continue;
             var place=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(id),"destination"),Operand.Role.VALUE_WRITE,origin),rootObject);

@@ -61,3 +61,10 @@ producers. Physical engine remains EXPERIMENTAL / NOT PRODUCTION QUALIFIED.
 Outside scope: general refmod, COMP/COMP-3/BINARY, NATIONAL/DBCS, dynamic extents,
 OCCURS/ODO, codecs, arbitrary physical aliasing and overlapping group copies.
 Corporate NOT REEXECUTED / NOT AN ACCEPTANCE GATE / NO NEW NINE-TARGET CLAIM.
+
+Adversarial unequal-extent overlay: an original X(8) overlaid by a 4+8 group has
+an unknown tail at [8,12). Initialization must retain the uncovered suffix of an
+overlapping longer leaf; fitting only the original eight characters would invent
+four spaces. The source fixture first exposed the false candidate EFGH (RED),
+then returned an open value with no invented target (GREEN). The lower FAST suite
+retains the independent full-initial-extent assertion and the real producer SP.

@@ -42,7 +42,22 @@ public final class LogicalTextStorageSuite {
             var result=decoder.decode(json.writeValueAsBytes(tree));
             check(result instanceof SpJsonDecoder.Rejected||new CobolLowerer().lower(((SpJsonDecoder.Decoded)result).input(),CobolLower.OPTIONS).publication().isEmpty(),"reject malformed logical inventory: "+mutation);
         }
+        var unequal=decoder.decode(Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/logical-text-w1/unequal-overlay.json")).readAllBytes());
+        var expanded=RegionalTranslationSuite.lower(((SpJsonDecoder.Decoded)unequal).input()).publication().orElseThrow();
+        var unit=expanded.units().getFirst();var entry=unit.entries().getFirst().initialLabel().orElseThrow();
+        var bootstrap=unit.sequences().stream().filter(sequence->sequence.label().equals(entry)).findFirst().orElseThrow();
+        check(!bootstrap.instructions().isEmpty(),"expanded family initialization is present");
+        for(var instruction:bootstrap.instructions()) {
+            var fit=(Expressions.FitText)((Operations.Assign)instruction).value();
+            check(extent(fit.value()).equals(fit.length()),"initialization covers the full root; unknown overlay tail must not become padding");
+        }
         System.out.println("LOGICAL_TEXT_STORAGE=PASS noPhysicalProfile roundtrip=true negativeCases=7");
+    }
+    private static java.math.BigInteger extent(Expression e) {
+        if(e instanceof Expressions.FitText f)return f.length();
+        if(e instanceof Expressions.SliceText t)return ((Values.IntValue)((Expressions.Literal)t.count()).value()).value();
+        if(e instanceof Expressions.Binary b)return extent(b.left()).add(extent(b.right()));
+        throw new AssertionError("initial part must have a source-proved extent");
     }
     private static String interpret(Expression expression,Map<io.github.gustavo2358.air.model.Ids.ObjectId,String> state) {
         if(expression instanceof Expressions.Literal l)return ((Values.TextValue)l.value()).value();
