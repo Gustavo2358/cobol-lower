@@ -66,11 +66,16 @@ public final class StorageFacts {
         public EntryState(EntryMode mode,List<InitialCondition> conditions) {this(mode,conditions,PossibilityDomain.BOUNDED_PHYSICAL);}
         public static EntryState unknown() {return new EntryState(EntryMode.UNKNOWN,List.of());}
     }
+    public record LogicalTextView(NodeId node,NodeId root,BigInteger start,BigInteger length) { }
     public record Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,
-            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames,EntryState entryState) {
+            List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames,EntryState entryState,List<LogicalTextView> logicalTextViews) {
         public Inventory {
+            logicalTextViews=List.copyOf(logicalTextViews);
             Objects.requireNonNull(entryState);Objects.requireNonNull(profile);Objects.requireNonNull(profileId);Objects.requireNonNull(runtimeCodec);
             nodes=List.copyOf(nodes);bases=List.copyOf(bases);views=List.copyOf(views);gapCodes=List.copyOf(gapCodes);relations=List.copyOf(relations);renames=List.copyOf(renames);
+        }
+        public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames,EntryState entryState) {
+            this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,relations,renames,entryState,List.of());
         }
         public Inventory(Profile profile,Optional<String> profileId,Optional<String> runtimeCodec,List<Node> nodes,List<Base> bases,List<View> views,List<String> gapCodes,List<Relation> relations,List<Renames> renames) {
             this(profile,profileId,runtimeCodec,nodes,bases,views,gapCodes,relations,renames,EntryState.unknown());

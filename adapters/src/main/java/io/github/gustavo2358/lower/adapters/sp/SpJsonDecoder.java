@@ -29,6 +29,7 @@ public final class SpJsonDecoder {
             if (maxDepth < 1) throw new IllegalArgumentException("positive limits required");
         }
     }
+    private record LogicalTextViewDocument(String node,String root,String start,String length) { }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
     public record Diagnostic(Code code, String phase, String location) {
         public Diagnostic { Objects.requireNonNull(code); Objects.requireNonNull(phase); Objects.requireNonNull(location); }
@@ -82,6 +83,17 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            // SP2.29 adds a typed logical-coordinate inventory; the physical contract remains unchanged.
+            boolean logicalTextContract=node.path("contractVersion").asText().equals("2.29.0");
+            java.util.List<LogicalTextViewDocument> logicalTextViews=java.util.List.of();
+            if(logicalTextContract) {
+                var storage=node.path("storage");
+                if(!storage.path("version").asText().equals("1.9.0")||!storage.path("logicalTextViews").isArray())throw new PhysicalShape("$/storage/logicalTextViews");
+                logicalTextViews=java.util.Arrays.asList(mapper.treeToValue(storage.path("logicalTextViews"),LogicalTextViewDocument[].class));
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).remove("logicalTextViews");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).put("version","1.8.0");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion","2.28.0");
+            }
             var pending = new ArrayDeque<JsonNode>(); pending.push(node);
             while (!pending.isEmpty()) {
                 meter.nodes++;
@@ -290,6 +302,14 @@ public final class SpJsonDecoder {
             }
             var variants = input.statements().stream().filter(SpInput.OtherStatement.class::isInstance)
                 .map(SpInput.OtherStatement.class::cast).map(v -> new UnsupportedVariant(v.header().id(), v.variant())).toList();
+            if(logicalTextContract) {
+                var st=input.storage().orElseThrow();var unit=input.unit();
+                var logical=logicalTextViews.stream().map(v->new io.github.gustavo2358.lower.domain.StorageFacts.LogicalTextView(
+                    new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.node()),new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.root()),
+                    new java.math.BigInteger(v.start()),new java.math.BigInteger(v.length()))).toList();
+                var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),logical);
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
+            }
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

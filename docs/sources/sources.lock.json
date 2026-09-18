@@ -6,10 +6,10 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "fe88cc16f664c26d27e8f975476fc2dfc3e6eff8",
+      "commit": "7a2050b2d5f14472d372ea59aca8e3114a9e64bd",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
-      "contract_version": "2.28.0",
+      "contract_version": "2.29.0",
       "paths": [
         "docs/domain/cobol-semantic-product.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
@@ -209,7 +209,8 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsCommandSyntax.java": "caf0fbe5302fb7ebaf16060ffa4c460a3b4671c98085886f5dd6341cd2c9b098",
         "src/test/java/io/github/gustavo2358/cobolexplorer/CicsFileControlTest.java": "ff7fb06c3970335a328a8c385aba474c0db39684fe1154e4062824be39a260fc"
       },
-      "canonical_ref": "feat/file-dependencies"
+      "canonical_ref": "feat/file-dependencies",
+      "logical_text_w1": "Optional SP 2.29/storage 1.9 proof; disabled mode remains SP 2.28/storage 1.8. Synthetic E2E and contract round-trip qualified."
     },
     {
       "id": "SRC-HARNESS",

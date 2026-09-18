@@ -7,6 +7,7 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        LogicalTextStorageSuite.main(new String[0]);
         FileDeclarationSuite.main(new String[0]); FileScopeSuite.main(new String[0]);
         FileStaticSliceSuite.main(new String[0]); FileNativeOperationSuite.main(new String[0]); FileMemoryEffectsSuite.main(new String[0]); FileControlSuite.main(new String[0]); FileSortSuite.main(new String[0]); FileAuxiliarySuite.main(new String[0]);
         ObservedShapeSuite.main(new String[0]);

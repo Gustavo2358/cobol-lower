@@ -57,7 +57,7 @@ final class RegionalDataTranslator {
         // single abstract Cell as this component's representative, without a second allocation.
         for(var link:legacy.index().values()) {
             var view=source.byData().get(link.source());
-            if(view!=null)physical.put(view.base(),link.storage().orElseThrow());
+            if(view!=null&&!source.logical().byData.containsKey(link.source()))physical.put(view.base(),link.storage().orElseThrow());
         }
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList()) {
             var origin=origins.source("storage-base",base.id().handle(),base.provenance());
@@ -112,6 +112,13 @@ final class RegionalDataTranslator {
         // Unsupported declarations keep an object identity without inventing a typed read.
         for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
             if(index.containsKey(declaration.id()))continue;
+            var logical=source.logical().byData.get(declaration.id());
+            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP) {
+                var outputs=source.logical().leaves(logical).stream().map(v->source.logical().nodes.get(v.node()).data()).flatMap(Optional::stream)
+                    .filter(index::containsKey).map(d->(Id)index.get(d).object()).toList();
+                items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),origins.source("data",declaration.id().handle(),declaration.provenance()),outputs));
+                continue;
+            }
             var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
             var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
             var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
@@ -182,9 +189,14 @@ final class RegionalDataTranslator {
             if(base.allocation().proved()&&data.physical().containsKey(base.id())) {
                 members.add(data.physical().get(base.id()));evidence.add(origins.source("storage-base",base.id().handle(),base.provenance()));
             }
+        if(!source.logical().views.isEmpty()) {
+            for(var cell:data.storage())if(cell instanceof Memory.Cell&&!members.contains(cell.header().id())) {
+                members.add(cell.header().id());evidence.add(cell.header().origin());
+            }
+        }
         if(members.size()<2)return List.of();
         var origin=origins.derived(ids.id("origin","regional-independence",unit.localId(),"allocations"),evidence,"storage@1/independent-local-working-storage");
         return List.of(new Proofs.Premise(new PremiseId(unit.publication(),ids.id("premise","regional-independence",unit.localId(),"allocations")),
-            StorageFacts.PROFILE_ID,"Explicit source allocation proof; one representative per physical base",origin,new Proofs.DisjointStorage(members)));
+            source.logical().views.isEmpty()?StorageFacts.PROFILE_ID:"logical-text@1","Explicit disjoint source roots and elementary logical leaves",origin,new Proofs.DisjointStorage(members)));
     }
 }
