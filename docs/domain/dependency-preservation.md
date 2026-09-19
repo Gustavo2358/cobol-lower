@@ -55,3 +55,12 @@ UnknownBinding + logical Assign + CICS Read identity, AIR round trip, forged adj
 rejection and rejection of new semantics mislabeled as an older SP version.
 `CicsProgramControlSuite` checks short/partial nominal targets stay readable without
 asserting an exact name area. FAST also covers existing regional/control contracts.
+
+## Unknown layout and REDEFINES
+
+For B REDEFINES A, MOVE PROGA to B followed by MOVE PROGB to A does not give the
+nominal fallback physical alias/overwrite authority. With unavailable layout, B's
+PROGA remains a possibility with remainder; PROGB is not copied to B merely because
+of source names or a REDEFINES clause. UnknownBinding retains the unenumerated
+alias effect. Strong physical proof may refine this result, but is not invented.
+The frontend and lower-produced AIR consumer fixture freeze this boundary.

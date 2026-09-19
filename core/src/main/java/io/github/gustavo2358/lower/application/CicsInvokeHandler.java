@@ -47,6 +47,8 @@ final class CicsInvokeHandler {
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-contract",operation.localId(),key));
         uncertainties.add(new Evidence.Uncertainty(reason,"CONTRACT_UNKNOWN",List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.STORAGE,Evidence.Dimension.DEPENDENCIES),scope,
             "Signature/options and foreign effects remain partial; control follows source profile "+fact.conditions()+"; DEFAULT_ENTRY_PREFIX is conditional on the explicitly declared new CICS logical level and a complete canonical MOVE-only entry prefix.",origin));
+        var operationUncertainties=new ArrayList<UncertaintyId>();
+        operationUncertainties.add(reason);
         var policy=new Interactions.ExtensionName(NAME.name(),NAME.version());
         Interactions.Target target;
         if(fact.target().orElse(null) instanceof SpInput.LiteralCallTarget literal&&literal.logicalValue().isPresent()) {
@@ -60,6 +62,7 @@ final class CicsInvokeHandler {
             var place=NominalTarget.place(reference,data,new Operand.Header(placeId,Operand.Role.VALUE_READ,targetOrigin),ids);
             if(!nameArea(reference,data)) {
                 var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-logical-target",operation.localId(),key));
+                operationUncertainties.add(gap);
                 uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:CICS_PHYSICAL_NAME_AREA_UNPROVEN",List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Whole nominal target retained; physical name area unproved. Interpretation remains open.",targetOrigin));
             }
             target=new Interactions.ComputedTarget("program","cics.program",new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place),policy,targetOrigin);
@@ -93,7 +96,7 @@ final class CicsInvokeHandler {
         var outcomes=new Control.InvocationOutcomes(fact.command()==SpInput.CicsCommand.LINK&&next!=null?List.of(new Control.Normal(next)):List.of(),new Scopes.WithinControl(remainder));
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
         var precision=new Evidence.Precision(open,open,open,new Evidence.Claim(scope,Evidence.PrecisionStatus.NOT_APPLICABLE,List.of()),open);
-        return new Operations.Invoke(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.of(reason)),fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));
+        return new Operations.Invoke(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.copyOf(operationUncertainties)),fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));
     }
     private static boolean nameArea(SpInput.DataReference reference,ScalarDataTranslator.Result data) {
         if(reference.regionalAccess().isEmpty()||reference.binding().selected().isEmpty())return false;
