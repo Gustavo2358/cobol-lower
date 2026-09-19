@@ -83,6 +83,14 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            io.github.gustavo2358.lower.domain.SourceFacts.Inventory sourceDependencies=null;
+            if(node.path("contractVersion").asText().equals("2.30.0")) {
+                if(!node.path("sourceDependencies").isObject())throw new PhysicalShape("$/sourceDependencies");
+                sourceDependencies=mapper.treeToValue(node.path("sourceDependencies"),io.github.gustavo2358.lower.domain.SourceFacts.Inventory.class);
+                requirePhysical(sourceDependencies,"$/sourceDependencies",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("sourceDependencies");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",node.path("storage").path("version").asText().equals("1.9.0")?"2.29.0":"2.28.0");
+            }
             // SP2.29 adds a typed logical-coordinate inventory; the physical contract remains unchanged.
             boolean logicalTextContract=node.path("contractVersion").asText().equals("2.29.0");
             java.util.List<LogicalTextViewDocument> logicalTextViews=java.util.List.of();
@@ -310,6 +318,7 @@ public final class SpJsonDecoder {
                 var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),logical);
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
             }
+            if(sourceDependencies!=null)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),sourceDependencies);
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

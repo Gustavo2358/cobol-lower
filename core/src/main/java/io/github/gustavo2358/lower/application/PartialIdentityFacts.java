@@ -9,6 +9,8 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case io.github.gustavo2358.lower.domain.SourceFacts.Inventory r -> {field.accept("SourceInventory");value.accept(r.availability());value.accept(r.occurrences());value.accept(r.gapCodes());}
+            case io.github.gustavo2358.lower.domain.SourceFacts.Occurrence r -> {field.accept("SourceOccurrence");value.accept(r.id());value.accept(r.kind());value.accept(r.name());value.accept(r.qualification());value.accept(r.resolution());value.accept(r.artifact());value.accept(r.authority());value.accept(r.provenance());}
             case SpInput.CicsFileFact r -> {field.accept("CicsFileFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.targetMode());value.accept(r.target());value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());}
             case SpInput.CicsFileOption r -> {field.accept("CicsFileOption");value.accept(r.name());value.accept(r.canonicalName());value.accept(r.operand());value.accept(r.start());value.accept(r.end());value.accept(r.role());value.accept(r.reference());value.accept(r.literal());value.accept(r.integer());}
             case SpInput.CicsFact r -> {
@@ -41,6 +43,7 @@ final class PartialIdentityFacts {
             case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
             case SpInput r -> {
                 field.accept("SpInput");
+                if(r.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE){field.accept("sourceDependencies@1");value.accept(r.sourceDependencies());}
                 field.accept("unit"); value.accept(r.unit());
                 field.accept("policy"); value.accept(r.policy());
                 field.accept("dataDeclarations"); value.accept(r.dataDeclarations());
