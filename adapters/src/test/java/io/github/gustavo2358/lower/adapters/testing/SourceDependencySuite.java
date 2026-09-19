@@ -12,12 +12,12 @@ public final class SourceDependencySuite {
     private SourceDependencySuite() {}
     public static void main(String[] args)throws Exception {
         var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);
-        for(var name:List.of("copy-nested","copy-repeated","copy-missing","dclgen-inside-copybook","unresolved-include")) {
+        for(var name:List.of("copy-nested","copy-repeated","copy-missing","dclgen-inside-copybook","unresolved-include","db2-repeated-mixed-access","db2-inside-copybook","db2-insert-select")) {
             var bytes=Objects.requireNonNull(SourceDependencySuite.class.getResourceAsStream("/sp/source-dependencies-w3/"+name+".json")).readAllBytes();
             var decoded=decoder.decode(bytes);check(decoded instanceof SpJsonDecoder.Decoded,"source SP admitted: "+name);
             var input=((SpJsonDecoder.Decoded)decoded).input();
             var p=RegionalTranslationSuite.lower(input).publication().orElseThrow();
-            var resources=p.resources().stream().filter(r->r.description() instanceof Interactions.LiteralTarget t&&Set.of("source-copybook","source-dclgen","source-sql_include").contains(t.category())).toList();
+            var resources=p.resources().stream().filter(r->r.description() instanceof Interactions.LiteralTarget t&&Set.of("source-copybook","source-dclgen","source-sql_include","source-db2_table").contains(t.category())).toList();
             check(resources.size()==input.sourceDependencies().occurrences().size(),"all source occurrences transported");
             check(resources.stream().allMatch(r->r.declaration().orElseThrow().uses().isEmpty()&&r.declaration().orElseThrow().objects().isEmpty()),"not runtime operations");
             var codec=new AirJson();check(codec.decode(codec.encode(p)).equals(p),"existing AIR roundtrip");
@@ -37,7 +37,15 @@ public final class SourceDependencySuite {
                 }
                 check(decoder.decode(mapper.writeValueAsBytes(tree)) instanceof SpJsonDecoder.Rejected,"reject malformed source wire "+mutation);
             }
+            if(name.startsWith("db2-"))for(var mutation:List.of("operation","access","old-envelope","invalid-usage")) {
+                var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var tree=(com.fasterxml.jackson.databind.node.ObjectNode)mapper.readTree(bytes);
+                var first=(com.fasterxml.jackson.databind.node.ObjectNode)tree.path("sourceDependencies").path("occurrences").get(0);
+                if(mutation.equals("old-envelope"))tree.put("contractVersion","2.30.0");
+                else if(mutation.equals("invalid-usage"))first.put("operation","SELECT").put("access","WRITE");
+                else first.remove(mutation);
+                check(decoder.decode(mapper.writeValueAsBytes(tree)) instanceof SpJsonDecoder.Rejected,"DB2 strict usage: "+mutation);
+            }
         }
-        System.out.println("SOURCE_DEPENDENCIES: 5 real SP roundtrips, 45 negative mutations PASS; AIR model unchanged");
+        System.out.println("SOURCE_DEPENDENCIES: 8 real SP roundtrips, 84 negative mutations PASS; AIR model unchanged");
     }
 }

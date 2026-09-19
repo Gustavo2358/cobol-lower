@@ -19,7 +19,7 @@ final class SourceResourceLowering {
             var origin=origins.source("source-dependency",f.id(),f.provenance());
             result.add(new Interactions.Resource(new ResourceId(unit.publication(),ids.id("resource","source-occurrence",unit.localId(),f.id())),
                 new Interactions.LiteralTarget("source-"+f.kind().name().toLowerCase(Locale.ROOT),f.qualification().isEmpty()?"source-member":f.qualification(),f.name(),Interactions.ExactName.INSTANCE,origin),origin,
-                Optional.of(new Interactions.ResourceDeclaration(unit,f.artifact().isEmpty()?f.name():f.artifact(),"source."+f.resolution(),"source."+f.authority()+"@1",List.of(),List.of()))));
+                Optional.of(new Interactions.ResourceDeclaration(unit,f.artifact().isEmpty()?f.name():f.artifact(),"source."+f.resolution(),f.kind()==SourceFacts.Kind.DB2_TABLE?"source.STATIC_SQL_"+f.operation()+"_"+f.access()+"@1":"source."+f.authority()+"@1",List.of(),List.of()))));
         }
         for(var gap:inventory.gapCodes())result.add(new Interactions.Resource(new ResourceId(unit.publication(),ids.id("resource","source-gap",unit.localId(),gap)),
             new Interactions.LiteralTarget("source-dependency-gap","source-dependencies@1",gap,Interactions.ExactName.INSTANCE,unitOrigin),unitOrigin,

@@ -84,8 +84,12 @@ public final class SpJsonDecoder {
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
             io.github.gustavo2358.lower.domain.SourceFacts.Inventory sourceDependencies=null;
-            if(node.path("contractVersion").asText().equals("2.30.0")) {
+            if(java.util.Set.of("2.30.0","2.31.0").contains(node.path("contractVersion").asText())) {
                 if(!node.path("sourceDependencies").isObject())throw new PhysicalShape("$/sourceDependencies");
+                if(node.path("contractVersion").asText().equals("2.30.0"))for(var occurrence:node.path("sourceDependencies").path("occurrences")) {
+                    if(occurrence.has("operation")||occurrence.has("access")||occurrence.path("kind").asText().equals("DB2_TABLE")||occurrence.path("resolution").asText().equals("NOT_APPLICABLE"))throw new PhysicalShape("$/sourceDependencies/occurrences");
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)occurrence).put("operation","NONE").put("access","NONE");
+                }
                 sourceDependencies=mapper.treeToValue(node.path("sourceDependencies"),io.github.gustavo2358.lower.domain.SourceFacts.Inventory.class);
                 requirePhysical(sourceDependencies,"$/sourceDependencies",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("sourceDependencies");
