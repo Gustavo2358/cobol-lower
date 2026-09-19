@@ -57,7 +57,11 @@ final class CicsFileInvokeHandler {
         }
         Expression name(DataReference ref,int width,String key,Operand.Role role){
             var source=origins.source("cics-file-operand",ref.id().handle(),ref.provenance());var view=view(ref);
-            if(view==null||!view.extent().equals(BigInteger.valueOf(width))||!view.codec().equals(RegionalStorageAdmission.IBM1047))return unknown(key,role,Types.Builtin.TEXT,source);
+            if(view==null||!view.extent().equals(BigInteger.valueOf(width))||!view.codec().equals(RegionalStorageAdmission.IBM1047)) {
+                if(role!=Operand.Role.CALL_TARGET||!NominalTarget.available(ref,data))return unknown(key,role,Types.Builtin.TEXT,source);
+                var place=NominalTarget.place(ref,data,header(key+"-place",Operand.Role.VALUE_READ,source),ids);
+                var read=new Expressions.Read(header(key+"-read",role,source),place);link(ref,List.of(read.header().id(),place.header().id()),source);return read;
+            }
             var place=RegionalPlaces.place(ref,data.index().get(ref.binding().selected().orElseThrow()),header(key+"-place",Operand.Role.VALUE_READ,source),ids);
             var read=new Expressions.Read(header(key+"-read",role,source),place);link(ref,List.of(read.header().id(),place.header().id()),source);return read;
         }

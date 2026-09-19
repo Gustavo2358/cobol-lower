@@ -236,7 +236,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum LogicalDomain { TEXT }
     public enum StorageClass { WORKING_STORAGE }
     public enum DeclarationScope { LOCAL }
-    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, UNAVAILABLE }
+    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, POSSIBLE_TEXT, UNAVAILABLE }
     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
     public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
     public enum OperandRole { READ, WRITE, CALL_TARGET }

@@ -9,13 +9,18 @@ import java.util.*;
 /** Project explicit source bases once; never derive offsets, extents or independence from names. */
 final class RegionalDataTranslator {
     private RegionalDataTranslator() { }
-    static boolean sourceText(RegionalStorageAdmission.Index source,SpInput.DataId data) {
-        return source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
-            .stream().flatMap(s->s.entryState().conditions().stream()).anyMatch(c->(c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT)
-                &&source.nodes().get(c.node()).data().filter(data::equals).isPresent())
-            ||source.owner().statements().stream().anyMatch(s->s instanceof SpInput.MoveFact move
-                &&move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
-                &&move.source() instanceof SpInput.DataReference read&&read.logicalWholeItem().filter(data::equals).isPresent());
+    private static Set<SpInput.DataId> sourceText(RegionalStorageAdmission.Index source) {
+        var result=new HashSet<SpInput.DataId>();
+        for(var statement:source.owner().statements())if(statement instanceof SpInput.MoveFact move) {
+            if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)move.target().logicalWholeItem().ifPresent(result::add);
+            if(move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
+                    &&move.source() instanceof SpInput.DataReference read)read.logicalWholeItem().ifPresent(result::add);
+        }
+        source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
+            .ifPresent(s->s.entryState().conditions().stream()
+                .filter(c->c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT)
+                .forEach(c->source.nodes().get(c.node()).data().ifPresent(result::add)));
+        return result;
     }
     static boolean textual(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         var view=source.byData().get(data);
@@ -32,6 +37,7 @@ final class RegionalDataTranslator {
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        var sourceText=sourceText(source);
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
         var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
@@ -129,7 +135,7 @@ final class RegionalDataTranslator {
             var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
                 "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
             Types.TypeRef type;
-            if(sourceText(source,declaration.id())) {
+            if(sourceText.contains(declaration.id())) {
                 type=Types.known(Types.Builtin.TEXT);
                 index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
             } else {

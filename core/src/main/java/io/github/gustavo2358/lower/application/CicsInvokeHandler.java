@@ -52,12 +52,16 @@ final class CicsInvokeHandler {
         if(fact.target().orElse(null) instanceof SpInput.LiteralCallTarget literal&&literal.logicalValue().isPresent()) {
             var targetOrigin=origins.source("cics-target",literal.id().handle(),literal.provenance());
             target=new Interactions.LiteralTarget("program","cics.program",literal.logicalValue().orElseThrow().value(),policy,targetOrigin);
-        } else if(fact.target().orElse(null) instanceof SpInput.DataCallTarget d&&nameArea(d.reference(),data)) {
-            var reference=d.reference();var link=data.index().get(reference.binding().selected().orElseThrow());
+        } else if(fact.target().orElse(null) instanceof SpInput.DataCallTarget d&&NominalTarget.available(d.reference(),data)) {
+            var reference=d.reference();
             var targetOrigin=origins.source("cics-target",reference.id().handle(),reference.provenance());
             var placeId=new OperandId(new OperationOwner(operation),ids.id("operand","cics-target-place",operation.localId(),reference.id().handle()));
             var readId=new OperandId(new OperationOwner(operation),ids.id("operand","cics-target-read",operation.localId(),reference.id().handle()));
-            var place=RegionalPlaces.place(reference,link,new Operand.Header(placeId,Operand.Role.VALUE_READ,targetOrigin),ids);
+            var place=NominalTarget.place(reference,data,new Operand.Header(placeId,Operand.Role.VALUE_READ,targetOrigin),ids);
+            if(!nameArea(reference,data)) {
+                var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-logical-target",operation.localId(),key));
+                uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:CICS_PHYSICAL_NAME_AREA_UNPROVEN",List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Whole nominal target retained; physical name area unproved. Interpretation remains open.",targetOrigin));
+            }
             target=new Interactions.ComputedTarget("program","cics.program",new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place),policy,targetOrigin);
             links.add(new LoweringResult.OperandLink(reference.id(),readId,targetOrigin));links.add(new LoweringResult.OperandLink(reference.id(),placeId,targetOrigin));
             items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),targetOrigin,List.of(readId,placeId)));
