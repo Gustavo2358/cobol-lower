@@ -91,5 +91,7 @@ Scope remains source-only, physical default OFF with NO AUTOMATIC FALLBACK. Exis
 
 Primary language references: [IBM CTE](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statement-common-table-expression), [identifiers](https://www.ibm.com/docs/en/db2/12.1.x?topic=elements-identifiers), [tokens/comments](https://www.ibm.com/docs/en/db2-as-a-service?topic=elements-tokens). Scope is deliberately smaller than the SQL language.
 
-Current DB2 producer pin: `b5e83974717b21f92b66069137b973ea4afcb8e8` (SP2.31).
+Current DB2 producer pin: `49ce9a7e727ad0c3301cc1fdbb6da9828439b9ce` (SP2.31).
 The five earlier SP2.30 fixtures remain unchanged as compatibility evidence; three SP2.31 DB2 fixtures add mixed usage, nested provenance and INSERT SELECT roundtrips.
+
+Lexical hardening in the producer keeps nested comments and multi-statement EXEC SQL regions incomplete. The SP2.31 transport shape and lower production code are unchanged by this final repin.
