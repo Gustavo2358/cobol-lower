@@ -62,7 +62,7 @@ public final class CicsProgramControlSuite {
         System.out.println("CICS_LINK_UNAVAILABLE_RETURN_CONSERVATIVE");
     }
     private static void missingTargetIsCoverageRatherThanRuntimeName() throws Exception {
-        byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/link-paragraph.json")){raw=in.readAllBytes();}
+        byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/variable.json")){raw=in.readAllBytes();}
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var doc=mapper.readTree(raw);
         for(var f:doc.path("statements"))if(f.path("variant").asText().equals("CICS_PROGRAM_CONTROL")) {
             var c=(com.fasterxml.jackson.databind.node.ObjectNode)f;c.putNull("target");c.put("conditions","UNKNOWN");
@@ -79,6 +79,8 @@ public final class CicsProgramControlSuite {
         var envelope=((Operations.Opaque)targetless.getFirst()).envelope();
         if(!(envelope.memory().otherReads() instanceof Scopes.NoMemory)||!(envelope.memory().otherWrites() instanceof Scopes.NoMemory))
             throw new AssertionError("missing PROGRAM does not imply foreign memory effects");
+        if(envelope.memory().knownReads().isEmpty()||envelope.control().known().size()!=1)
+            throw new AssertionError("unmaterialized PROGRAM retains COMMAREA read and LINK continuation");
     }
     public static void main(String[] args) throws Exception {
         if(args.length>0&&args[0].equals("conditions")){contradictoryConditions();return;}
