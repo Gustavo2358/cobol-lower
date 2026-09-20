@@ -78,6 +78,15 @@ final class PartialProgramAdmission {
             });
             if (!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
             c.phase=Phase.ADMISSION;
+            for(var id:RegionalDataTranslator.sourceText(c.regionalStorage)) {
+                var view=c.regionalStorage.byData().get(id);if(view==null)continue;
+                var base=c.regionalStorage.bases().get(view.base());
+                if(base!=null&&!base.allocation().proved()&&base.extent().value().isEmpty()
+                        &&!c.regionalStorage.logical().byData.containsKey(id)&&!c.regionalStorage.localCellSafe(id)
+                        &&input.dataDeclarations().stream().filter(d->d.id().equals(id)).noneMatch(d->CallAdmission.scalar(d)))
+                    c.require(false,Rule.PROFILE_FACT,id.handle(),null,"supported logical value has an unrepresentable partial storage relation");
+            }
+            if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
             c.require(input.entryInventory().entries().size()==1 && input.entryInventory().entries().getFirst().start().statement().isPresent(),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);

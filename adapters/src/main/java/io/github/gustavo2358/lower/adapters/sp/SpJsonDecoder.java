@@ -30,6 +30,7 @@ public final class SpJsonDecoder {
         }
     }
     private record LogicalTextViewDocument(String node,String root,String start,String length) { }
+    private record LogicalExactViewDocument(String node,String representative,String length) { }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
     public record Diagnostic(Code code, String phase, String location) {
         public Diagnostic { Objects.requireNonNull(code); Objects.requireNonNull(phase); Objects.requireNonNull(location); }
@@ -83,6 +84,17 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            boolean localExact=node.path("contractVersion").asText().equals("2.34.0");
+            java.util.List<LogicalExactViewDocument> logicalExactViews=java.util.List.of();
+            if(localExact) {
+                var storage=node.path("storage");
+                if(!storage.path("version").asText().equals("1.10.0")||!storage.path("logicalExactViews").isArray()||storage.path("logicalExactViews").isEmpty())
+                    throw new PhysicalShape("$/storage/logicalExactViews");
+                logicalExactViews=java.util.Arrays.asList(mapper.treeToValue(storage.path("logicalExactViews"),LogicalExactViewDocument[].class));
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).remove("logicalExactViews");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).put("version",storage.path("logicalTextViews").isArray()?"1.9.0":"1.8.0");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion","2.33.0");
+            }
             io.github.gustavo2358.lower.domain.SourceFacts.Inventory sourceDependencies=null;
             boolean structuredEvaluate=node.path("contractVersion").asText().equals("2.33.0");
             for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("EVALUATE"))
@@ -336,6 +348,14 @@ public final class SpJsonDecoder {
                     new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.node()),new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.root()),
                     new java.math.BigInteger(v.start()),new java.math.BigInteger(v.length()))).toList();
                 var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),logical);
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
+            }
+            if(localExact) {
+                var st=input.storage().orElseThrow();var unit=input.unit();
+                var exact=logicalExactViews.stream().map(v->new io.github.gustavo2358.lower.domain.StorageFacts.LogicalExactView(
+                    new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.node()),new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.representative()),
+                    new java.math.BigInteger(v.length()))).toList();
+                var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),st.logicalTextViews(),exact);
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
             }
             if(sourceDependencies!=null)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),sourceDependencies);

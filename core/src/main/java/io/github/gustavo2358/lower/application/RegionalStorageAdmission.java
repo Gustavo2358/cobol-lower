@@ -15,6 +15,17 @@ final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
     record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical) {
         Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData); }
+        boolean localCellSafe(DataId data) {
+            var view=byData.get(data);if(view==null)return false;
+            var node=nodes.get(view.node());
+            if(node.kind()==Kind.ELEMENTARY&&owner.storage().orElseThrow().logicalExactViews().stream().anyMatch(v->v.node().equals(node.id())))return true;
+            if(node.kind()==Kind.ELEMENTARY&&views.values().stream().filter(v->v.base().equals(view.base()))
+                    .map(v->nodes.get(v.node())).filter(n->n.kind()==Kind.ELEMENTARY&&n.data().isPresent()).count()==1)return true;
+            // A single root declaration can carry an explicitly supported logical
+            // TEXT value even when a physical qualifier makes its byte shape opaque.
+            return node.data().isPresent()&&node.parent().isEmpty()
+                &&views.values().stream().filter(v->v.base().equals(view.base())).count()==1;
+        }
         Optional<View> access(DataReference reference) {
             return reference.regionalAccess().map(a->{var v=views.get(a.view());return a.slice().map(s->new View(v.node(),v.base(),
                 new Measure(Optional.of(s.offset()),List.of()),new Measure(Optional.of(s.extent()),List.of()),v.codec(),v.provenance())).orElse(v);});
@@ -100,6 +111,35 @@ final class RegionalStorageAdmission {
             if(owner.parent().isEmpty())unboundedRelation=true;
             else uncertainBases.add(views.get(owner.id()).base());
         }
+        var exactByRepresentative=new HashMap<NodeId,List<LogicalExactView>>();
+        for(var exact:storage.logicalExactViews()) {
+            c.touch();var node=nodes.get(exact.node());var representative=nodes.get(exact.representative());
+            require(node!=null&&representative!=null&&exact.length()!=null&&exact.length().signum()>0
+                &&node.kind()==Kind.ELEMENTARY&&representative.kind()==Kind.ELEMENTARY
+                &&node.data().isPresent()&&representative.data().isPresent()
+                &&node.parent().equals(representative.parent())
+                &&views.get(node.id()).base().equals(views.get(representative.id()).base()),"exact logical view requires supported sibling identity");
+            exactByRepresentative.computeIfAbsent(exact.representative(),ignored->new ArrayList<>()).add(exact);
+        }
+        for(var entry:exactByRepresentative.entrySet()) {
+            var group=entry.getValue();var members=new HashSet<NodeId>();
+            require(group.size()>=2&&group.stream().anyMatch(v->v.node().equals(entry.getKey()))
+                &&group.stream().allMatch(v->v.length().equals(group.get(0).length())&&members.add(v.node())),"exact logical group requires distinct complete views");
+            for(var exact:group)if(!exact.node().equals(entry.getKey()))
+                require(storage.relations().stream().anyMatch(r->r.owner().equals(exact.node())&&r.status()==RelationStatus.PROVEN
+                    &&r.target().filter(members::contains).isPresent()),"exact logical view requires positive storage relation");
+            var base=views.get(entry.getKey()).base();
+            for(var view:storage.views())if(view.base().equals(base)&&nodes.get(view.node()).kind()==Kind.ELEMENTARY&&nodes.get(view.node()).data().isPresent())
+                require(members.contains(view.node()),"exact logical component cannot omit an elementary view");
+        }
+        var exactByData=new HashMap<DataId,LogicalExactView>();
+        for(var group:exactByRepresentative.values())for(var exact:group)
+            nodes.get(exact.node()).data().ifPresent(id->exactByData.put(id,exact));
+        for(var statement:input.statements())if(statement instanceof MoveFact move&&move.textAdjustment().isPresent())
+            move.target().logicalWholeItem().ifPresent(id->{var exact=exactByData.get(id);
+                if(exact!=null)require(exact.length().equals(java.math.BigInteger.valueOf(move.textAdjustment().orElseThrow().receiverExtent())),
+                    "exact logical extent contradicts published text transfer");
+            });
         if(unboundedRelation) {
             require(storage.bases().stream().noneMatch(b->b.allocation().proved()),
                 "unproved root relation contradicts allocation independence");

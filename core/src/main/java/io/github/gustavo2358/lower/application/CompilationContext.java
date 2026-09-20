@@ -8,6 +8,7 @@ final class CompilationContext {
     final Map<SpInput.UnitKey,SpCompilation.UnitProduct> products=new LinkedHashMap<>();
     final Map<SpInput.UnitKey,UnitId> units=new LinkedHashMap<>();
     final Map<SpInput.UnitKey,PartialProgramLowerer.Fragment> fragments=new LinkedHashMap<>();
+    final Map<SpInput.UnitKey,Set<SpInput.DataId>> capturedLogicalText=new HashMap<>();
     Optional<UnitId> parent(SpInput.UnitKey unit){return products.get(unit).parent().map(units::get);}
     Set<SpInput.DataId> requiredData(SpInput input) {
         var required=new LinkedHashSet<SpInput.DataId>(products.get(input.unit()).globalData());
@@ -17,6 +18,8 @@ final class CompilationContext {
         }
         return Set.copyOf(required);
     }
+    Set<SpInput.DataId> logicalText(SpInput input){return capturedLogicalText.getOrDefault(input.unit(),Set.of());}
+    Set<SpInput.DataId> captureLocals(SpInput input){return products.get(input.unit()).dataCaptures().stream().map(SpCompilation.DataCapture::localData).collect(java.util.stream.Collectors.toUnmodifiableSet());}
     List<ObjectId> visible(SpInput.UnitKey unit){
         var result=new LinkedHashSet<ObjectId>();
         for(var entry:products.entrySet())if(CompilationAdmission.ancestor(entry.getKey(),unit)){

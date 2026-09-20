@@ -9,12 +9,21 @@ import java.util.*;
 /** Project explicit source bases once; never derive offsets, extents or independence from names. */
 final class RegionalDataTranslator {
     private RegionalDataTranslator() { }
-    private static Set<SpInput.DataId> sourceText(RegionalStorageAdmission.Index source) {
+    static Set<SpInput.DataId> sourceText(RegionalStorageAdmission.Index source) {
         var result=new HashSet<SpInput.DataId>();
         for(var statement:source.owner().statements())if(statement instanceof SpInput.MoveFact move) {
             if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)move.target().logicalWholeItem().ifPresent(result::add);
+            if(move.source() instanceof SpInput.DataReference read)read.logicalWholeItem().ifPresent(result::add);
             if(move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
                     &&move.source() instanceof SpInput.DataReference read)read.logicalWholeItem().ifPresent(result::add);
+        }
+        for(var statement:source.owner().statements()) {
+            if(statement instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
+            if(statement instanceof SpInput.CicsFact cics&&cics.target().orElse(null) instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
+            if(statement instanceof SpInput.CicsFileFact cics&&cics.target().orElse(null) instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
         }
         source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
             .ifPresent(s->s.entryState().conditions().stream()
@@ -36,9 +45,10 @@ final class RegionalDataTranslator {
             view.extent().value().orElseThrow()).status()==MemoryCodecs.Status.EXACT;
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
-            Set<SpInput.DataId> requiredData,
+            Set<SpInput.DataId> requiredData,Set<SpInput.DataId> capturedLogicalText,Set<SpInput.DataId> captureLocals,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var sourceText=sourceText(source);
+        sourceText.addAll(capturedLogicalText);
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
         var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
@@ -57,6 +67,9 @@ final class RegionalDataTranslator {
                 allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
+        var exactByNode=new HashMap<StorageFacts.NodeId,StorageFacts.LogicalExactView>();
+        source.owner().storage().orElseThrow().logicalExactViews().forEach(v->exactByNode.put(v.node(),v));
+        var logicalCells=new HashMap<String,StorageId>();
         var nominal=new LinkedHashMap<>(legacy.nominal());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
@@ -146,7 +159,6 @@ final class RegionalDataTranslator {
             Types.TypeRef type;
             if(sourceText.contains(declaration.id())) {
                 type=Types.known(Types.Builtin.TEXT);
-                index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
             } else {
                 var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
                 uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
@@ -154,8 +166,26 @@ final class RegionalDataTranslator {
             }
             // An absent physical base is a materialization gap, not evidence that
             // this nominal object aliases every storage object in the publication.
-            var binding=new Memory.UnknownBinding(base==null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.StorageMemory(List.of(base)),reason);
-            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,Memory.Visibility.UNKNOWN,objectOrigin,
+            Memory.Binding binding;
+            Memory.Visibility visibility=Memory.Visibility.UNKNOWN;
+            if(base==null&&sourceText.contains(declaration.id())&&!captureLocals.contains(declaration.id())&&source.localCellSafe(declaration.id())) {
+                var exact=exactByNode.get(view==null?null:view.node());
+                var key=exact==null?declaration.id().handle():exact.representative().handle();
+                var cell=logicalCells.get(key);
+                if(cell==null) {
+                    cell=new StorageId(unit.publication(),ids.id("storage","logical-source-cell",unit.localId(),key));
+                    logicalCells.put(key,cell);
+                    var cellOrigin=origins.derived(ids.id("origin","logical-source-cell",unit.localId(),key),List.of(dataOrigin),"storage@1/local-logical-value");
+                    storage.add(new Memory.Cell(new Memory.StorageHeader(cell,Optional.of(unit),Memory.Lifetime.PERSISTENT,Memory.Visibility.PRIVATE,cellOrigin),Types.known(Types.Builtin.TEXT)));
+                }
+                binding=new Memory.CellBinding(cell);visibility=Memory.Visibility.PRIVATE;
+                index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
+                items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),dataOrigin,List.of(object,cell)));
+            } else {
+                binding=new Memory.UnknownBinding(base==null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.StorageMemory(List.of(base)),reason);
+                if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
+            }
+            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,visibility,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
         }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);

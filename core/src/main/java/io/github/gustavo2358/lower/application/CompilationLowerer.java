@@ -20,6 +20,11 @@ public final class CompilationLowerer {
             var key=product.product().unit();plans.put(key,plan);context.products.put(key,product);
             context.units.put(key,new UnitId(publication,ids.id("unit","compilation","compilation",key.toString())));
         }
+        for(var product:ordered){
+            var used=RegionalDataTranslator.sourceText(plans.get(product.product().unit()).storage());
+            for(var capture:product.dataCaptures())if(used.contains(capture.localData()))
+                context.capturedLogicalText.computeIfAbsent(capture.sourceData().unit(),ignored->new LinkedHashSet<>()).add(capture.sourceData());
+        }
         for(var product:ordered){var key=product.product().unit();var unit=context.units.get(key);
             context.fragments.put(key,PartialProgramLowerer.fragment(product.product(),plans.get(key),publication,unit,ids.activation(unit.localId()),context));}
         var units=new ArrayList<Unit>();var storage=new ArrayList<Memory.Storage>();var resources=new ArrayList<Interactions.Resource>();
