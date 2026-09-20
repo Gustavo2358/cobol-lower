@@ -18,13 +18,13 @@ final class MoveHandler {
             var adjustment = move.textAdjustment().orElseThrow();
             var adjustmentOrigin = origins.source("adjustment", move.header().id().handle(), adjustment.provenance());
             sourceOrigin = origins.derived(ids.id("origin", "fitted-literal", operation.localId(), move.source().id().handle()),
-                List.of(origin, sourceOrigin, targetOrigin, adjustmentOrigin), "cobol-sp@1.3/FITTED_TEXT/" + adjustment.rule().name());
+                List.of(origin, sourceOrigin, targetOrigin, adjustmentOrigin), (move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT?"cobol-sp@2.32/POSSIBLE_TEXT/":"cobol-sp@1.3/FITTED_TEXT/") + adjustment.rule().name());
             origin = origins.derived(ids.id("origin", "fitted-assign", operation.localId(), move.header().id().handle()),
-                List.of(origin, sourceOrigin, targetOrigin, adjustmentOrigin), "cp6-call@1/published-fitted-assignment");
+                List.of(origin, sourceOrigin, targetOrigin, adjustmentOrigin), move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT?"cobol-sp@2.32/possible-nominal-assignment":"cp6-call@1/published-fitted-assignment");
         }
         var source = new OperandId(owner, ids.id("operand", move.source() instanceof SpInput.DataReference ? "scalar-data-source" : "scalar-literal-source", operation.localId(), move.source().id().handle()));
         var target = new OperandId(owner, ids.id("operand", "scalar-object-target", operation.localId(), move.target().id().handle()));
-        var destination = new Places.ObjectPlace(new Operand.Header(target, Operand.Role.VALUE_WRITE, targetOrigin), data.index().get(move.target().wholeItemAccess().orElseThrow().data()).object());
+        var destination = new Places.ObjectPlace(new Operand.Header(target, Operand.Role.VALUE_WRITE, targetOrigin), data.index().get(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT?move.target().logicalWholeItem().orElseThrow():move.target().wholeItemAccess().orElseThrow().data()).object());
         Expression value;
         if (move.source() instanceof SpInput.DataReference read) {
             var placeId = new OperandId(owner, ids.id("operand", "scalar-read-place", operation.localId(), read.id().handle()));

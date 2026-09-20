@@ -109,7 +109,7 @@ final class PartialProgramAdmission {
                 if(s instanceof MoveFact m&&m.regionalMove().filter(e->e.kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE).isPresent()) {
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
                 }
-                if(s instanceof MoveFact m&&c.regionalStorage.logical().literalMove(m))eligible=true;
+                if(s instanceof MoveFact m&&(c.regionalStorage.logical().literalMove(m)||m.copySemantics()==CopySemantics.POSSIBLE_TEXT))eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
             }

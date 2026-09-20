@@ -78,6 +78,8 @@ final class PartialProgramLowerer implements LowerInput {
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
         if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        if(input.statements().stream().anyMatch(s->s instanceof SpInput.CicsFact||s instanceof SpInput.CicsFileFact))
+            if(!required.contains(Capabilities.TARGET_POSSIBILITIES))required.add(Capabilities.TARGET_POSSIBILITIES);
         if(input.statements().stream().anyMatch(SpInput.CicsFileFact.class::isInstance))required.add(CicsFileInvokeHandler.NAME);
         var resources=new ArrayList<>(files.resources());
         resources.addAll(SourceResourceLowering.resources(input,unit,ids,origins,unitOrigin));
