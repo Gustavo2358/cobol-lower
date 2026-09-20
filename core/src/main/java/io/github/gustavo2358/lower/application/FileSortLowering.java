@@ -75,13 +75,12 @@ final class FileSortLowering {
     private Operations.Jump jump(LocalIds local,String key,OriginId origin,LabelId target){var op=operation(local,key);return new Operations.Jump(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),target);}
     private Terminator continuing(LocalIds local,String key,OriginId origin,LabelId target) {
         if(target!=null)return jump(local,key,origin,target);
-        return new Operations.Opaque(unknown(operation(local,key),origin,"FILE_NORMAL_CONTINUATION_NOT_PROVEN"),"sort-phase-exit",List.of(),List.of(),new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,false,false,false))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+        return new Operations.Opaque(unknown(operation(local,key),origin,"FILE_NORMAL_CONTINUATION_NOT_PROVEN"),"sort-phase-exit",List.of(),List.of(),new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.LabelsControl(List.of()))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
     }
     private Terminator unavailable(LocalIds local,String key,OriginId origin,LabelId resume) {
-        var h=unknown(operation(local,key),origin,"FILE_PROCEDURE_ENDPOINT_NOT_PROVEN");var memory=new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true));
-        var labels=facts.keySet().stream().map(s->PartialProgramAssembler.label(s,unit,ids)).sorted(Comparator.comparing(LabelId::localId)).toList();
-        Scopes.ControlBound bound=new Scopes.WithinControl(new Scopes.ControlUnion(List.of(new Scopes.LabelsControl(labels),new Scopes.UnitControl(unit,false,true,true,true,true,true))));
-        return new Operations.Opaque(h,"sort-procedure-unavailable",List.of(),List.of(),new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),memory,List.of(),memory,List.of()),new Control.ControlEnvelope(resume==null?List.of():List.of(new Control.JumpAlternative(resume)),bound),new Envelopes.DependencyEnvelope(List.of(),new Scopes.ResourceCategories(List.of("file","program")))));
+        var h=unknown(operation(local,key),origin,"FILE_PROCEDURE_ENDPOINT_NOT_PROVEN");
+        return new Operations.Opaque(h,"sort-procedure-unavailable",List.of(),List.of(),new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
+            new Control.ControlEnvelope(resume==null?List.of():List.of(new Control.JumpAlternative(resume)),resume==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
     }
     private LabelId label(LocalIds local,String key){return new LabelId(unit,local.id("label","file-sort",unit.localId(),key));}
     private OperationId operation(LocalIds local,String key){return new OperationId(unit,local.id("operation","file-sort",unit.localId(),key));}

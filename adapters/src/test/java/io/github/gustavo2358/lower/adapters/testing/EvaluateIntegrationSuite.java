@@ -16,7 +16,7 @@ import static io.github.gustavo2358.lower.testing.CallOracle.check;
 public final class EvaluateIntegrationSuite {
     private static final ObjectMapper JSON=new ObjectMapper();
     public static final List<String> NAMES=List.of("e1","e2","e3","e4","e5","strong","closed","unknown",
-        "partial-body","three-arms","also","empty","perform","goback","compose-1","compose-2","compose-5","compose-40");
+        "partial-body","three-arms","also","empty","perform","goback","condition","compose-1","compose-2","compose-5","compose-40");
     private static byte[] fixture(String name) throws Exception {
         try(var in=EvaluateIntegrationSuite.class.getResourceAsStream("/sp/evaluate/"+name+".json")) {
             return Objects.requireNonNull(in,name).readAllBytes();
@@ -55,6 +55,18 @@ public final class EvaluateIntegrationSuite {
                 }
             }
             if(name.startsWith("compose-"))check(input.statements().stream().filter(SpInput.EvaluateFact.class::isInstance).count()==Integer.parseInt(name.substring(8)),"multiplicity "+name);
+            if(name.equals("condition")) {
+                check(input.statements().stream().filter(SpInput.EvaluateFact.class::isInstance).map(SpInput.EvaluateFact.class::cast)
+                    .flatMap(e -> e.arms().stream()).anyMatch(a -> a.selection().isEmpty() && !a.conditionReads().isEmpty()),
+                    "unmodeled condition retains source reads and arm structure");
+                check(unit.sequences().stream().noneMatch(s -> s.terminator() instanceof Operations.Opaque),
+                    "EVALUATE condition gap adds no opaque control");
+                var branch=(Operations.Branch)unit.sequences().stream().map(Sequence::terminator)
+                    .filter(Operations.Branch.class::isInstance).findFirst().orElseThrow();
+                check(branch.predicate() instanceof Expressions.Unknown u && u.dependencies().stream().anyMatch(Expressions.Read.class::isInstance)
+                    && u.remainingReads()==Scopes.NoMemory.INSTANCE,
+                    "known condition read remains while unimplemented predicate has no AllMemory");
+            }
             if(name.equals("perform"))check(unit.sequences().stream().flatMap(s->s.instructions().stream()).filter(Operations.Assign.class::isInstance).count()==2,"BASIC body retains precise MOVE under EVALUATE");
             var bytes=codec.encode(p); check(Arrays.equals(bytes,codec.encode(codec.decode(bytes))),"AIR canonical round-trip "+name);
             var reordered=(ObjectNode)JSON.readTree(raw); reverseArray((ArrayNode)reordered.get("statements"));

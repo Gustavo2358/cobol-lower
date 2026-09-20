@@ -78,12 +78,12 @@ final class FileResourceLowering {
             var after=plan==null?next:memory.label(key+"/select/0");
             Terminator invoke;
             if(localResource)invoke=new Operations.Opaque(header,"source-local-file-use",List.of(),List.of(),new Envelopes.Envelope(
-                new Envelopes.MemoryEnvelope(List.of(),plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),List.of(),plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),
-                new Control.ControlEnvelope(after==null?List.of():List.of(new Control.JumpAlternative(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,false,true,true,true,false))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+                new Envelopes.MemoryEnvelope(List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(plan.ioReads(),plan.unknownReadBound()),List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(List.of(),plan.unknownWriteBound()),List.of()),
+                new Control.ControlEnvelope(after==null?List.of():List.of(new Control.JumpAlternative(after)),after==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
             else invoke=new Operations.Invoke(header,action(use.command()),target,List.of(),List.of(),new Interactions.ExternalSignature(signature),List.of(),
-                new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),
-                    plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
-                new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,plan==null,true,true,true,true,true))),new Interactions.UnknownContract(contract));
+                new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?Scopes.NoMemory.INSTANCE:memory.bound(plan.ioReads(),plan.unknownReadBound()),
+                    plan==null?Scopes.NoMemory.INSTANCE:memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
+                new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),after==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Interactions.UnknownContract(contract));
             label=auxiliary.prefix(use,label,origin,local,result);
             var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
             if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));

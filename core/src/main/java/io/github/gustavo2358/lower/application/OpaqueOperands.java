@@ -32,7 +32,7 @@ final class OpaqueOperands {
             if(mapping.isEmpty()) {
                 var gap=new UncertaintyId(operation.publication(),ids.id("uncertainty","opaque-reference",operation.localId(),ref.id().handle()));
                 uncertainties.add(new Evidence.Uncertainty(gap,"NOMINAL_REFERENCE_WITHOUT_ADDRESS_PROOF",List.of(Evidence.Dimension.STORAGE),
-                    new Scopes.EntityScope(List.of(operation)),"SP operand "+ref.id().handle()+" has "+ref.binding().status()+" nominal candidates "+ref.binding().candidates().stream().map(SpInput.DataId::handle).toList()+"; memory remains conservatively bounded",origin));
+                    new Scopes.EntityScope(List.of(operation)),"SP operand "+ref.id().handle()+" has "+ref.binding().status()+" nominal candidates "+ref.binding().candidates().stream().map(SpInput.DataId::handle).toList()+"; no executable address is published",origin));
                 continue;
             }
             var id=new OperandId(new OperationOwner(operation),ids.id("operand","opaque-reference",operation.localId(),ref.id().handle()));
@@ -45,20 +45,22 @@ final class OpaqueOperands {
         return new Known(List.copyOf(operands),List.copyOf(reads),List.copyOf(writes),List.copyOf(evidence),Map.copyOf(occurrences));
     }
 
-    static Envelopes.MemoryEnvelope memory(SpInput.StatementFact fact,Known known,PublicationId publication,boolean unknownEffects) {
+    static Envelopes.MemoryEnvelope memory(SpInput.StatementFact fact,Known known,PublicationId publication) {
         Scopes.MemoryBound all=new Scopes.WithinMemory(new Scopes.AllMemory(publication,true));
-        if(!(fact instanceof SpInput.OtherStatement o)||o.effects().isEmpty()) {
-            var bound=unknownEffects?all:Scopes.NoMemory.INSTANCE;
-            return new Envelopes.MemoryEnvelope(known.reads(),bound,known.writes(),bound,List.of());
+        if(!(fact instanceof SpInput.OtherStatement o)) {
+            // Operand identity survives a structural fallback. A receiver operand
+            // alone does not prove that an omitted transformation writes it.
+            return new Envelopes.MemoryEnvelope(known.reads(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of());
+        }
+        if(o.effects().isEmpty()) {
+            return new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of());
         }
         var e=o.effects().orElseThrow();
         java.util.function.Function<List<SpInput.OperandId>,List<OperandId>> mapped=xs->xs.stream().map(known.occurrences()::get).filter(Objects::nonNull).toList();
         var reads=mapped.apply(e.knownReads());var writes=mapped.apply(e.mayWrites());
-        // Missing materialization cannot prove a complete bound. Exposures use the
-        // conservative write bound until their exact transport is supported.
-        var otherReads=e.unknownReadBound()==SpInput.EffectBound.NONE&&reads.size()==e.knownReads().size()?Scopes.NoMemory.INSTANCE:all;
+        var otherReads=e.unknownReadBound()==SpInput.EffectBound.NONE?Scopes.NoMemory.INSTANCE:all;
         var otherWrites=e.unknownWriteBound()==SpInput.EffectBound.NONE&&e.unknownExposureBound()==SpInput.EffectBound.NONE
-            &&writes.size()==e.mayWrites().size()&&e.exposedRegions().isEmpty()?Scopes.NoMemory.INSTANCE:all;
+            ?Scopes.NoMemory.INSTANCE:all;
         return new Envelopes.MemoryEnvelope(reads,otherReads,writes,otherWrites,mapped.apply(e.mustOverwrite()));
     }
 }

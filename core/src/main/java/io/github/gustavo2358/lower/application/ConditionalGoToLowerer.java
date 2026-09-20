@@ -46,15 +46,15 @@ final class ConditionalGoToLowerer {
         var storage=exact;
         if(!knownRead) {
             var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","indexed-selector",operation.localId(),"storage"));gaps.add(gap);
-            uncertainties.add(new Evidence.Uncertainty(gap,"SELECTOR_READ_NOT_PROVEN",List.of(Evidence.Dimension.STORAGE),scope,"Selector occurrence retained with conservative read bound",origin));
+            uncertainties.add(new Evidence.Uncertainty(gap,"SELECTOR_READ_NOT_PROVEN",List.of(Evidence.Dimension.STORAGE),scope,"Selector occurrence has no modeled memory read",origin));
             storage=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
         }
         var header=new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(control,storage,exact,
             new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(valueGap)),exact),gaps);
         return new Operations.Opaque(header,"finite-indexed-transfer",known.operands(),List.of(),new Envelopes.Envelope(
-            new Envelopes.MemoryEnvelope(known.reads(),knownRead?Scopes.NoMemory.INSTANCE:new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),
+            new Envelopes.MemoryEnvelope(known.reads(),Scopes.NoMemory.INSTANCE,
                 List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-            new Control.ControlEnvelope(List.copyOf(alternatives),closed?Scopes.NoControl.INSTANCE:new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true))),
+            new Control.ControlEnvelope(List.copyOf(alternatives),Scopes.NoControl.INSTANCE),
             new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
     }
 }

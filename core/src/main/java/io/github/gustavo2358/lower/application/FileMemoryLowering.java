@@ -30,12 +30,11 @@ final class FileMemoryLowering {
     }
     FileMemoryLowering withIds(LocalIds local){return ids==local?this:new FileMemoryLowering(this,local);}
     List<Sequence> restrictContinuations(List<Sequence> sequences,List<LabelId> sourceEntries) {
-        var bound=new Scopes.WithinControl(new Scopes.ControlUnion(List.of(new Scopes.LabelsControl(sourceEntries),new Scopes.UnitControl(unit,false,true,true,true,true,true))));
         return sequences.stream().map(s->{
             if(!continuations.contains(s.terminator().header().id()))return s;
             var op=(Operations.Opaque)s.terminator();var e=op.envelope();
             return new Sequence(s.label(),s.instructions(),new Operations.Opaque(op.header(),op.observedKind(),op.knownOperands(),op.valueResults(),
-                new Envelopes.Envelope(e.memory(),new Control.ControlEnvelope(e.control().known(),bound),e.dependencies())),s.origin());
+                new Envelopes.Envelope(e.memory(),e.control(),e.dependencies())),s.origin());
         }).toList();
     }
     LabelId label(String key){return new LabelId(unit,ids.id("label","file-memory",unit.localId(),key));}
@@ -44,8 +43,7 @@ final class FileMemoryLowering {
         if(unknown)return visible();
         var scopes=new LinkedHashSet<Scopes.MemoryScope>();
         for(var target:targets) {
-            var scope=scope(target);if(scope instanceof Scopes.VisibleMemory)return new Scopes.WithinMemory(scope);
-            scopes.add(scope);
+            var scope=scope(target);if(scope!=null)scopes.add(scope);
         }
         return scopes.isEmpty()?Scopes.NoMemory.INSTANCE:new Scopes.WithinMemory(scopes.size()==1?scopes.iterator().next():new Scopes.MemoryUnion(List.copyOf(scopes)));
     }
@@ -55,7 +53,7 @@ final class FileMemoryLowering {
         var view=target.regional().map(a->views.get(a.view())).orElse(null);
         if(view!=null&&data.physical().containsKey(view.base()))return new Scopes.StorageMemory(List.of(data.physical().get(view.base())));
         var object=target.data().map(data.nominal()::get).orElse(null);
-        return object!=null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.VisibleMemory(unit,true);
+        return object!=null?new Scopes.ObjectsMemory(List.of(object)):null;
     }
     private Memory.ViewBinding exact(FileFacts.MemoryTarget target,boolean text) {
         if(target.wholeBase()||target.regional().isEmpty())return null;
@@ -109,7 +107,8 @@ final class FileMemoryLowering {
                     else otherReads=bound(step.source().stream().toList(),step.source().isEmpty()||step.source().orElseThrow().wholeBase());
                 }
                 if(view!=null){var receiver=place(view,op,"receiver",origin,false,Operand.Role.VALUE_WRITE);operands.add(receiver);writes.add(receiver.header().id());}
-                var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(reads,otherReads,writes,view==null?new Scopes.WithinMemory(scope(step.destination())):Scopes.NoMemory.INSTANCE,List.of()),
+                var destinationScope=scope(step.destination());
+                var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(reads,otherReads,writes,view==null&&destinationScope!=null?new Scopes.WithinMemory(destinationScope):Scopes.NoMemory.INSTANCE,List.of()),
                     new Control.ControlEnvelope(List.of(new Control.JumpAlternative(dest)),Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
                 term=new Operations.Opaque(abstractHeader(op,origin,reason),"published-memory-may-write",operands,List.of(),envelope);
             } else if(step.kind()==FileFacts.MemoryKind.MUST_UNKNOWN) {
@@ -148,7 +147,7 @@ final class FileMemoryLowering {
             var op=operation(caseKey+"/continuation");var reason=reason(op,origin,"FILE_CONTROL_PARTIAL",List.of(Evidence.Dimension.CONTROL));
             continuations.add(op);
             var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
+                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
             result.add(new Sequence(outcome.steps().isEmpty()?entry:end,List.of(),new Operations.Opaque(abstractHeader(op,origin,reason),"file-outcome-continuation",List.of(),List.of(),envelope),origin));
         }
         return List.copyOf(result);

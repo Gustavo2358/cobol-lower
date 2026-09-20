@@ -212,10 +212,16 @@ final class RegionalStorageAdmission {
             if(statement instanceof MoveFact move)validateMove(move,index);
             if(statement instanceof OtherStatement o&&o.effects().isPresent()) {
                 var refs=new HashMap<OperandId,DataReference>();o.knownReferences().forEach(r->refs.put(r.id(),r));
-                for(var id:o.effects().orElseThrow().mustOverwrite()) {
-                    var ref=refs.get(id);require(ref!=null&&ref.regionalAccess().isPresent(),"effect MUST needs exact regional destination");
-                    var access=ref.regionalAccess().orElseThrow();var node=nodes.get(access.view());
-                    require(node!=null&&node.kind()==Kind.ELEMENTARY&&!node.filler()&&access.slice().isEmpty(),"INITIALIZE MUST is an exact whole elementary receiver");
+                var effect=o.effects().orElseThrow();
+                for(var id:effect.mustOverwrite()) {
+                    var ref=refs.get(id);
+                    if(effect.proof()==EffectProof.ACCEPT_TARGET) {
+                        require(ref!=null&&ref.wholeItemAccess().isPresent(),"ACCEPT MUST needs a known whole receiver");
+                    } else {
+                        require(ref!=null&&ref.regionalAccess().isPresent(),"effect MUST needs exact regional destination");
+                        var access=ref.regionalAccess().orElseThrow();var node=nodes.get(access.view());
+                        require(node!=null&&node.kind()==Kind.ELEMENTARY&&!node.filler()&&access.slice().isEmpty(),"INITIALIZE MUST is an exact whole elementary receiver");
+                    }
                 }
             }
         }

@@ -84,10 +84,23 @@ public final class SpJsonDecoder {
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
             io.github.gustavo2358.lower.domain.SourceFacts.Inventory sourceDependencies=null;
-            boolean preservation=node.path("contractVersion").asText().equals("2.32.0");
+            boolean structuredEvaluate=node.path("contractVersion").asText().equals("2.33.0");
+            for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("EVALUATE"))
+                for(var arm:statement.path("arms")) {
+                    boolean unmodeled=arm.path("selection").isNull();
+                    if(unmodeled && (!structuredEvaluate || !arm.path("conditionReads").isArray() || !arm.path("conditionOrigin").isObject()))
+                        throw new PhysicalShape("$/statements/EVALUATE/arms");
+                    if(!unmodeled && (arm.has("conditionReads") || arm.has("conditionOrigin")))
+                        throw new PhysicalShape("$/statements/EVALUATE/arms");
+                    if(!unmodeled && java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0","2.27.0","2.28.0","2.29.0","2.30.0","2.31.0","2.32.0","2.33.0").contains(node.path("contractVersion").asText())) {
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)arm).putNull("conditionReads");
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)arm).putNull("conditionOrigin");
+                    }
+                }
+            boolean preservation=structuredEvaluate||node.path("contractVersion").asText().equals("2.32.0");
             if(!preservation)for(var statement:node.path("statements"))if(statement.path("copySemantics").asText().equals("POSSIBLE_TEXT"))throw new PhysicalShape("$/statements/copySemantics");
-            if(preservation&&!node.has("sourceDependencies"))((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",node.path("storage").path("version").asText().equals("1.9.0")?"2.29.0":"2.28.0");
-            if(java.util.Set.of("2.30.0","2.31.0","2.32.0").contains(node.path("contractVersion").asText())) {
+            if(preservation&&!node.path("sourceDependencies").isObject())((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",node.path("storage").path("version").asText().equals("1.9.0")?"2.29.0":"2.28.0");
+            if(java.util.Set.of("2.30.0","2.31.0","2.32.0","2.33.0").contains(node.path("contractVersion").asText())) {
                 if(!node.path("sourceDependencies").isObject())throw new PhysicalShape("$/sourceDependencies");
                 if(node.path("contractVersion").asText().equals("2.30.0"))for(var occurrence:node.path("sourceDependencies").path("occurrences")) {
                     if(occurrence.has("operation")||occurrence.has("access")||occurrence.path("kind").asText().equals("DB2_TABLE")||occurrence.path("resolution").asText().equals("NOT_APPLICABLE"))throw new PhysicalShape("$/sourceDependencies/occurrences");
@@ -694,6 +707,10 @@ public final class SpJsonDecoder {
                 }
             }
             if (statement instanceof Wire211.EvaluateDocument e) for (var a : e.arms()) {
+                if(a.selection()==null) {
+                    if(a.conditionReads()==null || a.conditionOrigin()==null)throw new PhysicalShape("$/statements/EVALUATE/arms/condition");
+                    continue;
+                }
                 if (!(a.selection() instanceof Wire211.LiteralDocument l) || l.kind()!=SpInput.LiteralKind.ALPHANUMERIC
                         || l.logicalValue()==null || !l.value().equals(l.logicalValue().value()))
                     throw new PhysicalShape("$/statements/EVALUATE/arms/selection");

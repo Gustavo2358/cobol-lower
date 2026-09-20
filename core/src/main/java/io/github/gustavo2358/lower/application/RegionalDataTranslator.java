@@ -36,6 +36,7 @@ final class RegionalDataTranslator {
             view.extent().value().orElseThrow()).status()==MemoryCodecs.Status.EXACT;
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
+            Set<SpInput.DataId> requiredData,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var sourceText=sourceText(source);
         var aliasData=new HashSet<SpInput.DataId>();
@@ -127,6 +128,14 @@ final class RegionalDataTranslator {
             }
             var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
             var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
+            if(base==null&&!sourceText.contains(declaration.id())&&!requiredData.contains(declaration.id())) {
+                // The declaration identity remains in SP, but neither a logical
+                // value domain nor an executable physical view was published.
+                // A missing materialization does not create an AIR alias.
+                gap(declaration.id().handle(),dataOrigin,new Scopes.UnitScope(unit),List.of(),
+                    "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
+                continue;
+            }
             var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
             var inputs=new ArrayList<OriginId>();inputs.add(dataOrigin);
             if(view!=null) {inputs.add(origins.source("storage-view",view.node().handle(),view.provenance()));inputs.add(baseOrigins.get(view.base()));}

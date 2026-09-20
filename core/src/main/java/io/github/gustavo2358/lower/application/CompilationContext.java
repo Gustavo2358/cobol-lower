@@ -9,6 +9,14 @@ final class CompilationContext {
     final Map<SpInput.UnitKey,UnitId> units=new LinkedHashMap<>();
     final Map<SpInput.UnitKey,PartialProgramLowerer.Fragment> fragments=new LinkedHashMap<>();
     Optional<UnitId> parent(SpInput.UnitKey unit){return products.get(unit).parent().map(units::get);}
+    Set<SpInput.DataId> requiredData(SpInput input) {
+        var required=new LinkedHashSet<SpInput.DataId>(products.get(input.unit()).globalData());
+        for(var product:products.values())for(var capture:product.dataCaptures()) {
+            if(capture.localData().unit().equals(input.unit()))required.add(capture.localData());
+            if(capture.sourceData().unit().equals(input.unit()))required.add(capture.sourceData());
+        }
+        return Set.copyOf(required);
+    }
     List<ObjectId> visible(SpInput.UnitKey unit){
         var result=new LinkedHashSet<ObjectId>();
         for(var entry:products.entrySet())if(CompilationAdmission.ancestor(entry.getKey(),unit)){

@@ -60,16 +60,30 @@ public final class PartialIntegrationSuite {
                         "activation return retains target-resolution and body provenance");
                 }
             }
-            if(List.of("p1","p2","p3","p5","read","if-unknown").contains(name)) {
+            if(List.of("p1","p2","p3","p5","read").contains(name)) {
                 check(unit.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.Opaque),"conservative operation retained "+name);
                 check(!publication.uncertainties().isEmpty(),"explicit gap "+name);
+            }
+            if(name.equals("if-unknown")) {
+                var branch=unit.sequences().stream().map(Sequence::terminator)
+                    .filter(Operations.Branch.class::isInstance).map(Operations.Branch.class::cast).findFirst().orElseThrow();
+                var fact=input.statements().stream().filter(SpInput.IfFact.class::isInstance)
+                    .map(SpInput.IfFact.class::cast).findFirst().orElseThrow();
+                var thenEntry=fact.thenArm().entry().statement().orElseThrow();
+                var elseEntry=fact.elseArm().entry().statement().orElseThrow();
+                check(branch.trueDestination().equals(r.statements().stream().filter(l->l.source().equals(thenEntry)).findFirst().orElseThrow().label()),
+                    "unmodeled IF predicate retains true arm");
+                check(branch.falseDestination().equals(r.statements().stream().filter(l->l.source().equals(elseEntry)).findFirst().orElseThrow().label()),
+                    "unmodeled IF predicate retains false arm");
+                check(unit.sequences().stream().noneMatch(s->s.terminator() instanceof Operations.Opaque),
+                    "predicate gap creates no opaque control or memory");
             }
             for(var sequence:unit.sequences()) if(sequence.terminator() instanceof Operations.Opaque opaque
                     && publication.uncertainties().stream().anyMatch(u->opaque.header().uncertainties().contains(u.id()) && u.code().equals("cobol-lower:NORMAL_CONTINUATION_NOT_PROVEN"))) {
                 var memory=opaque.envelope().memory();
-                check(opaque.knownOperands().isEmpty() && memory.knownReads().isEmpty() && memory.knownWrites().isEmpty()
+                check(memory.knownWrites().isEmpty()
                     && memory.otherReads()==Scopes.NoMemory.INSTANCE && memory.otherWrites()==Scopes.NoMemory.INSTANCE,
-                    "control-only frontier does not repeat or reopen a proved write "+name);
+                    "control-only frontier retains operands without repeating or reopening a proved write "+name);
             }
             var bytes=codec.encode(publication);check(Arrays.equals(bytes,codec.encode(codec.decode(bytes))),"AIR A/B "+name);
             var facts=new ArrayList<>(input.statements());Collections.reverse(facts);

@@ -15,6 +15,22 @@ final class PerformVaryingAdmission {
             && r.binding().candidates().size()==1 && r.wholeItemAccess().filter(w->c.data(w.data())!=null
                 && PerformCountAdmission.integer(c.data(w.data())) && r.binding().selected().equals(Optional.of(w.data()))).isPresent();
     }
+    static boolean executable(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
+        if(p.varying().isEmpty())return true;
+        var v=p.varying().orElseThrow();
+        if(v.levels()!=1||v.controls().size()!=3)return false;
+        var byRole=new EnumMap<VaryingOperandRole,VaryingOperand>(VaryingOperandRole.class);
+        for(var o:v.controls())if(o.level()!=1||byRole.putIfAbsent(o.role(),o)!=null)return false;
+        if(byRole.size()!=3)return false;
+        var variable=byRole.get(VaryingOperandRole.CONTROL_VARIABLE);
+        var from=byRole.get(VaryingOperandRole.FROM);
+        var by=byRole.get(VaryingOperandRole.BY);
+        return variable.provenance().exact()&&variable.integer().isEmpty()&&variable.references().size()==1
+            &&integerReference(variable.references().getFirst(),OperandRole.WRITE,c)
+            &&from.provenance().exact()&&(from.integer().filter(PerformVaryingAdmission::canonical).isPresent()
+                ||from.references().size()==1&&integerReference(from.references().getFirst(),OperandRole.READ,c))
+            &&by.provenance().exact()&&by.integer().filter(i->canonical(i)&&new java.math.BigInteger(i).signum()!=0).isPresent();
+    }
     static void validate(ProcedurePerformFact p,PerformVarying v,Set<OperandId> seen,EntryGobackAdmission.Context c) {
         need(p,c,p.loop().isPresent() && p.times().isEmpty() && v.levels()>0,"VARYING has a loop and positive typed level count");
         var roles=new HashSet<String>();
@@ -26,21 +42,6 @@ final class PerformVaryingAdmission {
             for(var r:o.references()) {
                 CallAdmission.reference(r,p.header(),seen,c);
                 need(p,c,r.role()==OperandRole.READ || o.role()==VaryingOperandRole.CONTROL_VARIABLE && r.role()==OperandRole.WRITE,"typed varying operand role");
-            }
-        }
-        if(!p.gapCodes().isEmpty())return;
-        need(p,c,v.levels()==1 && v.controls().size()==3,"closed single-variable profile");
-        for(var role:VaryingOperandRole.values()) {
-            var values=v.controls().stream().filter(o->o.level()==1 && o.role()==role).toList();
-            need(p,c,values.size()==1,"exactly one occurrence for each varying role");
-            if(values.size()!=1)continue;
-            var o=values.getFirst();need(p,c,o.provenance().exact(),"exact varying operand origin");
-            switch(role) {
-                case CONTROL_VARIABLE -> need(p,c,o.integer().isEmpty() && o.references().size()==1
-                    && integerReference(o.references().getFirst(),OperandRole.WRITE,c),"whole integer control item write");
-                case FROM -> need(p,c,o.integer().isPresent() || o.references().size()==1
-                    && integerReference(o.references().getFirst(),OperandRole.READ,c),"proved integer initial operand");
-                case BY -> need(p,c,o.integer().filter(i->canonical(i)&&new java.math.BigInteger(i).signum()!=0).isPresent(),"nonzero integer literal increment");
             }
         }
     }

@@ -33,7 +33,11 @@ final class PartialProgramLowerer implements LowerInput {
         var statements = new ArrayList<LoweringResult.StatementLink>(); var operands = new ArrayList<LoweringResult.OperandLink>();
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
-        var data = RegionalDataTranslator.translate(plan.data(), plan.storage(), unit, ids, origins, items, uncertainties);
+        var requiredData=new LinkedHashSet<SpInput.DataId>();
+        input.fileInventory().declarations().forEach(declaration->requiredData.addAll(declaration.records()));
+        if(context!=null)requiredData.addAll(context.requiredData(input));
+        var data = RegionalDataTranslator.translate(plan.data(), plan.storage(),
+            requiredData,unit, ids, origins, items, uncertainties);
         if(context!=null)data=context.captures(input,data,unit,ids,origins,items,uncertainties);
         var files=new FileResourceLowering(input,data,unit,ids,origins,uncertainties);
         if(context!=null)context.importFiles(input,files);

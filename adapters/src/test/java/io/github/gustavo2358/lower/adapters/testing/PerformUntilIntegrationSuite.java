@@ -30,7 +30,10 @@ public final class PerformUntilIntegrationSuite {
         for(var name:List.of("incoming","escape","cycle","recursive","partial-end","unsupported","unresolved")) {
             var adversarial=PerformFamilyIntegrationSuite.inputFixture("until-"+name);
             var facts=adversarial.statements().stream().map(s->s instanceof SpInput.ProcedurePerformFact f?IfInputs.with(f,"gapCodes",List.of()):s).toList();
-            check(new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"false closed UNTIL rejected "+name);
+            var original=new CobolLowerer().lower(adversarial,CobolLower.OPTIONS);
+            var diagnosticOnly=new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS);
+            check(original.publication().isPresent()&&diagnosticOnly.status()==original.status(),
+                "UNTIL gap metadata cannot change structural admission "+name+" original="+original.status()+" changed="+diagnosticOnly.status());
         }
         try(var stream=PerformUntilIntegrationSuite.class.getResourceAsStream("/sp/perform-family/until-after.json")) {
             var json=new ObjectMapper();var raw=(ObjectNode)json.readTree(stream);raw.put("contractVersion","2.2.0");

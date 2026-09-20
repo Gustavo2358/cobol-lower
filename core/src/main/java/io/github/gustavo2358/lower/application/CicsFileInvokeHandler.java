@@ -33,9 +33,8 @@ final class CicsFileInvokeHandler {
         var params=new ArrayList<Interactions.Parameter>();for(int n=0;n<args.size();n++)params.add(new Interactions.Parameter(BigInteger.valueOf(n),new Interactions.KnownMode(Interactions.PassingMode.VALUE),Types.known(types.get(n)),Interactions.ExternalBinding.INSTANCE,origin));
         var signature=new Interactions.ExternalSignature(new Interactions.Signature(new Interactions.ParameterInventory(params,Interactions.NoRemainder.INSTANCE),new Interactions.ResultInventory(List.of(),Interactions.NoRemainder.INSTANCE),origin));
         var memory=CicsFileMemory.effects(f,data,context);context.finish();
-        var external=new Scopes.UnitControl(unit,false,false,true,true,false,true);
-        Scopes.ControlScope residual=f.conditions()==CicsConditions.LOCAL_CONDITION&&next!=null?external:new Scopes.UnitControl(unit,true,true,true,true,true,true);
-        var outcomes=new Control.InvocationOutcomes(next==null?List.of():List.of(new Control.Normal(next)),new Scopes.WithinControl(residual));
+        var outcomes=new Control.InvocationOutcomes(next==null?List.of():List.of(new Control.Normal(next)),
+            next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE);
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
         var precision=new Evidence.Precision(open,open,open,new Evidence.Claim(scope,Evidence.PrecisionStatus.NOT_APPLICABLE,List.of()),exact);
         return new Operations.Invoke(new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.of(reason)),f.command().toLowerCase(Locale.ROOT),target,args,List.of(),signature,memory.operands(),memory.bound(),outcomes,new Interactions.KnownContract(new Interactions.ContractRef("cics-ts.file-control","1",List.of(origin))));
@@ -48,7 +47,7 @@ final class CicsFileInvokeHandler {
         Operand.Header header(String key,Operand.Role role,OriginId source){return new Operand.Header(new OperandId(new OperationOwner(op),ids.id("operand","cics-file-"+key,op.localId(),key)),role,source);}
         Expression literal(String key,String text){return new Expressions.Literal(header(key,Operand.Role.ARGUMENT_VALUE,origin),new Values.TextValue(text));}
         Expression integer(String key,BigInteger value){return new Expressions.Literal(header(key,Operand.Role.ARGUMENT_VALUE,origin),new Values.IntValue(value));}
-        Expression unknown(String key,Operand.Role role,Types.Builtin type,OriginId source){return new Expressions.Unknown(header(key,role,source),Types.known(type),List.of(),new Scopes.WithinMemory(new Scopes.VisibleMemory(op.unit(),true)),reason);}
+        Expression unknown(String key,Operand.Role role,Types.Builtin type,OriginId source){return new Expressions.Unknown(header(key,role,source),Types.known(type),List.of(),Scopes.NoMemory.INSTANCE,reason);}
         Expression option(CicsFileOption o,int width,String key,Types.Builtin type){
             if(type==Types.Builtin.TEXT&&o.literal().isPresent())return literal(key,o.literal().orElseThrow());
             if(type==Types.Builtin.INT&&o.integer().isPresent())return integer(key,o.integer().orElseThrow());

@@ -404,8 +404,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             destinations=List.copyOf(destinations);Objects.requireNonNull(normalContinuation);gapCodes=List.copyOf(gapCodes); }
     }
 
-    public record EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
-        public EvaluateArm { Objects.requireNonNull(selection); statements=List.copyOf(statements); Objects.requireNonNull(control); }
+    public record EvaluateArm(int ordinal, Optional<LiteralSource> selection, List<DataReference> conditionReads,
+                              Provenance conditionOrigin, List<StatementId> statements, IfArm control) {
+        public EvaluateArm { Objects.requireNonNull(selection);conditionReads=List.copyOf(conditionReads);
+            Objects.requireNonNull(conditionOrigin);statements=List.copyOf(statements);Objects.requireNonNull(control); }
+        public EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
+            this(ordinal,Optional.of(selection),List.of(),selection.provenance(),statements,control);
+        }
     }
     public record EvaluateFact(StatementHeader header, Optional<DataReference> subject, List<EvaluateArm> arms,
             IfArm otherArm, List<StatementId> otherStatements, NormalContinuation normalContinuation,

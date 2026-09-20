@@ -26,8 +26,9 @@ public final class PerformVaryingIntegrationSuite {
             var effects=result.publication().orElseThrow().units().getFirst().sequences().stream().map(Sequence::terminator)
                 .filter(Operations.Opaque.class::isInstance).map(Operations.Opaque.class::cast)
                 .filter(o->o.observedKind().startsWith("perform-varying-")).toList();
-            if(!partial.contains(name)) {
-                check(effects.size()==2*input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).count(),"initialization and update per callsite "+name);
+            if(!partial.contains(name)||name.equals("unsupported-condition")||name.equals("unresolved-condition")) {
+                check(effects.size()==2*input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).count(),
+                    "initialization and update per callsite "+name+" actual="+effects.size());
                 for(var e:effects)check(e.envelope().memory().knownWrites().size()==1 && e.envelope().memory().knownWrites().equals(e.envelope().memory().mustOverwrite())
                     && e.envelope().memory().otherWrites()==Scopes.NoMemory.INSTANCE && e.envelope().control().remainder()==Scopes.NoControl.INSTANCE,"localized must-write with closed continuation "+name);
             } else check(effects.isEmpty(),"partial range not specialized "+name);
@@ -39,12 +40,19 @@ public final class PerformVaryingIntegrationSuite {
                 IfInputs.with(varying,"controls",varying.controls().stream().map(o->o.role()==SpInput.VaryingOperandRole.BY?IfInputs.with(o,"integer",Optional.of("0")):o).toList()),
                 IfInputs.with(varying,"controls",varying.controls().stream().map(o->o.role()==SpInput.VaryingOperandRole.CONTROL_VARIABLE?IfInputs.with(o,"references",List.of(IfInputs.with(o.references().getFirst(),"wholeItemAccess",Optional.empty()))):o).toList()))) {
             var changed=IfInputs.with(p,"varying",Optional.of(bad));
-            check(new CobolLowerer().lower(IfInputs.with(input,"statements",input.statements().stream().map(s->s==p?changed:s).toList()),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"contradictory varying facts rejected");
+            var result=new CobolLowerer().lower(IfInputs.with(input,"statements",input.statements().stream().map(s->s==p?changed:s).toList()),CobolLower.OPTIONS);
+            check(result.publication().isPresent(),"unsupported varying detail preserves the published range");
+            check(result.publication().orElseThrow().units().getFirst().sequences().stream().map(Sequence::terminator)
+                .filter(Operations.Opaque.class::isInstance).map(Operations.Opaque.class::cast)
+                .noneMatch(o->o.observedKind().startsWith("perform-varying-")),"unproved varying update is not executable");
         }
         for(var name:partial) {
             var adversarial=PerformFamilyIntegrationSuite.inputFixture("varying-"+name);
             var facts=adversarial.statements().stream().map(s->s instanceof SpInput.ProcedurePerformFact f?IfInputs.with(f,"gapCodes",List.of()):s).toList();
-            check(new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"false closed VARYING rejected "+name);
+            var original=new CobolLowerer().lower(adversarial,CobolLower.OPTIONS);
+            var diagnosticOnly=new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS);
+            check(original.publication().isPresent()&&diagnosticOnly.status()==original.status(),
+                "VARYING gap metadata cannot change structural admission "+name);
         }
         try(var stream=PerformVaryingIntegrationSuite.class.getResourceAsStream("/sp/perform-family/varying-after.json")) {
             var json=new ObjectMapper();var raw=(ObjectNode)json.readTree(stream);raw.put("contractVersion","2.4.0");

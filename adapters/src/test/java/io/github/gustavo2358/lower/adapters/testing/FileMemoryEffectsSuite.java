@@ -79,7 +79,10 @@ public final class FileMemoryEffectsSuite {
         var sequences=air.units().getFirst().sequences();
         for(var sequence:sequences)if(sequence.terminator() instanceof io.github.gustavo2358.air.model.Operations.Opaque o&&o.observedKind().equals("file-outcome-continuation")) {
             var control=o.envelope().control().remainder();
-            check(control instanceof io.github.gustavo2358.air.model.Scopes.WithinControl c&&c.scope() instanceof io.github.gustavo2358.air.model.Scopes.ControlUnion,"open source continuation must not jump into internal memory phases");
+            check(control instanceof io.github.gustavo2358.air.model.Scopes.NoControl
+                    ||control instanceof io.github.gustavo2358.air.model.Scopes.WithinControl c
+                        &&c.scope() instanceof io.github.gustavo2358.air.model.Scopes.LabelsControl labels&&labels.labels().isEmpty(),
+                "missing handler interpretation adds no control destination to conditional FILE effects");
         }
         check(read.results().isEmpty(),"INTO address must not be evaluated as a pre-invoke result place");
         check(sequences.stream().filter(s->s.terminator() instanceof io.github.gustavo2358.air.model.Operations.Branch).count()>=3,"four conditional outcomes use explicit general AIR branches");

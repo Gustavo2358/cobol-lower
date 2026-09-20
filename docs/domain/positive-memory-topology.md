@@ -1,5 +1,15 @@
 # Positive memory topology — W1
 
+W2 continuation: the W1 contract remains authoritative. W2 propagates the same
+positive publication rule to IF/EVALUATE/PERFORM/GO TO, Opaque, FILE and CICS
+helpers. A source gap by itself no longer activates broad memory, control or
+foreign effects. Known operands and real external input/read/return effects stay
+executable. Unmaterialized declarations with no logical value domain or physical
+view contribute coverage instead of an AllMemory alias; declarations required by
+published captures, global data or FILE records keep their identity. The W2
+checkpoint and integrated oracles are in the anchor W2 report. This extension
+does not change AIR, the logical default or physical admission.
+
 Status: IN_PROGRESS; campaign `POSITIVE_MEMORY_TOPOLOGY`, companion to analysis-cfg #45.
 The accepted W0-R1 and W1 product policy supersede the older requirement that every
 unimplemented source effect be approximated by havoc or a broad envelope.

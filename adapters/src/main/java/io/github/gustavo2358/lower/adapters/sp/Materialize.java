@@ -1147,10 +1147,15 @@ final class Materialize {
                 new GoToTarget(new ProcedureId(unit,t.id()),provenance(t.paragraphOrigin(),unit))),provenance(v.referenceOrigin(),unit),
                 Optional.ofNullable(v.targetEntry()).map(id -> new StatementId(unit,id)),Optional.ofNullable(v.entryOrigin()).map(o -> provenance(o,unit)),v.gapCodes());
             case Wire211.EvaluateDocument v -> new EvaluateFact(h, Optional.ofNullable(v.subject()).map(s -> reference(s,h.id(),unit)),
-                v.arms().stream().map(a -> { var l=(Wire211.LiteralDocument)a.selection();
+                v.arms().stream().map(a -> {
+                    var members=a.statements().stream().map(id -> new StatementId(unit,id)).toList();
+                    if(a.selection()==null) return new EvaluateArm(a.ordinal(),Optional.empty(),
+                        a.conditionReads().stream().map(r -> reference(r,h.id(),unit)).toList(),
+                        provenance(a.conditionOrigin(),unit),members,arm(a.control(),unit));
+                    var l=(Wire211.LiteralDocument)a.selection();
                     return new EvaluateArm(a.ordinal(), new LiteralSource(new OperandId(h.id(),l.id()),l.kind(),
                         Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit)),
-                        a.statements().stream().map(id -> new StatementId(unit,id)).toList(), arm(a.control(),unit)); }).toList(),
+                        members, arm(a.control(),unit)); }).toList(),
                 arm(v.otherArm(),unit),v.otherStatements().stream().map(id -> new StatementId(unit,id)).toList(),
                 continuation(v.normalContinuation(),unit),v.gapCodes());
             case Wire211.ProcedurePerformDocument v -> new ProcedurePerformFact(h,

@@ -41,7 +41,9 @@ final class FileControlLowering {
         var header=unknown(op,origin,critical?"FILE_CRITICAL_ERROR_EXIT_NOT_PROVEN":"FILE_NORMAL_CONTINUATION_NOT_PROVEN");
         return new Operations.Opaque(header,"file-event-continuation",List.of(),List.of(),
             new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),critical
+                    ?new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,false,false,false))
+                    :next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
     }
     List<Sequence> after(String key,FileFacts.Use use,FileFacts.EffectPlan plan,LabelId next,OriginId origin,LocalIds local,FileMemoryLowering memory) {
         var control=use.control().orElseThrow();var routes=control.routes();var result=new ArrayList<Sequence>();
@@ -86,7 +88,7 @@ final class FileControlLowering {
             var alternatives=resumes.getOrDefault(d.id(),Set.of()).stream().sorted(Comparator.comparing(LabelId::localId))
                 .<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
             var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-                new Control.ControlEnvelope(alternatives,new Scopes.WithinControl(new Scopes.UnitControl(unit,false,false,true,false,false,false))),
+                new Control.ControlEnvelope(alternatives,alternatives.isEmpty()?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),
                 new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
             result.add(new Sequence(label(ids,key),List.of(),new Operations.Opaque(unknown(operation(ids,key),origin,"LOCAL_RETURN_CONTEXT_NOT_PROVEN"),"use-body-return",List.of(),List.of(),envelope),origin));
         }

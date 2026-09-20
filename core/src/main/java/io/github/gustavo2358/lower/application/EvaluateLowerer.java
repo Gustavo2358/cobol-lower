@@ -16,7 +16,7 @@ final class EvaluateLowerer {
         for(int i=0;i<e.arms().size();i++) {
             var arm=e.arms().get(i);var key=e.header().id().handle()+"/when/"+arm.ordinal();
             var operation=new OperationId(unit,ids.id("operation","evaluate-branch",unit.localId(),key));
-            var selection=origins.source("evaluate-selection",key,arm.selection().provenance());
+            var selection=origins.source("evaluate-selection",key,arm.conditionOrigin());
             var entry=origins.source("evaluate-arm",key,arm.control().provenance());
             var inputs=new ArrayList<OriginId>(List.of(source,selection,entry,completion));
             e.subject().ifPresent(s -> inputs.add(origins.source("evaluate-subject",e.header().id().handle(),s.provenance())));
@@ -28,23 +28,25 @@ final class EvaluateLowerer {
             uncertainties.add(new Evidence.Uncertainty(reason,"predicate-value-unknown",List.of(Evidence.Dimension.VALUES),
                 new Scopes.EntityScope(List.of(operand)),"Subject equals this WHEN literal; runtime truth remains unknown.",origin));
             var dependencies=new ArrayList<Expression>();
-            var literalId=new OperandId(owner,ids.id("operand","evaluate-literal",operation.localId(),key));
-            dependencies.add(new Expressions.Literal(new Operand.Header(literalId,Operand.Role.VALUE_READ,selection),new Values.TextValue(arm.selection().logicalValue().orElseThrow().value())));
-            links.add(new LoweringResult.OperandLink(arm.selection().id(),literalId,selection));
-            Scopes.MemoryBound unknownReads=new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true));
-            var ref=e.subject().orElse(null);
-            var mapping=ref==null?null:ref.wholeItemAccess().map(w -> data.index().get(w.data())).orElse(null);
-            if(mapping!=null) {
-                var readOrigin=origins.source("evaluate-subject",e.header().id().handle(),ref.provenance());
-                var readId=new OperandId(owner,ids.id("operand","evaluate-read",operation.localId(),key));
-                var placeId=new OperandId(owner,ids.id("operand","evaluate-place",operation.localId(),key));
+            arm.selection().ifPresent(l -> {
+                var literalId=new OperandId(owner,ids.id("operand","evaluate-literal",operation.localId(),key));
+                dependencies.add(new Expressions.Literal(new Operand.Header(literalId,Operand.Role.VALUE_READ,selection),new Values.TextValue(l.logicalValue().orElseThrow().value())));
+                links.add(new LoweringResult.OperandLink(l.id(),literalId,selection));
+            });
+            var references=new ArrayList<SpInput.DataReference>(); e.subject().ifPresent(references::add);
+            references.addAll(arm.conditionReads());
+            for(var ref:references) {
+                var mapping=ref.wholeItemAccess().map(w -> data.index().get(w.data())).orElse(null);
+                if(mapping==null) continue;
+                var readOrigin=origins.source("evaluate-read",ref.id().handle(),ref.provenance());
+                var readId=new OperandId(owner,ids.id("operand","evaluate-read",operation.localId(),key+"/"+ref.id().handle()));
+                var placeId=new OperandId(owner,ids.id("operand","evaluate-place",operation.localId(),key+"/"+ref.id().handle()));
                 var place=new Places.ObjectPlace(new Operand.Header(placeId,Operand.Role.VALUE_READ,readOrigin),mapping.object());
                 dependencies.add(new Expressions.Read(new Operand.Header(readId,Operand.Role.VALUE_READ,readOrigin),place));
                 links.add(new LoweringResult.OperandLink(ref.id(),readId,readOrigin));
                 links.add(new LoweringResult.OperandLink(ref.id(),placeId,readOrigin));
-                unknownReads=Scopes.NoMemory.INSTANCE;
             }
-            var predicate=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.PREDICATE,origin),Types.known(Types.Builtin.BOOL),dependencies,unknownReads,reason);
+            var predicate=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.PREDICATE,origin),Types.known(Types.Builtin.BOOL),dependencies,Scopes.NoMemory.INSTANCE,reason);
             var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
             var values=new Evidence.Claim(new Scopes.EntityScope(List.of(operand)),Evidence.PrecisionStatus.OPEN,List.of(reason));
             var thenLabel=PartialProgramAssembler.label(arm.control().entry().statement().orElseThrow(),unit,ids);

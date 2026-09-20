@@ -31,7 +31,10 @@ final class IfPredicate {
         conditionReads.forEach(r -> references.put(r.id(), r));
         var dependencies = new ArrayList<Expression>();
         for (var known : knownReads) {
-            var reference = references.get(known); var mapping = data.index().get(reference.wholeItemAccess().orElseThrow().data());
+            var reference = references.get(known);
+            if (reference == null || reference.wholeItemAccess().isEmpty()) continue;
+            var mapping = data.index().get(reference.wholeItemAccess().orElseThrow().data());
+            if (mapping == null) continue;
             var source = origins.source(role+"-read", known.handle(), reference.provenance());
             var placeOrigin = origins.derived(ids.id("origin", role+"-read-place", operation.localId(), known.handle()),
                 List.of(source, mapping.origin()), rule);

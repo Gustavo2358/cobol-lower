@@ -15,12 +15,16 @@ final class EvaluateAdmission {
         c.require(!e.arms().isEmpty(),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"literal arms required");
         var members=new HashSet<StatementId>();
         for(int i=0;i<e.arms().size();i++) {
-            c.touch(); var a=e.arms().get(i); var l=a.selection(); c.provenance(l.provenance());
-            CallAdmission.operand(l.id(),e.header(),operands,c);
-            c.require(a.ordinal()==i && a.control().presence()==ClausePresence.PRESENT,Rule.STRUCTURE,e.header().id().handle(),l.provenance(),"semantic WHEN ordinal and presence required");
-            c.require(l.kind()==LiteralKind.ALPHANUMERIC && l.logicalValue().filter(v -> v.logicalDomain()==LogicalDomain.TEXT
-                        && v.logicalExtent()==v.value().codePointCount(0,v.value().length())).isPresent(),
-                Rule.PROFILE_FACT,e.header().id().handle(),l.provenance(),"typed simple literal and unique operand identity required");
+            c.touch(); var a=e.arms().get(i); c.provenance(a.conditionOrigin());
+            c.require(a.ordinal()==i && a.control().presence()==ClausePresence.PRESENT,Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"semantic WHEN ordinal and presence required");
+            a.selection().ifPresent(l -> {
+                c.provenance(l.provenance());CallAdmission.operand(l.id(),e.header(),operands,c);
+                c.require(l.kind()==LiteralKind.ALPHANUMERIC && l.logicalValue().filter(v -> v.logicalDomain()==LogicalDomain.TEXT
+                            && v.logicalExtent()==v.value().codePointCount(0,v.value().length())).isPresent(),
+                    Rule.PROFILE_FACT,e.header().id().handle(),l.provenance(),"typed simple literal and unique operand identity required");
+            });
+            for(var read:a.conditionReads()) CallAdmission.reference(read,e.header(),operands,c);
+            c.require(a.selection().isPresent() || a.conditionOrigin().exact(),Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"unmodeled WHEN has exact source origin");
             arm(e,a.control(),a.statements(),members,c);
         }
         arm(e,e.otherArm(),e.otherStatements(),members,c);
@@ -48,7 +52,7 @@ final class EvaluateAdmission {
     static boolean structured(EvaluateFact e,boolean completion) {
         return e.header().provenance().exact() && (e.normalContinuation().statement().isPresent() || completion)
                 && e.arms().stream().allMatch(a -> a.control().entry().statement().isPresent()
-                    && a.control().contentAvailability()==Availability.KNOWN && a.control().provenance().exact() && a.selection().provenance().exact())
+                    && a.control().contentAvailability()==Availability.KNOWN && a.control().provenance().exact() && a.conditionOrigin().exact())
                 && (e.otherArm().presence()==ClausePresence.ABSENT
                     || e.otherArm().presence()==ClausePresence.PRESENT && e.otherArm().entry().statement().isPresent()
                         && e.otherArm().contentAvailability()==Availability.KNOWN && e.otherArm().provenance().exact());

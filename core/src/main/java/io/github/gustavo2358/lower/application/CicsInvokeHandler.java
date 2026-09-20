@@ -72,7 +72,7 @@ final class CicsInvokeHandler {
             var missing=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-name-area",operation.localId(),key));
             uncertainties.add(new Evidence.Uncertainty(missing,"cobol-lower:CICS_NAME_AREA_UNAVAILABLE",List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Target absent or an exactly eight-byte IBM1047 physical name area is not proved; no padding or dynamic offset inference.",origin));
             var operand=new OperandId(new OperationOwner(operation),ids.id("operand","cics-name-unknown",operation.localId(),key));
-            var unknown=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.CALL_TARGET,origin),Types.known(Types.Builtin.TEXT),List.of(),new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),missing);
+            var unknown=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.CALL_TARGET,origin),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,missing);
             target=new Interactions.ComputedTarget("program","cics.program",unknown,policy,origin);
         }
         var effectOperands=new ArrayList<Place>();
@@ -87,13 +87,13 @@ final class CicsInvokeHandler {
             }
         });
         var signature=new Interactions.ExternalSignature(new Interactions.Signature(new Interactions.ParameterInventory(List.of(),new Interactions.UnknownRemainder(reason)),new Interactions.ResultInventory(List.of(),new Interactions.UnknownRemainder(reason)),origin));
-        var memory=new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true));
-        var effects=new Interactions.EffectBound(new Interactions.ForeignEffects(memory,memory,List.of()),List.of());
-        var external=new Scopes.UnitControl(unit,false,false,true,true,false,true);
-        Scopes.ControlScope remainder=fact.conditions()==SpInput.CicsConditions.DEFAULT_ENTRY_PREFIX&&(fact.command()!=SpInput.CicsCommand.LINK||next!=null)?external:fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION&&next!=null
-            ?new Scopes.ControlUnion(List.of(new Scopes.LabelsControl(List.of(next)),external))
-            :new Scopes.UnitControl(unit,true,true,true,true,true,true);
-        var outcomes=new Control.InvocationOutcomes(fact.command()==SpInput.CicsCommand.LINK&&next!=null?List.of(new Control.Normal(next)):List.of(),new Scopes.WithinControl(remainder));
+        var effects=new Interactions.EffectBound(new Interactions.ForeignEffects(Scopes.NoMemory.INSTANCE,Scopes.NoMemory.INSTANCE,List.of()),List.of());
+        var known=fact.command()==SpInput.CicsCommand.LINK&&next!=null?List.<Control.InvocationAlternative>of(new Control.Normal(next))
+            :List.<Control.InvocationAlternative>of();
+        var remainder=fact.command()==SpInput.CicsCommand.XCTL
+            ?new Scopes.WithinControl(new Scopes.UnitControl(unit,false,false,false,false,false,true))
+            :known.isEmpty()?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE;
+        var outcomes=new Control.InvocationOutcomes(known,remainder);
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
         var precision=new Evidence.Precision(open,open,open,new Evidence.Claim(scope,Evidence.PrecisionStatus.NOT_APPLICABLE,List.of()),open);
         return new Operations.Invoke(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.copyOf(operationUncertainties)),fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));

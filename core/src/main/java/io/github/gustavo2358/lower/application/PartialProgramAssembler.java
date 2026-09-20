@@ -176,12 +176,11 @@ final class PartialProgramAssembler {
         var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
         var id=new OperationId(unit,ids.id("operation","opaque",unit.localId(),fact.header().id().handle()));
         var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","unsupported-region",id.localId(),"semantics"));
-        var known=unknownEffects ? OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties)
-            : new OpaqueOperands.Known(List.of(),List.of(),List.of(),List.of());
+        var known=OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties);
         var scope=new Scopes.EntityScope(List.of(id));
         var code=fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
-            "Source region retained with conservative effects and only proved control",origin));
+            "Source region retains published operands and only proved control",origin));
         var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
         if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.environment()!=SpInput.EnvironmentEffect.NONE).isPresent()) {
             var environment=new UncertaintyId(unit.publication(),ids.id("uncertainty","statement-environment",id.localId(),"effects"));
@@ -191,14 +190,19 @@ final class PartialProgramAssembler {
         }
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
         var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
-        var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact,unknownEffects?open:exact),effectGaps);
-        var memory=OpaqueOperands.memory(fact,known,unit.publication(),unknownEffects);
+        var memory=OpaqueOperands.memory(fact,known,unit.publication());
+        boolean memoryOpen=!(memory.otherReads() instanceof Scopes.NoMemory)||!(memory.otherWrites() instanceof Scopes.NoMemory);
+        boolean externalEnvironment=fact instanceof SpInput.OtherStatement o && o.effects().isPresent()
+            &&(o.effects().orElseThrow().environment()==SpInput.EnvironmentEffect.OUTPUT
+                ||o.effects().orElseThrow().environment()==SpInput.EnvironmentEffect.INPUT);
+        var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,
+            new Evidence.Precision(next==null?open:exact,memoryOpen?open:exact,memoryOpen||externalEnvironment?open:exact,open,externalEnvironment?open:exact),effectGaps);
         // AIR has one descriptive identity for an opaque construction; the SP shape is the most specific published identity.
         return new Operations.Opaque(header,fact instanceof SpInput.OtherStatement o?o.observedShape().orElse(o.observedKind()):fact.getClass().getSimpleName(),known.operands(),List.of(),
             new Envelopes.Envelope(memory,
-                next==null?new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.UnitControl(unit,true,true,true,true,true,true)))
-                    :new Control.ControlEnvelope(List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),
-                new Envelopes.DependencyEnvelope(List.of(),unknownEffects?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
+                next==null?new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.LabelsControl(List.of())))
+                    :new Control.ControlEnvelope(List.of(new Control.JumpAlternative(next)),Scopes.NoControl.INSTANCE),
+                new Envelopes.DependencyEnvelope(List.of(),externalEnvironment?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
     }
     static LabelId label(SpInput.StatementId s,UnitId unit,LocalIds ids) {return new LabelId(unit,ids.id("label","partial-sequence",unit.localId(),s.handle()));}
     private static void link(SpInput.StatementId source,Operation op,LabelId label,List<LoweringResult.StatementLink> statements,List<Evidence.CoverageItem> items) {

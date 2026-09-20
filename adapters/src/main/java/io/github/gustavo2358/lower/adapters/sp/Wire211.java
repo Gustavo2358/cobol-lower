@@ -38,7 +38,8 @@ final class Wire211 {
     record GoToTargetDocument(String id, Wire.ProvenanceDocument paragraphOrigin) { }
     record GoToDocument(Wire.StatementHeaderDocument header, @Nullable GoToTargetDocument target, Wire.ProvenanceDocument referenceOrigin,
         @Nullable String targetEntry, @Nullable Wire.ProvenanceDocument entryOrigin, List<String> gapCodes) implements StatementDocument { }
-    record EvaluateArmDocument(int ordinal, MoveSourceDocument selection, List<String> statements, ArmDocument control) { }
+    record EvaluateArmDocument(int ordinal, @Nullable MoveSourceDocument selection, List<String> statements, ArmDocument control,
+        @Nullable List<ReferenceDocument> conditionReads,@Nullable Wire.ProvenanceDocument conditionOrigin) { }
     record EvaluateDocument(Wire.StatementHeaderDocument header, @Nullable ReferenceDocument subject, List<EvaluateArmDocument> arms,
         ArmDocument otherArm, List<String> otherStatements, ContinuationDocument normalContinuation, List<String> gapCodes) implements StatementDocument { }
     record PerformParagraphDocument(String id, String entry, List<String> statements, List<String> completions, Wire.ProvenanceDocument provenance) { }

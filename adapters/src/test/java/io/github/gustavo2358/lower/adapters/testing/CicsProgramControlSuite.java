@@ -57,8 +57,8 @@ public final class CicsProgramControlSuite {
         var publication=new CobolLowerer().lower(input,CobolLower.OPTIONS).publication().orElseThrow();
         var invoke=publication.units().getFirst().sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast)
             .filter(i->i.target() instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.program")).findFirst().orElseThrow();
-        if(!invoke.outcomes().known().isEmpty()||!(((Scopes.WithinControl)invoke.outcomes().remainder()).scope() instanceof Scopes.UnitControl u&&u.labels()))
-            throw new AssertionError("unavailable LINK return must retain local control even with DEFAULT_ENTRY_PREFIX");
+        if(!invoke.outcomes().known().isEmpty()||!(((Scopes.WithinControl)invoke.outcomes().remainder()).scope() instanceof Scopes.LabelsControl labels&&labels.labels().isEmpty()))
+            throw new AssertionError("unavailable LINK return cannot invent a control destination");
         System.out.println("CICS_LINK_UNAVAILABLE_RETURN_CONSERVATIVE");
     }
     public static void main(String[] args) throws Exception {

@@ -17,7 +17,7 @@ final class ProcedurePerformAdmission {
         p.loop().ifPresent(l->{
             c.provenance(l.provenance());c.provenance(l.predicate().provenance());
             for(var read:l.conditionReads())CallAdmission.reference(read,p.header(),operands,c);
-            if(p.gapCodes().isEmpty())IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
+            if(l.predicate().availability()==Availability.KNOWN)IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
         });
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());
@@ -43,16 +43,11 @@ final class ProcedurePerformAdmission {
                 var next=PartialProgramAdmission.next(s);
                 if(next!=null) {
                     need(c,p,next.statement().filter(local::contains).isPresent()||next.statement().isEmpty(),"intrinsic normal edge stays in paragraph");
-                    if(p.gapCodes().isEmpty())need(c,p,next.statement().isPresent()||completions.contains(id),"missing normal edge needs explicit completion frontier");
                 }
             }
         }
         if(!p.procedures().isEmpty())need(c,p,p.start().filter(t->t.id().equals(p.procedures().getFirst().id())).isPresent()
             &&p.end().filter(t->t.id().equals(p.procedures().getLast().id())).isPresent(),"range endpoints agree with typed order");
-        if(p.gapCodes().isEmpty())need(c,p,p.start().isPresent()&&p.end().isPresent()&&!p.procedures().isEmpty()
-            &&p.normalContinuation().statement().isPresent()&&p.normalContinuation().provenance().exact()&&p.header().provenance().exact()
-            &&p.start().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent()
-            &&p.end().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent(),"closed range has exact endpoints and resume");
     }
     private static boolean cicsParagraph(ProcedurePerformFact p,ProcedureId id,EntryGobackAdmission.Context c) {
         return p.procedures().stream().filter(r->r.id().equals(id)).anyMatch(r->r.statements().stream().map(c::lookup)
@@ -60,11 +55,14 @@ final class ProcedurePerformAdmission {
     }
     static List<StatementFact> qualify(ProcedurePerformFact p,EntryGobackAdmission.Context c,Set<StatementId> precise,Set<StatementId> primary,
             List<StatementFact> inventory) {
-        if(!p.gapCodes().isEmpty())return List.of();
+        if(p.start().isEmpty()||p.end().isEmpty()||p.procedures().isEmpty()
+                ||p.normalContinuation().statement().isEmpty()
+                ||p.times().filter(t->t.profile()==PerformCountProfile.UNAVAILABLE).isPresent()
+                ||!PerformVaryingAdmission.executable(p,c))return List.of();
         var members=members(p);boolean structural=primary.contains(p.header().id())
             &&p.normalContinuation().statement().filter(primary::contains).isPresent()&&Collections.disjoint(primary,members);
         for(var s:inventory) {
-            if(s instanceof ProcedurePerformFact other && other!=p && other.gapCodes().isEmpty()) {
+            if(s instanceof ProcedurePerformFact other && other!=p && !other.procedures().isEmpty()) {
                 var overlap=members(other);structural&=overlap.equals(members)||Collections.disjoint(overlap,members);
             }
             if(!members.contains(s.header().id())) {
@@ -107,8 +105,10 @@ final class ProcedurePerformAdmission {
                 e.otherArm().entry().statement().ifPresent(id->todo.push(new Visit(id,false)));
             }
         }
-        need(c,p,structural,"isolated range graph contradicts published activation proof");
-        if(!structural||!supported)return List.of();
+        if(!structural) {
+            return List.of();
+        }
+        if(!supported)return List.of();
         // Stable serialization only: each successor is supplied by a fact or explicit paragraph completion.
         return members.stream().map(c::lookup).sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
     }
