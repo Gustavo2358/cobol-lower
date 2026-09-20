@@ -32,12 +32,10 @@ final class CicsInvokeHandler {
             &&fact.options().stream().allMatch(o->Set.of("PROGRAM","COMMAREA","LENGTH","CHANNEL","RESP","RESP2","NOHANDLE","INPUTMSG","INPUTMSGLEN","SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(o.name())
                 &&((o.name().equals("NOHANDLE")||o.name().equals("SYNCONRETURN"))!=o.operand().isPresent())
                 &&(fact.command()!=SpInput.CicsCommand.XCTL||!Set.of("SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(o.name())));
-        var allowed=new HashSet<>(Set.of("CICS_EFFECTS_SIGNATURE_PARTIAL","CICS_HOST_BINDING_UNAVAILABLE","CICS_TARGET_UNKNOWN"));
-        if(fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION)allowed.add("CICS_CONDITION_VALUES_UNKNOWN");
-        return shape&&allowed.containsAll(fact.gapCodes())&&(fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION?local:
+        return shape&&(fact.conditions()==SpInput.CicsConditions.LOCAL_CONDITION?local:
             !local&&fact.options().stream().noneMatch(o->o.name().equals("RESP2")));
     }
-    static Operations.Invoke translate(SpInput.CicsFact fact, ScalarDataTranslator.Result data,
+    static Terminator translate(SpInput.CicsFact fact, ScalarDataTranslator.Result data,
             LabelId next, UnitId unit, LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links,
             List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var key=fact.header().id().handle();
@@ -70,10 +68,9 @@ final class CicsInvokeHandler {
             items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),targetOrigin,List.of(readId,placeId)));
         } else {
             var missing=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-name-area",operation.localId(),key));
-            uncertainties.add(new Evidence.Uncertainty(missing,"cobol-lower:CICS_NAME_AREA_UNAVAILABLE",List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Target absent or an exactly eight-byte IBM1047 physical name area is not proved; no padding or dynamic offset inference.",origin));
-            var operand=new OperandId(new OperationOwner(operation),ids.id("operand","cics-name-unknown",operation.localId(),key));
-            var unknown=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.CALL_TARGET,origin),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,missing);
-            target=new Interactions.ComputedTarget("program","cics.program",unknown,policy,origin);
+            operationUncertainties.add(missing);
+            uncertainties.add(new Evidence.Uncertainty(missing,"cobol-lower:CICS_NAME_AREA_UNAVAILABLE",List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Target is absent or has no supported nominal value place; physical area proof alone never opens a runtime name.",origin));
+            target=null;
         }
         var effectOperands=new ArrayList<Place>();
         for(var option:fact.options())option.reference().ifPresent(reference->{
@@ -96,7 +93,17 @@ final class CicsInvokeHandler {
         var outcomes=new Control.InvocationOutcomes(known,remainder);
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
         var precision=new Evidence.Precision(open,open,open,new Evidence.Claim(scope,Evidence.PrecisionStatus.NOT_APPLICABLE,List.of()),open);
-        return new Operations.Invoke(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.copyOf(operationUncertainties)),fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));
+        var header=new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,precision,List.copyOf(operationUncertainties));
+        if(target==null) {
+            var reads=effectOperands.stream().filter(p->p.header().role()==Operand.Role.VALUE_READ).map(p->p.header().id()).toList();
+            var writes=effectOperands.stream().filter(p->p.header().role()==Operand.Role.VALUE_WRITE).map(p->p.header().id()).toList();
+            var control=new Control.ControlEnvelope(fact.command()==SpInput.CicsCommand.LINK&&next!=null
+                ?List.<Control.ControlAlternative>of(new Control.JumpAlternative(next)):List.of(),remainder);
+            var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(reads,Scopes.NoMemory.INSTANCE,writes,Scopes.NoMemory.INSTANCE,List.of()),control,
+                new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
+            return new Operations.Opaque(header,"cics-program-target-unavailable",effectOperands.stream().map(p->(Operand)p).toList(),List.of(),envelope);
+        }
+        return new Operations.Invoke(header,fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));
     }
     private static boolean nameArea(SpInput.DataReference reference,ScalarDataTranslator.Result data) {
         if(reference.regionalAccess().isEmpty()||reference.binding().selected().isEmpty())return false;

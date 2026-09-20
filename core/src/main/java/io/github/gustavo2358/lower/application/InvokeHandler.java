@@ -88,9 +88,10 @@ final class InvokeHandler {
             Scopes.NoMemory.INSTANCE, Scopes.NoMemory.INSTANCE, List.of()), List.of());
         // Unknown body/signature is coverage, not permission for caller memory writes
         // or nonlocal outcomes when a normal continuation is modeled by SP.
-        // Missing source completion remains the pre-W1 control fallback (W2).
+        // An unmaterialized source completion has no licensed destination outside
+        // the published local frontier. It must not open the entire publication.
         var alternatives = new Control.InvocationOutcomes(normal == null ? List.of() : List.of(new Control.Normal(normal)),
-            normal == null ? new Scopes.WithinControl(new Scopes.AllControl(unit.publication())) : Scopes.NoControl.INSTANCE);
+            normal == null ? new Scopes.WithinControl(new Scopes.LabelsControl(List.of())) : Scopes.NoControl.INSTANCE);
         var precision = new Evidence.Precision(
             new Evidence.Claim(scope, normal == null ? Evidence.PrecisionStatus.OPEN : Evidence.PrecisionStatus.EXACT, normal == null ? List.of(outcomes) : List.of()),
             new Evidence.Claim(scope, Evidence.PrecisionStatus.EXACT, List.of()),

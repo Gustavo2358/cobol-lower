@@ -81,10 +81,16 @@ final class PartialProgramLowerer implements LowerInput {
             input.storage().orElseThrow().entryState().possibilityDomain()==io.github.gustavo2358.lower.domain.StorageFacts.PossibilityDomain.LOGICAL_SOURCE
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
-        if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        if(assembly.sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast)
+                .anyMatch(i->i.target() instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.program")
+                    ||i.target() instanceof Interactions.ComputedTarget c&&c.namespace().equals("cics.program")))required.add(CicsInvokeHandler.NAME);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CicsFact||s instanceof SpInput.CicsFileFact))
             if(!required.contains(Capabilities.TARGET_POSSIBILITIES))required.add(Capabilities.TARGET_POSSIBILITIES);
-        if(input.statements().stream().anyMatch(SpInput.CicsFileFact.class::isInstance))required.add(CicsFileInvokeHandler.NAME);
+        if(assembly.sequences().stream().map(Sequence::terminator)
+                .anyMatch(t->t instanceof Operations.Invoke i
+                    &&(i.target() instanceof Interactions.LiteralTarget l&&l.namespace().equals("cics.file")
+                        ||i.target() instanceof Interactions.ComputedTarget c&&c.namespace().equals("cics.file"))))
+            required.add(CicsFileInvokeHandler.NAME);
         var resources=new ArrayList<>(files.resources());
         resources.addAll(SourceResourceLowering.resources(input,unit,ids,origins,unitOrigin));
         if(files.available()||input.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE)required.add(Capabilities.RESOURCE_BINDINGS);

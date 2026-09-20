@@ -22,6 +22,8 @@ public final class DependencyPreservationSuite {
         var read=(Expressions.Read)((Interactions.ComputedTarget)invoke.target()).name();var object=((Places.ObjectPlace)read.place()).object();
         var declaration=unit.objects().stream().filter(d->d.id().equals(object)).findFirst().orElseThrow();
         if(!(declaration.storage() instanceof Memory.UnknownBinding))throw new AssertionError("no invented allocation");
+        if(!(((Memory.UnknownBinding)declaration.storage()).scope() instanceof Scopes.ObjectsMemory own&&own.objects().equals(java.util.List.of(object))))
+            throw new AssertionError("missing physical view cannot alias all memory");
         if(!unit.sequences().stream().flatMap(s->s.instructions().stream()).anyMatch(i->i instanceof Operations.Assign a&&a.destination() instanceof Places.ObjectPlace o&&o.object().equals(object)&&a.value() instanceof Expressions.Literal l&&l.value().equals(new Values.TextValue("PROGA   "))))throw new AssertionError("local definition must target same nominal identity");
         var mapper=new ObjectMapper();var old=(ObjectNode)mapper.readTree(bytes);old.put("contractVersion","2.31.0");
         if(decoder.decode(mapper.writeValueAsBytes(old)) instanceof SpJsonDecoder.Decoded)throw new AssertionError("old version accepts possible transfer");
@@ -33,6 +35,8 @@ public final class DependencyPreservationSuite {
         var aliasPublication=new CobolLowerer().lower(aliasInput,CobolLower.OPTIONS).publication().orElseThrow();
         var aliasObjects=aliasPublication.units().getFirst().objects().stream().filter(o->o.displayName().filter(n->n.equals("A")||n.equals("B")).isPresent()).toList();
         if(aliasObjects.size()!=2||!aliasObjects.stream().allMatch(o->o.storage() instanceof Memory.UnknownBinding))throw new AssertionError("REDEFINES without layout must keep unknown bindings");
+        if(!aliasObjects.stream().allMatch(o->((Memory.UnknownBinding)o.storage()).scope() instanceof Scopes.ObjectsMemory selfScope&&selfScope.objects().equals(java.util.List.of(o.id()))))
+            throw new AssertionError("unmaterialized aliases cannot acquire AllMemory scope");
         if(aliasObjects.get(0).id().equals(aliasObjects.get(1).id()))throw new AssertionError("nominal identities must not be conflated");
         System.out.println("DEPENDENCY_PRESERVATION_LOWER=PASS nominal identity, no allocation, local Assign, version/forgery rejection, roundtrip");
     }

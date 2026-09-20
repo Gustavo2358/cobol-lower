@@ -9,7 +9,7 @@ import java.util.*;
 final class CicsFileInvokeHandler {
     static final Capabilities.Capability NAME=new Capabilities.Capability("cics-ts.file","1");
     private CicsFileInvokeHandler() { }
-    static Operations.Invoke translate(CicsFileFact f,ScalarDataTranslator.Result data,LabelId next,UnitId unit,LocalIds ids,SourceOrigins origins,
+    static Terminator translate(CicsFileFact f,ScalarDataTranslator.Result data,LabelId next,UnitId unit,LocalIds ids,SourceOrigins origins,
         List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var op=new OperationId(unit,ids.id("operation","cics-file",unit.localId(),f.header().id().handle()));
         var origin=origins.source("statement",f.header().id().handle(),f.header().provenance());var scope=new Scopes.EntityScope(List.of(op));
@@ -19,7 +19,14 @@ final class CicsFileInvokeHandler {
         var context=new Context(data,op,ids,origins,origin,reason,links,items);
         var policy=new Interactions.ExtensionName(NAME.name(),NAME.version());Interactions.Target target;
         if(f.target().orElse(null) instanceof LiteralCallTarget l&&l.logicalValue().isPresent())target=new Interactions.LiteralTarget("file","cics.file",l.logicalValue().orElseThrow().value(),policy,origins.source("cics-file-target",l.id().handle(),l.provenance()));
-        else {Expression name=f.target().orElse(null) instanceof DataCallTarget d?context.name(d.reference(),8,"file",Operand.Role.CALL_TARGET):context.unknown("file",Operand.Role.CALL_TARGET,Types.Builtin.TEXT,origin);target=new Interactions.ComputedTarget("file","cics.file",name,policy,name.header().origin());}
+        else if(f.target().orElse(null) instanceof DataCallTarget d&&context.hasNamePlace(d.reference(),8)) {
+            Expression name=context.name(d.reference(),8,"file",Operand.Role.CALL_TARGET);
+            target=new Interactions.ComputedTarget("file","cics.file",name,policy,name.header().origin());
+        } else if(f.targetMode()!=CicsFileTargetMode.INPUT) {
+            // Output-name SPI commands receive the name from the environment.
+            Expression name=context.unknown("file",Operand.Role.CALL_TARGET,Types.Builtin.TEXT,origin);
+            target=new Interactions.ComputedTarget("file","cics.file",name,policy,name.header().origin());
+        } else target=null;
         var args=new ArrayList<Interactions.Argument>();var types=new ArrayList<Types.Builtin>();
         var sys=f.options().stream().filter(o->o.canonicalName().equals("SYSID")).toList();
         args.add(new Interactions.ValueArgument(context.literal("selection",sys.isEmpty()?"DEFAULT":"EXPLICIT")));types.add(Types.Builtin.TEXT);
@@ -33,6 +40,28 @@ final class CicsFileInvokeHandler {
         var params=new ArrayList<Interactions.Parameter>();for(int n=0;n<args.size();n++)params.add(new Interactions.Parameter(BigInteger.valueOf(n),new Interactions.KnownMode(Interactions.PassingMode.VALUE),Types.known(types.get(n)),Interactions.ExternalBinding.INSTANCE,origin));
         var signature=new Interactions.ExternalSignature(new Interactions.Signature(new Interactions.ParameterInventory(params,Interactions.NoRemainder.INSTANCE),new Interactions.ResultInventory(List.of(),Interactions.NoRemainder.INSTANCE),origin));
         var memory=CicsFileMemory.effects(f,data,context);context.finish();
+        if(target==null) {
+            var missing=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-file-target",op.localId(),"unavailable"));
+            uncertainties.add(new Evidence.Uncertainty(missing,"cobol-lower:CICS_FILE_NAME_AREA_UNAVAILABLE",
+                List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,
+                "Input FILE name has no supported literal or nominal value place; option effects and normal continuation remain published",origin));
+            var reads=memory.operands().stream().filter(p->p.header().role()==Operand.Role.VALUE_READ).map(p->p.header().id()).toList();
+            var writes=memory.operands().stream().filter(p->p.header().role()==Operand.Role.VALUE_WRITE).map(p->p.header().id()).toList();
+            var returned=next==null?List.<OperandId>of():memory.bound().perOutcome().stream()
+                .filter(e->e.outcome() instanceof Control.NormalOutcome).flatMap(e->e.effects().mustOverwrite().stream()).toList();
+            var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(reads,memory.bound().otherwise().reads(),writes,
+                memory.bound().otherwise().writes(),returned),new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),
+                next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),
+                new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
+            var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
+            var header=new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,
+                new Evidence.Precision(open,open,open,new Evidence.Claim(scope,Evidence.PrecisionStatus.NOT_APPLICABLE,List.of()),open),List.of(reason,missing));
+            var knownOperands=new ArrayList<Operand>();
+            for(var argument:args)if(argument instanceof Interactions.ValueArgument value)knownOperands.add(value.value());
+            knownOperands.addAll(memory.operands());
+            return new Operations.Opaque(header,"cics-file-target-unavailable/"+f.command().toLowerCase(Locale.ROOT),
+                knownOperands,List.of(),envelope);
+        }
         var outcomes=new Control.InvocationOutcomes(next==null?List.of():List.of(new Control.Normal(next)),
             next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE);
         var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
@@ -66,6 +95,13 @@ final class CicsFileInvokeHandler {
         }
         void finish(){covered.forEach((ref,values)->items.add(ScalarEvidence.item(op.unit().publication(),"operand",ref.id().handle(),coverageOrigins.get(ref),values)));}
         Memory.ViewBinding view(DataReference ref){if(ref.regionalAccess().isEmpty()||ref.binding().selected().isEmpty())return null;var base=data.views().get(ref.binding().selected().orElseThrow());return base==null?null:RegionalPlaces.view(base,ref);}
+        boolean hasNamePlace(DataReference ref,int width){
+            var physical=view(ref);
+            return physical!=null&&physical.extent().equals(BigInteger.valueOf(width))
+                &&physical.codec().equals(RegionalStorageAdmission.IBM1047)
+                &&ref.binding().selected().filter(data.index()::containsKey).isPresent()
+                ||NominalTarget.available(ref,data);
+        }
         void link(DataReference ref,List<OperandId> operands,OriginId source){for(var id:operands)links.add(new LoweringResult.OperandLink(ref.id(),id,source));covered.computeIfAbsent(ref,k->new ArrayList<>()).addAll(operands);coverageOrigins.putIfAbsent(ref,source);}
     }
 }

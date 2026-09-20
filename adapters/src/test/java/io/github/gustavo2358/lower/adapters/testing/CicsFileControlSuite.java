@@ -50,6 +50,41 @@ public final class CicsFileControlSuite {
             check(command.outcomes().remainder()==Scopes.NoControl.INSTANCE,
                 "option diagnostics do not add arbitrary FILE control "+name);
         }
+        var responseInput=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes("response"))).input();
+        var responseFact=responseInput.statements().stream().filter(SpInput.CicsFileFact.class::isInstance).map(SpInput.CicsFileFact.class::cast).findFirst().orElseThrow();
+        var responseBase=files(PartialIntegrationSuite.lower(responseInput).publication().orElseThrow()).getFirst();
+        var missingLiteral=io.github.gustavo2358.lower.testing.IfInputs.with(responseFact,"target",Optional.empty());
+        var invalidLiteral=io.github.gustavo2358.lower.testing.IfInputs.with(responseInput,"statements",responseInput.statements().stream().map(f->f==responseFact?missingLiteral:f).toList());
+        check(new CobolLowerer().lower(invalidLiteral,CobolLower.OPTIONS).publication().isEmpty(),"missing typed target for literal FILE is invalid input");
+        var hostInput=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes("computed-unknown"))).input();
+        var hostFact=hostInput.statements().stream().filter(SpInput.CicsFileFact.class::isInstance).map(SpInput.CicsFileFact.class::cast).findFirst().orElseThrow();
+        var missingFile=io.github.gustavo2358.lower.testing.IfInputs.with(hostFact,"target",Optional.empty());
+        var missingInput=io.github.gustavo2358.lower.testing.IfInputs.with(hostInput,"statements",hostInput.statements().stream().map(f->f==hostFact?missingFile:f).toList());
+        var missingResult=PartialIntegrationSuite.lower(missingInput).publication().orElseThrow();
+        var missingTerm=missingResult.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator)
+            .filter(t->t instanceof Operations.Opaque o&&o.observedKind().equals("cics-file-target-unavailable/endbr")).findFirst().orElseThrow();
+        var missingEnvelope=((Operations.Opaque)missingTerm).envelope();
+        check(missingEnvelope.memory().mustOverwrite().isEmpty()&&missingEnvelope.control().known().size()==1
+            &&missingEnvelope.memory().otherReads() instanceof Scopes.WithinMemory,
+            "unmaterialized host FILE name is coverage while SYSID read and normal return remain executable");
+        for(int count:List.of(1,50)) {
+            var diagnostics=new ArrayList<>(responseFact.gapCodes());
+            for(int n=0;n<count;n++)diagnostics.add("W3_OPTION_DIAGNOSTIC_"+n);
+            var changed=io.github.gustavo2358.lower.testing.IfInputs.with(responseFact,"gapCodes",diagnostics);
+            var candidate=io.github.gustavo2358.lower.testing.IfInputs.with(responseInput,"statements",responseInput.statements().stream().map(f->f==responseFact?changed:f).toList());
+            var lowered=PartialIntegrationSuite.lower(candidate);
+            check(lowered.publication().isPresent(),"CICS FILE diagnostic-only mutation publishes "+count);
+            var command=files(lowered.publication().orElseThrow()).getFirst();
+            check(command.target() instanceof Interactions.LiteralTarget target&&responseBase.target() instanceof Interactions.LiteralTarget baseTarget
+                &&target.name().equals(baseTarget.name())&&target.namespace().equals(baseTarget.namespace())
+                &&command.effectBound().otherwise().reads().getClass()==responseBase.effectBound().otherwise().reads().getClass()
+                &&command.effectBound().otherwise().writes().getClass()==responseBase.effectBound().otherwise().writes().getClass()
+                &&command.effectBound().perOutcome().size()==responseBase.effectBound().perOutcome().size()
+                &&command.effectBound().perOutcome().getFirst().effects().mustOverwrite().size()==2
+                &&command.outcomes().known().size()==responseBase.outcomes().known().size()
+                &&command.outcomes().remainder().getClass()==responseBase.outcomes().remainder().getClass(),
+                "CICS FILE option diagnostics cannot change target, effects or control "+count);
+        }
         // C06-HUMAN-20260917: real SP keeps spelling; lowering consumes canonical facts only.
         for(var name:List.of("read-dataset-literal","read-dataset-computed")) {
             var decoded=(SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes(name));

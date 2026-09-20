@@ -72,6 +72,21 @@ public final class FileMemoryEffectsSuite {
         check(new CobolLowerer().lower(withPlan(input,unsafe),CobolLower.OPTIONS).publication().isEmpty(),"memory port rejects verb-based buffer MUST");
         System.out.println("FileMemoryEffectsSuite: admission PASS (wire negatives and memory MUST counterexample)");
         var air=new CobolLowerer().lower(input,CobolLower.OPTIONS).publication().orElseThrow();
+        var profileGap=new FileFacts.EffectPlan(SpInput.Availability.PARTIAL,plan.ioReads(),plan.before(),plan.outcomes(),
+            plan.unknownReadBound(),plan.unknownWriteBound(),List.of("FILE_EFFECT_PROFILE_NOT_PROVEN"));
+        var profileInput=withPlan(input,profileGap);var profileInventory=profileInput.fileInventory();var profileUses=new ArrayList<>(profileInventory.operations().uses());
+        var originalUse=profileUses.getFirst();profileUses.set(0,new FileFacts.Use(originalUse.statement(),originalUse.ordinal(),originalUse.command(),originalUse.mode(),
+            FileFacts.SyntaxProfile.UNSUPPORTED,originalUse.bindingStatus(),originalUse.candidates(),originalUse.provenance(),
+            List.of("FILE_SYNTAX_OUTSIDE_N_LR"),originalUse.surface(),originalUse.effects()));
+        var profileOperations=new FileFacts.Operations(profileInventory.operations().availability(),profileUses,profileInventory.operations().gapCodes());
+        var profileFact=new SpInput(profileInput.unit(),profileInput.policy(),profileInput.dataDeclarations(),profileInput.statements(),profileInput.structure(),
+            profileInput.gaps(),profileInput.coverage(),profileInput.entryInventory(),profileInput.storageIndependence(),profileInput.compositional(),profileInput.storage(),
+            new FileFacts.Inventory(profileInventory.availability(),profileInventory.declarations(),profileInventory.gapCodes(),profileOperations));
+        var profileResult=new CobolLowerer().lower(profileFact,CobolLower.OPTIONS);
+        check(profileResult.publication().isPresent(),"orthogonal FILE profile diagnostic preserves admitted conditional effects: "+profileResult.status()+" "+profileResult.admission().diagnostics()+" "+profileResult.validation());
+        check(profileResult.publication().orElseThrow().units().getFirst().sequences().stream().flatMap(s->s.instructions().stream())
+            .filter(io.github.gustavo2358.air.model.Operations.HavocMust.class::isInstance).count()==5,
+            "profile gap cannot downgrade four FILE STATUS and one success-only INTO MUST");
         var read=air.units().getFirst().sequences().stream().map(io.github.gustavo2358.air.model.Sequence::terminator)
             .filter(io.github.gustavo2358.air.model.Operations.Invoke.class::isInstance).map(io.github.gustavo2358.air.model.Operations.Invoke.class::cast)
             .filter(i->i.action().equals("read")).findFirst().orElseThrow();

@@ -152,7 +152,9 @@ final class RegionalDataTranslator {
                 uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
                 type=new Types.UnknownType(typeReason);
             }
-            var binding=new Memory.UnknownBinding(base==null?new Scopes.AllMemory(unit.publication(),true):new Scopes.StorageMemory(List.of(base)),reason);
+            // An absent physical base is a materialization gap, not evidence that
+            // this nominal object aliases every storage object in the publication.
+            var binding=new Memory.UnknownBinding(base==null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.StorageMemory(List.of(base)),reason);
             objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,Memory.Visibility.UNKNOWN,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
         }

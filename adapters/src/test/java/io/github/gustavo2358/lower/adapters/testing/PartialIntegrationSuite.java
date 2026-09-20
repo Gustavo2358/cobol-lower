@@ -98,6 +98,19 @@ public final class PartialIntegrationSuite {
         facts.set(facts.indexOf(first),contradictory);
         var rejected=new CobolLowerer().lower(IfInputs.with(basic,"statements",facts),CobolLower.OPTIONS);
         check(rejected.status()==LoweringResult.Status.INVALID_INPUT && rejected.publication().isEmpty(),"contradictory intrinsic body is structural invalidity, not partial success");
+        var callBase=fixture("p4");var callFacts=new ArrayList<>(callBase.statements());
+        for(int i=0;i<callFacts.size();i++)if(callFacts.get(i) instanceof SpInput.CallFact c) {
+            var absent=new SpInput.NormalContinuation(SpInput.ContinuationAvailability.UNAVAILABLE,Optional.empty(),c.normalContinuation().provenance());
+            callFacts.set(i,new SpInput.CallFact(c.header(),c.syntax(),c.target(),c.runtimeTarget(),c.runtimeUncertaintyCode(),absent,c.surface(),c.effects(),c.outcomes()));
+            break;
+        }
+        var callResidual=new CobolLowerer().lower(IfInputs.with(callBase,"statements",callFacts),CobolLower.OPTIONS);
+        check(callResidual.publication().isPresent(),"CALL target and finite unit survive unmaterialized continuation: "+callResidual.status()+" "+callResidual.admission().diagnostics()+" "+callResidual.validation());
+        var residualInvoke=callResidual.publication().orElseThrow().units().getFirst().sequences().stream().map(Sequence::terminator)
+            .filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast).filter(i->i.action().equals("call")).findFirst().orElseThrow();
+        check(residualInvoke.outcomes().known().isEmpty()&&residualInvoke.outcomes().remainder() instanceof Scopes.WithinControl within
+            &&within.scope() instanceof Scopes.LabelsControl labels&&labels.labels().isEmpty(),
+            "unknown CALL completion retains only a bounded local frontier, never AllControl");
         var entries=fixture("entry-using");var entryPublication=lower(entries).publication().orElseThrow();
         check(entryPublication.units().getFirst().entries().getFirst().signature().parameters().remainder() instanceof Interactions.UnknownRemainder,
             "unavailable entry signature remains open");

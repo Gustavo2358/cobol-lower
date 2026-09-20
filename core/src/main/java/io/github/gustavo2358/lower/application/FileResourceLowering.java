@@ -35,7 +35,8 @@ final class FileResourceLowering {
     void imports(List<FileFacts.Declaration> imported){for(var d:imported)declarations.put(new FileFacts.Candidate(d.id(),d.owner()),d);}
     Map<FileFacts.Candidate,List<Interactions.ResourceUse>> associations(){return associations;}
     ResourceId resourceId(String file){return new ResourceId(unit.publication(),ids.id("resource","file-declaration",unit.localId(),file));}
-    boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR);}
+    boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR
+        ||u.effects().filter(e->e.availability()==SpInput.Availability.KNOWN||e.availability()==SpInput.Availability.PARTIAL).isPresent());}
     void sourceEntry(LabelId label){sourceEntries.add(label);}
     List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
     LabelId completion(SpInput.StatementId statement,LabelId ordinary){return sort.completion(statement,control.completion(statement,ordinary));}
