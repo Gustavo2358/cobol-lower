@@ -67,8 +67,6 @@ final class FileResourceLowering {
                 dependency=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
             }else{
                 var reason=gap("file-target",op,ref,List.of(Evidence.Dimension.DEPENDENCIES,Evidence.Dimension.VALUES),"FILE_TARGET_NOT_PROVEN");opGaps.add(reason);
-                var name=new Expressions.Unknown(new Operand.Header(new OperandId(new OperationOwner(op),"file-name"),Operand.Role.CALL_TARGET,ref),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,reason);
-                target=new Interactions.ComputedTarget("file","cobol.external-file-name",name,Interactions.ExactName.INSTANCE,ref);
                 dependency=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
             }
             var header=new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,open,open,open,dependency),opGaps);
@@ -78,7 +76,7 @@ final class FileResourceLowering {
             var memory=this.memory.withIds(local);
             var after=plan==null?next:memory.label(key+"/select/0");
             Terminator invoke;
-            if(localResource)invoke=new Operations.Opaque(header,"source-local-file-use",List.of(),List.of(),new Envelopes.Envelope(
+            if(localResource||target==null)invoke=new Operations.Opaque(header,localResource?"source-local-file-use":"source-file-target-unavailable/"+action(use.command()),List.of(),List.of(),new Envelopes.Envelope(
                 new Envelopes.MemoryEnvelope(List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(plan.ioReads(),plan.unknownReadBound()),List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(List.of(),plan.unknownWriteBound()),List.of()),
                 new Control.ControlEnvelope(after==null?List.of():List.of(new Control.JumpAlternative(after)),after==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
             else invoke=new Operations.Invoke(header,action(use.command()),target,List.of(),List.of(),new Interactions.ExternalSignature(signature),List.of(),

@@ -105,6 +105,22 @@ public final class FileMemoryEffectsSuite {
         check(strong.size()==5,"four primary status updates and success-only INTO; no buffer MUST");
         var fromInput=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes("from-effects"))).input();
         var fromAir=new CobolLowerer().lower(fromInput,CobolLower.OPTIONS).publication().orElseThrow();
+        var inventory=fromInput.fileInventory();var declaration=inventory.declarations().getFirst();
+        var sourceName=declaration.assignment();
+        var missingName=new FileFacts.Assignment(SpInput.Availability.PARTIAL,sourceName.profile(),sourceName.original(),
+            FileFacts.NameSource.UNSUPPORTED,Optional.empty(),List.of("FILE_ASSIGNMENT_NAME_UNMODELED"));
+        var unresolvedDeclaration=io.github.gustavo2358.lower.testing.IfInputs.with(declaration,"assignment",missingName);
+        var unresolvedInventory=new FileFacts.Inventory(inventory.availability(),List.of(unresolvedDeclaration),inventory.gapCodes(),inventory.operations());
+        var unresolvedInput=new SpInput(fromInput.unit(),fromInput.policy(),fromInput.dataDeclarations(),fromInput.statements(),fromInput.structure(),
+            fromInput.gaps(),fromInput.coverage(),fromInput.entryInventory(),fromInput.storageIndependence(),fromInput.compositional(),fromInput.storage(),unresolvedInventory);
+        var unresolvedAir=new CobolLowerer().lower(unresolvedInput,CobolLower.OPTIONS).publication().orElseThrow();
+        check(unresolvedAir.units().getFirst().sequences().stream().map(io.github.gustavo2358.air.model.Sequence::terminator)
+            .anyMatch(t->t instanceof io.github.gustavo2358.air.model.Operations.Opaque o&&o.observedKind().equals("source-file-target-unavailable/rewrite")
+                &&o.envelope().memory().otherReads() instanceof io.github.gustavo2358.air.model.Scopes.WithinMemory),
+            "missing assignment name keeps the real REWRITE buffer read without a fabricated runtime target");
+        check(unresolvedAir.units().getFirst().sequences().stream().flatMap(s->s.instructions().stream())
+            .anyMatch(io.github.gustavo2358.air.model.Operations.CopyBytes.class::isInstance),
+            "missing file name does not erase the supported FROM transfer");
         var copySequence=fromAir.units().getFirst().sequences().stream().filter(s->s.instructions().stream().anyMatch(i->i instanceof io.github.gustavo2358.air.model.Operations.CopyBytes)).findFirst().orElseThrow();
         check(copySequence.terminator() instanceof io.github.gustavo2358.air.model.Operations.Jump,"FROM copy precedes a transfer to I/O");
         var afterCopy=((io.github.gustavo2358.air.model.Operations.Jump)copySequence.terminator()).destination();
