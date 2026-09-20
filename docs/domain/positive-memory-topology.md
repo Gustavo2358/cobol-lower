@@ -97,3 +97,5 @@ logical and IBM1047 producer profiles; the physical group-copy witness emitted t
 eight-byte Regions and Assign→CopyBytes→Assign. Full consumer/solver observations
 are owned by the anchor campaign report; these producer checks alone do not prove
 physical execution or qualify operational use.
+
+AIR harness reconciliation: pin `26016f10460336f237a33b2ed126a6a1427f0207` replaces `00373f638039c580bb833b9949df12cb8218e2fb`. Git diff confirms no AIR production sources or POM changes; the fixed module-policy gate reads the active lock rather than a historical literal. Existing semantic evidence remains equivalent; lower FAST is rerun for exact pin resolution.
