@@ -33,8 +33,10 @@ public final class IfSuite {
         reject(branch(input,with(f,"normalContinuation",with(with(f.normalContinuation(),"availability",ContinuationAvailability.UNAVAILABLE),"statement",Optional.empty()))),"completion absent");
         reject(branch(input,with(f,"normalContinuation",with(f.normalContinuation(),"statement",Optional.of(f.header().id())))),"completion self");
         var proof=input.storageIndependence().orElseThrow();
-        reject(proof(input,Optional.empty()),"storage proof absent");
-        for(var pair:List.of(new Object[]{"availability",Availability.UNAVAILABLE},new Object[]{"members",proof.members().subList(0,2)},new Object[]{"members",List.of(proof.members().getFirst(),proof.members().getFirst())},new Object[]{"members",List.of(new DataId(input.unit(),"data:99"),proof.members().getFirst())},new Object[]{"gapCodes",List.of("gap")},new Object[]{"provenance",Optional.empty()},new Object[]{"authority","invented"}))
+        IfOracle.inspect(proof(input,Optional.empty()),lower(proof(input,Optional.empty())));
+        var subset=proof(input,Optional.of(with(proof,"members",proof.members().subList(0,2))));
+        IfOracle.inspect(subset,lower(subset));
+        for(var pair:List.of(new Object[]{"availability",Availability.UNAVAILABLE},new Object[]{"members",List.of(proof.members().getFirst(),proof.members().getFirst())},new Object[]{"members",List.of(new DataId(input.unit(),"data:99"),proof.members().getFirst())},new Object[]{"gapCodes",List.of("gap")},new Object[]{"provenance",Optional.empty()},new Object[]{"authority","invented"}))
             reject(proof(input,Optional.of(with(proof,(String)pair[0],pair[1]))),"storage " + pair[0]);
         var statements=new ArrayList<>(input.statements());var child=(MoveFact)statements.getFirst();
         statements.set(0,new OtherStatement(child.header(),Variant.OBSERVED,"SYNTHETIC",Optional.of("SYNTHETIC_OBSERVED"),

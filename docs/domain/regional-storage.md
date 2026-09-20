@@ -33,21 +33,22 @@ PRIVATE quando a prova ordinária local de WORKING-STORAGE existe; não trocar a
 semântica persistente legada por ativação. As vistas textuais provadas geram
 objetos TEXT com binding View, offset/extent/codec explícitos. O mesmo componente
 compartilha a Region. Não criar Cell por nome para simular precisão física.
-Lacunas fora do perfil conservam representação/evidência aberta e efeitos
-conservadores; ausência de layout nunca autoriza independência.
+Lacunas fora do perfil conservam diagnóstico. As relações disponíveis definem a
+topologia positiva da abstração; uma lacuna não concede efeito de compensação.
+A projeção geral de tipos sem representação permanece limite descrito na W1.
 
 LITERAL_BYTES vira escrita BYTES em ConstantRegionSlice. COPY_BYTES vira
 CopyBytes com captura anterior à escrita, extensões iguais e disjunção comprovada
-no SP; a regra AIR de overlap não amplia a regra de MOVE COBOL. MUST_UNKNOWN
-vira havoc obrigatório sobre o footprint comprovado. UNAVAILABLE mantém efeito
-conservador com gap, sem Nop. Fitting escalar já provado continua traduzido;
+no SP; a regra AIR de overlap não amplia a regra de MOVE COBOL. MUST_UNKNOWN,
+quando descreve transformação não implementada do producer MOVE, vira Nop
+diagnóstico, sem substituir o valor conhecido. Fitting escalar já provado continua traduzido;
 readiness parcial e provenance de COPY não são substituídas por provas inventadas.
 
 As operações recebem origins da declaração/base/view e dos operands/statement.
 A identidade inclui os fatos físicos e é canônica para permutação dos inventários
 não ordenados semanticamente. Retornar correlação DATA→objeto→base não alega alias
-exato de interpretações: mesmo storage não é mesmo valor/codec. DisjointStorage
-só é publicado a partir da prova explícita de alocação, sem closure transitiva.
+exato de interpretações: mesmo storage não é mesmo valor/codec. Bases distintas
+são independentes no modelo, sem geração de DisjointStorage.
 
 Terminação segue de inventários finitos com validação iterativa de pais; custo
 O(n + referências), mais ordenação canônica O(n log n), sem matriz de pares.
@@ -105,26 +106,26 @@ para escalar legado isolado cuja representação física não foi publicada. A C
 representa esse componente, sem uma Region duplicada. A admissão rejeita prova
 escalar standalone em nó aninhado/grupo/componente compartilhado, comprimento
 textual contraditório e prova de independência legada entre views da mesma base.
-Um único DisjointStorage transporta representantes de bases explicitamente
-independentes. IDs e número de declarações não criam provas de disjunção.
+A topologia publicada usa identidades positivas de bases e relações compartilhadas;
+o lower não transporta uma obrigação negativa de DisjointStorage.
 
 A AIR não tem lifetime desconhecido. Uma base de extent desconhecido e alocação
 UNPROVEN conserva gap de alocação, sem fabricar PERSISTENT/EXTERNAL. Base conhecida
 sob o perfil ordinário ou alocação explícita prova persistência; visibilidade é
 PRIVATE somente com prova local, UNKNOWN nos demais casos. Perfil UNSPECIFIED
-conserva o caminho escalar antigo. Esses limites não autorizam efeito Nop.
+conserva o caminho escalar antigo. Esses limites ficam na cobertura; não justificam efeito substituto.
 
 Objetos textuais usam ViewBinding IBM1047, com provenance de DATA/nó/view/base.
 FILLER tem cobertura física e origem sem objeto nominal. Extent/offset desconhecidos
 conservam motivos com escopo da base representada; não geram View precisa. MOVE
 literal produz RegionSlice IdentityBytes e BytesValue; cópia produz CopyBytes com
 fallback conservador restrito às bases fonte/destino e continuação explícita.
-MUST_UNKNOWN produz HavocMust de bytes no intervalo publicado. Operações precisas
+MUST_UNKNOWN do MOVE omitido produz Nop diagnóstico, sem havoc local. Operações precisas
 podem ser reutilizadas nas ativações PERFORM existentes, sem novo modelo de controle.
 
 O fitting escalar continua uma Assign TEXT quando a prova legada é válida e o
 resultado é codificável no codec declarado. Um resultado lógico contendo `€`, por
-exemplo, não vira AIR inválida nem bytes da JVM: vira havoc sobre o receiver. Isso
+exemplo, não vira AIR inválida nem bytes da JVM: a transformação fica na cobertura. Isso
 vale também para acesso apenas legado quando há fatos físicos explícitos. Leitura
 escalar de cópia não é usada em View: CopyBytes exige a prova regional; ausência
 dessa prova conserva fallback. CALL usa Read da view selecionada antes de Invoke,

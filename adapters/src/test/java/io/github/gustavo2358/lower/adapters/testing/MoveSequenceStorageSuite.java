@@ -37,7 +37,7 @@ public final class MoveSequenceStorageSuite {
         for(String name:List.of("move-literal-fit","move-overlap")) {
             var extra=args.length==0?Objects.requireNonNull(MoveSequenceStorageSuite.class.getResourceAsStream("/sp/storage-211/"+name+".json")).readAllBytes():Files.readAllBytes(Path.of(args[0]).resolveSibling(name+".sp.json"));var d=(SpJsonDecoder.Decoded)decoder.decode(extra);
             var p=RegionalTranslationSuite.lower(d.input()).publication().orElseThrow();var instructions=RegionalTranslationSuite.instructions(p);
-            if(name.equals("move-overlap"))check(instructions.stream().filter(Operations.HavocMust.class::isInstance).count()==2,"all overlapping source receivers retain unknown values");
+            if(name.equals("move-overlap"))check(instructions.stream().filter(Operations.Nop.class::isInstance).count()==2,"omitted overlap transformations retain statements without substitute writes");
             else {
                 var values=instructions.stream().filter(Operations.Assign.class::isInstance).map(Operations.Assign.class::cast).map(Operations.Assign::value).map(Expressions.Literal.class::cast).map(Expressions.Literal::value).map(Values.BytesValue.class::cast).map(Values.BytesValue::octets).toList();
                 check(values.equals(List.of(List.of(193,194,64,64),List.of(193))),"literal fit padding and truncation byte oracle: "+values);

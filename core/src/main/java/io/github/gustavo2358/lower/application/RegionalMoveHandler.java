@@ -26,7 +26,12 @@ final class RegionalMoveHandler {
             List<Evidence.Uncertainty> uncertainties) {
         if(move.regionalMove().isEmpty()||move.regionalMove().get().kind()==StorageFacts.MoveKind.UNAVAILABLE||admittedFitting)
             return MoveHandler.translate(move,data,unit,ids,origins,links,items);
-        var effect=move.regionalMove().get();var key=move.header().id().handle();
+        var effect=move.regionalMove().get();
+        // In the SP MOVE contract MUST_UNKNOWN denotes an unimplemented transform,
+        // not an external input. Retain the source occurrence without a substitute write.
+        if(effect.kind()==StorageFacts.MoveKind.MUST_UNKNOWN)
+            return ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties);
+        var key=move.header().id().handle();
         var operation=new OperationId(unit,ids.id("operation","regional-move",unit.localId(),key+"/"+move.target().id().handle()));
         var statement=origins.source("statement",key,move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
@@ -78,12 +83,7 @@ final class RegionalMoveHandler {
             correlate(move.source().id(),sourceId,sourceOrigin,links,items,unit,ids);
             return new Operations.Assign(header,place,new Expressions.Literal(new Operand.Header(sourceId,Operand.Role.VALUE_READ,sourceOrigin),new Values.BytesValue(effect.bytes())));
         }
-        var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","regional-move-value",operation.localId(),key));
-        var scope=new Scopes.EntityScope(List.of(operation));
-        uncertainties.add(new Evidence.Uncertainty(reason,"cobol-lower:REGIONAL_MOVE_VALUE_UNKNOWN",List.of(Evidence.Dimension.VALUES),scope,String.join(",",effect.gapCodes()),sourceOrigin));
-        var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
-        return new Operations.HavocMust(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,
-            new Evidence.Precision(exact,exact,exact,open,exact),List.of(reason)),place,reason);
+        throw new IllegalArgumentException("Unsupported promised regional MOVE: "+effect.kind());
     }
     private static Memory.ByteRange range(Memory.ViewBinding view,OperandId parent,OriginId origin,LocalIds ids) {
         return new Memory.ByteRange(view.region(),integer(view.offset(),parent,"offset",origin,ids),integer(view.extent(),parent,"extent",origin,ids));

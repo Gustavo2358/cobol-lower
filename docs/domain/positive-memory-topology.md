@@ -1,0 +1,99 @@
+# Positive memory topology — W1
+
+Status: IN_PROGRESS; campaign `POSITIVE_MEMORY_TOPOLOGY`, companion to analysis-cfg #45.
+The accepted W0-R1 and W1 product policy supersede the older requirement that every
+unimplemented source effect be approximated by havoc or a broad envelope.
+
+## Rule and representation
+
+The lower consumes published identities, source view ranges and logical family
+coordinates. Distinct AIR StorageId values denote independent model bases. Shared
+views and aliases still name the same base; no source disjointness matrix is needed.
+The lower therefore no longer emits DisjointStorage premises for scalar or regional
+storage. Supplied legacy SP assertions still undergo structural validation; absence
+of that optional evidence no longer rejects a supported scalar IF.
+
+Known text declarations and group/member projections continue using the existing
+ScalarDataTranslator, RegionalDataTranslator and LogicalTextMove mechanisms. A
+producer diagnostic for an omitted representation aspect does not instruct lower
+to replace available logical/physical facts. Group copies use published character
+or byte ranges and snapshots, including different source/destination partitions.
+The lower never calculates a missing source offset, width or codec.
+
+Coverage and Precision are descriptive publication metadata. ScalarEvidence.limited
+continues reporting uncertified dimensions, without assigning those dimensions
+executable meaning. Unknown expressions, explicit bounds and typed writes retain
+their semantic meaning. Consumer migration is synchronized through campaign pins.
+
+## Contributions changed
+
+- CALL with a published normal continuation preserves target (literal, nominal
+  Read or known alternatives), source site and continuation. Missing body/signature
+  implementation contributes diagnostics, not foreign AllMemory reads/writes or
+  additional nonlocal outcomes. Unknown runtime name policy remains distinct from
+  unknown memory effects. Actual modeled arguments/results are unchanged; current
+  SP CALL surface does not provide parameter/result value operands.
+- The older MOVE MUST_UNKNOWN source effect and ConservativeMove fallback arise
+  from unimplemented transformation/encoding, not modeled external input. They
+  publish an abstract Nop with coverage and derived statement/source/target origins,
+  not a substitute HavocMust. Supported fitted text, literal bytes, CopyBytes and
+  logical family transfers retain their original implementations. Nop has no operand
+  slots; no dangling synthetic operand correlations are created.
+- Input/return effects explicitly modeled as Unknown or Havoc in AIR, FILE effects,
+  and existing CICS controls are unchanged. This is a source producer correction,
+  never a consumer filter that deletes typed semantic uncertainty.
+
+## Limits and integrity
+
+CALL without a materialized normal destination still has the existing open
+control remainder. Its source completion projection is a W2 control issue; an empty
+closed InvocationOutcomes is invalid AIR and is not emitted. The W1 two-CALL witness
+has explicit normal continuations and no such remainder.
+
+Wholly unrepresented declaration types/layouts outside the known-text W1 projection
+retain the existing nominal publication path. In particular, this change does not
+invent independent scalar cells within a positively shared family merely to hide an
+unavailable layout. Completing that general projection remains explicitly pending.
+No source gap suppresses identity/reference/type/range integrity checks.
+
+Complexity is unchanged for actual typed transfers. Removing premise construction
+removes the redundant storage-membership publication pass; no replacement negative
+matrix is introduced. Copy and branch complexity follows existing supported ranges
+and alternatives. No operational physical default is changed here.
+
+## Oracles and contract deltas
+
+`PositiveTopologySuite` (included in FAST) failed before the implementation with
+`W1 unknown body does not manufacture reads`; it requires absent compensation reads,
+writes and outcomes while preserving computed target Read and coverage. Existing
+IfSuite now admits the same supported graph without negative storage evidence.
+Existing CALL/IF oracles now require empty foreign effects/closed normal continuation;
+existing regional and partial-MOVE tests require a diagnostic Nop for omitted
+transformations. These are intentional contract deltas, not relaxed assertions.
+FILE external-input tests still require their genuine strong/possible writes.
+
+Adapter suites roundtrip the new Nop through the existing AIR instruction kind;
+missing Nop codec support is repaired in the coordinated air-java companion.
+The anchor report records final exact pins, integrated physical/logical witnesses,
+checks and remaining mechanisms. No W2/W3 or merge is authorized.
+
+
+## W1 local validation
+
+`python3 -B scripts/harness/lean.py fast` passed on Java 21.0.12 with the exact
+companion pins in sources.lock.json: 2,466 core assertions including 12 new positive
+projection checks; the complete fixed adapter profile (including FILE, CICS,
+source dependencies, regional groups/overlays/RENAMES, MOVE sequence and supported
+control fixtures); architecture bytecode checks; and 21 harness tests. Gate elapsed
+159.834 seconds. The adapter profile reports four focal entry cases in addition to
+its named suites, not a total assertion count.
+
+Two implementation defects were caught and repaired during RED/GREEN: baseline
+AIR codec lacked existing Nop transport (companion repair), and multi-receiver
+omitted MOVEs initially shared an operation ID (target operand identity now
+participates). Identity validation remained enabled throughout. No corpus golden
+was relaxed. The anchor's four new sources also passed frontend→lower under both
+logical and IBM1047 producer profiles; the physical group-copy witness emitted two
+eight-byte Regions and Assign→CopyBytes→Assign. Full consumer/solver observations
+are owned by the anchor campaign report; these producer checks alone do not prove
+physical execution or qualify operational use.

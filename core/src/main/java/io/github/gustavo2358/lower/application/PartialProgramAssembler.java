@@ -155,9 +155,9 @@ final class PartialProgramAssembler {
                 term=GobackHandler.translate(g,unit,ids,origins,uncertainties);link(fact.header().id(),term,label,statements,items);
             } else if(fact instanceof SpInput.MoveFact m && m.target().role()==SpInput.OperandRole.WRITE
                     && m.target().wholeItemAccess().filter(w->data.index().containsKey(w.data())).isPresent()) {
-                var havoc=ConservativeMove.translate(m,data,unit,ids,origins,operands,uncertainties);
-                instructions.add(havoc);link(m.header().id(),havoc,label,statements,items);
-                term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,havoc.header().origin(),unit,ids)
+                var omitted=ConservativeMove.translate(m,data,unit,ids,origins,operands,uncertainties);
+                instructions.add(omitted);link(m.header().id(),omitted,label,statements,items);
+                term=destination!=null ? PerformSequenceAssembler.jump("conservative-move-next",m.header().id(),destination,omitted.header().origin(),unit,ids)
                     : opaque(fact,null,data,unit,ids,origins,uncertainties,operands,false);
             } else if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.proof()==SpInput.EffectProof.NO_OP).isPresent()) {
                 var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());

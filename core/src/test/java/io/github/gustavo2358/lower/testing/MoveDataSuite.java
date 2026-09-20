@@ -38,7 +38,7 @@ public final class MoveDataSuite {
         check(((Places.ObjectPlace)read.place()).object().equals(((Places.ObjectPlace)assigns.getFirst().destination()).object()), "read source ObjectId");
         check(!read.place().header().origin().equals(assigns.get(1).destination().header().origin()), "source and target origins distinct");
         check(assigns.get(1).destination().header().role() == Operand.Role.VALUE_WRITE, "write role");
-        check(p.premises().size() == 1 && p.premises().getFirst().assertion() instanceof Proofs.DisjointStorage, "source-derived linear storage premise");
+        check(p.premises().isEmpty(), "positive scalar bases need no negative premise");
         var m = (MoveFact)input.statements().get(1); var source = (DataReference)m.source();
         check(result.operands().stream().anyMatch(link -> link.source().equals(m.source().id())
             && link.target().equals(read.header().id()) && link.origin().equals(read.header().origin())), "source occurrence correlation");

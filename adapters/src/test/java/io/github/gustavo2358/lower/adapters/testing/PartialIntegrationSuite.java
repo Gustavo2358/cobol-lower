@@ -89,8 +89,8 @@ public final class PartialIntegrationSuite {
             "unavailable entry signature remains open");
         for(var name:List.of("must-write","p4")) {
             var publication=lower(fixture(name)).publication().orElseThrow();
-            check(publication.units().getFirst().sequences().stream().flatMap(q->q.instructions().stream()).anyMatch(Operations.HavocMust.class::isInstance),
-                "proved mandatory write uses generic HavocMust "+name);
+            check(publication.units().getFirst().sequences().stream().flatMap(q->q.instructions().stream()).anyMatch(Operations.Nop.class::isInstance),
+                "unimplemented MOVE transformation has no substitute write "+name);
         }
         System.out.println("PARTIAL_COMPOSITIONALITY=PASS");
     }

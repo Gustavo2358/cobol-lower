@@ -50,15 +50,18 @@ category `program`, namespace fonte `cobol.program`. Literal conserva texto
 lógico bruto; DATA produz `ComputedTarget(Read(ObjectPlace(selected DATA)))`,
 mesmo com MOVE anterior ou sem MOVE algum. Não há resolução de nome runtime.
 
-Arguments/results/effectOperands e inventários da assinatura externa são vazios,
-com `NoRemainder`. `UnknownName` e `UnknownContract` preservam a falta de
-autoridade externa. Reads/writes são `WithinMemory(AllMemory(publication,true))`,
-mustOverwrite/perOutcome vazios. Outcomes contêm Normal conhecido e
-`WithinControl(AllControl(publication))`; sucesso normal não fecha outras saídas.
-Cinco uncertainties distinguem alvo runtime, política de nome, efeitos, saídas
-e contrato. Claims abertos e coverage ABSTRACTED do Invoke coexistem com
-Publication/Unit PARTIAL. `AirValidator` retorna STRUCTURALLY_VALID e conserva
-I-56 como obrigação semântica, inclusive após AirJson round-trip.
+Arguments/results/effectOperands e inventários da assinatura externa são vazios
+no slice sem USING/RETURNING. `UnknownName` e `UnknownContract` preservam a falta de
+autoridade externa. A regra vigente [W1 positiva](positive-memory-topology.md)
+omite os efeitos do corpo externo não modelado: reads/writes `NoMemory`,
+mustOverwrite/perOutcome vazios. Com continuação materializada, outcomes contêm
+somente Normal conhecido e `NoControl`; ausência de implementação não acrescenta
+saídas. CALL sem label de continuação permanece limite parcial de controle W2.
+As uncertainties de efeitos/saídas registram cobertura, separadas de UnknownName.
+Claims de controle/efeitos da projeção são exatas; dependências/runtime permanecem
+abertas conforme a interpretação publicada. Coverage ABSTRACTED do Invoke e
+Publication/Unit PARTIAL não alteram transferência. `AirValidator` conserva I-56
+como obrigação semântica após AirJson round-trip.
 
 StatementLink, OperandLink, EntryLink e DataLink preservam identidade da unit
 SP e relações com operações/labels/origins AIR. Alvo, Read, ObjectPlace,

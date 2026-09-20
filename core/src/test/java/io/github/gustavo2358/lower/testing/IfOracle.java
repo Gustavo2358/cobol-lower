@@ -63,14 +63,13 @@ public final class IfOracle {
         check(links.get(callId).target().equals(invoke.header().id()) && hasLocation(origins,artifacts,invoke.header().origin(),call.header().provenance().original()),"real CALL Invoke origin/link");
         var retLabel = links.get(call.normalContinuation().statement().orElseThrow()).label();
         check(invoke.outcomes().known().equals(List.of(new Control.Normal(retLabel))),"Invoke normal -> real GOBACK");
-        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.UnitControl(p.units().getFirst().id(),false,true,true,true,true,true))) && invoke.contract() instanceof Interactions.UnknownContract,"W1 open outcomes/unknown contract");
+        check(invoke.outcomes().remainder() == Scopes.NoControl.INSTANCE && invoke.contract() instanceof Interactions.UnknownContract,"supported normal outcome and unknown external contract");
         check(invoke.target() instanceof Interactions.ComputedTarget,"W1 computed CALL preserved");
         var target = (Interactions.ComputedTarget)invoke.target();
         check(target.name() instanceof Expressions.Read && target.namePolicy() instanceof Interactions.UnknownName,"computed CALL Read/UnknownName");
         var ref = ((SpInput.DataCallTarget)call.target()).reference();
         check(((Places.ObjectPlace)((Expressions.Read)target.name()).place()).object().equals(data.get(ref.wholeItemAccess().orElseThrow().data()).object()),"computed CALL selected object");
-        var memory = new Scopes.WithinMemory(new Scopes.AllMemory(p.id(),true));
-        check(invoke.effectBound().otherwise().reads().equals(memory) && invoke.effectBound().otherwise().writes().equals(memory),"W1 effects preserved");
+        check(invoke.effectBound().otherwise().reads() == Scopes.NoMemory.INSTANCE && invoke.effectBound().otherwise().writes() == Scopes.NoMemory.INSTANCE,"omitted external implementation has no substitute effects");
         var ret = sequences.get(retLabel);
         check(ret.instructions().isEmpty() && ret.terminator() instanceof Operations.Return,"Return sequence");
         check(hasLocation(origins,artifacts,ret.terminator().header().origin(),facts.get(call.normalContinuation().statement().orElseThrow()).header().provenance().original()),"real GOBACK origin");
@@ -101,15 +100,10 @@ public final class IfOracle {
         }
         check(u.sequences().size()==3+arms && links.size()==input.statements().size(),"no fake sequences or lost statements");
         check(u.objects().size()==input.dataDeclarations().size() && p.storage().size()==data.size() && u.entries().getFirst().state().conditions().isEmpty(),"no fake data or initial value");
-        var proof=input.storageIndependence().orElseThrow();
-        check(p.premises().size()==1 && p.premises().getFirst().assertion() instanceof Proofs.DisjointStorage,"published DisjointStorage premise");
-        var premise=p.premises().getFirst();
-        check(((Proofs.DisjointStorage)premise.assertion()).storage().equals(proof.members().stream().map(x -> data.get(x).storage().orElseThrow()).toList()),"exact ordered proof members, including extra unused members");
-        check(premise.authority().equals(proof.authority()) && premise.justification().equals("SP rule: " + proof.rule().name()),"published authority and descriptive rule");
-        check(hasLocation(origins,artifacts,premise.origin(),proof.provenance().orElseThrow().original()),"premise source origin");
+        check(p.premises().isEmpty(),"positive scalar identities need no negative storage premise");
         var validation=AirValidator.validate(p);
         check(validation.isStructurallyValid(),"Validator traversal complete");
-        for(String rule:List.of("I-09","I-59","I-56")) check(validation.issues().stream().anyMatch(i -> i.rule().equals(rule) && i.kind()==ValidationIssue.Kind.SEMANTIC_OBLIGATION),"obligation retained " + rule);
+        for(String rule:List.of("I-09","I-56")) check(validation.issues().stream().anyMatch(i -> i.rule().equals(rule) && i.kind()==ValidationIssue.Kind.SEMANTIC_OBLIGATION),"obligation retained " + rule);
         check(p.coverage().inventory()==Evidence.InventoryStatus.PARTIAL,"global PARTIAL preserved");
     }
     private static boolean hasLocation(Map<OriginId,Origins.Origin> origins,Map<ArtifactId,Origins.Artifact> artifacts,OriginId id,SpInput.Location location) {

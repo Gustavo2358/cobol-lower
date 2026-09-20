@@ -24,9 +24,9 @@ final class InvokeHandler {
             List.of(Evidence.Dimension.DEPENDENCIES), operation, targetOrigin, ids, uncertainties);
         var name = uncertainty("cobol-lower:RUNTIME_NAME_POLICY_UNKNOWN", "Runtime program-name interpretation is not established by source text.",
             List.of(Evidence.Dimension.DEPENDENCIES), operation, targetOrigin, ids, uncertainties);
-        var effects = uncertainty("EFFECT_UNKNOWN", "SP publishes UNKNOWN external effects; all-memory bounds are may-read/may-write.",
+        var effects = uncertainty("EXTERNAL_EFFECTS_NOT_MODELED", "The source abstraction omits external body effects; no memory effect is implied.",
             List.of(Evidence.Dimension.EFFECTS, Evidence.Dimension.STORAGE), operation, origin, ids, uncertainties);
-        var outcomes = uncertainty("CONTROL_UNKNOWN", "Only the published normal continuation is retained; missing and other invocation outcomes remain OPEN.",
+        var outcomes = uncertainty("EXTERNAL_OUTCOMES_NOT_MODELED", "Only the published normal continuation belongs to this projection; omitted outcomes remain coverage.",
             List.of(Evidence.Dimension.CONTROL), operation, continuation, ids, uncertainties);
         var contract = uncertainty("CONTRACT_UNKNOWN", "External contract authority is not certified.",
             List.of(Evidence.Dimension.CONTROL, Evidence.Dimension.EFFECTS, Evidence.Dimension.DEPENDENCIES), operation, origin, ids, uncertainties);
@@ -51,11 +51,11 @@ final class InvokeHandler {
             items.add(ScalarEvidence.item(unit.publication(), "operand", reference.id().handle(), targetOrigin, List.of(readId, placeId)));
         } else if(storage!=null&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()) {
             var reference=d.reference();var owner=new OperationOwner(operation);var choices=new ArrayList<Place>();var outputs=new ArrayList<Id>();
-            var reason=uncertainty("TYPE_UNKNOWN","Canonical whole-text candidates are retained; binding and remaining locations stay open.",
+            uncertainty("CALL_ALTERNATIVES_COVERAGE","Canonical modeled candidates are retained; unmaterialized source alternatives are coverage, not arbitrary memory locations.",
                 List.of(Evidence.Dimension.VALUES,Evidence.Dimension.STORAGE,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);
             for(var access:reference.regionalAlternatives()) {
                 var link=data.get(storage.nodes().get(access.view()).data().orElseThrow());
-                if(link==null)continue;
+                Objects.requireNonNull(link,"admitted canonical CALL alternative must have a materialized text object");
                 var id=new OperandId(owner,ids.id("operand","call-choice-item",operation.localId(),access.view().handle()));
                 var choiceOrigin=origins.derived(ids.id("origin","call-choice-item",operation.localId(),access.view().handle()),List.of(targetOrigin,link.origin()),"storage@1/canonical-reference-alternative");
                 choices.add(new Places.ObjectPlace(new Operand.Header(id,Operand.Role.VALUE_READ,choiceOrigin),link.object()));
@@ -64,7 +64,7 @@ final class InvokeHandler {
             var placeId=new OperandId(owner,ids.id("operand","call-choice",operation.localId(),reference.id().handle()));
             var readId=new OperandId(owner,ids.id("operand","call-choice-read",operation.localId(),reference.id().handle()));
             var place=new Places.Choice(new Operand.Header(placeId,Operand.Role.VALUE_READ,targetOrigin),choices,
-                new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),new Types.UnknownType(reason));
+                Scopes.NoMemory.INSTANCE,Types.known(Types.Builtin.TEXT));
             var read=new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place);
             target=new Interactions.ComputedTarget("program","cobol.program",read,namePolicy,targetOrigin);
             outputs.add(placeId);outputs.add(readId);links.add(new LoweringResult.OperandLink(reference.id(),placeId,targetOrigin));links.add(new LoweringResult.OperandLink(reference.id(),readId,targetOrigin));
@@ -74,7 +74,7 @@ final class InvokeHandler {
                 List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);
             var operand=new OperandId(new OperationOwner(operation),ids.id("operand","call-name-unknown",operation.localId(),call.target().id().handle()));
             var unknown=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.CALL_TARGET,targetOrigin),Types.known(Types.Builtin.TEXT),
-                List.of(),new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)),valueReason);
+                List.of(),Scopes.NoMemory.INSTANCE,valueReason);
             target=new Interactions.ComputedTarget("program","cobol.program",unknown,namePolicy,targetOrigin);
             links.add(new LoweringResult.OperandLink(call.target().id(),operand,targetOrigin));
             items.add(ScalarEvidence.item(unit.publication(),"operand",call.target().id().handle(),targetOrigin,List.of(operand)));
@@ -84,22 +84,17 @@ final class InvokeHandler {
         var signature = new Interactions.ExternalSignature(new Interactions.Signature(
             new Interactions.ParameterInventory(List.of(), call.surface().using() == SpInput.ClausePresence.ABSENT ? Interactions.NoRemainder.INSTANCE : new Interactions.UnknownRemainder(contract)),
             new Interactions.ResultInventory(List.of(), call.surface().returning() == SpInput.ClausePresence.ABSENT ? Interactions.NoRemainder.INSTANCE : new Interactions.UnknownRemainder(contract)), signatureOrigin));
-        var memory = new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(), true));
-        var bounds = new Interactions.EffectBound(new Interactions.ForeignEffects(memory, memory, List.of()), List.of());
-        // Published absence of local exception handlers bounds CALL's unknown outcomes.
-        // Returning normally uses the published successor; nonreturn/error/foreign control
-        // remains open without inventing an arbitrary jump into the caller's statements.
-        var surface=call.surface();
-        boolean noHandlers=surface.onException()==SpInput.ClausePresence.ABSENT
-            &&surface.notOnException()==SpInput.ClausePresence.ABSENT&&surface.onOverflow()==SpInput.ClausePresence.ABSENT;
-        Scopes.ControlScope frontier=noHandlers&&normal!=null
-            ?new Scopes.UnitControl(unit,false,true,true,true,true,true):new Scopes.AllControl(unit.publication());
+        var bounds = new Interactions.EffectBound(new Interactions.ForeignEffects(
+            Scopes.NoMemory.INSTANCE, Scopes.NoMemory.INSTANCE, List.of()), List.of());
+        // Unknown body/signature is coverage, not permission for caller memory writes
+        // or nonlocal outcomes when a normal continuation is modeled by SP.
+        // Missing source completion remains the pre-W1 control fallback (W2).
         var alternatives = new Control.InvocationOutcomes(normal == null ? List.of() : List.of(new Control.Normal(normal)),
-            new Scopes.WithinControl(frontier));
+            normal == null ? new Scopes.WithinControl(new Scopes.AllControl(unit.publication())) : Scopes.NoControl.INSTANCE);
         var precision = new Evidence.Precision(
-            new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(outcomes)),
-            new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(effects)),
-            new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(effects, contract)),
+            new Evidence.Claim(scope, normal == null ? Evidence.PrecisionStatus.OPEN : Evidence.PrecisionStatus.EXACT, normal == null ? List.of(outcomes) : List.of()),
+            new Evidence.Claim(scope, Evidence.PrecisionStatus.EXACT, List.of()),
+            new Evidence.Claim(scope, Evidence.PrecisionStatus.EXACT, List.of()),
             new Evidence.Claim(scope, Evidence.PrecisionStatus.NOT_APPLICABLE, List.of()),
             new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(runtime, name, contract)));
         var header = new Operations.Header(operation, origin, Evidence.CoverageStatus.ABSTRACTED, precision,

@@ -58,3 +58,20 @@ not later administrative closeouts (air-java `9aec1e9bce30466f4a53d2033bf2a2a2fe
 Source lock includes SHA-256 for consumed contracts, writer, predicate/arm/completion/
 IndependentStorageSet public model and fixtures. Historical SP1.3 decoder keeps
 its exact meaning. AIR2 normative and JSON1.0 DRAFT pins remain unchanged.
+
+
+## POSITIVE_MEMORY_TOPOLOGY W1 — 2026-09-20
+
+Isolated permanent campaign branch starts from lower #32
+`f8e181f95929c650181c989318f8ba23d1e68a1a`; parent remains untouched and unmerged.
+Current exact pins: SP `cfcf0abf06a3b6186e157957bb301077fcb6f0bc`, AIR norm
+`b26465964fe75f944f6324df63330d69f33d77cd`, AIR Java
+`00373f638039c580bb833b9949df12cb8218e2fb`. The workflow checkout matches the
+AIR Java lock; source trees and consumed-file SHA-256 values were regenerated from
+those commits. Source contracts retain their wire versions. The existing AIR Nop
+kind gains codec support in the companion, without inventing a new instruction.
+
+[W1 contract and limits](../domain/positive-memory-topology.md) governs this semantic
+migration. `LOGICAL_ONLY` remains consumer default; physical execution requires
+explicit experimental opt-in. Final integrated evidence/PR state is recorded in the
+anchor analysis-cfg #45 campaign report. No W2/W3 or merge is started here.

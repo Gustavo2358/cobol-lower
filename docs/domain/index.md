@@ -1,5 +1,7 @@
 # Domínio do lowering
 
+[Topologia positiva e projeção de gaps](positive-memory-topology.md): regra W1 vigente para memória, MOVE e CALL; substitui as exigências negativas antigas na fatia descrita.
+
 | Pergunta | Documento |
 | --- | --- |
 | O que a entrada realmente publica? | [Semantic Product](semantic-input-contract.md) |

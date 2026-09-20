@@ -4,7 +4,10 @@ import io.github.gustavo2358.air.model.*;
 import io.github.gustavo2358.air.model.Ids.*;
 import java.util.*;
 
-/** Local AIR claims only; declaration/return unknown dimensions remain explicit. */
+/** Local descriptive claims, separate from executable uncertainty.
+ * UNAVAILABLE records absent certification. It does not add an Unknown value,
+ * memory bound, alternative, or transfer; those must occur in typed operations.
+ */
 final class ScalarEvidence {
     private ScalarEvidence() { }
     static Evidence.Precision assign(OperationId operation) {

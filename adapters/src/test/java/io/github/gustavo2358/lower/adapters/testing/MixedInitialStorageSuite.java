@@ -16,7 +16,7 @@ public final class MixedInitialStorageSuite {
         check(p.storage().stream().filter(s->s instanceof Memory.Region r&&r.extent().isEmpty()&&r.extentUnknown().isPresent()).count()==2,"OCCURS/NATIONAL unknown Regions retained");
         check(p.units().getFirst().objects().size()==input.dataDeclarations().size(),"unsupported declaration objects cannot disappear");
         check(p.units().getFirst().entries().getFirst().state().conditions().size()==1,"known child VALUE retained");
-        check(p.premises().stream().anyMatch(x->x.assertion() instanceof Proofs.DisjointStorage d&&new HashSet<>(d.storage()).size()==4),"source proof separates every mixed allocation");
+        check(p.premises().isEmpty(),"positive source bases require no generated disjoint premise");
         check(p.units().getFirst().objects().stream().filter(o->o.storage() instanceof Memory.UnknownBinding&&o.typeRef() instanceof Types.UnknownType).count()==3,"unsupported objects retain unknown association/type without precise handler admission");
         check(!p.uncertainties().isEmpty(),"unsupported storage uncertainty survives");
         check(p.units().getFirst().sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).count()==3,"both computed and literal calls survive mixed storage");

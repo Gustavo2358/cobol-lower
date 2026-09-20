@@ -22,7 +22,7 @@ public final class AmbiguousTargetSuite {
   check(output.capabilities().required().contains(Capabilities.TARGET_POSSIBILITIES),"explicit domain capability");
   var invoke=(Operations.Invoke)output.units().getFirst().sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).findFirst().orElseThrow();
   var choice=(Places.Choice)((Expressions.Read)((Interactions.ComputedTarget)invoke.target()).name()).place();
-  check(choice.candidates().size()==2&&choice.remainder() instanceof Scopes.WithinMemory&&choice.typeRef() instanceof Types.UnknownType,"known regions plus unknown remainder/domain");
+  check(choice.candidates().size()==2&&choice.remainder()==Scopes.NoMemory.INSTANCE&&choice.typeRef().equals(Types.known(Types.Builtin.TEXT)),"known whole-text alternatives retain their domain without arbitrary locations");
   for(var variant:List.of("duplicate","foreign","selected")) {
    var choices=new ArrayList<>(ref.regionalAlternatives());var binding=ref.binding();
    if(variant.equals("duplicate"))choices.add(choices.getFirst());

@@ -190,19 +190,6 @@ final class RegionalDataTranslator {
     }
     static List<Proofs.Premise> premises(RegionalStorageAdmission.Index source,ScalarDataTranslator.Result data,
             UnitId unit,LocalIds ids,SourceOrigins origins) {
-        var members=new ArrayList<StorageId>();var evidence=new ArrayList<OriginId>();
-        for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList())
-            if(base.allocation().proved()&&data.physical().containsKey(base.id())) {
-                members.add(data.physical().get(base.id()));evidence.add(origins.source("storage-base",base.id().handle(),base.provenance()));
-            }
-        if(!source.logical().views.isEmpty()) {
-            for(var cell:data.storage())if(cell instanceof Memory.Cell&&!members.contains(cell.header().id())) {
-                members.add(cell.header().id());evidence.add(cell.header().origin());
-            }
-        }
-        if(members.size()<2)return List.of();
-        var origin=origins.derived(ids.id("origin","regional-independence",unit.localId(),"allocations"),evidence,"storage@1/independent-local-working-storage");
-        return List.of(new Proofs.Premise(new PremiseId(unit.publication(),ids.id("premise","regional-independence",unit.localId(),"allocations")),
-            source.logical().views.isEmpty()?StorageFacts.PROFILE_ID:"logical-text@1","Explicit disjoint source roots and elementary logical leaves",origin,new Proofs.DisjointStorage(members)));
+        return List.of(); // Distinct bases are independent; views retain positive shared-base relations.
     }
 }
