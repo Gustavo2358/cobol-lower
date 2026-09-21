@@ -49,9 +49,14 @@ final class RegionalDataTranslator {
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var sourceText=sourceText(source);
         sourceText.addAll(capturedLogicalText);
+        var exactByNode=new HashMap<StorageFacts.NodeId,StorageFacts.LogicalExactView>();
+        source.owner().storage().ifPresent(st->st.logicalExactViews().forEach(v->
+            { exactByNode.put(v.node(),v);source.nodes().get(v.node()).data().ifPresent(sourceText::add); }));
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
-        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
+        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())
+            &&(source.byData().get(d.id())==null||!exactByNode.containsKey(source.byData().get(d.id()).node()))
+            &&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
         if(source.owner().storage().isEmpty())return legacy;
         var relationOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
         var allocationEvidence=new HashMap<StorageFacts.BaseId,List<OriginId>>();
@@ -67,8 +72,6 @@ final class RegionalDataTranslator {
                 allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
-        var exactByNode=new HashMap<StorageFacts.NodeId,StorageFacts.LogicalExactView>();
-        source.owner().storage().orElseThrow().logicalExactViews().forEach(v->exactByNode.put(v.node(),v));
         var logicalCells=new HashMap<String,StorageId>();
         var nominal=new LinkedHashMap<>(legacy.nominal());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
@@ -133,7 +136,9 @@ final class RegionalDataTranslator {
         for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
             if(index.containsKey(declaration.id()))continue;
             var logical=source.logical().byData.get(declaration.id());
-            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP) {
+            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP
+                    &&(source.byData().get(declaration.id())==null
+                        ||!exactByNode.containsKey(source.byData().get(declaration.id()).node()))) {
                 var outputs=source.logical().leaves(logical).stream().map(v->source.logical().nodes.get(v.node()).data()).flatMap(Optional::stream)
                     .filter(index::containsKey).map(d->(Id)index.get(d).object()).toList();
                 items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),origins.source("data",declaration.id().handle(),declaration.provenance()),outputs));

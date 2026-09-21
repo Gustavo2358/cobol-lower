@@ -84,13 +84,24 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            boolean localExact=node.path("contractVersion").asText().equals("2.34.0");
+            boolean localExact=java.util.Set.of("2.34.0","2.35.0").contains(node.path("contractVersion").asText());
             java.util.List<LogicalExactViewDocument> logicalExactViews=java.util.List.of();
             if(localExact) {
                 var storage=node.path("storage");
-                if(!storage.path("version").asText().equals("1.10.0")||!storage.path("logicalExactViews").isArray()||storage.path("logicalExactViews").isEmpty())
+                if(!storage.path("version").asText().equals(node.path("contractVersion").asText().equals("2.35.0")?"1.11.0":"1.10.0")
+                    ||!storage.path("logicalExactViews").isArray()||storage.path("logicalExactViews").isEmpty())
                     throw new PhysicalShape("$/storage/logicalExactViews");
                 logicalExactViews=java.util.Arrays.asList(mapper.treeToValue(storage.path("logicalExactViews"),LogicalExactViewDocument[].class));
+                if(node.path("contractVersion").asText().equals("2.34.0")) {
+                    var counts=new java.util.HashMap<String,Integer>();
+                    var kinds=new java.util.HashMap<String,String>();
+                    for(var physical:storage.path("nodes"))kinds.put(physical.path("id").asText(),physical.path("kind").asText());
+                    for(var view:logicalExactViews) {
+                        counts.merge(view.representative(),1,Integer::sum);
+                        if(!"ELEMENTARY".equals(kinds.get(view.node())))throw new PhysicalShape("$/storage/logicalExactViews");
+                    }
+                    if(counts.values().stream().anyMatch(n->n<2))throw new PhysicalShape("$/storage/logicalExactViews");
+                }
                 ((com.fasterxml.jackson.databind.node.ObjectNode)storage).remove("logicalExactViews");
                 ((com.fasterxml.jackson.databind.node.ObjectNode)storage).put("version",storage.path("logicalTextViews").isArray()?"1.9.0":"1.8.0");
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion","2.33.0");

@@ -13,12 +13,12 @@ import static io.github.gustavo2358.lower.domain.StorageFacts.*;
 /** Validate source facts without calculating COBOL layout; prepare one immutable index per admission. */
 final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
-    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical) {
-        Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData); }
+    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical,Set<NodeId> exactNodes) {
+        Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData);exactNodes=Set.copyOf(exactNodes); }
         boolean localCellSafe(DataId data) {
             var view=byData.get(data);if(view==null)return false;
             var node=nodes.get(view.node());
-            if(node.kind()==Kind.ELEMENTARY&&owner.storage().orElseThrow().logicalExactViews().stream().anyMatch(v->v.node().equals(node.id())))return true;
+            if(exactNodes.contains(node.id()))return true;
             if(node.kind()==Kind.ELEMENTARY&&views.values().stream().filter(v->v.base().equals(view.base()))
                     .map(v->nodes.get(v.node())).filter(n->n.kind()==Kind.ELEMENTARY&&n.data().isPresent()).count()==1)return true;
             // A single root declaration can carry an explicitly supported logical
@@ -47,7 +47,7 @@ final class RegionalStorageAdmission {
                 c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
-            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes));
+            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes),Set.of());
         }
         require(input.compositional(),"regional facts require the compositional input profile");
         var storage=input.storage().get();boolean environment=storage.profile()==Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047;
@@ -111,25 +111,50 @@ final class RegionalStorageAdmission {
             if(owner.parent().isEmpty())unboundedRelation=true;
             else uncertainBases.add(views.get(owner.id()).base());
         }
+        var childNodes=new HashMap<NodeId,List<Node>>();
+        for(var node:nodes.values())node.parent().ifPresent(parent->childNodes.computeIfAbsent(parent,ignored->new ArrayList<>()).add(node));
+        var viewsByBase=new HashMap<BaseId,List<View>>();
+        for(var view:views.values())viewsByBase.computeIfAbsent(view.base(),ignored->new ArrayList<>()).add(view);
         var exactByRepresentative=new HashMap<NodeId,List<LogicalExactView>>();
         for(var exact:storage.logicalExactViews()) {
             c.touch();var node=nodes.get(exact.node());var representative=nodes.get(exact.representative());
             require(node!=null&&representative!=null&&exact.length()!=null&&exact.length().signum()>0
-                &&node.kind()==Kind.ELEMENTARY&&representative.kind()==Kind.ELEMENTARY
+                &&node.kind()!=Kind.OPAQUE&&representative.kind()!=Kind.OPAQUE
                 &&node.data().isPresent()&&representative.data().isPresent()
-                &&node.parent().equals(representative.parent())
                 &&views.get(node.id()).base().equals(views.get(representative.id()).base()),"exact logical view requires supported sibling identity");
             exactByRepresentative.computeIfAbsent(exact.representative(),ignored->new ArrayList<>()).add(exact);
         }
         for(var entry:exactByRepresentative.entrySet()) {
             var group=entry.getValue();var members=new HashSet<NodeId>();
-            require(group.size()>=2&&group.stream().anyMatch(v->v.node().equals(entry.getKey()))
+            require(!group.isEmpty()&&group.stream().anyMatch(v->v.node().equals(entry.getKey()))
                 &&group.stream().allMatch(v->v.length().equals(group.get(0).length())&&members.add(v.node())),"exact logical group requires distinct complete views");
-            for(var exact:group)if(!exact.node().equals(entry.getKey()))
-                require(storage.relations().stream().anyMatch(r->r.owner().equals(exact.node())&&r.status()==RelationStatus.PROVEN
-                    &&r.target().filter(members::contains).isPresent()),"exact logical view requires positive storage relation");
+            if(group.size()==1) {
+                require(nodes.get(entry.getKey()).kind()==Kind.ELEMENTARY&&nodes.get(entry.getKey()).parent().isEmpty()
+                    &&viewsByBase.get(views.get(entry.getKey()).base()).size()==1,
+                    "single complete logical view requires an independent elementary root");
+            } else if(nodes.get(entry.getKey()).kind()==Kind.GROUP) {
+                var chain=new HashSet<NodeId>();var current=entry.getKey();
+                while(true) {
+                    require(chain.add(current),"exact logical group cannot cycle");
+                    var children=childNodes.getOrDefault(current,List.of());
+                    if(children.isEmpty())break;
+                    require(children.size()==1&&nodes.get(current).kind()==Kind.GROUP,
+                        "complete logical group requires one complete child view");
+                    current=children.get(0).id();
+                }
+                require(nodes.get(current).kind()==Kind.ELEMENTARY&&chain.equals(members)
+                    &&nodes.get(entry.getKey()).parent().isEmpty(),
+                    "complete logical group must close its full record-to-leaf chain");
+            } else {
+                require(group.stream().allMatch(v->nodes.get(v.node()).kind()==Kind.ELEMENTARY
+                    &&nodes.get(v.node()).parent().equals(nodes.get(entry.getKey()).parent())),
+                    "exact elementary views must be siblings");
+                for(var exact:group)if(!exact.node().equals(entry.getKey()))
+                    require(storage.relations().stream().anyMatch(r->r.owner().equals(exact.node())&&r.status()==RelationStatus.PROVEN
+                        &&r.target().filter(members::contains).isPresent()),"exact logical view requires positive storage relation");
+            }
             var base=views.get(entry.getKey()).base();
-            for(var view:storage.views())if(view.base().equals(base)&&nodes.get(view.node()).kind()==Kind.ELEMENTARY&&nodes.get(view.node()).data().isPresent())
+            for(var view:viewsByBase.get(base))if(nodes.get(view.node()).kind()==Kind.ELEMENTARY&&nodes.get(view.node()).data().isPresent())
                 require(members.contains(view.node()),"exact logical component cannot omit an elementary view");
         }
         var exactByData=new HashMap<DataId,LogicalExactView>();
@@ -219,7 +244,8 @@ final class RegionalStorageAdmission {
                     "declarative invariant needs independent local storage");
             }
         }
-        var index=new Index(input,nodes,bases,views,byData,logical);
+        var index=new Index(input,nodes,bases,views,byData,logical,
+            storage.logicalExactViews().stream().map(LogicalExactView::node).collect(java.util.stream.Collectors.toSet()));
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {

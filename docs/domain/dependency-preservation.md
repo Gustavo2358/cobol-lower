@@ -71,3 +71,11 @@ In compilation units, an explicitly captured logical CALL target carries its TEX
 use to the declaring unit. The owner receives the Cell; the captured ObjectId uses
 AliasBinding to that owner. A physical qualifier that leaves a solitary root's
 byte shape opaque does not turn this known logical value into a self bound.
+
+SP 2.35/storage 1.11 extends this same fact to a complete local group/child
+TEXT chain and an independent complete elementary TEXT root. The lower checks
+the published hierarchy, extent agreement, component closure and old 2.34
+shape separately. It assigns one Cell to the complete record/child pair and
+keeps an unrelated same-sized value in another Cell. FILE effect strength is
+unchanged: `MAY_UNKNOWN` remains MAY while its record scope becomes grounded
+`StorageMemory(Cell)` through the existing DataLink path.

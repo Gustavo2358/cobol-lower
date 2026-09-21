@@ -8,6 +8,7 @@ public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
         DependencyPreservationSuite.main(new String[0]);
+        FileRecordGroundingSuite.main(new String[0]);
         SourceDependencySuite.main(new String[0]);
         LogicalTextStorageSuite.main(new String[0]);
         FileDeclarationSuite.main(new String[0]); FileScopeSuite.main(new String[0]);
