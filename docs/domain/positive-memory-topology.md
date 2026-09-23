@@ -126,3 +126,13 @@ change is involved. PartialStructuralFactsSuite runs in FAST alongside historica
 decoder suites; it checks wire round-trip, old-version rejection, diagnostic-only
 mutation and invalid membership. New fixtures are producer-generated; historical
 fixture bytes are unchanged. The SRC-SP pin records the W5 producer HEAD.
+
+## W6 — compositional PERFORM lowering
+
+[Control model and algorithm](compositional-perform.md): positive structural ONCE
+facts now enter activation-specialized AIR control. A nested context retains its
+parent; conditional completions traverse their own resume blocks. CALL coverage
+keys are occurrence-specific. No AIR/CFG production or SP wire change is required.
+The W5 acceptance-only boundary above is historical; its facts are now executable
+under the documented W6 preconditions. Unsupported repetition remains explicit.
+CompositionalPerformSuite joins FAST and preserves qualified/context/dead controls.

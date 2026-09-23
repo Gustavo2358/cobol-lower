@@ -8,7 +8,7 @@ import static io.github.gustavo2358.lower.application.Admission.*;
 /** Structural admission is global; semantic precision is selected per occurrence. */
 final class PartialProgramAdmission {
     record Plan(Admission admission, List<DataFact> data, List<StatementFact> statements,
-                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges, RegionalStorageAdmission.Index storage, Set<StatementId> fitted) { }
+                Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges, Map<StatementId,List<StatementFact>> compositions, RegionalStorageAdmission.Index storage, Set<StatementId> fitted) { }
     Plan plan(SpInput input, AdmitInput.Limits limits) {
         var c = new EntryGobackAdmission.Context(input, limits, true);
         try {
@@ -96,7 +96,7 @@ final class PartialProgramAdmission {
             input.fileInventory().declaratives().forEach(d->rangeCompletions.addAll(d.completions()));
             input.fileInventory().sorts().ifPresent(inv->inv.plans().forEach(p->p.procedures().forEach(r->{rangeCompletions.addAll(r.completions());r.links().forEach(l->rangeCompletions.add(l.from()));})));
             for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.start().isPresent()&&p.end().isPresent()
-                    &&p.normalContinuation().statement().isPresent())
+                    )
                 p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();
             for(var s:input.statements()) {
@@ -176,7 +176,7 @@ final class PartialProgramAdmission {
             if(!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
             var statements=input.statements().stream().filter(s->!bodyMembers.contains(s.header().id()))
                 .sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
-            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges),c.regionalStorage,Set.copyOf(fitted));
+            return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges),CompositionalPerformAdmission.plan(input,c,ranges),c.regionalStorage,Set.copyOf(fitted));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
     }
     private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c,Set<StatementId> precise) {
@@ -248,5 +248,5 @@ final class PartialProgramAdmission {
         if(s instanceof OtherStatement o)return o.normalContinuation();
         return SupportedProgramAdmission.next(s);
     }
-    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of(),Map.of(),c.regionalStorage,Set.of());}
+    private static Plan rejected(EntryGobackAdmission.Context c,Status s) {return new Plan(c.result(s),List.of(),List.of(),Set.of(),Map.of(),Map.of(),Map.of(),c.regionalStorage,Set.of());}
 }

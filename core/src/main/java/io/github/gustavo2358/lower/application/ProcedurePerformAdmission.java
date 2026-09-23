@@ -39,14 +39,14 @@ final class ProcedurePerformAdmission {
             for(var id:r.completions()) {
                 need(c,p,local.contains(id)&&completions.add(id),"distinct local completion frontier");
                 var s=c.lookup(id);var next=s==null?null:PartialProgramAdmission.next(s);
-                need(c,p,next!=null&&next.statement().isEmpty()&&!(s instanceof GobackFact)&&!(s instanceof GoToFact),"normal completion cannot override explicit control");
+                need(c,p,next!=null&&(next.statement().isEmpty()||s instanceof CallFact&&next.statement().filter(local::contains).isEmpty())&&!(s instanceof GobackFact)&&!(s instanceof GoToFact),"normal completion cannot override explicit control");
             }
             for(var id:local) {
                 var s=c.lookup(id);if(s==null)continue;
                 s.header().containment().parent().ifPresent(parent->need(c,p,local.contains(parent),"whole structured statement belongs to paragraph"));
                 var next=PartialProgramAdmission.next(s);
                 if(next!=null) {
-                    need(c,p,next.statement().filter(local::contains).isPresent()||next.statement().isEmpty(),"intrinsic normal edge stays in paragraph");
+                    need(c,p,next.statement().filter(local::contains).isPresent()||next.statement().isEmpty()||s instanceof CallFact&&completions.contains(id),"intrinsic normal edge stays in paragraph");
                 }
             }
         }

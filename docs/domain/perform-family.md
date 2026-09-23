@@ -79,3 +79,11 @@ completion frontiers and callsite resume under SP 2.36. Historical range facts k
 their prior meaning and consumer admission. Nested nonrecursive facts are in scope;
 compositional return execution is handed off to W6.
 See [campaign contract](positive-memory-topology.md#w5--partial-structural-facts).
+
+## Positive Memory Topology W6
+
+The [compositional PERFORM contract](compositional-perform.md) adds activation
+specialization for positive ONCE structure that the legacy whole-profile route
+does not admit. It composes nested nonrecursive return, conditional frontiers and
+partial bodies while retaining shared memory and separate callsite resumes.
+Admitted legacy repetition and BASIC/range routes remain available unchanged.

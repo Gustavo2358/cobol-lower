@@ -48,7 +48,7 @@ final class InvokeHandler {
             target = new Interactions.ComputedTarget("program", "cobol.program", read, namePolicy, targetOrigin);
             links.add(new LoweringResult.OperandLink(reference.id(), readId, readOrigin));
             links.add(new LoweringResult.OperandLink(reference.id(), placeId, placeOrigin));
-            items.add(ScalarEvidence.item(unit.publication(), "operand", reference.id().handle(), targetOrigin, List.of(readId, placeId)));
+            items.add(ScalarEvidence.item(unit.publication(), "operand", ids.sourceKey(reference.id().handle()), targetOrigin, List.of(readId, placeId)));
         } else if(storage!=null&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()) {
             var reference=d.reference();var owner=new OperationOwner(operation);var choices=new ArrayList<Place>();var outputs=new ArrayList<Id>();
             uncertainty("CALL_ALTERNATIVES_COVERAGE","Canonical modeled candidates are retained; unmaterialized source alternatives are coverage, not arbitrary memory locations.",
@@ -68,7 +68,7 @@ final class InvokeHandler {
             var read=new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place);
             target=new Interactions.ComputedTarget("program","cobol.program",read,namePolicy,targetOrigin);
             outputs.add(placeId);outputs.add(readId);links.add(new LoweringResult.OperandLink(reference.id(),placeId,targetOrigin));links.add(new LoweringResult.OperandLink(reference.id(),readId,targetOrigin));
-            items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),targetOrigin,outputs));
+            items.add(ScalarEvidence.item(unit.publication(),"operand",ids.sourceKey(reference.id().handle()),targetOrigin,outputs));
         } else {
             var valueReason=uncertainty("CALL_NAME_VALUE_UNAVAILABLE","The published CALL site has an unavailable program-name value.",
                 List.of(Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),operation,targetOrigin,ids,uncertainties);
@@ -77,7 +77,7 @@ final class InvokeHandler {
                 List.of(),Scopes.NoMemory.INSTANCE,valueReason);
             target=new Interactions.ComputedTarget("program","cobol.program",unknown,namePolicy,targetOrigin);
             links.add(new LoweringResult.OperandLink(call.target().id(),operand,targetOrigin));
-            items.add(ScalarEvidence.item(unit.publication(),"operand",call.target().id().handle(),targetOrigin,List.of(operand)));
+            items.add(ScalarEvidence.item(unit.publication(),"operand",ids.sourceKey(call.target().id().handle()),targetOrigin,List.of(operand)));
         }
         var signatureOrigin = origins.derived(ids.id("origin", "call-signature", operation.localId(), key),
             List.of(origin), "cp6-call@1/published-surface");

@@ -12,7 +12,7 @@ final class PartialProgramAssembler {
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         var sequences=new ArrayList<Sequence>();
-        append(plan,plan.statements(),Map.of(),data,unit,ids,origins,statements,operands,items,uncertainties,sequences,files);
+        append(plan,plan.statements(),Map.of(),false,data,unit,ids,origins,statements,operands,items,uncertainties,sequences,files);
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
@@ -27,13 +27,13 @@ final class PartialProgramAssembler {
         return new Assembly(files.complete(sequences),entryLabel,entrySequence.origin());
     }
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
-            Map<SpInput.StatementId,LabelId> overrides,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
+            Map<SpInput.StatementId,LabelId> overrides,boolean intrinsic,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
             List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files) {
         for(var fact:sourceStatements) {
-            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=overrides.isEmpty()?PartialProgramAdmission.ordinaryNext(fact):PartialProgramAdmission.next(fact);
+            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=intrinsic?PartialProgramAdmission.next(fact):PartialProgramAdmission.ordinaryNext(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
-            if(overrides.isEmpty())destination=files.completion(fact.header().id(),destination);
+            if(!intrinsic)destination=files.completion(fact.header().id(),destination);
             var instructions=new ArrayList<Instruction>(); Terminator term;
             boolean precise=plan.precise().contains(fact.header().id());
             if(files.handles(fact)) {
@@ -76,6 +76,36 @@ final class PartialProgramAssembler {
                 term=IfSequenceAssembler.branch(f,label(f.thenArm().entry().statement().orElseThrow(),unit,ids),
                     f.elseArm().entry().statement().map(s->label(s,unit,ids)).orElse(destination),data,unit,ids,origins,operands,items,uncertainties);
                 link(fact.header().id(),term,label,statements,items);
+            } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())
+                    && !ids.containsActivation(p.header().id().handle())) {
+                var body=plan.compositions().get(p.header().id());
+                var activation=ids.activation(p.header().id().handle());
+                var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
+                var reference=origins.source("perform-range-reference",p.header().id().handle()+"/structural",p.start().orElseThrow().referenceOrigin());
+                var evidence=new LinkedHashSet<OriginId>(List.of(source,reference));
+                evidence.add(origins.source("paragraph",p.start().orElseThrow().id().handle(),p.start().orElseThrow().paragraphOrigin()));
+                for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
+                var origin=origins.derived(ids.id("origin","compositional-perform-entry",unit.localId(),p.header().id().handle()),
+                    List.copyOf(evidence),"perform-structural@1/activation-entry");
+                var target=label(p.targetEntry().orElseThrow(),unit,activation);
+                term=PerformSequenceAssembler.jump("compositional-entry",p.header().id(),target,origin,unit,ids);
+                link(p.header().id(),term,label,statements,items);
+                if(!body.isEmpty()) {
+                    var resumeLabel=new LabelId(unit,activation.id("label","perform-normal-resume",unit.localId(),p.header().id().handle()));
+                    var resumeIds=activation.activation("normal-resume");
+                    var resumeOrigin=origins.derived(resumeIds.id("origin","compositional-perform-resume",unit.localId(),p.header().id().handle()),
+                        List.of(source,origin,origins.source("perform-continuation",p.header().id().handle(),p.normalContinuation().provenance())),"perform-structural@1/conditional-activation-resume");
+                    Terminator resume=destination==null?opaque(p,null,data,unit,resumeIds,origins,uncertainties,operands,false)
+                        :PerformSequenceAssembler.jump("compositional-resume",p.header().id(),destination,resumeOrigin,unit,resumeIds);
+                    sequences.add(new Sequence(resumeLabel,List.of(),resume,resumeOrigin));
+                    link(p.header().id(),resume,resumeLabel,statements,items);
+                    var completions=new HashMap<SpInput.StatementId,LabelId>();
+                    for(int i=0;i<p.procedures().size();i++) {
+                        var after=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):resumeLabel;
+                        for(var id:p.procedures().get(i).completions())completions.put(id,after);
+                    }
+                    append(plan,body,completions,true,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
+                }
             } else if(precise && fact instanceof SpInput.ProcedurePerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.procedures().getFirst().entry(),unit,activation);
@@ -131,7 +161,7 @@ final class PartialProgramAssembler {
                     var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):completion;
                     for(var id:paragraph.completions())completions.put(id,resume);
                 }
-                append(plan,plan.ranges().get(p.header().id()),completions,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
+                append(plan,plan.ranges().get(p.header().id()),completions,true,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
             } else if(precise && fact instanceof SpInput.PerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.targetEntry().orElseThrow(),unit,activation);
@@ -178,7 +208,7 @@ final class PartialProgramAssembler {
         var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","unsupported-region",id.localId(),"semantics"));
         var known=OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties);
         var scope=new Scopes.EntityScope(List.of(id));
-        var code=fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
+        var code=fact instanceof SpInput.ProcedurePerformFact && ids.containsActivation(fact.header().id().handle()) && unknownEffects?"RECURSIVE_PERFORM_NOT_SUPPORTED":fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retains published operands and only proved control",origin));
         var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
