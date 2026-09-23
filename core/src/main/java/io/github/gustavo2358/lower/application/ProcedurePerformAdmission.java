@@ -24,6 +24,10 @@ final class ProcedurePerformAdmission {
         });
         p.normalContinuation().statement().ifPresent(id->need(c,p,c.lookup(id)!=null
             &&c.lookup(id).header().provenance().equals(p.normalContinuation().provenance()),"resume provenance agrees with referenced statement"));
+        p.targetEntry().ifPresent(id->need(c,p,p.start().isPresent()&&c.lookup(id)!=null
+            &&id.unit().equals(p.header().id().unit())&&c.lookup(id).header().containment().branch()==Branch.ROOT,
+            "known target entry references a local root statement"));
+        if(!p.procedures().isEmpty())need(c,p,p.targetEntry().filter(p.procedures().getFirst().entry()::equals).isPresent(),"target entry agrees with complete range");
         var all=new HashSet<StatementId>();var paragraphs=new HashSet<ProcedureId>();
         for(var r:p.procedures()) {
             c.identity(r.id().unit(),r.id().handle(),"procedure",r.provenance());c.provenance(r.provenance());
@@ -55,6 +59,8 @@ final class ProcedurePerformAdmission {
     }
     static List<StatementFact> qualify(ProcedurePerformFact p,EntryGobackAdmission.Context c,Set<StatementId> precise,Set<StatementId> primary,
             List<StatementFact> inventory) {
+        // W5 accepts and preserves source facts. Compositional execution is a separate capability (W6).
+        if(p.publicationKind()==PerformPublicationKind.STRUCTURAL_FACTS)return List.of();
         if(p.start().isEmpty()||p.end().isEmpty()||p.procedures().isEmpty()
                 ||p.normalContinuation().statement().isEmpty()
                 ||p.times().filter(t->t.profile()==PerformCountProfile.UNAVAILABLE).isPresent()

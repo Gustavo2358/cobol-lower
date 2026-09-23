@@ -192,9 +192,21 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record PerformVarying(int levels,List<VaryingOperand> controls) {
         public PerformVarying { controls=List.copyOf(controls); }
     }
+    public enum PerformPublicationKind { LEGACY_PROFILE, STRUCTURAL_FACTS }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
-            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes) implements StatementFact {
-        public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes,PerformPublicationKind publicationKind,Optional<StatementId> targetEntry) implements StatementFact {
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop,
+                Optional<PerformCount> times, Optional<PerformVarying> varying,List<String> gapCodes,PerformPublicationKind publicationKind) {
+            this(header,start,end,procedures,normalContinuation,loop,times,varying,gapCodes,publicationKind,
+                procedures.isEmpty()?Optional.empty():Optional.of(procedures.get(0).entry()));
+        }
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop,
+                Optional<PerformCount> times, Optional<PerformVarying> varying,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,times,varying,gapCodes,PerformPublicationKind.LEGACY_PROFILE);
+        }
+        public ProcedurePerformFact { Objects.requireNonNull(targetEntry); Objects.requireNonNull(publicationKind); Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
             Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times);Objects.requireNonNull(varying); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
         public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,Optional<PerformCount> times,List<String> gapCodes) {
             this(header,start,end,procedures,normalContinuation,loop,times,Optional.empty(),gapCodes);

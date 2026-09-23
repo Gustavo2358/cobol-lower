@@ -84,6 +84,28 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            // SP2.36 adds source structural PERFORM facts, not an executable specialization.
+            boolean structuralContract=node.path("contractVersion").asText().equals("2.36.0");
+            var structuralPerformIds=new java.util.HashSet<String>();
+            var structuralEntries=new java.util.HashMap<String,String>();
+            for(var statement:node.path("statements"))if(statement.has("publicationKind")) {
+                if(!structuralContract || !statement.path("variant").asText().equals("PERFORM_PROCEDURE")
+                        || !statement.path("publicationKind").asText().equals("STRUCTURAL_FACTS")
+                        || !structuralPerformIds.add(statement.path("header").path("id").asText()))
+                    throw new PhysicalShape("$/statements/publicationKind requires SP2.36 structural PERFORM");
+                if(statement.has("targetEntry")) {
+                    if(!statement.path("targetEntry").isTextual())throw new PhysicalShape("$/statements/targetEntry");
+                    structuralEntries.put(statement.path("header").path("id").asText(),statement.path("targetEntry").asText());
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("targetEntry");
+                }
+                ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("publicationKind");
+            }
+            if(structuralContract) {
+                if(structuralPerformIds.isEmpty())throw new PhysicalShape("$/statements missing structural PERFORM facts");
+                // The rest of 2.36 is the unchanged 2.33/2.35 typed contract.
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
             boolean localExact=java.util.Set.of("2.34.0","2.35.0").contains(node.path("contractVersion").asText());
             java.util.List<LogicalExactViewDocument> logicalExactViews=java.util.List.of();
             if(localExact) {
@@ -370,6 +392,20 @@ public final class SpJsonDecoder {
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
             }
             if(sourceDependencies!=null)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),sourceDependencies);
+            if(structuralContract) {
+                var statements=new java.util.ArrayList<SpInput.StatementFact>();
+                for(var fact:input.statements()) {
+                    if(structuralPerformIds.contains(fact.header().id().handle())) {
+                        if(!(fact instanceof SpInput.ProcedurePerformFact p))throw new PhysicalShape("$/statements/structural PERFORM");
+                        fact=new SpInput.ProcedurePerformFact(p.header(),p.start(),p.end(),p.procedures(),p.normalContinuation(),
+                            p.loop(),p.times(),p.varying(),p.gapCodes(),SpInput.PerformPublicationKind.STRUCTURAL_FACTS,
+                            java.util.Optional.ofNullable(structuralEntries.get(p.header().id().handle())).map(id->new SpInput.StatementId(p.header().id().unit(),id)));
+                    }
+                    statements.add(fact);
+                }
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies());
+            }
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

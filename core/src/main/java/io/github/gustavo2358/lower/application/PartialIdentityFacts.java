@@ -167,7 +167,7 @@ final class PartialIdentityFacts {
                 field.accept("PerformLoop"); value.accept(r.testMode()); value.accept(r.conditionShape()); value.accept(r.predicate()); value.accept(r.conditionReads()); value.accept(r.provenance());
             }
             case SpInput.ProcedurePerformFact r -> {
-                field.accept("ProcedurePerformFact"); value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
+                field.accept("ProcedurePerformFact"); if(r.publicationKind()!=SpInput.PerformPublicationKind.LEGACY_PROFILE){value.accept(r.publicationKind().name());value.accept(r.targetEntry());} value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
                 if(r.loop().isPresent()){field.accept("loop"); value.accept(r.loop());}
                 if(r.times().isPresent()){field.accept("times");value.accept(r.times());}
                 if(r.varying().isPresent()){field.accept("varying");value.accept(r.varying());}

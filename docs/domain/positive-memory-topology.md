@@ -109,3 +109,20 @@ are owned by the anchor campaign report; these producer checks alone do not prov
 physical execution or qualify operational use.
 
 AIR harness reconciliation: pin `26016f10460336f237a33b2ed126a6a1427f0207` replaces `00373f638039c580bb833b9949df12cb8218e2fb`. Git diff confirms no AIR production sources or POM changes; the fixed module-policy gate reads the active lock rather than a historical literal. Existing semantic evidence remains equivalent; lower FAST is rerun for exact pin resolution.
+
+## W5 — partial structural facts
+
+SP 2.36 carries PERFORM_PROCEDURE `publicationKind: STRUCTURAL_FACTS` and optional
+independent `targetEntry`. The decoder retains target, entry, membership, normal
+completion frontiers, each activation's resume, provenance and diagnostics. In-memory
+LEGACY_PROFILE and all old decoder versions preserve historical meaning. Old versions
+reject the new fields. New facts contribute to deterministic identities.
+
+This wave adds acceptance and consistency checks only. STRUCTURAL_FACTS does not
+enter legacy executable range specialization; nested return composition remains W6.
+Legacy range facts already consumed before W5 keep their existing admission (33-C1
+is a compatibility control). No source scanning, broad fallback or AIR/CFG semantic
+change is involved. PartialStructuralFactsSuite runs in FAST alongside historical
+decoder suites; it checks wire round-trip, old-version rejection, diagnostic-only
+mutation and invalid membership. New fixtures are producer-generated; historical
+fixture bytes are unchanged. The SRC-SP pin records the W5 producer HEAD.
