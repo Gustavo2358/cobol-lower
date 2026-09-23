@@ -48,6 +48,6 @@ final class CompilationContext {
                 var link=source.index().get(capture.sourceData());if(link!=null)index.put(capture.localData(),new LoweringResult.DataLink(capture.localData(),local,link.storage(),origin));
             }
         }
-        return new ScalarDataTranslator.Result(List.copyOf(objects),data.storage(),Collections.unmodifiableMap(index),data.views(),data.physical(),Collections.unmodifiableMap(nominal));
+        return new ScalarDataTranslator.Result(List.copyOf(objects),data.storage(),Collections.unmodifiableMap(index),data.views(),data.physical(),Collections.unmodifiableMap(nominal),data.logicalTextExtents());
     }
 }

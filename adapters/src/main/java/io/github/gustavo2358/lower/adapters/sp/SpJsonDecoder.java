@@ -32,6 +32,7 @@ public final class SpJsonDecoder {
     private record LogicalTextViewDocument(String node,String root,String start,String length) { }
     private record LogicalExactViewDocument(String node,String representative,String length) { }
     private record OrdinaryContinuationDocument(String statement,String destination,Wire.ProvenanceDocument provenance) { }
+    private record PendingLogical(String target,String value,int extent) { }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
     public record Diagnostic(Code code, String phase, String location) {
         public Diagnostic { Objects.requireNonNull(code); Objects.requireNonNull(phase); Objects.requireNonNull(location); }
@@ -85,7 +86,44 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            boolean ordinaryContract=node.path("contractVersion").asText().equals("2.37.0");
+            boolean partialSequenceContract=node.path("contractVersion").asText().equals("2.38.0");
+            boolean partialSequence=false;
+            for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("MOVE")) {
+                partialSequence|=statement.has("logicalTransfers");
+                if(statement.path("additionalTransfers").isArray()&&!statement.path("additionalTransfers").isEmpty()) {
+                    partialSequence|=statement.path("regionalMove").path("kind").asText().equals("UNAVAILABLE");
+                    for(var transfer:statement.path("additionalTransfers"))
+                        partialSequence|=transfer.path("effect").path("kind").asText().equals("UNAVAILABLE");
+                }
+            }
+            if(partialSequence!=partialSequenceContract)
+                throw new PhysicalShape("$/contractVersion partial MOVE sequence requires SP2.38");
+            var logicalTransfers=new java.util.LinkedHashMap<String,java.util.List<PendingLogical>>();
+            for(var statement:node.path("statements"))if(statement.has("logicalTransfers")) {
+                if(!partialSequenceContract||!statement.path("variant").asText().equals("MOVE")
+                        ||!statement.path("logicalTransfers").isArray()||statement.path("logicalTransfers").isEmpty())
+                    throw new PhysicalShape("$/statements/logicalTransfers requires SP2.38 MOVE");
+                var owner=statement.path("header").path("id").asText();
+                var facts=new java.util.ArrayList<PendingLogical>();
+                var seen=new java.util.HashSet<String>();
+                for(var transfer:statement.path("logicalTransfers")) {
+                    if(!transfer.isObject()||transfer.size()!=2||!transfer.path("target").isTextual()
+                            ||!transfer.path("value").isObject()||transfer.path("value").size()!=3
+                            ||!transfer.path("value").path("logicalDomain").asText().equals("TEXT")
+                            ||!transfer.path("value").path("value").isTextual()
+                            ||!transfer.path("value").path("logicalExtent").canConvertToInt())
+                        throw new PhysicalShape("$/statements/logicalTransfers shape");
+                    var id=transfer.path("target").asText();var value=transfer.path("value").path("value").asText();
+                    var extent=transfer.path("value").path("logicalExtent").asInt();
+                    if(!seen.add(id)||extent<=0||extent!=value.codePointCount(0,value.length()))
+                        throw new PhysicalShape("$/statements/logicalTransfers value or duplicate target");
+                    facts.add(new PendingLogical(id,value,extent));
+                }
+                logicalTransfers.put(owner,java.util.List.copyOf(facts));
+                ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("logicalTransfers");
+            }
+            boolean ordinaryContract=node.path("contractVersion").asText().equals("2.37.0")
+                ||partialSequenceContract&&node.has("ordinaryContinuations");
             java.util.List<OrdinaryContinuationDocument> ordinaryRelations=java.util.List.of();
             if(node.has("ordinaryContinuations") && !ordinaryContract)
                 throw new PhysicalShape("$/ordinaryContinuations requires SP2.37");
@@ -97,6 +135,11 @@ public final class SpJsonDecoder {
                 for(var relation:ordinaryRelations)if(!ordinarySources.add(relation.statement()))
                     throw new PhysicalShape("$/ordinaryContinuations requires distinct sources and complete relations");
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("ordinaryContinuations");
+                boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",hasStructural?"2.36.0":
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
+            if(partialSequenceContract&&!ordinaryContract) {
                 boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",hasStructural?"2.36.0":
                     node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
@@ -430,6 +473,25 @@ public final class SpJsonDecoder {
                         java.util.Optional.of(new SpInput.StatementId(input.unit(),relation.destination())),Materialize.provenance(relation.provenance(),input.unit())));
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),relations);
+            }
+            if(!logicalTransfers.isEmpty()) {
+                var statements=new java.util.ArrayList<SpInput.StatementFact>();
+                var matched=new java.util.HashSet<String>();
+                for(var fact:input.statements()) {
+                    var logicalPending=logicalTransfers.get(fact.header().id().handle());
+                    if(logicalPending!=null) {
+                        if(!(fact instanceof SpInput.MoveFact m))throw new PhysicalShape("$/statements/logicalTransfers non-MOVE");
+                        matched.add(fact.header().id().handle());
+                        var values=logicalPending.stream().map(t->new SpInput.LogicalTransfer(new SpInput.OperandId(m.header().id(),t.target()),
+                            new SpInput.LogicalValue(SpInput.LogicalDomain.TEXT,t.value(),t.extent()))).toList();
+                        fact=new SpInput.MoveFact(m.header(),m.source(),m.target(),m.copySemantics(),m.normalContinuation(),
+                            m.textAdjustment(),m.regionalMove(),m.additionalTransfers(),values);
+                    }
+                    statements.add(fact);
+                }
+                if(matched.size()!=logicalTransfers.size())throw new PhysicalShape("$/statements/logicalTransfers owner");
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
             }
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {

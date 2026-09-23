@@ -73,18 +73,22 @@ final class CicsInvokeHandler {
             target=null;
         }
         var effectOperands=new ArrayList<Place>();
+        var readObjects=new LinkedHashSet<ObjectId>();var writeObjects=new LinkedHashSet<ObjectId>();
         for(var option:fact.options())option.reference().ifPresent(reference->{
             var selected=reference.binding().selected();
             if(reference.regionalAccess().isPresent()&&selected.filter(data.index()::containsKey).isPresent()) {
                 var placeId=new OperandId(new OperationOwner(operation),ids.id("operand","cics-option-place",operation.localId(),reference.id().handle()));
                 var optionOrigin=origins.source("cics-option",reference.id().handle(),reference.provenance());
+                var object=data.index().get(selected.orElseThrow()).object();
+                if(reference.role()==SpInput.OperandRole.WRITE)writeObjects.add(object);else readObjects.add(object);
                 effectOperands.add(RegionalPlaces.place(reference,data.index().get(selected.orElseThrow()),new Operand.Header(placeId,reference.role()==SpInput.OperandRole.WRITE?Operand.Role.VALUE_WRITE:Operand.Role.VALUE_READ,optionOrigin),ids));
                 links.add(new LoweringResult.OperandLink(reference.id(),placeId,optionOrigin));
                 items.add(ScalarEvidence.item(unit.publication(),"operand",ids.sourceKey(reference.id().handle()),optionOrigin,List.of(placeId)));
             }
         });
         var signature=new Interactions.ExternalSignature(new Interactions.Signature(new Interactions.ParameterInventory(List.of(),new Interactions.UnknownRemainder(reason)),new Interactions.ResultInventory(List.of(),new Interactions.UnknownRemainder(reason)),origin));
-        var effects=new Interactions.EffectBound(new Interactions.ForeignEffects(Scopes.NoMemory.INSTANCE,Scopes.NoMemory.INSTANCE,List.of()),List.of());
+        var effects=new Interactions.EffectBound(new Interactions.ForeignEffects(
+            memory(readObjects),memory(writeObjects),List.of()),List.of());
         var known=fact.command()==SpInput.CicsCommand.LINK&&next!=null?List.<Control.InvocationAlternative>of(new Control.Normal(next))
             :List.<Control.InvocationAlternative>of();
         var remainder=fact.command()==SpInput.CicsCommand.XCTL
@@ -104,6 +108,9 @@ final class CicsInvokeHandler {
             return new Operations.Opaque(header,"cics-program-target-unavailable",effectOperands.stream().map(p->(Operand)p).toList(),List.of(),envelope);
         }
         return new Operations.Invoke(header,fact.command()==SpInput.CicsCommand.LINK?"call":"execute",target,List.of(),List.of(),signature,effectOperands,effects,outcomes,new Interactions.UnknownContract(reason));
+    }
+    private static Scopes.MemoryBound memory(Set<ObjectId> objects) {
+        return objects.isEmpty()?Scopes.NoMemory.INSTANCE:new Scopes.WithinMemory(new Scopes.ObjectsMemory(List.copyOf(objects)));
     }
     private static boolean nameArea(SpInput.DataReference reference,ScalarDataTranslator.Result data) {
         if(reference.regionalAccess().isEmpty()||reference.binding().selected().isEmpty())return false;

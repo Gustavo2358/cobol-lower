@@ -308,8 +308,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record MoveTransfer(MoveSource source,DataReference target,StorageFacts.Move effect) {
         public MoveTransfer { Objects.requireNonNull(source);Objects.requireNonNull(target);Objects.requireNonNull(effect); }
     }
+    public record LogicalTransfer(OperandId target,LogicalValue value) {
+        public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) implements StatementFact {
+        public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
+                NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,List.of());
+        }
         public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
                 NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,List.of());
@@ -324,7 +331,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
     public enum CicsCommand { LINK, XCTL }

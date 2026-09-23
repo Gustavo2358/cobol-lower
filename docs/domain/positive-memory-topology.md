@@ -136,3 +136,33 @@ keys are occurrence-specific. No AIR/CFG production or SP wire change is require
 The W5 acceptance-only boundary above is historical; its facts are now executable
 under the documented W6 preconditions. Unsupported repetition remains explicit.
 CompositionalPerformSuite joins FAST and preserves qualified/context/dead controls.
+
+## W8 — independent MOVE receivers and CICS options
+
+SP2.38 is selected only when a multi-receiver MOVE publishes independent logical
+receiver values or a partial regional sequence. The decoder preserves SP2.37 and
+older meanings, rejects the new field under an old version, and validates each
+logical value against the declared receiver extent and the proved literal.
+`RegionalMoveHandler` follows the published receiver order: a proved logical
+receiver becomes an ObjectPlace Assign; an unavailable regional receiver remains
+an Nop with uncertainty. The latter cannot erase a peer Assign. An explicit
+REDEFINES/RENAMES identity is still shared, so a later write through an alias
+replaces its peer value. DATA-source overlap still follows the prior capture
+admission and may remain conservative.
+
+For CICS Program Control, target materialization does not decide whether a known
+COMMAREA read or RESP write exists. `Invoke.effectOperands` retain source option
+places and `ForeignEffects` now carry separate local ObjectsMemory bounds for
+proved read/write objects. The targetless Opaque path retains its exact known
+operand IDs and NoMemory remainders. Neither path infers a write from a missing
+target or from diagnostics. LINK normal continuation and XCTL no-return behavior
+remain governed by their existing control contract. Scope precision is object
+level when the AIR foreign bound cannot name a subobject interval.
+
+For CICS FILE SYSID, a whole textual reference with declared logical extent four
+may be read through its nominal ObjectPlace when no byte view is available.
+Physical byte interpretation still requires its existing codec/view proof;
+integer options do not acquire this textual rule. Opaque `unknownExposureBound`
+is no longer mapped to `otherWrites`; only `unknownWriteBound` authorizes that
+remainder. `unknownReadBound` remains separate. W8 tests cover the wire, target,
+read/write and logical access mutations in addition to the integrated corpus.

@@ -30,7 +30,9 @@ its published bound), and physical representation gaps (coverage). It never
 creates a Cell independently for each declaration name.
 CICS PROGRAM and FILE consumers query readable nominal targets even without physical
 8-byte IBM1047 proof. Name spelling/length validation still applies; raw value evidence
-and interpretation remainder remain independent. SYSID keeps its separate context policy.
+and interpretation remainder remain independent. W8 also admits a whole TEXT
+SYSID option through its declared four-character logical extent when the physical
+view is absent; this does not reinterpret numeric options or certify IBM1047 bytes.
 
 Nonliteral copies across unproved representations, generalized missing-source control,
 interprocedural propagation and SQL/IMS typed calls remain outside this bounded change.

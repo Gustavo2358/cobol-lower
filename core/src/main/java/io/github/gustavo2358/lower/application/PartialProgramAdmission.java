@@ -127,7 +127,8 @@ final class PartialProgramAdmission {
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof ConditionalGoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
-                if(s instanceof MoveFact m&&m.regionalMove().filter(e->e.kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE).isPresent()) {
+                if(s instanceof MoveFact m&&(!m.logicalTransfers().isEmpty()||m.regionalMove().isPresent()
+                    &&m.transfers().stream().anyMatch(t->t.effect().kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE))) {
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
                 }
                 if(s instanceof MoveFact m&&(c.regionalStorage.logical().literalMove(m)||m.copySemantics()==CopySemantics.POSSIBLE_TEXT))eligible=true;

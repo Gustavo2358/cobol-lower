@@ -59,8 +59,8 @@ final class OpaqueOperands {
         java.util.function.Function<List<SpInput.OperandId>,List<OperandId>> mapped=xs->xs.stream().map(known.occurrences()::get).filter(Objects::nonNull).toList();
         var reads=mapped.apply(e.knownReads());var writes=mapped.apply(e.mayWrites());
         var otherReads=e.unknownReadBound()==SpInput.EffectBound.NONE?Scopes.NoMemory.INSTANCE:all;
-        var otherWrites=e.unknownWriteBound()==SpInput.EffectBound.NONE&&e.unknownExposureBound()==SpInput.EffectBound.NONE
-            ?Scopes.NoMemory.INSTANCE:all;
+        // Exposure records a possible escape; it is not evidence of a write.
+        var otherWrites=e.unknownWriteBound()==SpInput.EffectBound.NONE?Scopes.NoMemory.INSTANCE:all;
         return new Envelopes.MemoryEnvelope(reads,otherReads,writes,otherWrites,mapped.apply(e.mustOverwrite()));
     }
 }
