@@ -1,5 +1,7 @@
 # SP 1.4 simple IF diamond
 
+Current compositional control and SP2.37 ordinary continuations: [W7 contract](control-composition.md). Historical profile qualification below does not gate independent branch entries or predicate coverage.
+
 CP6 W2B consumes the [locked productive W2A/W2C authorities](../sources/sources.lock.json).
 Wire14 is closed and separate from Wire13. The core transports only public SP facts.
 No AST, source parsing, name-based join, runtime truth evaluation or CFG projection occurs.

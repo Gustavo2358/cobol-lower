@@ -127,8 +127,8 @@ ACTIVATION_NOT_MATERIALIZED_IN_ENTRY_PROJECTION gap and no invented control.
 This describes the declared known-entry projection, not universal source deadness
 or absence of unmodeled alternate entries.
 
-When FILE uses can introduce declarative/SORT callback routes outside that
-statement graph, scheduling remains eager. This is an explicit optimization limit,
+When `fileInventory.operations().uses()` is nonempty, scheduling remains eager.
+This includes **any published FILE operation**, not only proved declarative/SORT callbacks. This is an explicit optimization limit,
 not an expansion of control or a gap-code semantic branch. Existing FILE semantics
 and negative controls remain unchanged. Demand conservatively retains some
 activations after calls which ultimately never return; precision of scheduling is
@@ -148,3 +148,5 @@ round-trip, inventory permutation, cold depth8 DAG inventory and live depth64
 chain. Existing VARYING tests now distinguish unavailable repetition operands from
 independent body/isolation gaps, while retaining localized must-write and recursion
 refusal assertions. All frozen W4 sources/oracles remain unchanged.
+
+W7 reconciles occurrence continuations and branch composition in [control-composition.md](control-composition.md), preserving these activation and repetition rules.

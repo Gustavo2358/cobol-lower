@@ -23,7 +23,7 @@ final class PerformActivationDemand {
             if(completions.containsKey(id)) {
                 var local=byLabel.get(completions.get(id));if(local!=null)todo.addLast(local);
             } else {
-                var next=intrinsic?PartialProgramAdmission.next(fact):PartialProgramAdmission.ordinaryNext(fact);
+                var next=PartialProgramAdmission.ordinaryNext(plan.admission().input().orElseThrow(),fact);
                 // A call's source successor is a may-return scheduling bound, not a
                 // bypass. Actual AIR reaches it only through the emitted completion.
                 if(next!=null)next.statement().ifPresent(todo::addLast);

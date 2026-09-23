@@ -15,6 +15,20 @@ final class PartialProgramAdmission {
             if (input == null) { c.require(false,Rule.INPUT_REQUIRED,"input",null,"SP input required"); return rejected(c,Status.INVALID_INPUT); }
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
+            for(var relation:input.ordinaryContinuations().entrySet()) {
+                var source=c.lookup(relation.getKey());var destination=relation.getValue();
+                c.require(source instanceof MoveFact || source instanceof IfFact || source instanceof EvaluateFact
+                    || source instanceof PerformFact || source instanceof ProcedurePerformFact,Rule.STRUCTURE,
+                    relation.getKey().handle(),destination.provenance(),"ordinary continuation requires completing construction");
+                if(source!=null) {
+                    CallAdmission.continuation(destination,source.header(),c);
+                    c.require(destination.availability()==ContinuationAvailability.KNOWN && destination.statement().isPresent()
+                        && destination.provenance().exact(),Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"positive ordinary relation required");
+                    var intrinsic=next(source);
+                    c.require(intrinsic==null || intrinsic.statement().isEmpty() || intrinsic.statement().equals(destination.statement()),
+                        Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"ordinary and intrinsic successors agree when both known");
+                }
+            }
             CallAdmission.validateFacts(input,c);
             var goToTargets=new HashMap<ProcedureId,GoToAdmission.CanonicalTarget>();
             var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
@@ -92,12 +106,6 @@ final class PartialProgramAdmission {
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
             var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())||c.regionalStorage.logical().byData.containsKey(d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
-            var rangeCompletions=new HashSet<StatementId>();
-            input.fileInventory().declaratives().forEach(d->rangeCompletions.addAll(d.completions()));
-            input.fileInventory().sorts().ifPresent(inv->inv.plans().forEach(p->p.procedures().forEach(r->{rangeCompletions.addAll(r.completions());r.links().forEach(l->rangeCompletions.add(l.from()));})));
-            for(var s:input.statements())if(s instanceof ProcedurePerformFact p&&p.start().isPresent()&&p.end().isPresent()
-                    )
-                p.procedures().forEach(r->rangeCompletions.addAll(r.completions()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();
             for(var s:input.statements()) {
                 int before=c.diagnostics.size();
@@ -110,14 +118,10 @@ final class PartialProgramAdmission {
                         ||RegionalDataTranslator.textual(c.regionalStorage,((DataReference)m.source()).wholeItemAccess().orElseThrow().data())))eligible=false;
                 } else if(s instanceof CallFact || s instanceof CicsFact || s instanceof CicsFileFact) {
                     eligible=true; // The dependency site survives unavailable target values and CALL surface gaps.
-                } else if(s instanceof IfFact f
-                        && f.thenArm().entry().statement().isPresent() && (f.normalContinuation().statement().isPresent() || rangeCompletions.contains(f.header().id()))
-                        && (f.elseArm().entry().statement().isPresent() || f.elseArm().presence()==ClausePresence.ABSENT)
-                        && f.thenArm().contentAvailability()!=Availability.UNAVAILABLE
-                        && f.elseArm().contentAvailability()!=Availability.UNAVAILABLE) {
-                    if(f.predicateGuarantee().availability()==Availability.KNOWN) IfAdmission.admitPredicate(f,c,true);
+                } else if(s instanceof IfFact f && f.header().provenance().exact()) {
+                    // Predicate evaluation and arm content coverage do not gate known control entries.
                     eligible=true;
-                } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e,rangeCompletions.contains(e.header().id()));
+                } else if(s instanceof EvaluateFact e) eligible=EvaluateAdmission.structured(e);
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof ConditionalGoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
@@ -174,10 +178,27 @@ final class PartialProgramAdmission {
                     c.require(successor.statement().filter(bodyMembers::contains).isEmpty(),Rule.STRUCTURE,s.header().id().handle(),s.header().provenance(),"intrinsic BASIC body has no ordinary incoming continuation");
             }
             if(!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
-            var statements=input.statements().stream().filter(s->!bodyMembers.contains(s.header().id()))
+            // Legacy specialization can coexist with an explicitly published ordinary incoming path.
+            // Keep the required ordinary occurrences so positive relations never point at removed labels.
+            var ordinaryInventory=ordinaryInventory(input,bodyMembers,c);
+            var statements=input.statements().stream().filter(s->ordinaryInventory.contains(s.header().id()))
                 .sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
             return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges),CompositionalPerformAdmission.plan(input,c,ranges),c.regionalStorage,Set.copyOf(fitted));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
+    }
+    private static Set<StatementId> ordinaryInventory(SpInput input,Set<StatementId> specialized,EntryGobackAdmission.Context c) {
+        var retained=new HashSet<StatementId>();var pending=new ArrayDeque<StatementId>();
+        input.statements().stream().map(s->s.header().id()).filter(id->!specialized.contains(id)).forEach(pending::addLast);
+        while(!pending.isEmpty()) {
+            var id=pending.removeFirst();if(!retained.add(id))continue;
+            c.touch();var fact=c.lookup(id);var successor=ordinaryNext(input,fact);
+            if(successor!=null)successor.statement().ifPresent(pending::addLast);
+            if(fact instanceof GoToFact g)g.targetEntry().ifPresent(pending::addLast);
+            if(fact instanceof ConditionalGoToFact g)g.destinations().forEach(d->d.targetEntry().ifPresent(pending::addLast));
+            if(fact instanceof IfFact f) {f.thenArm().entry().statement().ifPresent(pending::addLast);f.elseArm().entry().statement().ifPresent(pending::addLast);}
+            if(fact instanceof EvaluateFact e) {e.arms().forEach(a->a.control().entry().statement().ifPresent(pending::addLast));e.otherArm().entry().statement().ifPresent(pending::addLast);}
+        }
+        return retained;
     }
     private static List<StatementId> primary(SpInput input,EntryGobackAdmission.Context c,Set<StatementId> precise) {
         record Visit(StatementId id,boolean complete) { }
@@ -210,7 +231,7 @@ final class PartialProgramAdmission {
             pending.push(new Visit(id,true));
             pending.push(new Visit(continuation.statement().orElseThrow(),false));
             if(s instanceof EvaluateFact e) {
-                if(!precise.contains(id))return List.of();
+                if(!precise.contains(id) || e.arms().stream().anyMatch(a->a.control().entry().statement().isEmpty()))return List.of();
                 for(var arm:e.arms())pending.push(new Visit(arm.control().entry().statement().orElseThrow(),false));
                 e.otherArm().entry().statement().ifPresent(entry->pending.push(new Visit(entry,false)));
             }
@@ -235,6 +256,9 @@ final class PartialProgramAdmission {
                 Rule.STRUCTURE,id.handle(),arm.provenance(),"IF arm entry belongs to that direct arm");
         }
         c.require(arm.presence()!=ClausePresence.ABSENT || arm.entry().statement().isEmpty(),Rule.STRUCTURE,f.header().id().handle(),arm.provenance(),"absent IF arm has no entry");
+    }
+    static NormalContinuation ordinaryNext(SpInput input,StatementFact s) {
+        return input.ordinaryContinuations().getOrDefault(s.header().id(),ordinaryNext(s));
     }
     static NormalContinuation ordinaryNext(StatementFact s) {
         return s instanceof CicsFact c?c.ordinaryContinuation():s instanceof CicsFileFact c?c.ordinaryContinuation():next(s);

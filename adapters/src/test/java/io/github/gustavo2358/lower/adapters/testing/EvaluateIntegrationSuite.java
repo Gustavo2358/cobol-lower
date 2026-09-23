@@ -41,7 +41,16 @@ public final class EvaluateIntegrationSuite {
                 == input.statements().stream().filter(SpInput.CallFact.class::isInstance).count(),"one dependency site per source CALL "+name);
             for(var fact:input.statements()) if(fact instanceof SpInput.EvaluateFact e) {
                 var links=r.statements().stream().filter(l->l.source().equals(e.header().id())).toList();
-                if(name.equals("empty")) { check(links.size()==1 && sequences.get(links.getFirst().label()).terminator() instanceof Operations.Opaque,"empty arm retains open control"); continue; }
+                if(name.equals("empty")) {
+                    var branches=links.stream().map(l->sequences.get(l.label()).terminator()).filter(Operations.Branch.class::isInstance).map(Operations.Branch.class::cast).toList();
+                    check(branches.size()==e.arms().size(),"partial arm entry does not erase known ordered choices");
+                    for(int i=0;i<e.arms().size();i++) {
+                        var entry=e.arms().get(i).control().entry().statement();var target=branches.get(i).trueDestination();
+                        if(entry.isPresent())check(r.statements().stream().anyMatch(l->l.source().equals(entry.orElseThrow())&&l.label().equals(target)),"known sibling entry survives");
+                        else check(sequences.get(target).terminator() instanceof Operations.Opaque o && o.envelope().control().known().isEmpty(),"missing entry has local boundary, no completion bypass");
+                    }
+                    continue;
+                }
                 check(links.size()==e.arms().size(),"one branch per ordered WHEN "+name);
                 for(int i=0;i<links.size();i++) {
                     var op=(Operations.Branch)sequences.get(links.get(i).label()).terminator();

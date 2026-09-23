@@ -31,6 +31,7 @@ public final class SpJsonDecoder {
     }
     private record LogicalTextViewDocument(String node,String root,String start,String length) { }
     private record LogicalExactViewDocument(String node,String representative,String length) { }
+    private record OrdinaryContinuationDocument(String statement,String destination,Wire.ProvenanceDocument provenance) { }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
     public record Diagnostic(Code code, String phase, String location) {
         public Diagnostic { Objects.requireNonNull(code); Objects.requireNonNull(phase); Objects.requireNonNull(location); }
@@ -84,6 +85,22 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            boolean ordinaryContract=node.path("contractVersion").asText().equals("2.37.0");
+            java.util.List<OrdinaryContinuationDocument> ordinaryRelations=java.util.List.of();
+            if(node.has("ordinaryContinuations") && !ordinaryContract)
+                throw new PhysicalShape("$/ordinaryContinuations requires SP2.37");
+            if(ordinaryContract) {
+                if(!node.path("ordinaryContinuations").isArray())throw new PhysicalShape("$/ordinaryContinuations");
+                ordinaryRelations=java.util.Arrays.asList(mapper.treeToValue(node.path("ordinaryContinuations"),OrdinaryContinuationDocument[].class));
+                var ordinarySources=new java.util.HashSet<String>();
+                for(var relation:ordinaryRelations)if(relation.statement()==null || relation.destination()==null
+                        || relation.provenance()==null || !ordinarySources.add(relation.statement()))
+                    throw new PhysicalShape("$/ordinaryContinuations requires distinct sources and complete relations");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("ordinaryContinuations");
+                boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",hasStructural?"2.36.0":
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
             // SP2.36 adds source structural PERFORM facts, not an executable specialization.
             boolean structuralContract=node.path("contractVersion").asText().equals("2.36.0");
             var structuralPerformIds=new java.util.HashSet<String>();
@@ -405,6 +422,14 @@ public final class SpJsonDecoder {
                 }
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies());
+            }
+            if(ordinaryContract) {
+                var relations=new java.util.LinkedHashMap<SpInput.StatementId,SpInput.NormalContinuation>();
+                for(var relation:ordinaryRelations)relations.put(new SpInput.StatementId(input.unit(),relation.statement()),
+                    new SpInput.NormalContinuation(SpInput.ContinuationAvailability.KNOWN,
+                        java.util.Optional.of(new SpInput.StatementId(input.unit(),relation.destination())),Materialize.provenance(relation.provenance(),input.unit())));
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),relations);
             }
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {

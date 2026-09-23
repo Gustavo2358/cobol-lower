@@ -1523,7 +1523,7 @@ final class Materialize {
     private static IncludeFrame includeFrame(Wire.IncludeFrameDocument d, UnitKey unit) {
         return new IncludeFrame(d.includingFile(), d.requestedName(), d.includedFile(), d.includeLine());
     }
-    private static Provenance provenance(Wire.ProvenanceDocument d, UnitKey unit) {
+    static Provenance provenance(Wire.ProvenanceDocument d, UnitKey unit) {
         return new Provenance(location(d.expanded(), unit), location(d.original(), unit), d.includeChain().stream().map(v -> includeFrame(v, unit)).toList(), d.exact());
     }
     private static ReadinessClaim readinessClaim(Wire.ReadinessClaimDocument d, UnitKey unit) {

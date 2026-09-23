@@ -48,13 +48,8 @@ final class EvaluateAdmission {
             }
         }
     }
-    static boolean structured(EvaluateFact e) { return structured(e,false); }
-    static boolean structured(EvaluateFact e,boolean completion) {
-        return e.header().provenance().exact() && (e.normalContinuation().statement().isPresent() || completion)
-                && e.arms().stream().allMatch(a -> a.control().entry().statement().isPresent()
-                    && a.control().contentAvailability()==Availability.KNOWN && a.control().provenance().exact() && a.conditionOrigin().exact())
-                && (e.otherArm().presence()==ClausePresence.ABSENT
-                    || e.otherArm().presence()==ClausePresence.PRESENT && e.otherArm().entry().statement().isPresent()
-                        && e.otherArm().contentAvailability()==Availability.KNOWN && e.otherArm().provenance().exact());
+    static boolean structured(EvaluateFact e) {
+        return e.header().provenance().exact() && !e.arms().isEmpty()
+            && e.arms().stream().allMatch(a -> a.control().provenance().exact() && a.conditionOrigin().exact());
     }
 }

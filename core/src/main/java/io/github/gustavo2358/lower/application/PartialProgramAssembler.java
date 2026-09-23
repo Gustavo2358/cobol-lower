@@ -39,7 +39,7 @@ final class PartialProgramAssembler {
             List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files,Deque<Task> work,SpInput.StatementId contextEntry) {
         var demanded=PerformActivationDemand.inContext(plan,sourceStatements,overrides,intrinsic,contextEntry,unit,ids);
         for(var fact:sourceStatements) {
-            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=intrinsic?PartialProgramAdmission.next(fact):PartialProgramAdmission.ordinaryNext(fact);
+            var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=PartialProgramAdmission.ordinaryNext(plan.admission().input().orElseThrow(),fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
             if(!intrinsic)destination=files.completion(fact.header().id(),destination);
             var instructions=new ArrayList<Instruction>(); Terminator term;
@@ -76,13 +76,17 @@ final class PartialProgramAssembler {
                 term=InvokeHandler.translate(call,data.index(),destination,completion,unit,ids,origins,operands,items,uncertainties,plan.storage());
                 link(fact.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.EvaluateFact e) {
-                var chain = EvaluateLowerer.chain(e, destination, data, unit, ids, origins, operands, items, uncertainties);
+                var entries=new ArrayList<LabelId>();
+                for(var arm:e.arms())entries.add(outcome(fact,"when-"+arm.ordinal(),arm.control(),null,unit,ids,origins,items,uncertainties,statements,sequences));
+                var noMatch=outcome(fact,"no-match",e.otherArm(),destination,unit,ids,origins,items,uncertainties,statements,sequences);
+                var chain = EvaluateLowerer.chain(e, entries, noMatch, data, unit, ids, origins, operands, items, uncertainties);
                 term=chain.getFirst().terminator();
                 for (int i=1;i<chain.size();i++) sequences.add(chain.get(i));
                 for (var sequence : chain) link(fact.header().id(),sequence.terminator(),sequence.label(),statements,items);
             } else if(precise && fact instanceof SpInput.IfFact f) {
-                term=IfSequenceAssembler.branch(f,label(f.thenArm().entry().statement().orElseThrow(),unit,ids),
-                    f.elseArm().entry().statement().map(s->label(s,unit,ids)).orElse(destination),data,unit,ids,origins,operands,items,uncertainties);
+                var taken=outcome(fact,"then",f.thenArm(),null,unit,ids,origins,items,uncertainties,statements,sequences);
+                var notTaken=outcome(fact,"else",f.elseArm(),destination,unit,ids,origins,items,uncertainties,statements,sequences);
+                term=IfSequenceAssembler.branch(f,taken,notTaken,data,unit,ids,origins,operands,items,uncertainties);
                 link(fact.header().id(),term,label,statements,items);
             } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())
                     && !demanded.contains(p.header().id())) {
@@ -182,6 +186,30 @@ final class PartialProgramAssembler {
             }
             sequences.add(new Sequence(label,instructions,term,term.header().origin()));
         }
+    }
+    /** Resolve an individual outcome in this occurrence; absent clauses alone use normal completion. */
+    private static LabelId outcome(SpInput.StatementFact fact,String role,SpInput.IfArm arm,LabelId normal,UnitId unit,
+            LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties,
+            List<LoweringResult.StatementLink> statements,List<Sequence> sequences) {
+        if(arm.entry().statement().isPresent())return label(arm.entry().statement().orElseThrow(),unit,ids);
+        if(arm.presence()==SpInput.ClausePresence.ABSENT && normal!=null)return normal;
+        // Derived missing-outcome boundary has no source successor, effects, reads or return claim.
+        var boundary=new LabelId(unit,ids.id("label","missing-control-outcome",fact.header().id().handle(),role));
+        var id=new OperationId(unit,ids.id("operation","missing-control-outcome",fact.header().id().handle(),role));
+        var source=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
+        var origin=origins.derived(ids.id("origin","missing-control-outcome",fact.header().id().handle(),role),List.of(source),"control-composition@1/unavailable-outcome-destination");
+        var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","missing-control-outcome",fact.header().id().handle(),role));
+        var scope=new Scopes.EntityScope(List.of(id));
+        uncertainties.add(new Evidence.Uncertainty(gap,"CONTROL_OUTCOME_DESTINATION_NOT_PROVEN",List.of(Evidence.Dimension.CONTROL),scope,"No successor or contextual completion is published for this outcome.",origin));
+        var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
+        var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
+        var term=new Operations.Opaque(new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,
+            new Evidence.Precision(open,exact,exact,exact,exact),List.of(gap)),"unavailable-control-outcome",List.of(),List.of(),
+            new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
+                new Control.ControlEnvelope(List.of(),new Scopes.WithinControl(new Scopes.LabelsControl(List.of()))),
+                new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+        sequences.add(new Sequence(boundary,List.of(),term,origin));link(fact.header().id(),term,boundary,statements,items);
+        return boundary;
     }
     private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects) {

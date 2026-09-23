@@ -7,7 +7,7 @@ import java.util.*;
 
 /** Ordered first-match choices, with the existing Unknown BOOL predicate abstraction. */
 final class EvaluateLowerer {
-    static List<Sequence> chain(SpInput.EvaluateFact e,LabelId continuation,ScalarDataTranslator.Result data,
+    static List<Sequence> chain(SpInput.EvaluateFact e,List<LabelId> armEntries,LabelId noMatch,ScalarDataTranslator.Result data,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,
             List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var result=new ArrayList<Sequence>();
@@ -49,9 +49,8 @@ final class EvaluateLowerer {
             var predicate=new Expressions.Unknown(new Operand.Header(operand,Operand.Role.PREDICATE,origin),Types.known(Types.Builtin.BOOL),dependencies,Scopes.NoMemory.INSTANCE,reason);
             var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
             var values=new Evidence.Claim(new Scopes.EntityScope(List.of(operand)),Evidence.PrecisionStatus.OPEN,List.of(reason));
-            var thenLabel=PartialProgramAssembler.label(arm.control().entry().statement().orElseThrow(),unit,ids);
-            var elseLabel=i+1<e.arms().size()?label(e,i+1,unit,ids):e.otherArm().entry().statement()
-                .map(s -> PartialProgramAssembler.label(s,unit,ids)).orElse(continuation);
+            var thenLabel=armEntries.get(i);
+            var elseLabel=i+1<e.arms().size()?label(e,i+1,unit,ids):noMatch;
             var branch=new Operations.Branch(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,
                 new Evidence.Precision(exact,exact,exact,values,exact),List.of(reason)),predicate,thenLabel,elseLabel);
             result.add(new Sequence(label(e,i,unit,ids),List.of(),branch,origin));

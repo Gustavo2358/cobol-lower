@@ -22,7 +22,7 @@ final class CompositionalPerformAdmission {
             while(!pending.isEmpty()) {
                 var id=pending.removeFirst();if(!seen.add(id))continue;
                 c.touch();var member=c.lookup(id);
-                var next=PartialProgramAdmission.next(member);
+                var next=PartialProgramAdmission.ordinaryNext(input,member);
                 if(next!=null&&!frontiers.contains(id))next.statement().ifPresent(pending::addLast);
                 if(member instanceof GoToFact g)g.targetEntry().ifPresent(pending::addLast);
                 if(member instanceof ConditionalGoToFact g)g.destinations().forEach(d->d.targetEntry().ifPresent(pending::addLast));

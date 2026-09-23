@@ -1,5 +1,7 @@
 # EVALUATE first slice
 
+Current compositional control and SP2.37 ordinary continuations: [W7 contract](control-composition.md). Historical profile qualification below does not gate independent branch entries or predicate coverage.
+
 SP 2.0 adds a closed EVALUATE family and EVALUATE_ARM containment. Wire20 is a
 distinct decoder; 1.1–1.9 retain their existing wire and interpretation. The
 source rule is [IBM Enterprise COBOL 6.4 EVALUATE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-evaluate-statement),

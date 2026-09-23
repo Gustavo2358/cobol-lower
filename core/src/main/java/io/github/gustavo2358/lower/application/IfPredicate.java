@@ -26,7 +26,7 @@ final class IfPredicate {
         var operand = new OperandId(owner, ids.id("operand", role+"-predicate", operation.localId(), key));
         var reason = new UncertaintyId(operation.unit().publication(), ids.id("uncertainty", "predicate-value-unknown", operation.localId(), key));
         uncertainties.add(new Evidence.Uncertainty(reason, "predicate-value-unknown", List.of(Evidence.Dimension.VALUES),
-            new Scopes.EntityScope(List.of(operand)), "Published total pure Boolean predicate; truth value is unknown.", origin));
+            new Scopes.EntityScope(List.of(operand)), "Boolean abstraction of the published branch decision; runtime truth remains unknown.", origin));
         var references = new HashMap<SpInput.OperandId, SpInput.DataReference>();
         conditionReads.forEach(r -> references.put(r.id(), r));
         var dependencies = new ArrayList<Expression>();
