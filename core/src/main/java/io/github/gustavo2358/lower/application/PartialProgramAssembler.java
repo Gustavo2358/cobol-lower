@@ -7,12 +7,19 @@ import java.util.*;
 
 /** One explicit source occurrence per sequence; BASIC bodies specialize by activation. */
 final class PartialProgramAssembler {
+    private record Task(List<SpInput.StatementFact> body, Map<SpInput.StatementId,LabelId> completions,
+                        boolean intrinsic, LocalIds ids, SpInput.StatementId entry) { }
     record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
     static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         var sequences=new ArrayList<Sequence>();
-        append(plan,plan.statements(),Map.of(),false,data,unit,ids,origins,statements,operands,items,uncertainties,sequences,files);
+        var work=new ArrayDeque<Task>();
+        work.add(new Task(plan.statements(),Map.of(),false,ids,plan.admission().input().orElseThrow().entryInventory().entries().getFirst().start().statement().orElseThrow()));
+        while(!work.isEmpty()) {
+            var task=work.removeFirst();
+            append(plan,task.body(),task.completions(),task.intrinsic(),data,unit,task.ids(),origins,statements,operands,items,uncertainties,sequences,files,work,task.entry());
+        }
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
         var entryLabel=label(input.entryInventory().entries().getFirst().start().statement().orElseThrow(),unit,ids);
@@ -29,7 +36,8 @@ final class PartialProgramAssembler {
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
             Map<SpInput.StatementId,LabelId> overrides,boolean intrinsic,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
-            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files) {
+            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files,Deque<Task> work,SpInput.StatementId contextEntry) {
+        var demanded=PerformActivationDemand.inContext(plan,sourceStatements,overrides,intrinsic,contextEntry,unit,ids);
         for(var fact:sourceStatements) {
             var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=intrinsic?PartialProgramAdmission.next(fact):PartialProgramAdmission.ordinaryNext(fact);
             var destination=overrides.containsKey(fact.header().id())?overrides.get(fact.header().id()):next==null?null:next.statement().map(s->label(s,unit,ids)).orElse(null);
@@ -77,6 +85,10 @@ final class PartialProgramAssembler {
                     f.elseArm().entry().statement().map(s->label(s,unit,ids)).orElse(destination),data,unit,ids,origins,operands,items,uncertainties);
                 link(fact.header().id(),term,label,statements,items);
             } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())
+                    && !demanded.contains(p.header().id())) {
+                term=opaque(p,null,data,unit,ids,origins,uncertainties,operands,true,"ACTIVATION_NOT_MATERIALIZED_IN_ENTRY_PROJECTION");
+                link(p.header().id(),term,label,statements,items);
+            } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())
                     && !ids.containsActivation(p.header().id().handle())) {
                 var body=plan.compositions().get(p.header().id());
                 var activation=ids.activation(p.header().id().handle());
@@ -88,9 +100,8 @@ final class PartialProgramAssembler {
                 var origin=origins.derived(ids.id("origin","compositional-perform-entry",unit.localId(),p.header().id().handle()),
                     List.copyOf(evidence),"perform-structural@1/activation-entry");
                 var target=label(p.targetEntry().orElseThrow(),unit,activation);
-                term=PerformSequenceAssembler.jump("compositional-entry",p.header().id(),target,origin,unit,ids);
-                link(p.header().id(),term,label,statements,items);
-                if(!body.isEmpty()) {
+                if(body.isEmpty())throw new IllegalStateException("known entry must have an inventoried occurrence");
+                {
                     var resumeLabel=new LabelId(unit,activation.id("label","perform-normal-resume",unit.localId(),p.header().id().handle()));
                     var resumeIds=activation.activation("normal-resume");
                     var resumeOrigin=origins.derived(resumeIds.id("origin","compositional-perform-resume",unit.localId(),p.header().id().handle()),
@@ -99,12 +110,15 @@ final class PartialProgramAssembler {
                         :PerformSequenceAssembler.jump("compositional-resume",p.header().id(),destination,resumeOrigin,unit,resumeIds);
                     sequences.add(new Sequence(resumeLabel,List.of(),resume,resumeOrigin));
                     link(p.header().id(),resume,resumeLabel,statements,items);
+                    var routing=PerformRepetitionAssembler.wrap(p,target,resumeLabel,data,unit,ids,origins,statements,operands,items,uncertainties,sequences);
+                    term=PerformSequenceAssembler.jump("compositional-entry",p.header().id(),routing.entry(),origin,unit,ids);
+                    link(p.header().id(),term,label,statements,items);
                     var completions=new HashMap<SpInput.StatementId,LabelId>();
                     for(int i=0;i<p.procedures().size();i++) {
-                        var after=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):resumeLabel;
+                        var after=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):routing.completion();
                         for(var id:p.procedures().get(i).completions())completions.put(id,after);
                     }
-                    append(plan,body,completions,true,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
+                    work.addLast(new Task(body,completions,true,activation,p.targetEntry().orElseThrow()));
                 }
             } else if(precise && fact instanceof SpInput.ProcedurePerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
@@ -119,40 +133,8 @@ final class PartialProgramAssembler {
                 for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
                 evidence.add(origins.source("perform-continuation",p.header().id().handle(),p.normalContinuation().provenance()));
                 var origin=origins.derived(ids.id("origin","procedure-perform",unit.localId(),p.header().id().handle()),List.copyOf(evidence),"perform-range@1/isolated-activation");
-                var completion=destination;var entry=target;
-                if(p.loop().isPresent()) {
-                    var decisionLabel=new LabelId(unit,ids.id("label","perform-loop-decision",unit.localId(),p.header().id().handle()));
-                    boolean before=p.loop().get().testMode()==SpInput.PerformTestMode.BEFORE;
-                    var repeat=target;
-                    completion=decisionLabel;
-                    if(before)entry=decisionLabel;
-                    if(p.varying().isPresent()) {
-                        var initialLabel=new LabelId(unit,ids.id("label","perform-varying-initialization",unit.localId(),p.header().id().handle()));
-                        var incrementLabel=new LabelId(unit,ids.id("label","perform-varying-increment",unit.localId(),p.header().id().handle()));
-                        var initial=PerformVaryingEffects.effect(p,true,before?decisionLabel:target,data,unit,ids,origins,operands,uncertainties);
-                        var increment=PerformVaryingEffects.effect(p,false,before?decisionLabel:target,data,unit,ids,origins,operands,uncertainties);
-                        sequences.add(new Sequence(initialLabel,List.of(),initial,initial.header().origin()));
-                        sequences.add(new Sequence(incrementLabel,List.of(),increment,increment.header().origin()));
-                        link(p.header().id(),initial,initialLabel,statements,items);link(p.header().id(),increment,incrementLabel,statements,items);
-                        entry=initialLabel;
-                        if(before)completion=incrementLabel;else repeat=incrementLabel;
-                    }
-                    var decision=PerformLoopAssembler.decision(p,repeat,destination,data,unit,ids,origins,operands,items,uncertainties);
-                    sequences.add(new Sequence(decisionLabel,List.of(),decision,decision.header().origin()));
-                    link(p.header().id(),decision,decisionLabel,statements,items);
-                }
-                if(p.times().isPresent()) {
-                    var repeatLabel=new LabelId(unit,ids.id("label","perform-count-exhaustion",unit.localId(),p.header().id().handle()));
-                    var repeat=PerformLoopAssembler.countDecision(p,false,target,destination,data,unit,ids,origins,operands,items,uncertainties);
-                    sequences.add(new Sequence(repeatLabel,List.of(),repeat,repeat.header().origin()));
-                    link(p.header().id(),repeat,repeatLabel,statements,items);completion=repeatLabel;
-                    if(p.times().get().profile()==SpInput.PerformCountProfile.INTEGER_ITEM) {
-                        var initialLabel=new LabelId(unit,ids.id("label","perform-count-entry",unit.localId(),p.header().id().handle()));
-                        var initial=PerformLoopAssembler.countDecision(p,true,target,destination,data,unit,ids,origins,operands,items,uncertainties);
-                        sequences.add(new Sequence(initialLabel,List.of(),initial,initial.header().origin()));
-                        link(p.header().id(),initial,initialLabel,statements,items);entry=initialLabel;
-                    }
-                }
+                var routing=PerformRepetitionAssembler.wrap(p,target,destination,data,unit,ids,origins,statements,operands,items,uncertainties,sequences);
+                var entry=routing.entry();var completion=routing.completion();
                 term=PerformSequenceAssembler.jump("range-entry",p.header().id(),entry,origin,unit,ids);
                 link(p.header().id(),term,label,statements,items);
                 var completions=new HashMap<SpInput.StatementId,LabelId>();
@@ -161,7 +143,7 @@ final class PartialProgramAssembler {
                     var resume=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):completion;
                     for(var id:paragraph.completions())completions.put(id,resume);
                 }
-                append(plan,plan.ranges().get(p.header().id()),completions,true,data,unit,activation,origins,statements,operands,items,uncertainties,sequences,files);
+                work.addLast(new Task(plan.ranges().get(p.header().id()),completions,true,activation,p.procedures().getFirst().entry()));
             } else if(precise && fact instanceof SpInput.PerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.targetEntry().orElseThrow(),unit,activation);
@@ -203,12 +185,16 @@ final class PartialProgramAssembler {
     }
     private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects) {
+        return opaque(fact,next,data,unit,ids,origins,uncertainties,operands,unknownEffects,null);
+    }
+    private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
+            LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects,String diagnostic) {
         var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
         var id=new OperationId(unit,ids.id("operation","opaque",unit.localId(),fact.header().id().handle()));
         var gap=new UncertaintyId(unit.publication(),ids.id("uncertainty","unsupported-region",id.localId(),"semantics"));
         var known=OpaqueOperands.translate(fact,id,data,ids,origins,operands,uncertainties);
         var scope=new Scopes.EntityScope(List.of(id));
-        var code=fact instanceof SpInput.ProcedurePerformFact && ids.containsActivation(fact.header().id().handle()) && unknownEffects?"RECURSIVE_PERFORM_NOT_SUPPORTED":fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
+        var code=diagnostic!=null?diagnostic:fact instanceof SpInput.ProcedurePerformFact && ids.containsActivation(fact.header().id().handle()) && unknownEffects?"RECURSIVE_PERFORM_NOT_SUPPORTED":fact instanceof SpInput.GoToFact?"GO_TO_TARGET_NOT_PROVEN":!unknownEffects?"NORMAL_CONTINUATION_NOT_PROVEN":fact instanceof SpInput.OtherStatement o?o.gapCode():"PRECISE_SEMANTICS_UNAVAILABLE";
         uncertainties.add(new Evidence.Uncertainty(gap,"cobol-lower:"+code,unknownEffects?List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES):List.of(Evidence.Dimension.CONTROL),scope,
             "Source region retains published operands and only proved control",origin));
         var effectGaps=new ArrayList<UncertaintyId>();effectGaps.add(gap);
@@ -235,7 +221,7 @@ final class PartialProgramAssembler {
                 new Envelopes.DependencyEnvelope(List.of(),externalEnvironment?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
     }
     static LabelId label(SpInput.StatementId s,UnitId unit,LocalIds ids) {return new LabelId(unit,ids.id("label","partial-sequence",unit.localId(),s.handle()));}
-    private static void link(SpInput.StatementId source,Operation op,LabelId label,List<LoweringResult.StatementLink> statements,List<Evidence.CoverageItem> items) {
+    static void link(SpInput.StatementId source,Operation op,LabelId label,List<LoweringResult.StatementLink> statements,List<Evidence.CoverageItem> items) {
         var h=op.header();statements.add(new LoweringResult.StatementLink(source,h.id(),label,h.origin()));
         items.add(new Evidence.CoverageItem("sp-partial@1/"+h.id().localId()+"/"+source.handle(),h.origin(),h.coverage(),List.of(h.id(),label),h.uncertainties(),Optional.empty()));
     }

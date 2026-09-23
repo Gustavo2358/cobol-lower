@@ -4,13 +4,18 @@ import java.util.*;
 import io.github.gustavo2358.lower.domain.SpInput;
 import static io.github.gustavo2358.lower.domain.SpInput.*;
 
-/** Positive ONCE entry/completion facts. No whole-body effect qualification. */
+/** Positive entry/completion and independently supported repetition facts. */
 final class CompositionalPerformAdmission {
+    private static boolean repetition(ProcedurePerformFact p, EntryGobackAdmission.Context c) {
+        return p.times().filter(t->t.profile()==PerformCountProfile.UNAVAILABLE).isEmpty()
+            && p.loop().filter(l->l.predicate().availability()!=Availability.KNOWN).isEmpty()
+            && PerformVaryingAdmission.executable(p,c);
+    }
     static Map<StatementId,List<StatementFact>> plan(SpInput input, EntryGobackAdmission.Context c,
             Map<StatementId,List<StatementFact>> legacy) {
         var result=new HashMap<StatementId,List<StatementFact>>();
         for(var s:input.statements())if(s instanceof ProcedurePerformFact p && !legacy.containsKey(p.header().id())
-                && p.targetEntry().isPresent() && p.loop().isEmpty() && p.times().isEmpty() && p.varying().isEmpty()) {
+                && p.targetEntry().isPresent() && repetition(p,c)) {
             var frontiers=new HashSet<StatementId>();p.procedures().forEach(r->frontiers.addAll(r.completions()));
             var seen=new HashSet<StatementId>();var pending=new ArrayDeque<StatementId>();
             pending.add(p.targetEntry().orElseThrow());pending.addAll(ProcedurePerformAdmission.members(p));

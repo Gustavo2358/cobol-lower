@@ -2,8 +2,8 @@
 
 The lower consumes the SP's positive local-invocation facts independently of body
 precision. Admitted legacy BASIC/range/repetition normalization remains unchanged.
-A separate ONCE route consumes STRUCTURAL_FACTS and previously unadmitted paragraph
-ranges. It uses AIR core Jump/Branch/Invoke/Return and existing statement handlers;
+A separate compositional route consumes STRUCTURAL_FACTS and previously unadmitted
+paragraph ranges, including independently supported repetition. It uses AIR core Jump/Branch/Invoke/Return and existing statement handlers;
 no new AIR capability, CFG heuristic or dependency-consumer rule is required.
 
 ## Authority and premises
@@ -18,8 +18,10 @@ contract is pinned in sources.lock.json; W6 does not change its wire version.
 
 Full qualification authorizes whole-profile specialization; it does not authorize
 the existence of independently established entry or completion facts. Missing
-loop/count/varying semantics cannot become ONCE: the new route requires those
-three fields absent. Existing supported repetition stays in the legacy route.
+loop/count/varying semantics cannot become ONCE. The compositional route admits
+only known validated loop predicates, POSITIVE_INTEGER/INTEGER_ITEM counts and
+executable single-level VARYING. Already admitted legacy repetition stays in its
+route; both routes reuse the same repetition wrapper.
 
 ## Control model
 
@@ -61,7 +63,8 @@ while leaving return unavailable. Ordinary source occurrences remain separately
 published when legacy isolation did not remove them; their presence is not an
 entry edge or reachability claim.
 
-Assembly expands nested activations using their complete context. Re-entering a
+Assembly expands nested activations using their complete context and an explicit
+task deque, without recursive Java calls. Re-entering a
 callsite already in that context produces the existing bounded partial terminator
 with `RECURSIVE_PERFORM_NOT_SUPPORTED`; it does not create a resume bypass, grow an
 unbounded stack or claim exact recursive execution. The finite prefix preserves
@@ -95,3 +98,53 @@ ordinary and activated occurrences and assert contextual reachability.
 No inline/SECTION/EXIT PERFORM/EXIT PARAGRAPH execution, multilevel VARYING,
 recursive-return support, broad control/memory fallback or source rediscovery is
 introduced. General ordinary/IF/EVALUATE topology reconciliation remains W7.
+
+## W6-R1 review corrections
+
+Occurrence operand coverage includes activation identity in CICS PROGRAM target
+and options, CICS FILE, and predicate reads as well as CALL/MOVE. Written origins
+and COBOL storage remain shared; no coverage item is discarded or validator rule
+relaxed. Source-produced nominal and regional CICS fixtures exercise actual
+operand materialization, ordinary copies, and one/two activations.
+
+PerformRepetitionAssembler is the existing SP2.3/2.4/2.5 topology extracted from
+the legacy assembler. Positive TIMES enters the body at least once; INTEGER_ITEM
+has an entry zero/body branch and reads its count only there. Exhaustion is an
+unknown decision, independent of the exact positive iteration count. UNTIL BEFORE
+enters the decision, AFTER enters the body. Single-level VARYING retains localized
+initialization/increment and AFTER's exit bypasses the increment. Body completion
+feeds this wrapper; its exit feeds the activation's explicit resume, including a
+parent-supplied completion frontier. No numeric evaluation, unrolling, multilevel
+support or new INITIALIZE effects are implied by body composition.
+
+PerformActivationDemand is a scheduling upper bound, not an executable control
+analysis or source membership inference. For each context it follows explicit SP
+successors, arms, GO TO entries and that context's published completion routing
+from the declared entry. A call's normal successor is a may-return scheduling
+bound; it does not become an AIR bypass. Every ordinary statement remains in the
+source inventory. An undemanded PERFORM is inventoried with the localized
+ACTIVATION_NOT_MATERIALIZED_IN_ENTRY_PROJECTION gap and no invented control.
+This describes the declared known-entry projection, not universal source deadness
+or absence of unmodeled alternate entries.
+
+When FILE uses can introduce declarative/SORT callback routes outside that
+statement graph, scheduling remains eager. This is an explicit optimization limit,
+not an expansion of control or a gap-code semantic branch. Existing FILE semantics
+and negative controls remain unchanged. Demand conservatively retains some
+activations after calls which ultimately never return; precision of scheduling is
+not needed for execution correctness.
+
+The task deque removes JVM activation-stack depth from assembly. Source closure
+and demand use visited sets; recursive PERFORM still ends at the explicit local
+gap. Cold shared DAGs no longer expand dead invocation trees in the supported
+scheduling graph. Live shared DAGs retain output-sensitive static context expansion
+and can reach operational resource limits. No universal polynomial bound, hidden
+cutoff or exact-result claim after truncation is made. R1 evidence measures staged
+cold/live DAGs and deeper chains under external time/heap budgets.
+
+CompositionalPerformRevisionSuite permanently checks CICS identity/correlation,
+repetition zero/body guarantees in both nesting directions, AIR validation and
+round-trip, inventory permutation, cold depth8 DAG inventory and live depth64
+chain. Existing VARYING tests now distinguish unavailable repetition operands from
+independent body/isolation gaps, while retaining localized must-write and recursion
+refusal assertions. All frozen W4 sources/oracles remain unchanged.

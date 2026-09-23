@@ -65,7 +65,7 @@ final class CicsInvokeHandler {
             }
             target=new Interactions.ComputedTarget("program","cics.program",new Expressions.Read(new Operand.Header(readId,Operand.Role.CALL_TARGET,targetOrigin),place),policy,targetOrigin);
             links.add(new LoweringResult.OperandLink(reference.id(),readId,targetOrigin));links.add(new LoweringResult.OperandLink(reference.id(),placeId,targetOrigin));
-            items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),targetOrigin,List.of(readId,placeId)));
+            items.add(ScalarEvidence.item(unit.publication(),"operand",ids.sourceKey(reference.id().handle()),targetOrigin,List.of(readId,placeId)));
         } else {
             var missing=new UncertaintyId(unit.publication(),ids.id("uncertainty","cics-name-area",operation.localId(),key));
             operationUncertainties.add(missing);
@@ -80,7 +80,7 @@ final class CicsInvokeHandler {
                 var optionOrigin=origins.source("cics-option",reference.id().handle(),reference.provenance());
                 effectOperands.add(RegionalPlaces.place(reference,data.index().get(selected.orElseThrow()),new Operand.Header(placeId,reference.role()==SpInput.OperandRole.WRITE?Operand.Role.VALUE_WRITE:Operand.Role.VALUE_READ,optionOrigin),ids));
                 links.add(new LoweringResult.OperandLink(reference.id(),placeId,optionOrigin));
-                items.add(ScalarEvidence.item(unit.publication(),"operand",reference.id().handle(),optionOrigin,List.of(placeId)));
+                items.add(ScalarEvidence.item(unit.publication(),"operand",ids.sourceKey(reference.id().handle()),optionOrigin,List.of(placeId)));
             }
         });
         var signature=new Interactions.ExternalSignature(new Interactions.Signature(new Interactions.ParameterInventory(List.of(),new Interactions.UnknownRemainder(reason)),new Interactions.ResultInventory(List.of(),new Interactions.UnknownRemainder(reason)),origin));

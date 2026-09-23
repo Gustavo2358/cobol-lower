@@ -93,7 +93,7 @@ final class CicsFileInvokeHandler {
             var place=RegionalPlaces.place(ref,data.index().get(ref.binding().selected().orElseThrow()),header(key+"-place",Operand.Role.VALUE_READ,source),ids);
             var read=new Expressions.Read(header(key+"-read",role,source),place);link(ref,List.of(read.header().id(),place.header().id()),source);return read;
         }
-        void finish(){covered.forEach((ref,values)->items.add(ScalarEvidence.item(op.unit().publication(),"operand",ref.id().handle(),coverageOrigins.get(ref),values)));}
+        void finish(){covered.forEach((ref,values)->items.add(ScalarEvidence.item(op.unit().publication(),"operand",ids.sourceKey(ref.id().handle()),coverageOrigins.get(ref),values)));}
         Memory.ViewBinding view(DataReference ref){if(ref.regionalAccess().isEmpty()||ref.binding().selected().isEmpty())return null;var base=data.views().get(ref.binding().selected().orElseThrow());return base==null?null:RegionalPlaces.view(base,ref);}
         boolean hasNamePlace(DataReference ref,int width){
             var physical=view(ref);

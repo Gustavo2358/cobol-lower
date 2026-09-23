@@ -44,7 +44,7 @@ final class IfPredicate {
             var read = new Expressions.Read(new Operand.Header(readId, Operand.Role.VALUE_READ, source), place);
             dependencies.add(read);
             links.add(new LoweringResult.OperandLink(known, readId, source)); links.add(new LoweringResult.OperandLink(known, placeId, placeOrigin));
-            items.add(ScalarEvidence.item(operation.unit().publication(), "operand", known.handle(), source, List.of(readId, placeId)));
+            items.add(ScalarEvidence.item(operation.unit().publication(), "operand", ids.sourceKey(known.handle()), source, List.of(readId, placeId)));
         }
         return new Expressions.Unknown(new Operand.Header(operand, Operand.Role.PREDICATE, origin),
             Types.known(Types.Builtin.BOOL), dependencies, Scopes.NoMemory.INSTANCE, reason);

@@ -31,7 +31,15 @@ public final class PerformVaryingIntegrationSuite {
                     "initialization and update per callsite "+name+" actual="+effects.size());
                 for(var e:effects)check(e.envelope().memory().knownWrites().size()==1 && e.envelope().memory().knownWrites().equals(e.envelope().memory().mustOverwrite())
                     && e.envelope().memory().otherWrites()==Scopes.NoMemory.INSTANCE && e.envelope().control().remainder()==Scopes.NoControl.INSTANCE,"localized must-write with closed continuation "+name);
-            } else check(effects.isEmpty(),"partial range not specialized "+name);
+            } else if(Set.of("incoming","escape","cycle","recursive","unknown-body").contains(name)) {
+                check(!effects.isEmpty(),"known repetition composes independently of body/isolation qualification "+name);
+                for(var e:effects)check(e.envelope().memory().knownWrites().size()==1
+                    && e.envelope().memory().knownWrites().equals(e.envelope().memory().mustOverwrite())
+                    && e.envelope().memory().otherWrites()==Scopes.NoMemory.INSTANCE,
+                    "partial body does not broaden implicit VARYING writes "+name);
+                if(name.equals("recursive"))check(result.publication().orElseThrow().uncertainties().stream()
+                    .anyMatch(u->u.code().contains("RECURSIVE_PERFORM_NOT_SUPPORTED")),"recursive return remains unsupported");
+            } else check(effects.isEmpty(),"unavailable repetition/entry not specialized "+name);
         }
         var input=PerformFamilyIntegrationSuite.inputFixture("varying-after");
         var p=(SpInput.ProcedurePerformFact)input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).findFirst().orElseThrow();

@@ -19,6 +19,7 @@ public final class FastAdapterSuite {
         EvidencePreservingEntrySuite.main(new String[0]);
         PartialStructuralFactsSuite.main(new String[0]);
         CompositionalPerformSuite.main(new String[0]);
+        CompositionalPerformRevisionSuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]); CicsFileControlSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {
