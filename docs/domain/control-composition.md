@@ -37,3 +37,7 @@ Relation translation/indexing is linear in the statement/control inventory; Bran
 No predicate truth evaluation, inline/SECTION/recursive PERFORM execution, special EXIT semantics, ALTER retargeting or INITIALIZE transformation. Live shared activation DAGs may still expand by context. **Any published FILE operation use** currently selects eager activation scheduling, not just proven callbacks. This is an operational scheduling limit, not an executable edge.
 
 Ordinary inventory is closed under published successors/arms/transfers before removing legacy specialized body copies. A positive ordinary incoming relation therefore keeps its destination occurrence. This is reference closure, not entry reachability: dead source regions stay dead, and legacy activation wrappers/return pairing are unchanged.
+
+## SP2.37 input validation (W7-R1)
+
+The decoder applies its required-record/list shape validation to every ordinary relation, including nested provenance, before materialization. A null element or malformed required field returns `Rejected(INPUT_ERROR)`; it is not an unexpected exception. The core independently rejects an ordinary relation whose source equals its destination, matching the producer's State invariant even when no intrinsic successor exists. This is `INVALID_INPUT` for both decoded and direct in-memory facts, before any AIR publication. The rule is specific to ordinary relations and does not prohibit legitimate GO TO/PERFORM cycles. CLI rejection neither creates nor overwrites output.

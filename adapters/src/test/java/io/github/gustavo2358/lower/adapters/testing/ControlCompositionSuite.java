@@ -35,6 +35,7 @@ public final class ControlCompositionSuite {
             .forEach(s->map.put(s.label().localId(),CompositionalPerformSuite.successors(s.terminator()).stream().map(LabelId::localId).toList()));return map;
     }
     public static void main(String[] args) throws Exception {
+        OrdinaryContinuationBoundarySuite.main(new String[0]);
         var names=List.of("terminal-if-no-else","terminal-evaluate-no-other","terminal-if-else-continue","terminal-evaluate-other-continue",
             "if-all-goto","if-all-transfer-no-join","evaluate-mixed-exits","evaluate-all-transfer-no-join","nested-if-evaluate",
             "goto-adjacency","goto-escape-performed","ordinary-contextual","goback-no-join","special-exit-paragraph",

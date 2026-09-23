@@ -24,6 +24,8 @@ final class PartialProgramAdmission {
                     CallAdmission.continuation(destination,source.header(),c);
                     c.require(destination.availability()==ContinuationAvailability.KNOWN && destination.statement().isPresent()
                         && destination.provenance().exact(),Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"positive ordinary relation required");
+                    c.require(!destination.statement().equals(Optional.of(relation.getKey())), Rule.STRUCTURE,
+                        relation.getKey().handle(), destination.provenance(), "ordinary continuation cannot target its source");
                     var intrinsic=next(source);
                     c.require(intrinsic==null || intrinsic.statement().isEmpty() || intrinsic.statement().equals(destination.statement()),
                         Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"ordinary and intrinsic successors agree when both known");

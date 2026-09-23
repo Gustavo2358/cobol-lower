@@ -92,9 +92,9 @@ public final class SpJsonDecoder {
             if(ordinaryContract) {
                 if(!node.path("ordinaryContinuations").isArray())throw new PhysicalShape("$/ordinaryContinuations");
                 ordinaryRelations=java.util.Arrays.asList(mapper.treeToValue(node.path("ordinaryContinuations"),OrdinaryContinuationDocument[].class));
+                requirePhysical(ordinaryRelations,"$/ordinaryContinuations",meter);
                 var ordinarySources=new java.util.HashSet<String>();
-                for(var relation:ordinaryRelations)if(relation.statement()==null || relation.destination()==null
-                        || relation.provenance()==null || !ordinarySources.add(relation.statement()))
+                for(var relation:ordinaryRelations)if(!ordinarySources.add(relation.statement()))
                     throw new PhysicalShape("$/ordinaryContinuations requires distinct sources and complete relations");
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("ordinaryContinuations");
                 boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
