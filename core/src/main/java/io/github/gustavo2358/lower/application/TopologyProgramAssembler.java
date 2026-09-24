@@ -42,7 +42,7 @@ final class TopologyProgramAssembler {
         return new TopologyProgramAssembler(plan,data,unit,origins,links,operands,items,uncertainties,files).assemble(ids);
     }
     private PartialProgramAssembler.Assembly assemble(LocalIds ids) {
-        var entry=input.entryInventory().entries().getFirst().start().statement().orElseThrow();
+        var entry=facts.get(topology.primaryEntry().orElseThrow().reference()).header().id();
         var entryLabel=label(entry.handle(),ids);work.add(new Context(ids,null,null,entry.handle()));
         while(!work.isEmpty()) {
             var context=work.removeFirst();

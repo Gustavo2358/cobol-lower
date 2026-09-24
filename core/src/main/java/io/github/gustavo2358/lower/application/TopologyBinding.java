@@ -24,6 +24,10 @@ final class TopologyBinding {
     Optional<Outcome> outcome(String statement,String role){return outcomes(statement).stream().filter(e->e.role().equals(role)).findFirst();}
     Binding binding(String id){return Objects.requireNonNull(bindings.get(id));}
     Proof proof(String id){return Objects.requireNonNull(proofs.get(id));}
+    Optional<Resolved> primaryEntry() {
+        var roots=regions.values().stream().filter(r->r.kind()==RegionKind.PROCEDURE&&r.parent().isEmpty()).toList();
+        return roots.size()==1?Optional.of(resolve(roots.getFirst().entry(),null)):Optional.empty();
+    }
     Resolved entry(Binding active){return resolve(regions.get(active.region()).entry(),active);}
     Resolved resolve(Target target,Binding active) {
         var premises=new LinkedHashSet<String>();var seen=new HashSet<String>();
@@ -81,6 +85,12 @@ final class TopologyBinding {
         var supplied=new HashSet<String>();topology.occurrences().forEach(x->supplied.add(x.statement()));
         c.require(published.equals(supplied),Admission.Rule.STRUCTURE,"controlTopology",null,"topology inventory equals source occurrence inventory");
         var binder=new TopologyBinding(topology);
+        var primary=binder.primaryEntry();
+        c.require(input.statements().isEmpty()||primary.isPresent(),Admission.Rule.STRUCTURE,"controlTopology",null,"one topology procedure root required");
+        if(primary.isPresent()&&primary.get().kind()==TargetKind.OCCURRENCE)
+            for(var entry:input.entryInventory().entries())entry.start().statement().ifPresent(start->
+                c.require(start.handle().equals(primary.get().reference()),Admission.Rule.STRUCTURE,"entry",null,
+                    "entry metadata agrees with authoritative topology root"));
         for(var p:topology.proofs()){c.touch();c.provenance(p.provenance());}
         for(var e:topology.outcomes()){c.touch();binder.resolve(e.target(),null);}
         for(var b:topology.bindings()){c.touch();binder.resolve(b.resume(),null);binder.entry(b);}

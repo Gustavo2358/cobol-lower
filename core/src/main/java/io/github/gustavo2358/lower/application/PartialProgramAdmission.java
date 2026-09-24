@@ -107,6 +107,12 @@ final class PartialProgramAdmission {
             c.require(input.entryInventory().entries().size()==1 && input.entryInventory().entries().getFirst().start().statement().isPresent(),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
+            if(input.controlTopology().isPresent()) {
+                var start=new TopologyBinding(input.controlTopology().orElseThrow()).primaryEntry();
+                c.require(start.isPresent()&&start.get().kind()==io.github.gustavo2358.lower.domain.ControlTopology.TargetKind.OCCURRENCE,
+                    Rule.ENTRY_START,"controlTopology",null,"usable authoritative topology entry required");
+                if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
+            }
             var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())||c.regionalStorage.logical().byData.containsKey(d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();

@@ -13,7 +13,9 @@ The producer's branch already contained 2.38 before this wave. Historical State
 constructors and typed ports remain available and do not acquire topology.
 New and legacy assemblers are selected once. Legacy control fields remain useful
 for compatibility and operation payloads, never as an alternative authority for
-completion in the new assembler.
+completion in the new assembler. The initial executable statement is resolved from
+the root PROCEDURE region; entryInventory retains signature/identity metadata and
+its start must agree with that root. A mismatch is rejected before AIR.
 
 ## Closed algebra
 

@@ -74,7 +74,17 @@ public final class ControlTopologyWireSuite {
         need(frontier.header().coverage()==Evidence.CoverageStatus.UNSUPPORTED,"frontier never certifies modeled source control");
         need(partial.publication().orElseThrow().coverage().inventory()==Evidence.InventoryStatus.PARTIAL,"partial source coverage remains explicit");
         need(partial.publication().orElseThrow().uncertainties().stream().anyMatch(u->u.code().equals("CONTROL_TOPOLOGY_REGION_UNAVAILABLE")),"source knowledge bound remains explained");
-        System.out.println("CONTROL_TOPOLOGY_WIRE_TESTS=26");
+        ObjectNode entryMismatch=(ObjectNode)JSON.readTree(raw);
+        var root=java.util.stream.StreamSupport.stream(entryMismatch.path("controlTopology").withArray("regions").spliterator(),false)
+            .filter(r->r.path("kind").asText().equals("PROCEDURE")&&r.path("parent").asText().isEmpty()).findFirst().orElseThrow();
+        var oldEntry=root.path("entry").path("reference").asText();
+        var other=topology.occurrences().stream().map(ControlTopology.Occurrence::statement).filter(id->!id.equals(oldEntry)).findFirst().orElseThrow();
+        ((ObjectNode)root.path("entry")).put("reference",other);
+        var mixed=((SpJsonDecoder.Decoded)decoder.decode(JSON.writeValueAsBytes(entryMismatch))).input();
+        var mixedResult=new CobolLowerer().lower(mixed,CobolLower.OPTIONS);
+        need(mixedResult.status()==LoweringResult.Status.INVALID_INPUT&&mixedResult.publication().isEmpty(),
+            "entry metadata cannot override topology authority");
+        System.out.println("CONTROL_TOPOLOGY_WIRE_TESTS=27");
     }
     private static void reverse(ArrayNode array){var values=new ArrayList<JsonNode>();array.forEach(values::add);Collections.reverse(values);array.removeAll();values.forEach(array::add);}
 }
