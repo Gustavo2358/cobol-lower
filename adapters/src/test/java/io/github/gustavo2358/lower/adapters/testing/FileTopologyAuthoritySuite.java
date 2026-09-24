@@ -73,6 +73,41 @@ public final class FileTopologyAuthoritySuite {
             ObjectNode wire=source.deepCopy();wire.set("controlTopology",JSON.valueToTree(mutated));
             rejected(decode(wire),"missing FILE outcome rejected from wire before AIR: "+removed.role());
         }
+        rejectsDuplicateRoles(source,topology);
         System.out.println("FILE_TOPOLOGY_AUTHORITY_CHECKS="+checks);
+    }
+
+    private static void rejectsDuplicateRoles(JsonNode source,ControlTopology topology)throws Exception {
+        need(topology.outcomes().stream().map(ControlTopology.Outcome::role).distinct().count()<topology.outcomes().size(),
+            "same role is valid on distinct source occurrences");
+        var successHandler=topology.outcomes().stream().filter(o->o.role().contains("/SUCCESS/"))
+            .findFirst().orElseThrow().target();
+        for(var original:topology.outcomes())for(var identity:List.of("outcome:000-role-shadow","outcome:zzz-role-shadow"))
+            for(boolean conflict:List.of(false,true))for(boolean reverse:List.of(false,true)) {
+                // Includes the exact INVALID_KEY -> NOT_INVALID_KEY counterexample.
+                var other=!successHandler.equals(original.target())?successHandler:topology.outcomes().stream().map(ControlTopology.Outcome::target)
+                    .filter(t->!t.equals(original.target())).findFirst().orElseThrow();
+                var target=conflict?other:original.target();
+                var duplicate=new ControlTopology.Outcome(identity,original.statement(),original.kind(),original.role(),target,original.binding(),original.proofs());
+                var outcomes=new ArrayList<>(topology.outcomes());outcomes.add(duplicate);
+                var occurrences=new ArrayList<>(topology.occurrences().stream().map(o->{
+                    var ids=new ArrayList<>(o.outcomes());if(o.statement().equals(original.statement()))ids.add(identity);
+                    if(reverse)Collections.reverse(ids);
+                    return new ControlTopology.Occurrence(o.statement(),o.region(),ids,o.proofs());}).toList());
+                if(reverse){Collections.reverse(outcomes);Collections.reverse(occurrences);}
+                String label=original.role()+" / "+identity+" / conflict="+conflict+" / reverse="+reverse;
+                boolean rejected=false;
+                try {new ControlTopology(topology.authority(),occurrences,topology.regions(),topology.boundaries(),outcomes,topology.bindings(),topology.proofs());}
+                catch(IllegalArgumentException failure) {
+                    rejected=true;need(failure.getMessage().contains("duplicate outcome role"),"specific typed role diagnostic: "+failure);
+                }
+                need(rejected,"ambiguous role rejected in memory before AIR: "+label);
+                ObjectNode wire=source.deepCopy();var tree=(ObjectNode)wire.path("controlTopology");
+                tree.set("outcomes",JSON.valueToTree(outcomes));tree.set("occurrences",JSON.valueToTree(occurrences));
+                var result=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(wire));
+                need(result instanceof SpJsonDecoder.Rejected,"ambiguous role rejected from wire before AIR: "+label);
+                need(((SpJsonDecoder.Rejected)result).diagnostic().code()==SpJsonDecoder.Code.INPUT_ERROR,
+                    "wire contract rejects malformed topology as input error: "+result);
+            }
     }
 }
