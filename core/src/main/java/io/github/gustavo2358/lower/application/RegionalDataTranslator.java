@@ -33,7 +33,7 @@ final class RegionalDataTranslator {
     }
     static boolean textual(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         var view=source.byData().get(data);
-        return view!=null&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
+        return view!=null&&(source.facts()==null||source.facts().declarations.contains(view.node().handle()))&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
             &&source.bases().get(view.base()).extent().value().isPresent();
     }
     static boolean encodableLiteral(RegionalStorageAdmission.Index source,SpInput.MoveFact move) {
@@ -58,7 +58,8 @@ final class RegionalDataTranslator {
             { exactByNode.put(v.node(),v);source.nodes().get(v.node()).data().ifPresent(sourceText::add); }));
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
-        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->factDependencies==null||source.byData().get(d.id())==null||factDependencies.materializable(source.byData().get(d.id()).node().handle()))
+        if(factDependencies!=null)sourceText.removeIf(d->source.byData().containsKey(d)&&!factDependencies.declarations.contains(source.byData().get(d).node().handle()));
+        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->factDependencies==null||source.byData().get(d.id())==null||(factDependencies.materializable(source.byData().get(d.id()).node().handle())&&factDependencies.declarations.contains(source.byData().get(d.id()).node().handle())))
             .filter(d->!textual(source,d.id())
             &&(source.byData().get(d.id())==null||!exactByNode.containsKey(source.byData().get(d.id()).node()))
             &&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);

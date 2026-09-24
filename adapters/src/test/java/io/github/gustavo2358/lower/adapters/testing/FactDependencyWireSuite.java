@@ -36,7 +36,7 @@ public final class FactDependencyWireSuite {
         var old=tree.deepCopy();old.remove("factDependencies");old.put("contractVersion","2.39.0");
         var legacy=decode(old);need(legacy.factDependencies().isEmpty(),"old wire remains old interpretation");
         need(lower(legacy).status()==LoweringResult.Status.BLOCKED_LOWERING,"historical storage blocker is not retroactively reinterpreted");
-        for(var mutation:List.of("missing","null","old-version","missing-proof","missing-bound","missing-alias-dependency","unknown-kind","missing-input-availability","extra")) {
+        for(var mutation:List.of("missing","null","old-version","missing-proof","missing-bound","missing-alias-dependency","unknown-kind","missing-input-availability","missing-proof-subject","wrong-proof-subject","extra")) {
             var bad=tree.deepCopy();var f=(ObjectNode)bad.path("factDependencies");
             switch(mutation) {
                 case "missing" -> bad.remove("factDependencies");
@@ -47,6 +47,8 @@ public final class FactDependencyWireSuite {
                 case "missing-alias-dependency" -> {for(var fact:f.path("facts"))if(fact.path("kind").asText().equals("LOCAL_CELL")){var deps=(ArrayNode)fact.path("dependencies");for(int i=deps.size()-1;i>=0;i--)if(deps.get(i).asText().startsWith("ALIAS_CLOSURE/"))deps.remove(i);break;}}
                 case "unknown-kind" -> ((ObjectNode)f.path("proofs").get(0)).put("kind","PROBABLY_INDEPENDENT");
                 case "missing-input-availability" -> ((ObjectNode)f.path("inputs").get(0)).remove("available");
+                case "missing-proof-subject" -> ((ObjectNode)f.path("proofs").get(0)).remove("subject");
+                case "wrong-proof-subject" -> {for(var proof:f.path("proofs"))if(proof.path("kind").asText().equals("LOGICAL_TYPE")){((ObjectNode)proof).put("subject",proof.path("scope").asText());break;}}
                 case "extra" -> f.put("inferFromNames",true);
                 default -> throw new AssertionError(mutation);
             }
@@ -63,6 +65,26 @@ public final class FactDependencyWireSuite {
             var unknown=lowered.publication().orElseThrow().units().getFirst().objects().stream()
                 .filter(o->o.displayName().orElse("").equals("TARGET")).findFirst().orElseThrow();
             need(unknown.storage() instanceof Memory.UnknownBinding,"input/alias uncertainty forbids exact target cell: "+name);
+        }
+        for(var name:List.of("header-copy","child-header-copy")) {
+            var headerTree=fixture(name);var headerInput=decode(headerTree);var header=headerInput.factDependencies().orElseThrow();
+            var declaration=headerInput.dataDeclarations().stream().filter(d->d.canonicalName().equals("TARGET")).findFirst().orElseThrow();
+            var node=headerInput.storage().orElseThrow().nodes().stream().filter(n->n.data().equals(Optional.of(declaration.id()))).findFirst().orElseThrow().id().handle();
+            need(header.facts().stream().filter(f->f.subject().equals(node)&&(f.kind()==FactDependencies.FactKind.LOGICAL_TEXT||f.kind()==FactDependencies.FactKind.LOCAL_CELL)).noneMatch(header::available),"unknown declaration clauses cannot prove logical text/cell: "+name);
+            var lowered=lower(headerInput);
+            need(lowered.publication().isPresent(),"unknown header remains representable: "+name+" "+lowered.status());
+            need(lowered.validation().orElseThrow().isStructurallyValid(),"header gap AIR valid: "+name);
+            need(lowered.data().stream().noneMatch(d->d.source().equals(declaration.id())),"legacy data metadata cannot recreate unavailable declaration: "+name);
+            var victimInput=header.inputs().stream().filter(i->i.declarationScopes().contains(node)).findFirst().orElseThrow();
+            var bad=headerTree.deepCopy();
+            for(var i:bad.path("factDependencies").path("inputs"))if(i.path("id").asText().equals(victimInput.id()))((ObjectNode)i).set("declarationScopes",JSON.createArrayNode());
+            need(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(bad)) instanceof SpJsonDecoder.Rejected,"removing input declaration relation rejects before AIR: "+name);
+            var changed=header.inputs().stream().map(i->i.equals(victimInput)?new FactDependencies.Input(i.id(),i.kind(),i.available(),i.contextScopes(),i.closureScopes(),List.of(),i.provenance()):i).toList();
+            boolean typedRejected=false;try{new FactDependencies(header.authority(),changed,header.proofs(),header.regions(),header.facts(),header.bindings());}catch(IllegalArgumentException e){typedRejected=true;}
+            need(typedRejected,"in-memory input relation mutation rejects: "+name);
+            bad=headerTree.deepCopy();var proofs=(ArrayNode)bad.path("factDependencies").path("proofs");
+            for(int i=proofs.size()-1;i>=0;i--)if(proofs.get(i).path("kind").asText().equals("DECLARATION_CONTEXT")&&proofs.get(i).path("subject").asText().equals(node))proofs.remove(i);
+            need(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(bad)) instanceof SpJsonDecoder.Rejected,"declaration context removal rejects before AIR: "+name);
         }
         var stripped=decode(fixture("removed-diagnostic"));
         need(stripped.factDependencies().orElseThrow().facts().stream().filter(f->f.kind()==FactDependencies.FactKind.LOCAL_CELL)

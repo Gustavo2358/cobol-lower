@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "5fb63f927d6d9b91b0599e9da36ddb9205af2818",
+      "commit": "c3851795986380a7779a7376a08f4d1fb05c6344",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "2.40.0",
@@ -271,7 +271,7 @@
     {
       "id": "SRC-HARNESS",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "5fb63f927d6d9b91b0599e9da36ddb9205af2818",
+      "commit": "c3851795986380a7779a7376a08f4d1fb05c6344",
       "role": "harness_inspiration_not_lowering_authority",
       "paths": [
         "AGENTS.md",

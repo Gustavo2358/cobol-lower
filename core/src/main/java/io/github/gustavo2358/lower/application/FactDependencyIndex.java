@@ -10,10 +10,12 @@ final class FactDependencyIndex {
     final Map<String,FactDependencies.Binding> bindings;
     final Map<String,FactDependencies.Fact> cells;
     final Set<String> allocated;
+    final Set<String> declarations;
     final Map<String,FactDependencies.Fact> allocations;
     final Map<String,FactDependencies.Proof> proofs;
     FactDependencyIndex(FactDependencies graph) {
         this.graph=graph;known=graph.proofAvailability();
+        var ds=new HashSet<String>();for(var p:graph.proofs())if(p.kind()==FactDependencies.ProofKind.DECLARATION_CONTEXT&&Boolean.TRUE.equals(known.get(p.id())))ds.add(p.subject());declarations=Set.copyOf(ds);
         var bs=new HashMap<String,FactDependencies.Binding>();graph.bindings().forEach(b->bs.put(b.node(),b));bindings=Map.copyOf(bs);
         var cs=new HashMap<String,FactDependencies.Fact>();var as=new HashSet<String>();var af=new HashMap<String,FactDependencies.Fact>();
         for(var f:graph.facts())if(available(f.dependencies())) {
