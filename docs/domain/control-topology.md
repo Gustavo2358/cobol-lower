@@ -124,3 +124,11 @@ input under the existing single-outcome role contract; it does not reinterpret
 historical SP versions or introduce R2 fact locality. Permanent FILE authority
 tests cover FILE and non-FILE duplicate roles, equal/conflicting targets,
 first/last identities and reversed inventory, with typed/wire rejection parity.
+
+### Reached interaction versus outgoing frontier (R5)
+
+An all-UNKNOWN_LOCAL XCTL retains its independently admitted typed payload and the
+same empty open control frontier. Copies of that context-independent sink share
+one unit/source occurrence label; source transitions are unchanged modulo this
+identity quotient. No continuation or handler is inferred. See
+[cics-program-control](cics-program-control.md#typed-occurrence-at-an-unavailable-control-frontier-r5).

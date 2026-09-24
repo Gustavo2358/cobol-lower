@@ -46,3 +46,33 @@ gaps remain independent. Validation does not parse COBOL or CICS payload text.
 The public suite lowers a real XCTL/NOHANDLE SP, mutates only conditions, verifies
 rejection through decoder/lower and CLI, and checks the previous output is intact.
 It also checks the independent LINK unavailable-return fallback under DEFAULT.
+
+## Typed occurrence at an unavailable control frontier (R5)
+
+For SP2.39+ the authoritative ControlTopology determines outgoing control. An
+admitted typed XCTL with only UNKNOWN_LOCAL outcomes still denotes an interaction
+at its own site. The lowerer preserves the existing `execute` Invoke target,
+operand identity, provenance, partial signature and independently supported effects.
+It carries the original empty open LabelsControl frontier, no known successor,
+and control precision UNAVAILABLE with CONTROL_TOPOLOGY_REGION_UNAVAILABLE.
+SP handler/signature gaps remain coverage evidence; they do not erase the target.
+This rule supersedes the historical blanket physical-target and all-memory claims
+above: nominal targets follow the current evidence-preserving contracts, and gaps
+never justify global effects or control.
+
+An all-UNKNOWN_LOCAL XCTL has no modeled return, result or local continuation to
+bind to a PERFORM activation. Its scheduled context copies therefore reference one
+operation/label for the same unit and source StatementId. AIR 01 §2 permits a single
+operation reached through multiple label references. This preserves the union of
+states already reaching that source occurrence without opening a path past it.
+Distinct source IDs and units never share, even when target spellings agree. Any
+known continuation keeps the existing contextual representation. CALL, LINK,
+NOHANDLE/RESP and other frontier families retain their prior semantics.
+
+The implementation indexes eligible source identities once, then uses constant-time
+label and emission lookups. It adds no graph walk, source scan or physical-profile
+requirement. No SP/AIR contract, candidate provider or handler semantics changes.
+`TypedOccurrenceControlSuite` checks the typed payload, identity, 1/2/3 multiplicity,
+independent uncertainty, target provenance, strict AIR codec, repeated targets and
+unit separation. External R5 E2E evidence covers BEFORE value/overwrite/unreachable
+safety, unchanged source control, frozen historical oracles and mutations.

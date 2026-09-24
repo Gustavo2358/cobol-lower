@@ -29,12 +29,21 @@ final class TopologyProgramAssembler {
     private final Map<OperationId,Terminator> explained=new HashMap<>();
     private final Map<String,OriginId> proofOrigins=new HashMap<>();
     private final Deque<Context> work=new ArrayDeque<>();
+    private final Set<String> occurrenceFrontiers=new HashSet<>();
+    private final Set<String> emittedOccurrenceFrontiers=new HashSet<>();
+    private LocalIds occurrenceIds;
     private TopologyProgramAssembler(PartialProgramAdmission.Plan plan,ScalarDataTranslator.Result data,UnitId unit,
             SourceOrigins origins,List<LoweringResult.StatementLink> links,List<LoweringResult.OperandLink> operands,
             List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         this.plan=plan;this.input=plan.admission().input().orElseThrow();this.topology=new TopologyBinding(input.controlTopology().orElseThrow());
         this.data=data;this.unit=unit;this.origins=origins;this.links=links;this.operands=operands;this.items=items;this.uncertainties=uncertainties;this.files=files;
         input.statements().forEach(s->facts.put(s.header().id().handle(),s));
+        // A frontier with no licensed continuation cannot depend on a PERFORM
+        // resume context. Reuse its source occurrence, never its target spelling.
+        for(var fact:input.statements())if(fact instanceof SpInput.CicsFact c
+                &&c.command()==SpInput.CicsCommand.XCTL&&plan.precise().contains(c.header().id())
+                &&topology.outcomes(c.header().id().handle()).stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL))
+            occurrenceFrontiers.add(c.header().id().handle());
     }
     static PartialProgramAssembler.Assembly assemble(PartialProgramAdmission.Plan plan,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.StatementLink> links,List<LoweringResult.OperandLink> operands,
@@ -42,6 +51,7 @@ final class TopologyProgramAssembler {
         return new TopologyProgramAssembler(plan,data,unit,origins,links,operands,items,uncertainties,files).assemble(ids);
     }
     private PartialProgramAssembler.Assembly assemble(LocalIds ids) {
+        occurrenceIds=ids;
         var entry=facts.get(topology.primaryEntry().orElseThrow().reference()).header().id();
         var entryLabel=label(entry.handle(),ids);work.add(new Context(ids,null,null,entry.handle()));
         while(!work.isEmpty()) {
@@ -59,7 +69,9 @@ final class TopologyProgramAssembler {
         }
         return new PartialProgramAssembler.Assembly(files.complete(sequences),entryLabel,origin);
     }
-    private LabelId label(String id,LocalIds ids){return PartialProgramAssembler.label(facts.get(id).header().id(),unit,ids);}
+    private LabelId label(String id,LocalIds ids){
+        return PartialProgramAssembler.label(facts.get(id).header().id(),unit,occurrenceFrontiers.contains(id)?occurrenceIds:ids);
+    }
     private OriginId evidence(String key,List<String> proofs,LocalIds ids) {
         var sources=new LinkedHashSet<OriginId>();
         var todo=new ArrayDeque<String>(proofs);var seen=new HashSet<String>();
@@ -89,7 +101,10 @@ final class TopologyProgramAssembler {
     private LabelId outcome(String role,Context context,SpInput.StatementFact fact) {
         return destination(topology.outcome(fact.header().id().handle(),role).orElseThrow().target(),context,fact,role);
     }
-    private void append(SpInput.StatementFact fact,Context context) {
+    private void append(SpInput.StatementFact fact,Context suppliedContext) {
+        boolean shared=occurrenceFrontiers.contains(fact.header().id().handle());
+        if(shared&&!emittedOccurrenceFrontiers.add(fact.header().id().handle()))return;
+        var context=shared?new Context(occurrenceIds,null,null,fact.header().id().handle()):suppliedContext;
         var ids=context.ids();var label=label(fact.header().id().handle(),ids);files.sourceEntry(label);
         var published=topology.outcomes(fact.header().id().handle());
         var invoke=published.stream().filter(o->o.kind()==OutcomeKind.LOCAL_INVOKE).findFirst();
@@ -160,9 +175,15 @@ final class TopologyProgramAssembler {
      * open set enumerates no licensed target in this model; it is neither a
      * return/diverge claim nor an upper-bound assertion about the entire source.
      * AIR 00.5, 05.6 and 06.1/3.2 require source incompleteness to remain explicit. */
-    private Operations.Opaque frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
-        var opaque=PartialProgramAssembler.opaque(fact,null,data,unit,ids,origins,uncertainties,operands,true,code);
-        var h=opaque.header();var precision=h.precision();var scope=new Scopes.EntityScope(List.of(h.id()));
+    private Terminator frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
+        // Payload admission is independent from outgoing-control completeness.
+        // The existing CICS translator owns target/signature/effects; topology
+        // still owns the control below, including the empty open frontier.
+        boolean typed=occurrenceFrontiers.contains(fact.header().id().handle());
+        Terminator payload=typed
+            ?CicsInvokeHandler.translate((SpInput.CicsFact)fact,data,null,unit,ids,origins,operands,items,uncertainties)
+            :PartialProgramAssembler.opaque(fact,null,data,unit,ids,origins,uncertainties,operands,true,code);
+        var h=payload.header();var precision=h.precision();var scope=new Scopes.EntityScope(List.of(h.id()));
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","topology-region-unavailable",h.id().localId(),bound));
         var evidence=topology.outcomes(fact.header().id().handle()).stream().flatMap(o->o.proofs().stream()).distinct().toList();
         var origin=evidence("unavailable/"+bound,evidence,ids);
@@ -170,9 +191,15 @@ final class TopologyProgramAssembler {
             "Source control remains unavailable at "+bound+"; no source impossibility or completion is claimed",origin));
         var reasons=new ArrayList<>(h.uncertainties());reasons.add(reason);
         var unavailable=new Evidence.Claim(scope,Evidence.PrecisionStatus.UNAVAILABLE,List.of(reason));
-        var header=new Operations.Header(h.id(),origin,Evidence.CoverageStatus.UNSUPPORTED,
+        var header=new Operations.Header(h.id(),typed?h.origin():origin,typed?h.coverage():Evidence.CoverageStatus.UNSUPPORTED,
             new Evidence.Precision(unavailable,precision.storage(),precision.effects(),precision.values(),precision.dependencies()),reasons);
-        return new Operations.Opaque(header,opaque.observedKind(),opaque.knownOperands(),opaque.valueResults(),opaque.envelope());
+        var remainder=new Scopes.WithinControl(new Scopes.LabelsControl(List.of()));
+        if(payload instanceof Operations.Invoke invoke)
+            return new Operations.Invoke(header,invoke.action(),invoke.target(),invoke.arguments(),invoke.results(),invoke.signature(),
+                invoke.effectOperands(),invoke.effectBound(),new Control.InvocationOutcomes(List.of(),remainder),invoke.contract());
+        var opaque=(Operations.Opaque)payload;
+        return new Operations.Opaque(header,opaque.observedKind(),opaque.knownOperands(),opaque.valueResults(),
+            new Envelopes.Envelope(opaque.envelope().memory(),new Control.ControlEnvelope(List.of(),remainder),opaque.envelope().dependencies()));
     }
     private Terminator explain(Terminator term,SpInput.StatementFact fact,Context context) {
         var h=term.header();if(explained.containsKey(h.id()))return explained.get(h.id());
