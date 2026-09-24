@@ -154,7 +154,10 @@ final class TopologyProgramAssembler {
                 instructions.addAll(RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,plan.storage(),unit,ids,origins,operands,items,uncertainties));
                 term=PerformSequenceAssembler.jump("topology-normal",fact.header().id(),normal,evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids);
             } else if(precise&&fact instanceof SpInput.CicsFileFact c&&normal!=null)term=CicsFileInvokeHandler.translate(c,data,normal,unit,ids,origins,operands,items,uncertainties);
-            else if(precise&&fact instanceof SpInput.CicsFact c&&normal!=null)term=CicsInvokeHandler.translate(c,data,normal,unit,ids,origins,operands,items,uncertainties);
+            else if(precise&&fact instanceof SpInput.CicsFact c&&normal!=null) {
+                term=CicsInvokeHandler.translate(c,data,normal,unit,ids,origins,operands,items,uncertainties);
+                if(c.command()==SpInput.CicsCommand.XCTL)term=boundedCicsContinuation(term,normal);
+            }
             else if(precise&&fact instanceof SpInput.CallFact c&&normal!=null)term=InvokeHandler.translate(c,data.index(),normal,evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids,origins,operands,items,uncertainties,plan.storage());
             else if(fact instanceof SpInput.OtherStatement o&&o.effects().filter(e->e.proof()==SpInput.EffectProof.NO_OP).isPresent()&&published.size()==1) {
                 term=PerformSequenceAssembler.jump("topology-no-op",fact.header().id(),destination(published.getFirst().target(),context,fact,"only"),evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids);
@@ -170,6 +173,24 @@ final class TopologyProgramAssembler {
         for(var op:instructions)PartialProgramAssembler.link(fact.header().id(),op,label,links,items);
         PartialProgramAssembler.link(fact.header().id(),term,label,links,items);
         sequences.add(new Sequence(label,instructions,term,term.header().origin()));
+    }
+    /** The topology-bound local condition route is independent of successful
+     * XCTL transfer. AIR 05.4/6 carries it in the finite open bound, not as a
+     * normal return or a fabricated exception/handler. The caller supplies only
+     * an authoritative topology destination in this activation context. */
+    private static Terminator boundedCicsContinuation(Terminator payload,LabelId continuation) {
+        var previous=payload instanceof Operations.Invoke i?i.outcomes().remainder()
+            :((Operations.Opaque)payload).envelope().control().remainder();
+        var scopes=new ArrayList<Scopes.ControlScope>();
+        scopes.add(new Scopes.LabelsControl(List.of(continuation)));
+        if(previous instanceof Scopes.WithinControl within)scopes.add(within.scope());
+        var remainder=new Scopes.WithinControl(new Scopes.ControlUnion(scopes));
+        if(payload instanceof Operations.Invoke i)
+            return new Operations.Invoke(i.header(),i.action(),i.target(),i.arguments(),i.results(),i.signature(),
+                i.effectOperands(),i.effectBound(),new Control.InvocationOutcomes(i.outcomes().known(),remainder),i.contract());
+        var o=(Operations.Opaque)payload;
+        return new Operations.Opaque(o.header(),o.observedKind(),o.knownOperands(),o.valueResults(),
+            new Envelopes.Envelope(o.envelope().memory(),new Control.ControlEnvelope(o.envelope().control().known(),remainder),o.envelope().dependencies()));
     }
     /** Unavailable source control is a partial-projection frontier. The empty
      * open set enumerates no licensed target in this model; it is neither a

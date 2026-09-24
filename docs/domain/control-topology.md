@@ -132,3 +132,13 @@ same empty open control frontier. Copies of that context-independent sink share
 one unit/source occurrence label; source transitions are unchanged modulo this
 identity quotient. No continuation or handler is inferred. See
 [cics-program-control](cics-program-control.md#typed-occurrence-at-an-unavailable-control-frontier-r5).
+
+
+## Bounded local CICS routes (R6)
+
+A proved XCTL local condition destination is transported as a finite open AIR
+control bound alongside external uncertainty. It is not a successful normal
+return. Context resolution remains owned by this topology; source text and
+legacy continuation metadata are not routing authorities. See
+[CICS control](cics-program-control.md#r6--bounded-local-xctl-condition-control)
+for the rule, limits, complexity and tests.

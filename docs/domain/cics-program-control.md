@@ -76,3 +76,38 @@ requirement. No SP/AIR contract, candidate provider or handler semantics changes
 independent uncertainty, target provenance, strict AIR codec, repeated targets and
 unit separation. External R5 E2E evidence covers BEFORE value/overwrite/unreachable
 safety, unchanged source control, frozen historical oracles and mutations.
+
+
+## R6 — bounded local XCTL condition control
+
+When authoritative `ControlTopology` supplies a precise local destination for
+an XCTL, the assembler preserves that destination in a finite `LabelsControl`
+member of the open AIR control bound. The existing external control bound stays
+present. It does not add a known normal return, exception outcome, or handler.
+A successful XCTL releases the issuing program; a local condition under
+RESP/NOHANDLE can continue at the next instruction. These are different routes.
+The lower consumes the published topology and does not inspect options or source
+text to rediscover either route.
+
+Primary semantics: [IBM XCTL](https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-xctl)
+and [IBM condition handling](https://www.ibm.com/docs/SSGMCP_5.6.0/applications/designing/dfhp3_exc_pushpophandle.html).
+AIR 05 §§4/6 already permits this finite open bound; SP 2.40 and AIR 2.0 are
+unchanged. Unknown handler state and partial signatures cannot revoke a proven
+local destination. Unknown source topology retains its empty open frontier.
+Legacy continuation metadata alone does not authorize a route.
+
+The assembler resolves the destination in the existing activation context, then
+adds one finite scope member while preserving payload, effects, provenance and
+external uncertainty. This takes constant extra work and storage per translated
+XCTL, with no new traversal or path enumeration. Existing occurrence identities
+and topology scheduling bound termination. Missing target payload may remain
+opaque while the independent local route survives.
+
+`BoundedCicsControlSuite` checks strict AIR roundtrip, raw-text independence,
+independent unknown handler gaps, unavailable legacy metadata, missing targets,
+unknown topology negatives, distinct equal-text statements and distinct PERFORM
+resumes. The historical R5 external assertion forbidding AFTER001 even for a
+proved NOHANDLE local condition was superseded after explicit user review;
+historical raw evidence and its oracle remain unchanged. Unknown XCTL negatives
+remain valid. HANDLE ABEND, handler state/activation and value inference remain
+outside this change.
