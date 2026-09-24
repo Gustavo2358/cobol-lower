@@ -5,7 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology, Optional<FactDependencies> factDependencies) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,sourceDependencies,ordinaryContinuations,controlTopology,Optional.empty());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations) {
         this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,sourceDependencies,ordinaryContinuations,Optional.empty());
     }
@@ -30,6 +33,11 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(factDependencies);
+        if(factDependencies.isPresent()) {
+            if(controlTopology.isEmpty()||storage.isEmpty())throw new IllegalArgumentException("fact dependencies require topology/storage contract");
+            FactDependencyContract.validate(factDependencies.get(),storage.orElseThrow());
+        }
         Objects.requireNonNull(controlTopology);
         ordinaryContinuations=java.util.Map.copyOf(ordinaryContinuations);
         Objects.requireNonNull(sourceDependencies);

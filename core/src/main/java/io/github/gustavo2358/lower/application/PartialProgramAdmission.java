@@ -95,7 +95,7 @@ final class PartialProgramAdmission {
             });
             if (!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
             c.phase=Phase.ADMISSION;
-            for(var id:RegionalDataTranslator.sourceText(c.regionalStorage)) {
+            if(input.factDependencies().isEmpty())for(var id:RegionalDataTranslator.sourceText(c.regionalStorage)) {
                 var view=c.regionalStorage.byData().get(id);if(view==null)continue;
                 var base=c.regionalStorage.bases().get(view.base());
                 if(base!=null&&!base.allocation().proved()&&base.extent().value().isEmpty()

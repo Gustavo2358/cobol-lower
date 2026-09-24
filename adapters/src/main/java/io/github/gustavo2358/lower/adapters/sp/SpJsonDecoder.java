@@ -86,7 +86,16 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            boolean topologyContract=node.path("contractVersion").asText().equals("2.39.0");
+            boolean factContract=node.path("contractVersion").asText().equals("2.40.0");
+            if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
+                throw new PhysicalShape("$/factDependencies requires SP2.40 and is mandatory there");
+            io.github.gustavo2358.lower.domain.FactDependencies factDependencies=null;
+            if(factContract) {
+                factDependencies=mapper.treeToValue(node.path("factDependencies"),io.github.gustavo2358.lower.domain.FactDependencies.class);
+                requirePhysical(factDependencies,"$/factDependencies",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("factDependencies");
+            }
+            boolean topologyContract=factContract||node.path("contractVersion").asText().equals("2.39.0");
             if(topologyContract!=node.has("controlTopology") || topologyContract&&!node.path("controlTopology").isObject())
                 throw new PhysicalShape("$/controlTopology requires SP2.39 and is mandatory there");
             io.github.gustavo2358.lower.domain.ControlTopology topology=null;
@@ -503,7 +512,7 @@ public final class SpJsonDecoder {
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
             }
             if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
-                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology));
+                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies));
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

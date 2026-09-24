@@ -9,6 +9,13 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case io.github.gustavo2358.lower.domain.FactDependencies r -> {field.accept("FactDependencies");value.accept(r.authority());value.accept(r.inputs());value.accept(r.proofs());value.accept(r.regions());value.accept(r.facts());value.accept(r.bindings());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Input r -> {field.accept("FactDependencies.Input");value.accept(r.id());value.accept(r.kind());value.accept(r.available());value.accept(r.contextScopes());value.accept(r.closureScopes());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Proof r -> {field.accept("FactDependencies.Proof");value.accept(r.id());value.accept(r.kind());value.accept(r.scope());value.accept(r.localPremise());value.accept(r.dependencies());value.accept(r.inputs());value.accept(r.rule());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Region r -> {field.accept("FactDependencies.Region");value.accept(r.id());value.accept(r.members());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Fact r -> {field.accept("FactDependencies.Fact");value.accept(r.id());value.accept(r.kind());value.accept(r.subject());value.accept(r.region());value.accept(r.dependencies());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Binding r -> {field.accept("FactDependencies.Binding");value.accept(r.node());value.accept(r.region());value.accept(r.exactCell());value.accept(r.cells());value.accept(r.regions());value.accept(r.dependencies());}
+
             case io.github.gustavo2358.lower.domain.ControlTopology r -> {field.accept("ControlTopology");value.accept(r.authority());value.accept(r.occurrences());value.accept(r.regions());value.accept(r.boundaries());value.accept(r.outcomes());value.accept(r.bindings());value.accept(r.proofs());}
             case io.github.gustavo2358.lower.domain.ControlTopology.Occurrence r -> {field.accept("ControlTopology.Occurrence");value.accept(r.statement());value.accept(r.region());value.accept(r.outcomes());value.accept(r.proofs());}
             case io.github.gustavo2358.lower.domain.ControlTopology.Region r -> {field.accept("ControlTopology.Region");value.accept(r.id());value.accept(r.kind());value.accept(r.parent());value.accept(r.entry());value.accept(r.members());value.accept(r.regions());value.accept(r.boundary());value.accept(r.proofs());}

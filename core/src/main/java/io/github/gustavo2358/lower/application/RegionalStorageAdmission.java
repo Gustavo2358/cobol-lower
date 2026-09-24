@@ -13,10 +13,11 @@ import static io.github.gustavo2358.lower.domain.StorageFacts.*;
 /** Validate source facts without calculating COBOL layout; prepare one immutable index per admission. */
 final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
-    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical,Set<NodeId> exactNodes) {
+    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical,Set<NodeId> exactNodes,FactDependencyIndex facts) {
         Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData);exactNodes=Set.copyOf(exactNodes); }
         boolean localCellSafe(DataId data) {
             var view=byData.get(data);if(view==null)return false;
+            if(facts!=null)return !facts.bindings.get(view.node().handle()).exactCell().isEmpty();
             var node=nodes.get(view.node());
             if(exactNodes.contains(node.id()))return true;
             if(node.kind()==Kind.ELEMENTARY&&views.values().stream().filter(v->v.base().equals(view.base()))
@@ -47,7 +48,7 @@ final class RegionalStorageAdmission {
                 c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
-            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes),Set.of());
+            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes),Set.of(),null);
         }
         require(input.compositional(),"regional facts require the compositional input profile");
         var storage=input.storage().get();boolean environment=storage.profile()==Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047;
@@ -245,7 +246,7 @@ final class RegionalStorageAdmission {
             }
         }
         var index=new Index(input,nodes,bases,views,byData,logical,
-            storage.logicalExactViews().stream().map(LogicalExactView::node).collect(java.util.stream.Collectors.toSet()));
+            storage.logicalExactViews().stream().map(LogicalExactView::node).collect(java.util.stream.Collectors.toSet()),input.factDependencies().map(FactDependencyIndex::new).orElse(null));
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {

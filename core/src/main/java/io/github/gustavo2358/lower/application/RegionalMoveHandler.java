@@ -12,7 +12,11 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
-        if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items));
+        if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT) {
+            boolean available=move.target().logicalWholeItem().filter(data.index()::containsKey).isPresent()
+                &&(!(move.source() instanceof SpInput.DataReference r)||r.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(r::logicalWholeItem).filter(data.index()::containsKey).isPresent());
+            return List.of(available?MoveHandler.translate(move,data,unit,ids,origins,links,items):ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties));
+        }
         if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
         if(move.regionalMove().isEmpty())return List.of(translate(move,fitted,data,unit,ids,origins,links,items,uncertainties));
         var result=new ArrayList<Instruction>();

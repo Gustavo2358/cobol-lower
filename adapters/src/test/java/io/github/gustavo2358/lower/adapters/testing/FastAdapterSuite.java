@@ -7,6 +7,7 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        FactDependencyWireSuite.main(new String[0]);
         ControlTopologyWireSuite.main(new String[0]);
         FileTopologyAuthoritySuite.main(new String[0]);
         DependencyPreservationSuite.main(new String[0]);

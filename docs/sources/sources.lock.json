@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "observed_on": "2026-09-23",
+  "observed_on": "2026-09-24",
   "policy": "Pinned snapshots; update only via reviewed contract change, never floating main at build time.",
   "sources": [
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "d7e6edd3a7c20e68b8cd3a9726e5fe1b5216152d",
+      "commit": "5fb63f927d6d9b91b0599e9da36ddb9205af2818",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
-      "contract_version": "2.39.0",
+      "contract_version": "2.40.0",
       "paths": [
         "docs/domain/cobol-semantic-product.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
@@ -89,7 +89,11 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/ControlTopology.java",
         "src/test/java/io/github/gustavo2358/cobolexplorer/ControlTopologyAuthorityTest.java",
         "src/test/java/io/github/gustavo2358/cobolexplorer/FileTopologyAuthorityTest.java",
-        "scripts/harness/lean_project.py"
+        "scripts/harness/lean_project.py",
+        "docs/domain/fact-dependency-locality.md",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/FactLocalitySemantics.java",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencies.java",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencyContract.java"
       ],
       "evidence_level": "R1-R1-F03 correction: producer/consumer reject duplicate occurrence-role outcomes before AIR; frontend local FAST/full PASS; SP2.39 authority and legacy separation preserved. R2 NOT STARTED.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
@@ -267,7 +271,7 @@
     {
       "id": "SRC-HARNESS",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "84845762c58ba0f64199bf01db9afce4c97a939b",
+      "commit": "5fb63f927d6d9b91b0599e9da36ddb9205af2818",
       "role": "harness_inspiration_not_lowering_authority",
       "paths": [
         "AGENTS.md",
@@ -280,7 +284,11 @@
         "docs/domain/storage-w6-w8.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsFileControlAnalyzer.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsCommandSyntax.java",
-        "src/test/java/io/github/gustavo2358/cobolexplorer/CicsFileControlTest.java"
+        "src/test/java/io/github/gustavo2358/cobolexplorer/CicsFileControlTest.java",
+        "docs/domain/fact-dependency-locality.md",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/FactLocalitySemantics.java",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencies.java",
+        "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencyContract.java"
       ],
       "evidence_level": "FD-W8 producer focal45/projector36, FAST345 and Q-SHARED938 (one historical skip) PASS; bilateral C-FC33 fixtures, E-SELECTED pending",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
@@ -297,7 +305,7 @@
         "https://github.com/Gustavo2358/proleap-poc/blob/84845762c58ba0f64199bf01db9afce4c97a939b/src/main/java/io/github/gustavo2358/cobolexplorer/CicsCommandSyntax.java",
         "https://github.com/Gustavo2358/proleap-poc/blob/84845762c58ba0f64199bf01db9afce4c97a939b/src/test/java/io/github/gustavo2358/cobolexplorer/CicsFileControlTest.java"
       ],
-      "contract_version": "2.28.0",
+      "contract_version": "2.40.0",
       "observed_on": "2026-09-18",
       "tree": "https://github.com/Gustavo2358/proleap-poc/tree/84845762c58ba0f64199bf01db9afce4c97a939b",
       "blob_sha256": {
