@@ -211,11 +211,11 @@ final class PartialProgramAssembler {
         sequences.add(new Sequence(boundary,List.of(),term,origin));link(fact.header().id(),term,boundary,statements,items);
         return boundary;
     }
-    private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
+    static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects) {
         return opaque(fact,next,data,unit,ids,origins,uncertainties,operands,unknownEffects,null);
     }
-    private static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
+    static Operations.Opaque opaque(SpInput.StatementFact fact,LabelId next,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties,List<LoweringResult.OperandLink> operands,boolean unknownEffects,String diagnostic) {
         var origin=origins.source("statement",fact.header().id().handle(),fact.header().provenance());
         var id=new OperationId(unit,ids.id("operation","opaque",unit.localId(),fact.header().id().handle()));

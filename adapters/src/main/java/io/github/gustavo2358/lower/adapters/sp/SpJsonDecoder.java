@@ -86,7 +86,16 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            boolean partialSequenceContract=node.path("contractVersion").asText().equals("2.38.0");
+            boolean topologyContract=node.path("contractVersion").asText().equals("2.39.0");
+            if(topologyContract!=node.has("controlTopology") || topologyContract&&!node.path("controlTopology").isObject())
+                throw new PhysicalShape("$/controlTopology requires SP2.39 and is mandatory there");
+            io.github.gustavo2358.lower.domain.ControlTopology topology=null;
+            if(topologyContract) {
+                topology=mapper.treeToValue(node.path("controlTopology"),io.github.gustavo2358.lower.domain.ControlTopology.class);
+                requirePhysical(topology,"$/controlTopology",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("controlTopology");
+            }
+            boolean partialSequenceContract=topologyContract||node.path("contractVersion").asText().equals("2.38.0");
             boolean partialSequence=false;
             for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("MOVE")) {
                 partialSequence|=statement.has("logicalTransfers");
@@ -96,7 +105,7 @@ public final class SpJsonDecoder {
                         partialSequence|=transfer.path("effect").path("kind").asText().equals("UNAVAILABLE");
                 }
             }
-            if(partialSequence!=partialSequenceContract)
+            if(!topologyContract&&partialSequence!=partialSequenceContract)
                 throw new PhysicalShape("$/contractVersion partial MOVE sequence requires SP2.38");
             var logicalTransfers=new java.util.LinkedHashMap<String,java.util.List<PendingLogical>>();
             for(var statement:node.path("statements"))if(statement.has("logicalTransfers")) {
@@ -493,6 +502,8 @@ public final class SpJsonDecoder {
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
             }
+            if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
+                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology));
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

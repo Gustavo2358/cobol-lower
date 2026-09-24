@@ -22,6 +22,7 @@ final class ProcedurePerformAdmission {
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());
         });
+        if(c.input.controlTopology().isPresent())return; // Topology owns range/completion integrity.
         p.normalContinuation().statement().ifPresent(id->need(c,p,c.lookup(id)!=null
             &&c.lookup(id).header().provenance().equals(p.normalContinuation().provenance()),"resume provenance agrees with referenced statement"));
         p.targetEntry().ifPresent(id->need(c,p,p.start().isPresent()&&c.lookup(id)!=null

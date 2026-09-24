@@ -15,7 +15,8 @@ final class PartialProgramAdmission {
             if (input == null) { c.require(false,Rule.INPUT_REQUIRED,"input",null,"SP input required"); return rejected(c,Status.INVALID_INPUT); }
             EntryGobackAdmission.validate(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
-            for(var relation:input.ordinaryContinuations().entrySet()) {
+            if(input.controlTopology().isPresent())TopologyBinding.validate(input,c);
+            if(input.controlTopology().isEmpty())for(var relation:input.ordinaryContinuations().entrySet()) {
                 var source=c.lookup(relation.getKey());var destination=relation.getValue();
                 c.require(source instanceof MoveFact || source instanceof IfFact || source instanceof EvaluateFact
                     || source instanceof PerformFact || source instanceof ProcedurePerformFact,Rule.STRUCTURE,
@@ -134,6 +135,9 @@ final class PartialProgramAdmission {
                 if(s instanceof MoveFact m&&(c.regionalStorage.logical().literalMove(m)||m.copySemantics()==CopySemantics.POSSIBLE_TEXT))eligible=true;
                 if(eligible&&before==c.diagnostics.size())precise.add(s.header().id());
                 c.diagnostics.subList(before,c.diagnostics.size()).clear();
+            }
+            if(input.controlTopology().isPresent()) {
+                return new Plan(c.result(Status.ADMITTED),data,input.statements(),Set.copyOf(precise),Map.of(),Map.of(),Map.of(),c.regionalStorage,Set.copyOf(fitted));
             }
             var bodies=new LinkedHashMap<StatementId,List<MoveFact>>(); var bodyMembers=new HashSet<StatementId>();
             var targets=new HashMap<ProcedureId,List<StatementId>>();

@@ -22,3 +22,5 @@ Os documentos locais definem a política do lowerer; não substituem as especifi
 
 [Storage Semantics regional](regional-storage.md): campanha ST-W0–ST-W5,
 reader SP 2.7 e validação de fatos físicos; integração M1 em andamento.
+
+- [Frontend control topology / SP 2.39](control-topology.md): single new-contract authority, generic binding and explicit partial frontiers.

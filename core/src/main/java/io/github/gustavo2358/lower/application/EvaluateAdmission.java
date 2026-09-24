@@ -29,7 +29,7 @@ final class EvaluateAdmission {
         }
         arm(e,e.otherArm(),e.otherStatements(),members,c);
         c.require(members.equals(expected),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"all direct EVALUATE members are assigned to exactly one arm");
-        c.require(e.normalContinuation().availability()!=ContinuationAvailability.NONE
+        if(c.input.controlTopology().isEmpty())c.require(e.normalContinuation().availability()!=ContinuationAvailability.NONE
                 && e.normalContinuation().statement().filter(members::contains).isEmpty()
                 && !e.normalContinuation().statement().equals(Optional.of(e.header().id())),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"normal continuation is outside arms");
     }
@@ -43,7 +43,7 @@ final class EvaluateAdmission {
             c.touch(); var member=c.lookup(id);
             c.require(all.add(id) && member!=null && member.header().containment().equals(new Containment(Optional.of(e.header().id()),Branch.EVALUATE_ARM)),Rule.STRUCTURE,id.handle(),arm.provenance(),"arm members are distinct and owned");
             if(member!=null) { var next=PartialProgramAdmission.next(member);
-                if(next!=null) c.require(next.statement().isEmpty() || next.statement().filter(local::contains).isPresent()
+                if(next!=null&&c.input.controlTopology().isEmpty()) c.require(next.statement().isEmpty() || next.statement().filter(local::contains).isPresent()
                         || next.statement().equals(e.normalContinuation().statement()),Rule.STRUCTURE,id.handle(),arm.provenance(),"normal arm completion cannot enter a sibling arm");
             }
         }

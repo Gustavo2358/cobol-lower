@@ -42,7 +42,9 @@ final class PartialProgramLowerer implements LowerInput {
         if(context!=null)data=context.captures(input,data,unit,ids,origins,items,uncertainties);
         var files=new FileResourceLowering(input,data,unit,ids,origins,uncertainties);
         if(context!=null)context.importFiles(input,files);
-        var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties,files);
+        var assembly = input.controlTopology().isPresent()
+            ? TopologyProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files)
+            : PartialProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
         if(sourceEntry.signature().availability()!=SpInput.Availability.KNOWN) {
@@ -65,11 +67,22 @@ final class PartialProgramLowerer implements LowerInput {
         }
         var gapTargets=new HashMap<SpInput.StatementId,List<Id>>();
         for(var link:statements)gapTargets.computeIfAbsent(link.source(),key->new ArrayList<>()).add(link.target());
+        var factsByHandle=new HashMap<String,SpInput.StatementFact>();input.statements().forEach(f->factsByHandle.put(f.header().id().handle(),f));
+        if(input.controlTopology().isPresent())for(var occurrence:input.controlTopology().orElseThrow().occurrences()) {
+            var source=factsByHandle.get(occurrence.statement());
+            if(gapTargets.containsKey(source.header().id()))continue;
+            var origin=origins.source("topology-inventory",occurrence.statement(),source.header().provenance());
+            var reason=new UncertaintyId(publication,ids.id("uncertainty","topology-inventory",unit.localId(),occurrence.statement()));
+            uncertainties.add(new Evidence.Uncertainty(reason,"TOPOLOGY_OCCURRENCE_NOT_IN_ENTRY_PROJECTION",List.of(Evidence.Dimension.CONTROL),new Scopes.UnitScope(unit),
+                "Inventoried source occurrence in "+occurrence.region()+" has no materialized occurrence in the selected entry projection; source unreachability is not claimed",origin));
+            gaps.add(reason);
+            items.add(new Evidence.CoverageItem("sp-topology-inventory@1/"+occurrence.statement(),origin,Evidence.CoverageStatus.ABSTRACTED,List.of(),List.of(reason),Optional.empty()));
+        }
         int gapIndex = 0;
         for (var gap : input.gaps()) {
             var key = Integer.toString(gapIndex++); var origin = origins.source("gap", key, gap.provenance());
             var id = new UncertaintyId(publication, ids.id("uncertainty", "scalar-sp-gap", unit.localId(), key)); gaps.add(id);
-            uncertainties.add(new Evidence.Uncertainty(id, "cobol-sp:" + gap.code(), List.of(Evidence.Dimension.values()), new Scopes.EntityScope(gapTargets.get(gap.statement())),
+            uncertainties.add(new Evidence.Uncertainty(id, "cobol-sp:" + gap.code(), List.of(Evidence.Dimension.values()), gapTargets.containsKey(gap.statement())?new Scopes.EntityScope(gapTargets.get(gap.statement())):new Scopes.UnitScope(unit),
                 gap.scope().name() + ": " + gap.detail(), origin));
         }
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);

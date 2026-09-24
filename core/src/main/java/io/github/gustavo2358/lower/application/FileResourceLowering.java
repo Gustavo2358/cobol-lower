@@ -38,11 +38,12 @@ final class FileResourceLowering {
     boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR
         ||u.effects().filter(e->e.availability()==SpInput.Availability.KNOWN||e.availability()==SpInput.Availability.PARTIAL).isPresent());}
     void sourceEntry(LabelId label){sourceEntries.add(label);}
-    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
+    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(input.controlTopology().isPresent()?sequences:sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
     LabelId completion(SpInput.StatementId statement,LabelId ordinary){return sort.completion(statement,control.completion(statement,ordinary));}
-    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){
+    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){return sequences(fact,destination,local,null);}
+    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local,java.util.function.Function<String,LabelId> topology){
         var result=new ArrayList<Sequence>();var uses=byStatement.get(fact.header().id());
-        var layout=sort.layout(fact,uses,destination,local);layout.ifPresent(l->result.addAll(l.prefix()));
+        var layout=topology==null?sort.layout(fact,uses,destination,local):Optional.<FileSortLowering.Layout>empty();layout.ifPresent(l->result.addAll(l.prefix()));
         for(int n=0;n<uses.size();n++){
             var use=uses.get(n);var key=fact.header().id().handle()+"/"+use.ordinal();
             var op=new OperationId(unit,local.id("operation","file-use",unit.localId(),key));
@@ -87,7 +88,7 @@ final class FileResourceLowering {
             var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
             if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));
             result.add(new Sequence(invokeLabel,List.of(),invoke,origin));
-            if(plan!=null)result.addAll(use.control().filter(c->!c.routes().isEmpty()).isPresent()?control.after(key,use,plan,next,origin,local,memory):memory.after(key,plan,next,origin));
+            if(plan!=null)result.addAll(use.control().filter(c->!c.routes().isEmpty()).isPresent()?control.after(key,use,plan,next,origin,local,memory,topology):memory.after(key,plan,next,origin));
             if(declaration!=null)associations.computeIfAbsent(candidate,k->new ArrayList<>()).add(new Interactions.ResourceUse(op,role(use),origin));
         }
         return List.copyOf(result);

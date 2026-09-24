@@ -118,6 +118,7 @@ final class CanonicalRevision {
             e.list(input.ordinaryContinuations().entrySet().stream()
                 .sorted(java.util.Comparator.comparing(r->r.getKey().handle())).toList(),r->{e.recordFact(r.getKey());e.recordFact(r.getValue());});
         }
+        input.controlTopology().ifPresent(t->{e.word("control-topology@SP2.39");e.recordFact(t);});
         return Optional.of(e.finish());
     }
     static Optional<String> compilation(io.github.gustavo2358.lower.domain.SpCompilation input,int maximum){
