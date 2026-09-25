@@ -76,9 +76,13 @@ java -cp "adapters/target/classes:$(cat adapters/target/runtime-classpath.txt)" 
 | 0 | Publication codificada e arquivo publicado |
 | 2 | Argumentos/path inválidos; usage em stderr |
 | 3 | Falha física/JSON do SP; code, phase e location do decoder em stderr |
-| 4 | Lowering não SUCCESS; status e diagnostics de admissão em stderr |
+| 4 | Lowering sem publicação; status e diagnostics de admissão em stderr |
 | 5 | AirJsonException; code e path do codec em stderr |
 | 6 | Falha de I/O ao publicar AIR; mensagem em stderr |
+
+O CLI usa [publicação positiva limitada](docs/domain/positive-publication-r7-r7a.md):
+`BOUNDED_PUBLICATION` em stderr significa AIR disponível com capabilities `NOT_READY` explícitas.
+Exit 0 certifica publicação do arquivo, não execução completa da fonte.
 
 Erros esperados não imprimem stack trace. Bugs inesperados propagam e não são classificados
 como erro de input. Uma falha pode preservar um arquivo antigo: **o caller deve confiar no exit code**,

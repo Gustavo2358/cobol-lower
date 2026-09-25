@@ -10,6 +10,9 @@ final class PartialProgramAdmission {
     record Plan(Admission admission, List<DataFact> data, List<StatementFact> statements,
                 Set<StatementId> precise, Map<StatementId,List<MoveFact>> bodies, Map<StatementId,List<StatementFact>> ranges, Map<StatementId,List<StatementFact>> compositions, RegionalStorageAdmission.Index storage, Set<StatementId> fitted) { }
     Plan plan(SpInput input, AdmitInput.Limits limits) {
+        return plan(input,limits,LowerInput.PublicationPolicy.EXECUTABLE_ONLY);
+    }
+    Plan plan(SpInput input, AdmitInput.Limits limits, LowerInput.PublicationPolicy policy) {
         var c = new EntryGobackAdmission.Context(input, limits, true);
         try {
             if (input == null) { c.require(false,Rule.INPUT_REQUIRED,"input",null,"SP input required"); return rejected(c,Status.INVALID_INPUT); }
@@ -20,10 +23,16 @@ final class PartialProgramAdmission {
             c.phase=Phase.ADMISSION;
             if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)) {
                 if(input.controlTopology().isPresent()&&input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact))c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
-                for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)
-                    c.require(false,Rule.READINESS,s.header().id().handle(),s.header().provenance(),
-                        "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
-                return rejected(c,Status.IMPLEMENTATION_LIMIT);
+                c.nonExecutableCapabilities=input.statements().stream().flatMap(s->NonExecutableCapability.of(s).stream())
+                    .sorted(Comparator.comparing(cap->cap.statement().handle())).toList();
+                if(policy==LowerInput.PublicationPolicy.EXECUTABLE_ONLY||input.controlTopology().isEmpty()) {
+                    for(var cap:c.nonExecutableCapabilities)
+                        c.require(false,Rule.READINESS,cap.statement().handle(),cap.provenance(),
+                            "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
+                    return rejected(c,Status.IMPLEMENTATION_LIMIT);
+                }
+                // Bounded publication still requires ordinary structural admission.
+                // It does not qualify any new operation for executable translation.
             }
             if(input.factDependencies().isEmpty())for(var id:RegionalDataTranslator.sourceText(c.regionalStorage)) {
                 var view=c.regionalStorage.byData().get(id);if(view==null)continue;

@@ -21,10 +21,12 @@ public final class CobolLower {
     public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(ProductionLimits.SP_DEPTH);
     public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(100),
             1_000_000, ValidationOptions.defaults());
+    public static final LowerInput.Options POSITIVE_OPTIONS = new LowerInput.Options(OPTIONS.admission(),
+            OPTIONS.maximumIdentityCharacters(),OPTIONS.validation(),LowerInput.PublicationPolicy.BOUNDED_POSITIVE);
     private CobolLower() { }
     public static void main(String[] args) { System.exit(run(args, System.err)); }
     public static int run(String[] args, PrintStream err) {
-        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), OPTIONS, new AirFileOutput());
+        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), POSITIVE_OPTIONS, new AirFileOutput());
     }
     /** Composition seam; no JVM exit, alternate semantic decoder or lowering. */
     public static int run(String[] args, PrintStream err, FileLowering lowering, LowerInput.Options options, AirFileOutput output) {
@@ -39,14 +41,16 @@ public final class CobolLower {
             return INPUT;
         }
         var result = ((FileLowering.Lowered) physical).result();
-        if ((result.status() != LoweringResult.Status.SUCCESS && result.status()!=LoweringResult.Status.PARTIAL) || result.publication().isEmpty()) {
+        if ((result.status() != LoweringResult.Status.SUCCESS && result.status()!=LoweringResult.Status.PARTIAL && result.status()!=LoweringResult.Status.BOUNDED_PUBLICATION) || result.publication().isEmpty()) {
             err.println("Lowering " + result.status());
             for (var diagnostic : result.admission().diagnostics())
                 err.println(diagnostic.rule() + " " + diagnostic.subject() + ": " + diagnostic.requirement());
             return LOWERING;
         }
         try {
-            if(result.status()==LoweringResult.Status.PARTIAL) {
+            if(result.status()==LoweringResult.Status.BOUNDED_PUBLICATION)
+                err.println("Lowering BOUNDED_PUBLICATION: "+result.admission().nonExecutableCapabilities().size()+" typed capabilities NOT_READY; positive facts available, executable frontiers retained");
+            if(result.validation().orElseThrow().status()==io.github.gustavo2358.air.validation.ValidationResult.Status.INCOMPLETE_VALIDATION) {
                 err.println("Lowering PARTIAL: INCOMPLETE_VALIDATION; scoped operation preconditions remain open");
                 output.writePartial(result.publication().orElseThrow(),destination);
             } else output.write(result.publication().orElseThrow(), destination);

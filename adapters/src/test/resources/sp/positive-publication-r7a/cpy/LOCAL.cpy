@@ -1,0 +1,1 @@
+       01 COPY-VALUE PIC X.

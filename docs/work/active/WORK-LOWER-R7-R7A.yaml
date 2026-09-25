@@ -1,0 +1,8 @@
+id: WORK-LOWER-R7-R7A
+title: Bounded positive publication with non-executable CICS capabilities
+status: IN_PROGRESS
+scope:
+  - Explicit lower publication policy and capability/result contract
+  - Preserve independent inventories without executable continuation through NOT_READY
+  - Existing AIR2.0 projection contract; no SP, AIR, CFG, state or dependency policy changes
+  - Existing draft PR34; human review and no merge

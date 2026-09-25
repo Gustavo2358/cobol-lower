@@ -7,12 +7,18 @@ import java.util.Optional;
 
 /** Admission is not lowering success and never contains an AIR Publication. */
 public record Admission(Status status, Optional<SpInput> input, List<Diagnostic> diagnostics,
-                        Statistics statistics, boolean diagnosticsTruncated, Optional<HandlerStateAnalysis> handlerState) {
+                        Statistics statistics, boolean diagnosticsTruncated, Optional<HandlerStateAnalysis> handlerState,
+                        List<NonExecutableCapability> nonExecutableCapabilities) {
+    public Admission(Status status, Optional<SpInput> input, List<Diagnostic> diagnostics, Statistics statistics, boolean diagnosticsTruncated, Optional<HandlerStateAnalysis> handlerState) {
+        this(status,input,diagnostics,statistics,diagnosticsTruncated,handlerState,List.of());
+    }
     public Admission(Status status, Optional<SpInput> input, List<Diagnostic> diagnostics, Statistics statistics, boolean diagnosticsTruncated) {
         this(status,input,diagnostics,statistics,diagnosticsTruncated,Optional.empty());
     }
     public Admission {
         Objects.requireNonNull(handlerState);
+        nonExecutableCapabilities = List.copyOf(nonExecutableCapabilities);
+        if(status==Status.INVALID_INPUT&&!nonExecutableCapabilities.isEmpty())throw new IllegalArgumentException("invalid input cannot have validated capabilities");
         if(status==Status.INVALID_INPUT&&handlerState.isPresent())throw new IllegalArgumentException("invalid input cannot have state analysis");
         Objects.requireNonNull(status); Objects.requireNonNull(input); Objects.requireNonNull(statistics);
         diagnostics = List.copyOf(diagnostics);

@@ -110,7 +110,9 @@ final class TopologyProgramAssembler {
         var invoke=published.stream().filter(o->o.kind()==OutcomeKind.LOCAL_INVOKE).findFirst();
         var instructions=new ArrayList<Instruction>();Terminator term;
         boolean precise=plan.precise().contains(fact.header().id());
-        if(invoke.isPresent()) {
+        if(NonExecutableCapability.of(fact).isPresent()) {
+            term=frontier(fact,ids,"EXECUTABLE_CAPABILITY_NOT_READY",fact.header().id().handle());
+        } else if(invoke.isPresent()) {
             var call=topology.binding(invoke.get().binding());
             if(ids.containsActivation(call.id())) {
                 term=frontier(fact,ids,"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
@@ -208,12 +210,15 @@ final class TopologyProgramAssembler {
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","topology-region-unavailable",h.id().localId(),bound));
         var evidence=topology.outcomes(fact.header().id().handle()).stream().flatMap(o->o.proofs().stream()).distinct().toList();
         var origin=evidence("unavailable/"+bound,evidence,ids);
-        uncertainties.add(new Evidence.Uncertainty(reason,"CONTROL_TOPOLOGY_REGION_UNAVAILABLE",List.of(Evidence.Dimension.CONTROL),scope,
-            "Source control remains unavailable at "+bound+"; no source impossibility or completion is claimed",origin));
+        boolean notReady=NonExecutableCapability.of(fact).isPresent();
+        uncertainties.add(new Evidence.Uncertainty(reason,notReady?"EXECUTABLE_CAPABILITY_NOT_READY":"CONTROL_TOPOLOGY_REGION_UNAVAILABLE",List.of(Evidence.Dimension.CONTROL),scope,
+            notReady?"Typed "+NonExecutableCapability.of(fact).orElseThrow().kind()+" retained at "+bound
+                +"; executable projection stops here. Source topology is retained in input; no source termination is claimed."
+                :"Source control remains unavailable at "+bound+"; no source impossibility or completion is claimed",origin));
         var reasons=new ArrayList<>(h.uncertainties());reasons.add(reason);
         var unavailable=new Evidence.Claim(scope,Evidence.PrecisionStatus.UNAVAILABLE,List.of(reason));
         var header=new Operations.Header(h.id(),typed?h.origin():origin,typed?h.coverage():Evidence.CoverageStatus.UNSUPPORTED,
-            new Evidence.Precision(unavailable,precision.storage(),precision.effects(),precision.values(),precision.dependencies()),reasons);
+            new Evidence.Precision(unavailable,precision.storage(),notReady?unavailable:precision.effects(),precision.values(),precision.dependencies()),reasons);
         var remainder=new Scopes.WithinControl(new Scopes.LabelsControl(List.of()));
         if(payload instanceof Operations.Invoke invoke)
             return new Operations.Invoke(header,invoke.action(),invoke.target(),invoke.arguments(),invoke.results(),invoke.signature(),
