@@ -66,6 +66,25 @@ final class CicsContract {
             require(gaps.stream().allMatch(g->g.equals("CICS_ABEND_DISPATCH_NOT_MODELED")),"qualified event syntax gaps");
         }
     }
+    static void command(StatementHeader header,CicsCommandKind kind,CicsCommandSyntaxStatus syntax,String raw,List<CicsOption> options,List<String> gaps) {
+        var allowed=new HashSet<>(Set.of("RESP","RESP2","NOHANDLE"));
+        if(kind!=CicsCommandKind.SYNCPOINT)allowed.addAll(Set.of("MAP","MAPSET",kind==CicsCommandKind.SEND_MAP?"FROM":"INTO"));
+        if(kind==CicsCommandKind.SEND_MAP)allowed.addAll(Set.of("CURSOR","ERASE","FREEKB"));
+        var names=new HashSet<String>();int end=0;boolean shape=true;
+        for(var o:options) {
+            require(!o.name().isBlank()&&o.start()>=end&&o.end()>o.start()&&o.end()<=raw.length(),"command offsets/order");end=o.end();
+            boolean flag=Set.of("NOHANDLE","CURSOR","ERASE","FREEKB").contains(o.name());
+            shape&=names.add(o.name())&&allowed.contains(o.name())&&(flag?o.operand().isEmpty():o.operand().filter(v->!v.isBlank()).isPresent());
+            require(o.reference().isEmpty()||o.operand().isPresent()&&!flag,"command reference has operand");
+            o.reference().ifPresent(r->{require(r.id().statement().equals(header.id()),"command operand owner");
+                require(r.role()==(Set.of("RESP","RESP2","INTO").contains(o.name())?OperandRole.WRITE:OperandRole.READ),"command operand role");});
+        }
+        require(header.coverage()!=CoverageStatus.MODELED,"command effects remain partial");
+        if(syntax==CicsCommandSyntaxStatus.SUPPORTED) {
+            require(shape&&(kind==CicsCommandKind.SYNCPOINT||names.contains("MAP")),"supported command shape");
+            require(gaps.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"supported command syntax gaps");
+        } else require(gaps.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"unavailable command cause");
+    }
     static void validateEntries(UnitKey unit,List<StatementFact> statements,List<DataFact> declarations) {
         if(statements.stream().noneMatch(CicsHandlerFact.class::isInstance))return;
         var data=new HashSet<DataId>();declarations.forEach(d->data.add(d.id()));

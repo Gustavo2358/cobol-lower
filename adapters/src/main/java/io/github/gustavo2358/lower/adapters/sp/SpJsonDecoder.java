@@ -95,15 +95,18 @@ public final class SpJsonDecoder {
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
-                if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend())
+                if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
             }
             if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().equals("cics-handle-abend-ordinary-return"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.42");
+            if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
+                if(proof.path("rule").asText().startsWith("cics-command-"))
+                    throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
-                throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42 and is mandatory there");
+                throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42/2.43 and is mandatory there");
             io.github.gustavo2358.lower.domain.FactDependencies factDependencies=null;
             if(factContract) {
                 factDependencies=mapper.treeToValue(node.path("factDependencies"),io.github.gustavo2358.lower.domain.FactDependencies.class);

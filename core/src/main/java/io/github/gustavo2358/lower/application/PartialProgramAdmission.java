@@ -18,9 +18,9 @@ final class PartialProgramAdmission {
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             // Phase B: readiness gates all executable profile qualification and lowering.
             c.phase=Phase.ADMISSION;
-            if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)) {
-                if(input.controlTopology().isPresent())c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
-                for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact)
+            if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)) {
+                if(input.controlTopology().isPresent()&&input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact))c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
+                for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)
                     c.require(false,Rule.READINESS,s.header().id().handle(),s.header().provenance(),
                         "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
                 return rejected(c,Status.IMPLEMENTATION_LIMIT);
@@ -158,6 +158,10 @@ final class PartialProgramAdmission {
             s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
         for (var s : input.statements()) {
             var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
+            if(s instanceof CicsCommandFact x) {
+                var operands=new HashSet<OperandId>();
+                for(var o:x.options())o.reference().ifPresent(r->CallAdmission.reference(r,x.header(),operands,c));
+            }
             if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
             if(s instanceof CicsFileFact x) CicsFileAdmission.validate(x,c);
             if(s instanceof OtherStatement o) {

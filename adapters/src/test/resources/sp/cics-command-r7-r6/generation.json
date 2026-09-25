@@ -1,0 +1,87 @@
+{
+  "authority": "R7-R6 frontend CLI with source files, command metadata and hashes; original exactness preserved",
+  "frontendEntry": "1db76b3525588aa41438acd893bf51273e650909",
+  "fixtures": [
+    {
+      "name": "dead-before",
+      "sourceSha256": "3909dd46c620d7fd3a522e130a95ea034a512f9e210246d5f3dac54ae88bba0a",
+      "spSha256": "7f1e3762b9f5c60f610a606529468cc846867d5c064c5923c0cc759086b2cbe4"
+    },
+    {
+      "name": "dead-reordered",
+      "sourceSha256": "ac324f59e59f606d2551aca25cc3b11a6a5d483220d3a1c956a335aee15097fa",
+      "spSha256": "d2c65ae0db1fec62b7ff42d5db24c57786a0d697c4b6d70b4fbdda84022cb58f"
+    },
+    {
+      "name": "many-1",
+      "sourceSha256": "f7353261429038eed6b94122b3a85eb3ed3013bea588364a9a53580e193ad1d9",
+      "spSha256": "dfc81fd21bffd4cab51150b2eed9c80af335795e6e9cec31fca4c462df1a6e98"
+    },
+    {
+      "name": "many-2",
+      "sourceSha256": "8412ac1ca4a164e4b0be27f93fce4aae4dfa84e31da428e2f1141183f3946aae",
+      "spSha256": "0bd6fafcc31a39aaa99760add232b46d34c62ebc2b45e0a27063fd2e52d195fd"
+    },
+    {
+      "name": "many-40",
+      "sourceSha256": "1f801a68c056dc827519c5b2b9838485755212910506f1e90b2c6cc60540c84c",
+      "spSha256": "424e00b1475cc79b6111273df77a29a91deef07e9c97c40228095bc2794bb879"
+    },
+    {
+      "name": "many-5",
+      "sourceSha256": "26a21e11cef05fada858bebb9826cb8c9fa71ea9f0d322aa04840db926a4c910",
+      "spSha256": "b719f771b7cd649e07fca6bd7ca97fa6ec9f4ac7baa732e46910bc2a33c16411"
+    },
+    {
+      "name": "receive-resp",
+      "sourceSha256": "6a2cd209b0d88733e0feef404be67727494f8979a9e3ef779c08ab8561650d4f",
+      "spSha256": "503d3a3ba250e44eaea21c668e20623f8890b638a50d9d325dcc33ded54a7249"
+    },
+    {
+      "name": "receive-resp2",
+      "sourceSha256": "8213a277f83493554061970985c8be6cc2c7e19fe466891982e18a36cea9a6e5",
+      "spSha256": "ed3f0b9e1d6602079def9be37e49a544b62a0f729c549bf5ea079823633a4deb"
+    },
+    {
+      "name": "receive",
+      "sourceSha256": "a0221e5ab12885dedbd5a6a007599cb81d1506a76160b0a1a5d0fed21b719b66",
+      "spSha256": "9ff65d2bbdf3d3d84630c3109af319f2f15f900608021249315d0cea79924827"
+    },
+    {
+      "name": "send-nohandle",
+      "sourceSha256": "59c6e0bcedfd6e5c7c9baad30a9e3c3dd51e0add2169fe9d58152bdb477b4410",
+      "spSha256": "ab817b7108b32e28225c7979993ce07f4cac7a15d963d4c26c22e00200dac2e9"
+    },
+    {
+      "name": "send-resp",
+      "sourceSha256": "819d2fe0e07a914f15a0801f73f48f653c2b151b5ee6e1d09b17c28ae93c41a6",
+      "spSha256": "19bd8dcf6f41120ff30918d818edda38694a2772b6884d50ceaafb6cab53c4c9"
+    },
+    {
+      "name": "send",
+      "sourceSha256": "449f9f6a14130fb5ac73d56e311a2511d55521d5ea0edf6b03cfaf55588a5b50",
+      "spSha256": "f1bd5c491d6e11ba306347ba4f5570319933841a07838f93776b28df22d7caa3"
+    },
+    {
+      "name": "syncpoint",
+      "sourceSha256": "04deb904002d749753d88d2864f12622c2059ef9c9f0a9542fa5254e0ff2648e",
+      "spSha256": "f4e28f4643740ba80492c311a4d8bdd01e9e88b0b97bc45d4f4d3cfaac9c826d"
+    },
+    {
+      "name": "terminal",
+      "sourceSha256": "3357a7c24866a91e025fcf4ef88ca55b3bc55beb0a3181869505182978d5999a",
+      "spSha256": "228ba0d6bb5281eb21302e913183b52fc149a2a357b2f595f2afd5bd1edd725b"
+    },
+    {
+      "name": "unknown",
+      "sourceSha256": "d28760937d00381c94ec55cd2d82b809cc9ae013dcc57e9654a741c324c4f377",
+      "spSha256": "a0d8bb59ec61664f2f76edfd9102624b54cab044709978cf68d19315d369720e"
+    },
+    {
+      "name": "unsupported",
+      "sourceSha256": "f91e0e6956d4be51cf001e59d7d9a33c7d11a6bb9ffc6e3039fbbb71bf52b0d8",
+      "spSha256": "3bcca1879bda61b47f11d6d683eba6fef1b9286f641ffbc5902fdddb7971dfa2"
+    }
+  ],
+  "frontendQualified": "7f62ec15ef695e22cd5ff25752a78d21d3a1e899"
+}

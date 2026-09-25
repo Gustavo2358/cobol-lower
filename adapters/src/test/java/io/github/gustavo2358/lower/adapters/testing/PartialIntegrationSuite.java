@@ -41,7 +41,7 @@ public final class PartialIntegrationSuite {
                 int n=Integer.parseInt(name.substring("compose-".length()));
                 for(var family:SpInput.StatementFact.class.getPermittedSubclasses())
                     if(family!=SpInput.OtherStatement.class && family!=SpInput.GobackFact.class && family!=SpInput.EvaluateFact.class && family!=SpInput.GoToFact.class && family!=SpInput.ConditionalGoToFact.class /* ConditionalGoToIntegrationSuite; SP2 multiplicity: EvaluateIntegrationSuite / GoToIntegrationSuite */)
-                        check(((family==SpInput.CicsHandlerFact.class||family==SpInput.CicsAbendFact.class)?CicsConsumerContractSuite.composition(n):family==SpInput.CicsFileFact.class?CicsFileControlSuite.composition(n):family==SpInput.CicsFact.class?CicsProgramControlSuite.composition(n):family==SpInput.ProcedurePerformFact.class?PerformFamilyIntegrationSuite.inputFixture("thru-"+n):input).statements().stream().filter(family::isInstance).count()>=n,
+                        check((family==SpInput.CicsCommandFact.class?CicsCommandContractSuite.composition(n):(family==SpInput.CicsHandlerFact.class||family==SpInput.CicsAbendFact.class)?CicsConsumerContractSuite.composition(n):family==SpInput.CicsFileFact.class?CicsFileControlSuite.composition(n):family==SpInput.CicsFact.class?CicsProgramControlSuite.composition(n):family==SpInput.ProcedurePerformFact.class?PerformFamilyIntegrationSuite.inputFixture("thru-"+n):input).statements().stream().filter(family::isInstance).count()>=n,
                             "every typed semantic family needs a multiplicity fixture: "+family.getSimpleName()+" N="+n);
             }
             if(name.startsWith("compose-")||name.startsWith("perform-")) {

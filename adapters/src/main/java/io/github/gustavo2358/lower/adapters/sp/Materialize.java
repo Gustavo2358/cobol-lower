@@ -1193,6 +1193,9 @@ final class Materialize {
                 }),new CicsHandlerScope(v.scope().kind(),v.scope().runtimeIdentity(),provenance(v.scope().provenance(),unit)),
                 v.rawText(),v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
+            case Wire211.CicsCommandDocument v -> new CicsCommandFact(h,v.commandKind(),v.syntaxStatus(),v.rawText(),
+                v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
             case Wire211.CicsAbendDocument v -> new CicsAbendFact(h,v.eventKind(),v.dispatchEligibility(),v.rawText(),
                 v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());

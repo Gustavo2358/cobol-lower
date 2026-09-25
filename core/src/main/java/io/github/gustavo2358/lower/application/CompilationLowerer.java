@@ -11,7 +11,7 @@ public final class CompilationLowerer {
         var ordered=input.units().stream().sorted(Comparator.comparing(u->u.product().unit(),CompilationAdmission.ORDER)).toList();
         // These input facts have no executable identity/publication contract yet.
         for(var unit:ordered)if(unit.product().statements().stream().anyMatch(s->
-                s instanceof SpInput.CicsHandlerFact||s instanceof SpInput.CicsAbendFact))
+                s instanceof SpInput.CicsHandlerFact||s instanceof SpInput.CicsAbendFact||s instanceof SpInput.CicsCommandFact))
             return failure(new PartialProgramAdmission().plan(unit.product(),options.admission()).admission());
 
         var canonical=new SpCompilation(input.inventoryStatus(),input.unitInventory().stream().sorted(CompilationAdmission.ORDER).toList(),ordered);

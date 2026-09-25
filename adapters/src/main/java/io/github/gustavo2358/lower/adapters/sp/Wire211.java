@@ -20,6 +20,7 @@ final class Wire211 {
         @JsonSubTypes.Type(value = CallDocument.class, name = "CALL"),
         @JsonSubTypes.Type(value = CicsHandlerDocument.class, name = "CICS_HANDLER"),
         @JsonSubTypes.Type(value = CicsAbendDocument.class, name = "CICS_ABEND"),
+        @JsonSubTypes.Type(value = CicsCommandDocument.class, name = "CICS_COMMAND"),
         @JsonSubTypes.Type(value = CicsDocument.class, name = "CICS_PROGRAM_CONTROL"),
         @JsonSubTypes.Type(value = CicsFileDocument.class, name = "CICS_FILE_CONTROL"),
         @JsonSubTypes.Type(value = IfDocument.class, name = "IF"),
@@ -30,7 +31,7 @@ final class Wire211 {
         @JsonSubTypes.Type(value = ConditionalGoToDocument.class, name = "GO_TO_DEPENDING_ON"),
         @JsonSubTypes.Type(value = ObservedDocument.class, name = "OBSERVED")
     })
-    sealed interface StatementDocument permits GobackDocument, MoveDocument, CallDocument, CicsDocument, CicsFileDocument, CicsHandlerDocument, CicsAbendDocument, IfDocument, ObservedDocument, PerformDocument, EvaluateDocument, GoToDocument, ConditionalGoToDocument, ProcedurePerformDocument {
+    sealed interface StatementDocument permits GobackDocument, MoveDocument, CallDocument, CicsDocument, CicsFileDocument, CicsHandlerDocument, CicsAbendDocument, CicsCommandDocument, IfDocument, ObservedDocument, PerformDocument, EvaluateDocument, GoToDocument, ConditionalGoToDocument, ProcedurePerformDocument {
         Wire.StatementHeaderDocument header();
     }
     record GoToDestinationDocument(int ordinal,@Nullable String target,@Nullable Wire.ProvenanceDocument procedureOrigin,
@@ -94,6 +95,8 @@ final class Wire211 {
         CicsHandlerTargetKind targetKind,@Nullable String targetSyntax,@Nullable ResolutionStatus labelBindingStatus,
         @Nullable CicsHandlerLabelDocument labelTarget,@Nullable String targetEntry,@Nullable Wire.ProvenanceDocument entryOrigin,
         @Nullable Wire.ProvenanceDocument targetOrigin,@Nullable TargetDocument programTarget,CicsHandlerScopeDocument scope,
+        String rawText,List<CicsOptionDocument> options,List<String> gapCodes) implements StatementDocument { }
+    record CicsCommandDocument(Wire.StatementHeaderDocument header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
         String rawText,List<CicsOptionDocument> options,List<String> gapCodes) implements StatementDocument { }
     record CicsAbendDocument(Wire.StatementHeaderDocument header,CicsAbendEventKind eventKind,CicsAbendEligibility dispatchEligibility,
         String rawText,List<CicsOptionDocument> options,List<String> gapCodes) implements StatementDocument { }

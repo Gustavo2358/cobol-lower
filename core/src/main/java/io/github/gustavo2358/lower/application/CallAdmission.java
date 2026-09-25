@@ -192,7 +192,7 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(binding.status() == ResolutionStatus.RESOLVED
                 && binding.selected().equals(Optional.of(w.data())) && c.data(w.data()) != null,
             Rule.PROFILE_FACT, h.id().handle(), reference.provenance(), "Whole-item proof agrees with uniquely selected DATA"));
-        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact)&&binding.status()==ResolutionStatus.RESOLVED
+        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact||c.lookup(h.id()) instanceof CicsCommandFact)&&binding.status()==ResolutionStatus.RESOLVED
                 &&binding.selected().equals(Optional.of(data))&&c.data(data)!=null,
             Rule.PROFILE_FACT,h.id().handle(),reference.provenance(),"Logical access requires exact source or canonical typed CICS host and unique declaration"));
     }

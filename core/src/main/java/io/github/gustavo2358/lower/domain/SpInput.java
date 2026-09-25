@@ -55,7 +55,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         CicsContract.validateEntries(unit, statements, dataDeclarations);
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, CicsHandlerFact, CicsAbendFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, CicsHandlerFact, CicsAbendFact, CicsCommandFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -391,6 +391,18 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
+    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP }
+    public enum CicsCommandSyntaxStatus { SUPPORTED, UNAVAILABLE }
+    /** Positive source facts, retained independently of executable lowering. */
+    public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
+            String rawText,List<CicsOption> options,List<String> gapCodes) implements StatementFact {
+        public CicsCommandFact {
+            Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);
+            Objects.requireNonNull(rawText);options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
+            CicsContract.command(header,commandKind,syntaxStatus,rawText,options,gapCodes);
+        }
+        public ExecutableLowering executableLowering(){return ExecutableLowering.NOT_READY;}
+    }
     public enum CicsCommand { LINK, XCTL }
     public enum CicsConditions { LOCAL_CONDITION, DEFAULT_ENTRY_PREFIX, UNKNOWN }
     public record CicsOption(String name,Optional<String> operand,int start,int end,Optional<DataReference> reference) {
