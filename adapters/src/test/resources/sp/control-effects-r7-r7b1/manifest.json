@@ -1,0 +1,260 @@
+{
+  "frontendCommit": "bee7412e092f574398f7367281e6303dae344667",
+  "contractVersion": "2.44.0",
+  "fixtures": [
+    {
+      "fixture": "abend-cancel.json",
+      "sha256": "0557440aba6d380ec6b6bef7d5b5ae47e6c9f4e96edada6ee856ba99e3c35792",
+      "source": "source/abend-cancel.cbl",
+      "sourceSha256": "d39949948e5b0e6e6dcef90d9e416feb180d79fc04d0090c6720a1bdf0d03c7c",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "appc.json",
+      "sha256": "a01a0a519ed74d3f7b42196941074ec38b2e23323abd1fdc4b04d69d5ca1a0d4",
+      "source": "source/appc.cbl",
+      "sourceSha256": "51cf07d8405cfed0ade2c26863755b2026aecf20dd21bfd38a6a551d87004cf7",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "bad-length.json",
+      "sha256": "803ca1203cd28999652e07256574bea834d6e13065c78c9dca3250f27fa31e53",
+      "source": "source/bad-length.cbl",
+      "sourceSha256": "9bfff50bc9693ffcc94399900ff9dc033e3e1ab5c00df310d476f412489a5412",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "bad-option.json",
+      "sha256": "ba7fef6a33d5e88c2cba452d30b32a9258df4caec8fd8213b828c03c0cbabd84",
+      "source": "source/bad-option.cbl",
+      "sourceSha256": "48b541d2adf7e2bd819dd56bc9cd2596d5172344d02258204d96f7389d53e34e",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "cancel-entry.json",
+      "sha256": "a34b784acc8312209ac3b67916dd694628fef57a9d069663b046c901da9221c4",
+      "source": "source/cancel-entry.cbl",
+      "sourceSha256": "1fd2cd0caf606b88f9f2a5a7a28ea3f46d378a1476288ce96b5d34a21e8bc354",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "cancel-noop.json",
+      "sha256": "fbcde3edec08aca89012a992883c4b76e815a07a2e98f0eaaba980bc63e17d97",
+      "source": "source/cancel-noop.cbl",
+      "sourceSha256": "83d4a8d3379cedcd3eb3de085057ddc19baa9702bbea0115f3502e3719da6f2e",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "changed-handler.json",
+      "sha256": "6fae8a7a9037272cdc25cb8b747d874ad226e889cb41fb20f1f684093b2f1285",
+      "source": "source/changed-handler.cbl",
+      "sourceSha256": "f1ffcf32ef9e4920fdf58cd97a8e8fc0b5e260702878f90802d61390b4f13a2c",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "control.json",
+      "sha256": "caf756dcd9b0918554172959884fb1435e3dc30fd0798d0682608193ef039c17",
+      "source": "source/control.cbl",
+      "sourceSha256": "525b22331738a8f2810229c160749951fff1fbea110ac5424997da56217fe4eb",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "copy.json",
+      "sha256": "f8b8fefc4c7f6bbff61d711d063e9af1eb968553c5301d9e0fe030f560857267",
+      "source": "source/copy.cbl",
+      "sourceSha256": "5d522816f2eabed6130d073fed7db3a36ea564a95034d1fb4f7d6bfa0238aab1",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "data-length.json",
+      "sha256": "ac804c5008ea000ea5c88c136bd9623814b3339eed6f6a799fdbd775ba320681",
+      "source": "source/data-length.cbl",
+      "sourceSha256": "4f3c0994e994d5c49ab256db43355949153d4c3e8fc80306c07f7bf0dfca09b3",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "dead.json",
+      "sha256": "e5b64326ccc47ba605c6940932ff34fa43193aa9300625d36e3c20b18f5b80f2",
+      "source": "source/dead.cbl",
+      "sourceSha256": "3bcfda2874e5cf4845001662de756896d44e889bd6e09c02f99d25ddb6b4a3ea",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "duplicate.json",
+      "sha256": "3c117b29395b14973a92e2991d42175c8be6b20abe42bb347c3586510870af79",
+      "source": "source/duplicate.cbl",
+      "sourceSha256": "6bee50e60e2713acebe10084d82653153f30c019e3a4059a08e7a19a88263447",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "erase.json",
+      "sha256": "d841e348c4cfd9eb1136d1d705617f1ae41d9f0fb13c42a3df991b72c9c5052d",
+      "source": "source/erase.cbl",
+      "sourceSha256": "a915105ce5cd852803469e03c7f1bd56fbe833a62fbd37a9fae2e58c449ed0fc",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "from.json",
+      "sha256": "9a417d78b74b96f8094deb5c6087a9f8956d5aad9c03580f574964f3ac4b8a50",
+      "source": "source/from.cbl",
+      "sourceSha256": "24e1087df0d480e2103019a9e4cc1c90448539be75eba7b55291ea2211ba1d67",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "group.json",
+      "sha256": "e93ba5fc43472582af61e07d4f682e5349411c18f6d20fb1ac873aaad83ad6fc",
+      "source": "source/group.cbl",
+      "sourceSha256": "7618a867d1310a07a8683a10af16f5f423e18ea7ea4a8e5976f88cfb7d964d84",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "group-array.json",
+      "sha256": "6a1384136bfa96893c8d877980021964ac50829d3ae246fc6d212592f85175fd",
+      "source": "source/group-array.cbl",
+      "sourceSha256": "11c7e6f3c87d8d583cc45d1bcc51cf3020cb51bb7cd301dbc776380f45bed1c0",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "group-extra.json",
+      "sha256": "7550c0bb411f4b61691ae3e7d3fa6347ea32e8a66a25a2777d6b3dd0b951c01f",
+      "source": "source/group-extra.cbl",
+      "sourceSha256": "ec21d68eb926f84637ed559baed1f218dfb073ee7ccb302e20d951d1c11e7468",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "length-of.json",
+      "sha256": "342fc5e87e9e191234196c957e851464f8dfcf195ab07b26489d107460b461d6",
+      "source": "source/length-of.cbl",
+      "sourceSha256": "f5f98eb6a905e6448625057fda398207f93408323e384b3821a64abbd5bbb870",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "literal.json",
+      "sha256": "e9e8aa5df80c568275a27aad41de03e8017c3d16291fb9a5bef4687741a4a841",
+      "source": "source/literal.cbl",
+      "sourceSha256": "97edac26c6bcb58b39a522af7f44bc518e48d0c4cf6cfee11e46ff471fa967c5",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "map.json",
+      "sha256": "c915014fac95b6471646f82551318d162141e561b8e0cbd6a4d5ae39ecc363d6",
+      "source": "source/map.cbl",
+      "sourceSha256": "3939b00298ecd4f6392d45bea9f61d55914601fb3b0b5cca97ecd1a8f9c8d3e9",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "missing-from.json",
+      "sha256": "afaed9a4284fd7787187373e6507a6dc9f1d9a8b3739382574ecfcfe0e9fb042",
+      "source": "source/missing-from.cbl",
+      "sourceSha256": "7ffe1d08d827818435b1b25061692f82c4e976172c2b040176d7efbfd5d14785",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "no-nohandle.json",
+      "sha256": "1ef4c8648bb1a72c9f799312530d31f4e001766aa510957278eee64abde1a200",
+      "source": "source/no-nohandle.cbl",
+      "sourceSha256": "cf1e22a6a91c3c1ff50198f8de5c2c0d39db5d1fec33c491bc61abaaeb9b637b",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "nohandle.json",
+      "sha256": "e0d31f73724461f51fac67756f2f3081cf2a13baedec09fa8db62c1ee3eb4e0d",
+      "source": "source/nohandle.cbl",
+      "sourceSha256": "178ff29991f74b54ec4184f27ac4f7204afcb2b7195a61065d2e712613538004",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "noop-cancel.json",
+      "sha256": "02cd1c7bbb26ff9f5a4e95aae2e921c3ee8af2cb04aba4126bdfe05467b90d2c",
+      "source": "source/noop-cancel.cbl",
+      "sourceSha256": "0ba59901e09e1f958cee1ed87c749e71099617eaa51ee5b68338abe00d25c40e",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "real-derived.json",
+      "sha256": "b849bd3206c8da7570198c30af77e5a13b14b1c915f5fcd70d3724271e097778",
+      "source": "source/real-derived.cbl",
+      "sourceSha256": "0ba5151753031e13ad1358e8a04910e0d5378748ceb997396ca30634f631effa",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "renamed.json",
+      "sha256": "9126ab7f1b6bd3d679d236e2bb25f1d2bb355f13966d9d8e8fbebd2e8c652323",
+      "source": "source/renamed.cbl",
+      "sourceSha256": "5a5bfa827e2416ecf21cb426fa5fa721384df9474bff01609c1ea432dfc7b9a8",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "replace-cancel.json",
+      "sha256": "4ef2f871d812f39abc3bb49e905e41c0b585d08763f52b5dd6b20874127af5fe",
+      "source": "source/replace-cancel.cbl",
+      "sourceSha256": "e18ed190bd5941042aea2ded4b802a57d6ae7fd108b448409f16983d4b3c09bf",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "reset-cancel.json",
+      "sha256": "da45ad269456596092b6ae0addcb6548c3a5fb7dda109fea88bd8edd8cdf6dcb",
+      "source": "source/reset-cancel.cbl",
+      "sourceSha256": "2fa4427eac80584bf79d4b53d004e1797a45edefe9d895dae101e93ec99d82a6",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "standalone.json",
+      "sha256": "b04fb69836b6a0a9e9c57621321f15cb161e0f2cf6ed960c72c3fbb82030e2ff",
+      "source": "source/standalone.cbl",
+      "sourceSha256": "8c46a9622c4aee41df40597cc4154131143b9c76b3dacd056053ff8360ffff60",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "text.json",
+      "sha256": "e81fe20d2b6c5c6e8907e936e2c74385b9dcf63425a7240f5ba617cc5363c1ce",
+      "source": "source/text.cbl",
+      "sourceSha256": "ff641cb3efa92e34039d1eefe844feca43acfa1b369118d16c052a7b1cf72ff6",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "truncated.json",
+      "sha256": "7a98f25487837d1522f0b797ed9a6336b7a42b32e973ed8b119f8ea8895453ff",
+      "source": "source/truncated.cbl",
+      "sourceSha256": "c45725481595132a8e458ba0eb30cff57ad28e9647b8b5110cf9117504ec1b1d",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "unresolved.json",
+      "sha256": "1baf3f92a9b49ed0c297a3e11637e2a4c1ad3f0f442ebae3d89c2209260ec6c4",
+      "source": "source/unresolved.cbl",
+      "sourceSha256": "d4522be2b755a3fb5cf2581079a4aebea001fdc4bd3ccebba9d0fd3ff8f8fe8b",
+      "explicitOptions": []
+    },
+    {
+      "fixture": "views-enabled.json",
+      "sha256": "fc0907332508f5f8383233899907942cf81e8546c8fae9d91b1c99efcdcde634",
+      "source": "source/group-views.cbl",
+      "sourceSha256": "3785d53bb376d743c9e7b8a50e86099d3fc0fb60268a3d7e4459d04c2dd70804",
+      "explicitOptions": [
+        "--logical-text",
+        "enabled"
+      ]
+    },
+    {
+      "fixture": "views-disabled.json",
+      "sha256": "5e642494491d3f43b5be8ed41f9f36181d01aa1548f241086634028aed8bdd64",
+      "source": "source/group-views.cbl",
+      "sourceSha256": "3785d53bb376d743c9e7b8a50e86099d3fc0fb60268a3d7e4459d04c2dd70804",
+      "explicitOptions": [
+        "--logical-text",
+        "disabled"
+      ]
+    },
+    {
+      "fixture": "views-physical.json",
+      "sha256": "fd9b31277a241a964c1410927a2718d82dcd4ac69a95223b2db92bc812336b69",
+      "source": "source/group-views.cbl",
+      "sourceSha256": "3785d53bb376d743c9e7b8a50e86099d3fc0fb60268a3d7e4459d04c2dd70804",
+      "explicitOptions": [
+        "--storage-profile",
+        "ibm-enterprise-6.4-fixed-display-1047@1"
+      ]
+    }
+  ]
+}
