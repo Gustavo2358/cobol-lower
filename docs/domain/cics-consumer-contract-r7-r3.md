@@ -19,3 +19,9 @@ CicsConsumerContractSuite is part of FAST. Its 17 frontend-generated fixtures in
 Historical SP 2.40 byte fixtures and semantic oracles are unchanged. Validation includes FAST, local full, historical wire/FD/topology/FILE gates, 73 hash-certified CardDemo SP products, deterministic typed replay and decode telemetry. No frontend tests are claimed as rerun by R7-R3.
 
 To regenerate each compatibility fixture, use ExplorerMain from frontend 1db76b3, Java 21 and -Xmx2g with `--source <name.cbl> --copybooks <cpy> --output <output>`; retain the emitted cobol-semantic-product.json unchanged. The consumer uses the existing 1 GiB test heap and INPUT_LIMITS.
+
+## R7-R3-R1 — consistency before executable readiness
+
+`PartialProgramAdmission.validateKnownFacts` reuses the existing structural, topology, storage, CALL, CICS/FILE, PERFORM, GO TO, EVALUATE, IF and other-effect validators before checking NOT_READY. A detectable independent contradiction returns INVALID_INPUT, including when valid handler/event facts coexist. Only a consistent input reaches the READINESS diagnostic in Phase.ADMISSION. NOT_READY still blocks all executable profile selection and publication; it does not reclassify capability gaps as invalid facts. Legacy executable profile qualification remains after this barrier.
+
+`ValidationBeforeReadinessSuite` adds paired real-producer fixtures with historical statements and handler/event/both. Three separate wire contradictions (CICS conditions, CALL continuation, FILE target mode) must each remain INVALID_INPUT in all four contexts. Valid mixed inputs retain IMPLEMENTATION_LIMIT and empty publication at both single-unit and compilation boundaries. The R7-R3 contract suite and its eleven mutations retain their original expectations.

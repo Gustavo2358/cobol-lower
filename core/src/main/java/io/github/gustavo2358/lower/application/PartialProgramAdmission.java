@@ -13,95 +13,17 @@ final class PartialProgramAdmission {
         var c = new EntryGobackAdmission.Context(input, limits, true);
         try {
             if (input == null) { c.require(false,Rule.INPUT_REQUIRED,"input",null,"SP input required"); return rejected(c,Status.INVALID_INPUT); }
-            EntryGobackAdmission.validate(input, c);
+            // Phase A: published-fact consistency is independent of executable capability.
+            validateKnownFacts(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
-            if(input.controlTopology().isPresent())TopologyBinding.validate(input,c);
-            if(input.controlTopology().isEmpty())for(var relation:input.ordinaryContinuations().entrySet()) {
-                var source=c.lookup(relation.getKey());var destination=relation.getValue();
-                c.require(source instanceof MoveFact || source instanceof IfFact || source instanceof EvaluateFact
-                    || source instanceof PerformFact || source instanceof ProcedurePerformFact,Rule.STRUCTURE,
-                    relation.getKey().handle(),destination.provenance(),"ordinary continuation requires completing construction");
-                if(source!=null) {
-                    CallAdmission.continuation(destination,source.header(),c);
-                    c.require(destination.availability()==ContinuationAvailability.KNOWN && destination.statement().isPresent()
-                        && destination.provenance().exact(),Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"positive ordinary relation required");
-                    c.require(!destination.statement().equals(Optional.of(relation.getKey())), Rule.STRUCTURE,
-                        relation.getKey().handle(), destination.provenance(), "ordinary continuation cannot target its source");
-                    var intrinsic=next(source);
-                    c.require(intrinsic==null || intrinsic.statement().isEmpty() || intrinsic.statement().equals(destination.statement()),
-                        Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"ordinary and intrinsic successors agree when both known");
-                }
-            }
-            if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
+            // Phase B: readiness gates all executable profile qualification and lowering.
+            c.phase=Phase.ADMISSION;
             if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)) {
                 for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact)
                     c.require(false,Rule.READINESS,s.header().id().handle(),s.header().provenance(),
                         "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
                 return rejected(c,Status.IMPLEMENTATION_LIMIT);
             }
-            CallAdmission.validateFacts(input,c);
-            var goToTargets=new HashMap<ProcedureId,GoToAdmission.CanonicalTarget>();
-            var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
-            for(var s:input.statements()) if(s.header().containment().branch()==Branch.EVALUATE_ARM)
-                s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
-            for (var s : input.statements()) {
-                var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
-                if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
-                if(s instanceof CicsFileFact x) CicsFileAdmission.validate(x,c);
-                if(s instanceof OtherStatement o) {
-                    var operands=new HashSet<OperandId>();
-                    for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
-                    o.effects().ifPresent(e->{
-                        var refs=new HashMap<OperandId,DataReference>();o.knownReferences().forEach(r->refs.put(r.id(),r));
-                        for(var ids:List.of(e.knownReads(),e.mayWrites(),e.mustOverwrite(),e.exposedRegions())) {
-                            c.require(new HashSet<>(ids).size()==ids.size(),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand inventory is distinct");
-                            for(var id:ids)c.require(refs.containsKey(id),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand belongs to statement");
-                        }
-                        for(var id:e.mayWrites())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.WRITE,Rule.PROFILE_FACT,o.header().id().handle(),null,"write role required");
-                        c.require(e.mustOverwrite().isEmpty()||(e.proof()==EffectProof.INITIALIZE_TARGETS||e.proof()==EffectProof.ACCEPT_TARGET)
-                            &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE,
-                            Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires bounded supported receiver proof");
-                        for(var id:e.mustOverwrite())c.require(refs.containsKey(id)&&
-                            (e.proof()==EffectProof.ACCEPT_TARGET?refs.get(id).wholeItemAccess().isPresent():refs.get(id).regionalAccess().isPresent()),
-                            Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires exact whole item or physical access");
-                        c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
-                        if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN,
-                            Rule.PROFILE_FACT,o.header().id().handle(),null,"receiver value transform remains uninterpreted");
-                        for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
-                        if(e.proof()==EffectProof.NO_OP)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE&&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"NO_OP proof has no effects");
-                        if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
-                            &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
-                            &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
-                    });
-                }
-                if (s instanceof ProcedurePerformFact p) ProcedurePerformAdmission.validate(p,c);
-                if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);
-                if (s instanceof ConditionalGoToFact g) GoToAdmission.validate(g,c,goToTargets);
-                if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
-                if (s instanceof IfFact f) {
-                    var operands = new HashSet<OperandId>();
-                    for (var ref : f.conditionReads()) CallAdmission.reference(ref,f.header(),operands,c);
-                    c.provenance(f.conditionProvenance()); c.provenance(f.predicateGuarantee().provenance());
-                    c.provenance(f.thenArm().provenance()); c.provenance(f.elseArm().provenance());
-                    validateArm(f,f.thenArm(),Branch.THEN,c); validateArm(f,f.elseArm(),Branch.ELSE,c);
-                }
-                if (s instanceof PerformFact p) {
-                    p.target().ifPresent(t -> { c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin()); c.provenance(t.referenceOrigin()); c.provenance(t.paragraphOrigin()); });
-                    for (var list : List.of(p.primaryStatements(),p.targetStatements())) {
-                        var unique = new HashSet<StatementId>();
-                        for (var id : list) { c.touch(); c.require(id.unit().equals(input.unit()) && c.lookup(id)!=null && unique.add(id),Rule.STRUCTURE,id.handle(),null,"PERFORM members are distinct published statements"); }
-                    }
-                }
-            }
-            if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
-            input.storageIndependence().filter(p -> p.availability()==Availability.KNOWN).ifPresent(p -> {
-                var members=new HashSet<DataId>();
-                c.require(p.members().size()>=2 && p.authority().equals("IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE")
-                    && p.gapCodes().isEmpty() && p.provenance().filter(Provenance::exact).isPresent(),Rule.PROFILE_FACT,"storage-independence",null,"complete source-derived storage proof required");
-                for(var id:p.members())c.require(id.unit().equals(input.unit()) && c.data(id)!=null && members.add(id),Rule.STRUCTURE,id.handle(),null,"storage proof has distinct published members");
-            });
-            if (!c.diagnostics.isEmpty())return rejected(c,Status.INVALID_INPUT);
-            c.phase=Phase.ADMISSION;
             if(input.factDependencies().isEmpty())for(var id:RegionalDataTranslator.sourceText(c.regionalStorage)) {
                 var view=c.regionalStorage.byData().get(id);if(view==null)continue;
                 var base=c.regionalStorage.bases().get(view.base());
@@ -205,6 +127,91 @@ final class PartialProgramAdmission {
                 .sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
             return new Plan(c.result(Status.ADMITTED),data,statements,Set.copyOf(precise),Map.copyOf(bodies),Map.copyOf(ranges),CompositionalPerformAdmission.plan(input,c,ranges),c.regionalStorage,Set.copyOf(fitted));
         } catch(EntryGobackAdmission.LimitReached ex) {return rejected(c,Status.IMPLEMENTATION_LIMIT);}
+    }
+    /** Reuses factual authorities without selecting an executable profile. */
+    private static void validateKnownFacts(SpInput input, EntryGobackAdmission.Context c) {
+        EntryGobackAdmission.validate(input, c);
+        if (!c.diagnostics.isEmpty()) return;
+        if(input.controlTopology().isPresent())TopologyBinding.validate(input,c);
+        if(input.controlTopology().isEmpty())for(var relation:input.ordinaryContinuations().entrySet()) {
+            var source=c.lookup(relation.getKey());var destination=relation.getValue();
+            c.require(source instanceof MoveFact || source instanceof IfFact || source instanceof EvaluateFact
+                || source instanceof PerformFact || source instanceof ProcedurePerformFact,Rule.STRUCTURE,
+                relation.getKey().handle(),destination.provenance(),"ordinary continuation requires completing construction");
+            if(source!=null) {
+                CallAdmission.continuation(destination,source.header(),c);
+                c.require(destination.availability()==ContinuationAvailability.KNOWN && destination.statement().isPresent()
+                    && destination.provenance().exact(),Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"positive ordinary relation required");
+                c.require(!destination.statement().equals(Optional.of(relation.getKey())), Rule.STRUCTURE,
+                    relation.getKey().handle(), destination.provenance(), "ordinary continuation cannot target its source");
+                var intrinsic=next(source);
+                c.require(intrinsic==null || intrinsic.statement().isEmpty() || intrinsic.statement().equals(destination.statement()),
+                    Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"ordinary and intrinsic successors agree when both known");
+            }
+        }
+        if (!c.diagnostics.isEmpty()) return;
+        CallAdmission.validateFacts(input,c);
+        var goToTargets=new HashMap<ProcedureId,GoToAdmission.CanonicalTarget>();
+        var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();
+        for(var s:input.statements()) if(s.header().containment().branch()==Branch.EVALUATE_ARM)
+            s.header().containment().parent().ifPresent(id -> evaluateMembers.computeIfAbsent(id,k->new HashSet<>()).add(s.header().id()));
+        for (var s : input.statements()) {
+            var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
+            if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
+            if(s instanceof CicsFileFact x) CicsFileAdmission.validate(x,c);
+            if(s instanceof OtherStatement o) {
+                var operands=new HashSet<OperandId>();
+                for(var ref:o.knownReferences())CallAdmission.reference(ref,o.header(),operands,c);
+                o.effects().ifPresent(e->{
+                    var refs=new HashMap<OperandId,DataReference>();o.knownReferences().forEach(r->refs.put(r.id(),r));
+                    for(var ids:List.of(e.knownReads(),e.mayWrites(),e.mustOverwrite(),e.exposedRegions())) {
+                        c.require(new HashSet<>(ids).size()==ids.size(),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand inventory is distinct");
+                        for(var id:ids)c.require(refs.containsKey(id),Rule.PROFILE_FACT,o.header().id().handle(),null,"effect operand belongs to statement");
+                    }
+                    for(var id:e.mayWrites())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.WRITE,Rule.PROFILE_FACT,o.header().id().handle(),null,"write role required");
+                    c.require(e.mustOverwrite().isEmpty()||(e.proof()==EffectProof.INITIALIZE_TARGETS||e.proof()==EffectProof.ACCEPT_TARGET)
+                        &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE,
+                        Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires bounded supported receiver proof");
+                    for(var id:e.mustOverwrite())c.require(refs.containsKey(id)&&
+                        (e.proof()==EffectProof.ACCEPT_TARGET?refs.get(id).wholeItemAccess().isPresent():refs.get(id).regionalAccess().isPresent()),
+                        Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST requires exact whole item or physical access");
+                    c.require(e.mayWrites().containsAll(e.mustOverwrite()),Rule.PROFILE_FACT,o.header().id().handle(),null,"MUST is a known write");
+                    if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN,
+                        Rule.PROFILE_FACT,o.header().id().handle(),null,"receiver value transform remains uninterpreted");
+                    for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
+                    if(e.proof()==EffectProof.NO_OP)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE&&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"NO_OP proof has no effects");
+                    if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
+                        &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
+                        &&e.environment()==EnvironmentEffect.OUTPUT&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"DISPLAY proof is read-only storage with output environment");
+                });
+            }
+            if (s instanceof ProcedurePerformFact p) ProcedurePerformAdmission.validate(p,c);
+            if (s instanceof GoToFact g) GoToAdmission.validate(g,c,goToTargets);
+            if (s instanceof ConditionalGoToFact g) GoToAdmission.validate(g,c,goToTargets);
+            if (s instanceof EvaluateFact e) EvaluateAdmission.validate(e,evaluateMembers.getOrDefault(e.header().id(),Set.of()),c);
+            if (s instanceof IfFact f) {
+                var operands = new HashSet<OperandId>();
+                for (var ref : f.conditionReads()) CallAdmission.reference(ref,f.header(),operands,c);
+                c.provenance(f.conditionProvenance()); c.provenance(f.predicateGuarantee().provenance());
+                c.provenance(f.thenArm().provenance()); c.provenance(f.elseArm().provenance());
+                validateArm(f,f.thenArm(),Branch.THEN,c); validateArm(f,f.elseArm(),Branch.ELSE,c);
+            }
+            if (s instanceof PerformFact p) {
+                p.target().ifPresent(t -> { c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin()); c.provenance(t.referenceOrigin()); c.provenance(t.paragraphOrigin()); });
+                for (var list : List.of(p.primaryStatements(),p.targetStatements())) {
+                    var unique = new HashSet<StatementId>();
+                    for (var id : list) { c.touch(); c.require(id.unit().equals(input.unit()) && c.lookup(id)!=null && unique.add(id),Rule.STRUCTURE,id.handle(),null,"PERFORM members are distinct published statements"); }
+                }
+            }
+        }
+        if (!c.diagnostics.isEmpty()) return;
+        input.storageIndependence().filter(p -> p.availability()==Availability.KNOWN).ifPresent(p -> {
+            var members=new HashSet<DataId>();
+            c.require(p.members().size()>=2 && p.authority().equals("IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE")
+                && p.gapCodes().isEmpty() && p.provenance().filter(Provenance::exact).isPresent(),Rule.PROFILE_FACT,"storage-independence",null,"complete source-derived storage proof required");
+            for(var id:p.members())c.require(id.unit().equals(input.unit()) && c.data(id)!=null && members.add(id),Rule.STRUCTURE,id.handle(),null,"storage proof has distinct published members");
+        });
+        if (!c.diagnostics.isEmpty())return;
     }
     private static Set<StatementId> ordinaryInventory(SpInput input,Set<StatementId> specialized,EntryGobackAdmission.Context c) {
         var retained=new HashSet<StatementId>();var pending=new ArrayDeque<StatementId>();

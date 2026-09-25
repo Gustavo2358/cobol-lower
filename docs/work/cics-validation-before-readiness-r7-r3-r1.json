@@ -1,0 +1,10 @@
+{
+  "id": "R7-R3-R1",
+  "title": "Historical validation before CICS NOT_READY",
+  "status": "IN_PROGRESS",
+  "scope": [
+    "R7-R3-C01 independent factual validation before executable readiness"
+  ],
+  "pr": "https://github.com/Gustavo2358/cobol-lower/pull/34",
+  "notes": "Human review pending. Existing validator authorities and status taxonomy retained. No frontend, SP, AIR, CFG, state, replacement or dispatch changes. No merge authorized."
+}

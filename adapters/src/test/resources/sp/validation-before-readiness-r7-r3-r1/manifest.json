@@ -1,0 +1,26 @@
+{
+  "frontend": "1db76b3525588aa41438acd893bf51273e650909",
+  "lineage": "bounded-cics-r6/source/context-resumes.cbl with explicit FILE and handler/event statements; no mutation of historical fixture",
+  "fixtures": [
+    {
+      "source": "historical.cbl",
+      "sourceSha256": "76f8d205f2b44ab38483b61b7737c0db1c97833df88f734ebeeb72c9b5c8415f",
+      "spSha256": "7f9626fc17b0dd87c41273490fed6a06b3679c94e8c598e0c0530d56048d37b3"
+    },
+    {
+      "source": "handler.cbl",
+      "sourceSha256": "79c8c338f1df41b7cc6c95902c91ffaff6993e7bb4653a733965d502a6aeda92",
+      "spSha256": "edfd9500ad81436f195e2a5aebb8c336b50cfb604067a4a868523e8e446e817e"
+    },
+    {
+      "source": "abend.cbl",
+      "sourceSha256": "22a8ca0b115a7c6505b1605990e87e3834a605c901d60ce10dfb29cab578a2b0",
+      "spSha256": "207b6315b45a4ee435f06b9876cfaad3a9f4bc42b993a48154ae83c08163ffa7"
+    },
+    {
+      "source": "both.cbl",
+      "sourceSha256": "99410b0ab4e9a7a11539a0665ed46bdaef4b6f421b76b05a1d6b8e4e4c04e242",
+      "spSha256": "d46bab22b8a2f5d05e09b43cadf36bfa69bd0b906286e7d3fc0a89f1aca88ca4"
+    }
+  ]
+}

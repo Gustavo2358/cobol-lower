@@ -8,6 +8,7 @@ public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
         CicsConsumerContractSuite.main(new String[0]);
+        ValidationBeforeReadinessSuite.main(new String[0]);
         FactDependencyWireSuite.main(new String[0]);
         ControlTopologyWireSuite.main(new String[0]);
         TypedOccurrenceControlSuite.main(new String[0]);
