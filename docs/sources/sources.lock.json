@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "7f62ec15ef695e22cd5ff25752a78d21d3a1e899",
+      "commit": "6268d9f7a13af8fbf3e1fa66ed9a37e53fe51aad",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "2.43.0",
