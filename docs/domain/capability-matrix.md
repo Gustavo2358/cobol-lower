@@ -57,3 +57,7 @@ validação de fechamento no core e preservação de leitores históricos. Tradu
 de byte Assign, CopyBytes, HavocMust e CALL como Read de View implementada e
 coberta por oracles de arquivo/memória; M1 ainda exige values/dependências e
 o vertical group→child→CALL com seus gates cumulativos.
+
+## R7-R4 assessment boundary
+
+SP2.40/2.41/2.42 admission is retained. CICS_HANDLER and CICS_ABEND remain executable NOT_READY. [Local abstract state and dispatch assessment](cics-handler-state-r7-r4.md) are available through Admission.handlerState after factual validation. AIR and CFG are unchanged; runtime enclosing levels and executable dispatch are unmodeled.

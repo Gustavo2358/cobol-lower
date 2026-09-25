@@ -7,8 +7,13 @@ import java.util.Optional;
 
 /** Admission is not lowering success and never contains an AIR Publication. */
 public record Admission(Status status, Optional<SpInput> input, List<Diagnostic> diagnostics,
-                        Statistics statistics, boolean diagnosticsTruncated) {
+                        Statistics statistics, boolean diagnosticsTruncated, Optional<HandlerStateAnalysis> handlerState) {
+    public Admission(Status status, Optional<SpInput> input, List<Diagnostic> diagnostics, Statistics statistics, boolean diagnosticsTruncated) {
+        this(status,input,diagnostics,statistics,diagnosticsTruncated,Optional.empty());
+    }
     public Admission {
+        Objects.requireNonNull(handlerState);
+        if(status==Status.INVALID_INPUT&&handlerState.isPresent())throw new IllegalArgumentException("invalid input cannot have state analysis");
         Objects.requireNonNull(status); Objects.requireNonNull(input); Objects.requireNonNull(statistics);
         diagnostics = List.copyOf(diagnostics);
     }

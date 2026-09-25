@@ -19,6 +19,7 @@ final class PartialProgramAdmission {
             // Phase B: readiness gates all executable profile qualification and lowering.
             c.phase=Phase.ADMISSION;
             if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)) {
+                if(input.controlTopology().isPresent())c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
                 for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact)
                     c.require(false,Rule.READINESS,s.header().id().handle(),s.header().provenance(),
                         "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
