@@ -1195,7 +1195,9 @@ final class Materialize {
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
             case Wire211.CicsCommandDocument v -> new CicsCommandFact(h,v.commandKind(),v.syntaxStatus(),v.rawText(),
                 v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
-                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes(),
+                Optional.ofNullable(v.length()).map(e->new OperandExpression(e.kind(),Optional.ofNullable(e.integer()).map(java.math.BigInteger::new),
+                    Optional.ofNullable(e.reference()).map(r->reference(r,h.id(),unit)),provenance(e.provenance(),unit))));
             case Wire211.CicsAbendDocument v -> new CicsAbendFact(h,v.eventKind(),v.dispatchEligibility(),v.rawText(),
                 v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());

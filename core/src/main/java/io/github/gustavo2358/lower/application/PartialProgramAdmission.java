@@ -170,6 +170,7 @@ final class PartialProgramAdmission {
             if(s instanceof CicsCommandFact x) {
                 var operands=new HashSet<OperandId>();
                 for(var o:x.options())o.reference().ifPresent(r->CallAdmission.reference(r,x.header(),operands,c));
+                x.length().ifPresent(e->{c.provenance(e.provenance());e.reference().ifPresent(r->CallAdmission.reference(r,x.header(),operands,c));});
             }
             if(s instanceof CicsFact x) CicsInvokeHandler.validate(x,c);
             if(s instanceof CicsFileFact x) CicsFileAdmission.validate(x,c);

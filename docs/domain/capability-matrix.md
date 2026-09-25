@@ -61,3 +61,5 @@ o vertical group→child→CALL com seus gates cumulativos.
 ## R7-R4 assessment boundary
 
 SP2.40/2.41/2.42 admission is retained. CICS_HANDLER and CICS_ABEND remain executable NOT_READY. [Local abstract state and dispatch assessment](cics-handler-state-r7-r4.md) are available through Admission.handlerState after factual validation. AIR and CFG are unchanged; runtime enclosing levels and executable dispatch are unmodeled.
+
+R7-R7B: SP2.44 SEND_TERMINAL and structural LENGTH are admitted/validated. Executable SEND remains NOT_READY; independent bounded publication survives. See [contract](terminal-send-r7-r7b.md).

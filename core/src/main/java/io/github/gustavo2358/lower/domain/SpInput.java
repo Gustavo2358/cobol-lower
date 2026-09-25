@@ -391,16 +391,34 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
-    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP }
+    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL }
+    public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
+    /** Typed source expression. LENGTH_OF denotes declaration extent, not stored value. */
+    public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
+            Optional<DataReference> reference,Provenance provenance) {
+        public OperandExpression {
+            Objects.requireNonNull(kind);Objects.requireNonNull(integer);Objects.requireNonNull(reference);Objects.requireNonNull(provenance);
+            if(integer.isPresent()!=(kind==OperandExpressionKind.INTEGER)||reference.isPresent()!=(kind!=OperandExpressionKind.INTEGER))
+                throw new IllegalArgumentException("source expression shape");
+            if(reference.isPresent()&&reference.orElseThrow().role()!=OperandRole.READ)throw new IllegalArgumentException("expression operand role");
+        }
+    }
     public enum CicsCommandSyntaxStatus { SUPPORTED, UNAVAILABLE }
     /** Positive source facts, retained independently of executable lowering. */
     public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-            String rawText,List<CicsOption> options,List<String> gapCodes) implements StatementFact {
+            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length) implements StatementFact {
         public CicsCommandFact {
             Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);
             Objects.requireNonNull(rawText);options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
+            Objects.requireNonNull(length);
             CicsContract.command(header,commandKind,syntaxStatus,rawText,options,gapCodes);
+            boolean hasLength=options.stream().anyMatch(o->o.name().equals("LENGTH"));
+            if(length.isPresent()&&(commandKind!=CicsCommandKind.SEND_TERMINAL||!hasLength)
+                ||commandKind==CicsCommandKind.SEND_TERMINAL&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
+                throw new IllegalArgumentException("terminal LENGTH expression required exactly when published");
+            length.flatMap(OperandExpression::reference).ifPresent(r->{if(!r.id().statement().equals(header.id()))throw new IllegalArgumentException("expression owner");});
         }
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty());}
         public ExecutableLowering executableLowering(){return ExecutableLowering.NOT_READY;}
     }
     public enum CicsCommand { LINK, XCTL }

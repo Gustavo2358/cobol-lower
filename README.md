@@ -130,3 +130,5 @@ IDs locais usam `local-xxh3-128-v1` (XXH3-128 incremental, 32 hex), com registro
 colisões por publicação. A revisão escalar usa domínio versionado próprio; CP3
 mantém seus bytes. [Política anterior](docs/work/history/WORK-LOWER-005.md) e
 [extensão escalar](docs/domain/scalar-text-move.md).
+
+[SP2.44 terminal SEND contract and bounded executable stop](docs/domain/terminal-send-r7-r7b.md).

@@ -1,0 +1,15 @@
+       identification division.
+       program-id. SENDPROBE.
+       data division.
+       working-storage section.
+       01 RENAMED-DATA PIC X(16).
+       01 N PIC S9(4) COMP.
+       01 CONV PIC X(4).
+       procedure division.
+           EXEC CICS SEND
+               FROM(RENAMED-DATA)
+               LENGTH(LENGTH OF RENAMED-DATA)
+               NOHANDLE ERASE
+           END-EXEC.
+           CALL 'AFTER'.
+           GOBACK.

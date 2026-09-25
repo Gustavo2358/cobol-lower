@@ -95,8 +95,11 @@ public final class SpJsonDecoder {
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
+                if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
+                    throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
+                if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
             }
             if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().equals("cics-handle-abend-ordinary-return"))

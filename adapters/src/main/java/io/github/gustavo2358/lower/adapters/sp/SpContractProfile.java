@@ -3,7 +3,7 @@ package io.github.gustavo2358.lower.adapters.sp;
 import java.util.Set;
 
 /** Admission of exact wire versions. Inheritance is explicit; future versions never opt in. */
-record SpContractProfile(boolean factDependencies,boolean handlers,boolean abend,boolean commands) {
+record SpContractProfile(boolean factDependencies,boolean handlers,boolean abend,boolean commands,boolean terminalSend) {
     private static final Set<String> HISTORICAL=Set.of(
         "1.1.0","1.2.0","1.3.0","1.4.0","1.5.0","1.6.0","1.7.0","1.8.0","1.9.0",
         "2.0.0","2.1.0","2.2.0","2.3.0","2.4.0","2.5.0","2.6.0","2.7.0","2.8.0","2.9.0",
@@ -12,11 +12,12 @@ record SpContractProfile(boolean factDependencies,boolean handlers,boolean abend
         "2.29.0","2.30.0","2.31.0","2.32.0","2.33.0","2.34.0","2.35.0","2.36.0","2.37.0","2.38.0","2.39.0");
     static SpContractProfile admitted(String version) {
         return switch(version) {
-            case "2.40.0" -> new SpContractProfile(true,false,false,false);
-            case "2.41.0" -> new SpContractProfile(true,true,false,false);
-            case "2.42.0" -> new SpContractProfile(true,true,true,false);
-            case "2.43.0" -> new SpContractProfile(true,true,true,true);
-            default -> HISTORICAL.contains(version)?new SpContractProfile(false,false,false,false):null;
+            case "2.40.0" -> new SpContractProfile(true,false,false,false,false);
+            case "2.41.0" -> new SpContractProfile(true,true,false,false,false);
+            case "2.42.0" -> new SpContractProfile(true,true,true,false,false);
+            case "2.44.0" -> new SpContractProfile(true,true,true,true,true);
+            case "2.43.0" -> new SpContractProfile(true,true,true,true,false);
+            default -> HISTORICAL.contains(version)?new SpContractProfile(false,false,false,false,false):null;
         };
     }
 }
