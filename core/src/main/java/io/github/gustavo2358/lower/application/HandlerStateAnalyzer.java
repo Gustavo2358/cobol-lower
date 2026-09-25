@@ -8,9 +8,9 @@ import static io.github.gustavo2358.lower.domain.ControlTopology.*;
 import static io.github.gustavo2358.lower.application.HandlerStateAnalysis.*;
 
 /** Finite distributive tabulation over validated ControlTopology. No source order,
- * path enumeration, runtime level identity, AIR or exceptional edges. */
+ * path enumeration, runtime level identity, AIR executable edges. Source exceptional ingress requires a published descriptor. */
 final class HandlerStateAnalyzer {
-    private record Context(String id, ControlTopology.Binding binding) { }
+    private record Context(String id, ControlTopology.Binding binding, String ingress, boolean conditional) { }
     private record Subscriber(Node caller, String outcome, List<String> proofs) { }
     private final SpInput input;
     private final ControlTopology topology;
@@ -29,18 +29,22 @@ final class HandlerStateAnalyzer {
     private final Map<String,Set<Node>> summaries=new HashMap<>();
     private final Map<String,Set<Support>> before=new HashMap<>(), after=new HashMap<>();
     private final Map<String,Integer> pointCounts=new HashMap<>();
+    private final Map<String,List<ExceptionalEvent>> exceptionalEvents=new HashMap<>();
+    private final Set<Selection> selections=new HashSet<>();
+    private final Set<String> conditionallyReached=new HashSet<>();
     private long pops, joins, maxAtPoint;
 
     HandlerStateAnalyzer(SpInput input) { this(input,false); }
     // Package access solely to exercise worklist scheduling independence.
     HandlerStateAnalyzer(SpInput input,boolean reverse) {
         this.input=input;this.reverse=reverse;topology=input.controlTopology().orElseThrow();binder=new TopologyBinding(topology);
+        topology.exceptionalEvents().forEach(e->exceptionalEvents.computeIfAbsent(e.statement(),k->new ArrayList<>()).add(e));
         input.statements().forEach(s->statements.put(s.header().id().handle(),s));
         for(var s:statements.values())if(s instanceof CicsHandlerFact h&&h.action()==CicsHandlerAction.ACTIVATE)catalog(h);
         for(var b:topology.bindings()) {var map=new HashMap<String,ControlTopology.Phase>();b.phases().forEach(p->map.put(p.id(),p));phases.put(b.id(),map);}
     }
     HandlerStateAnalysis analyze() {
-        var root=new Context("ROOT",null);contexts.put(root.id(),root);
+        var root=new Context("ROOT",null,"",false);contexts.put(root.id(),root);
         var initial=new Support(new State(Kind.ENTRY_UNKNOWN,"",Cause.NONE),Optional.empty());
         binder.primaryEntry().ifPresent(e->route(root,e,initial,Optional.empty(),Optional.empty(),"PRIMARY_ENTRY",e.proofs()));
         while(!work.isEmpty()) {
@@ -57,7 +61,8 @@ final class HandlerStateAnalyzer {
             ordered(reached,HandlerStateAnalyzer::nodeKey),ordered(derivations,HandlerStateAnalyzer::derivationKey),
             ordered(frontiers,f->nodeKey(f.source())+"/"+f.authority()+"/"+f.reference()),
             new Metrics(topology.occurrences().size(),topology.outcomes().size()+topology.bindings().stream().flatMap(b->b.phases().stream()).mapToLong(p->p.edges().size()).sum(),
-                operations.size(),targets.size(),reached.stream().map(n->n.support().state()).distinct().count(),contexts.size(),pops,reached.size(),joins,maxAtPoint));
+                operations.size(),targets.size(),reached.stream().map(n->n.support().state()).distinct().count(),contexts.size(),pops,reached.size(),joins,maxAtPoint),
+            ordered(selections,x->x.event()+"/"+nodeKey(x.source())));
     }
     private void catalog(CicsHandlerFact h) {
         String id;TargetForm form;
@@ -73,9 +78,11 @@ final class HandlerStateAnalyzer {
     private void occurrence(Node node) {
         var statement=statements.get(node.location());
         before.computeIfAbsent(node.location(),k->new HashSet<>()).add(node.support());
+        var context=contexts.get(node.context());
+        if(context.conditional())conditionallyReached.add(node.location());
+        for(var event:exceptionalEvents.getOrDefault(node.location(),List.of()))select(node,event,context);
         // ABEND is a query, never a completion/return, including unavailable eligibility.
         if(statement instanceof CicsAbendFact)return;
-        var context=contexts.get(node.context());
         for(var outcome:binder.outcomes(node.location())) {
             if(outcome.kind()==OutcomeKind.LOCAL_INVOKE) {invoke(node,outcome);continue;}
             var next=node.support();
@@ -87,9 +94,37 @@ final class HandlerStateAnalyzer {
                 next=transfer(h,next);
                 after.computeIfAbsent(node.location(),k->new HashSet<>()).add(next);
             } else if(statement instanceof CallFact)next=unknown(Cause.CALL_EFFECT_UNAVAILABLE);
-            var resolved=binder.resolve(outcome.target(),context.binding());
+            var resolved=binder.resolve(outcome.target(),context.binding(),!context.ingress().isEmpty());
             route(context,resolved,next,Optional.of(node),Optional.empty(),outcome.id(),merge(outcome.proofs(),resolved.proofs()));
         }
+    }
+    private void select(Node source,ExceptionalEvent event,Context sourceContext) {
+        boolean bypass=event.eligibility()==EventEligibility.HANDLERS_BYPASSED;
+        var state=source.support().state();boolean unknown=false,inactive=false,outer=false;
+        Optional<String> selected=Optional.empty();Optional<Support> entryState=Optional.empty();Optional<Node> localEntry=Optional.empty();
+        if(!bypass) {
+            if(state.kind()==Kind.ACTIVE) {
+                var target=targets.get(state.target());
+                selected=Optional.of(target.id());
+                var deactivated=new Support(new State(Kind.DEACTIVATED,target.id(),Cause.NONE),source.support().activation());
+                entryState=Optional.of(deactivated);
+                unknown=target.form()==TargetForm.LABEL_UNRESOLVED||target.form()==TargetForm.PROGRAM_UNRESOLVED;
+                if(target.form()==TargetForm.LABEL_LOCAL&&target.entry().isPresent()) {
+                    // No return to the faulting callsite. Unknown restored completion stays bounded.
+                    boolean conditional=sourceContext.conditional()||!event.premises().isEmpty();
+                    String ingress=event.id()+"/"+supportKey(source.support());
+                    String key="HANDLER/"+ingress+"/"+conditional;
+                    contexts.computeIfAbsent(key,k->new Context(k,null,ingress,conditional));
+                    var destination=new Node(key,target.entry().orElseThrow().handle(),deactivated);
+                    localEntry=Optional.of(destination);
+                    insert(destination,Optional.of(source),Optional.empty(),event.id()+"/SELECT/"+target.id(),event.proofs());
+                }
+            } else if(state.kind()==Kind.CANCELED||state.kind()==Kind.DEACTIVATED||state.kind()==Kind.CANCELED_UNKNOWN) {
+                inactive=true;outer=true;
+            } else {unknown=true;inactive=true;outer=true;}
+        }
+        selections.add(new Selection(event.id(),source,event.origin().name(),event.premises().stream().map(Enum::name).toList(),
+            selected,entryState,localEntry,unknown,inactive,outer,bypass,event.proofs()));
     }
     private Support transfer(CicsHandlerFact h,Support predecessor) {
         return switch(h.action()) {
@@ -98,7 +133,7 @@ final class HandlerStateAnalyzer {
                 ?new Support(new State(Kind.CANCELED_UNKNOWN,"",Cause.NONE),Optional.empty())
                 :new Support(new State(Kind.CANCELED,predecessor.state().target(),Cause.NONE),predecessor.activation());
             case RESET -> switch(predecessor.state().kind()) {
-                case CANCELED -> new Support(new State(Kind.ACTIVE,predecessor.state().target(),Cause.NONE),predecessor.activation());
+                case CANCELED,DEACTIVATED -> new Support(new State(Kind.ACTIVE,predecessor.state().target(),Cause.NONE),predecessor.activation());
                 case CANCELED_UNKNOWN -> unknown(Cause.RESET_HISTORY_UNAVAILABLE);
                 default -> unknown(Cause.RESET_WITHOUT_CANCELED_EVIDENCE);
             };
@@ -108,8 +143,9 @@ final class HandlerStateAnalyzer {
     private static Support unknown(Cause cause) {return new Support(new State(Kind.UNKNOWN,"",cause),Optional.empty());}
     private void invoke(Node caller,Outcome outcome) {
         var binding=binder.binding(outcome.binding());
-        String key=binding.id()+"|"+supportKey(caller.support());
-        var callee=contexts.computeIfAbsent(key,k->new Context(k,binding));
+        var parent=contexts.get(caller.context());
+        String key=binding.id()+"|"+supportKey(caller.support())+(parent.ingress().isEmpty()?"":"|INGRESS/"+parent.ingress()+"/"+parent.conditional());
+        var callee=contexts.computeIfAbsent(key,k->new Context(k,binding,parent.ingress(),parent.conditional()));
         var subscriber=new Subscriber(caller,outcome.id(),outcome.proofs());
         if(subscribers.computeIfAbsent(key,k->new HashSet<>()).add(subscriber))
             for(var exit:summaries.getOrDefault(key,Set.of()))resume(callee,exit,subscriber);
@@ -129,7 +165,7 @@ final class HandlerStateAnalyzer {
     }
     private void resume(Context callee,Node exit,Subscriber subscriber) {
         var callerContext=contexts.get(subscriber.caller().context());
-        var resolved=binder.resolve(callee.binding().resume(),callerContext.binding());
+        var resolved=binder.resolve(callee.binding().resume(),callerContext.binding(),!callerContext.ingress().isEmpty());
         route(callerContext,resolved,exit.support(),Optional.of(exit),Optional.of(subscriber.caller()),
             callee.binding().id()+"/RESUME/"+subscriber.outcome(),merge(callee.binding().proofs(),resolved.proofs()));
     }
@@ -150,7 +186,8 @@ final class HandlerStateAnalyzer {
     private Event assess(CicsAbendFact event,List<Support> states) {
         boolean bypass=event.dispatchEligibility()==CicsAbendEligibility.HANDLERS_BYPASSED;
         var status=states.isEmpty()?EventStatus.NOT_REACHED_IN_PUBLISHED_TOPOLOGY:
-            event.dispatchEligibility()==CicsAbendEligibility.UNAVAILABLE?EventStatus.ELIGIBILITY_UNAVAILABLE:EventStatus.ASSESSED;
+            event.dispatchEligibility()==CicsAbendEligibility.UNAVAILABLE?EventStatus.ELIGIBILITY_UNAVAILABLE:
+            conditionallyReached.contains(event.header().id().handle())?EventStatus.ASSESSED_WITH_CONDITIONAL_INGRESS:EventStatus.ASSESSED;
         var candidates=new TreeMap<String,Set<StatementId>>();boolean unknown=false,inactive=false,outer=false;
         if(!bypass)for(var support:states) {
             var state=support.state();
@@ -163,7 +200,7 @@ final class HandlerStateAnalyzer {
                     // Successfully established local exit intercepts before outer levels,
                     // even when the static identity/name remains unresolved.
                 }
-                case CANCELED,CANCELED_UNKNOWN -> {inactive=true;outer=true;}
+                case CANCELED,DEACTIVATED,CANCELED_UNKNOWN -> {inactive=true;outer=true;}
                 case ENTRY_UNKNOWN,UNKNOWN -> {unknown=true;inactive=true;outer=true;}
             }
         }

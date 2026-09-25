@@ -107,6 +107,10 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
+            if(!receivedVersion.equals("2.45.0")&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+                throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
+            if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
+                throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
                 throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42/2.43 and is mandatory there");
@@ -121,6 +125,7 @@ public final class SpJsonDecoder {
                 throw new PhysicalShape("$/controlTopology requires SP2.39 and is mandatory there");
             io.github.gustavo2358.lower.domain.ControlTopology topology=null;
             if(topologyContract) {
+                if(!node.path("controlTopology").has("exceptionalEvents"))((com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology")).putArray("exceptionalEvents");
                 topology=mapper.treeToValue(node.path("controlTopology"),io.github.gustavo2358.lower.domain.ControlTopology.class);
                 requirePhysical(topology,"$/controlTopology",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("controlTopology");

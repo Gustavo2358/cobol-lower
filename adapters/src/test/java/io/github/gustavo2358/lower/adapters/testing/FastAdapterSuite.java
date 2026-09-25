@@ -7,6 +7,7 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        ExceptionalHandlerSuite.main(new String[0]);
         CicsConsumerContractSuite.main(new String[0]);
         ValidationBeforeReadinessSuite.main(new String[0]);
         HandlerStateSuite.main(new String[0]);

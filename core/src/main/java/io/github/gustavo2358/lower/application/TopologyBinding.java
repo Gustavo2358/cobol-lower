@@ -29,7 +29,9 @@ final class TopologyBinding {
         return roots.size()==1?Optional.of(resolve(roots.getFirst().entry(),null)):Optional.empty();
     }
     Resolved entry(Binding active){return resolve(regions.get(active.region()).entry(),active);}
-    Resolved resolve(Target target,Binding active) {
+    Resolved resolve(Target target,Binding active) { return resolve(target,active,false); }
+    /** A handler ingress does not prove restoration of an interrupted PERFORM continuation. */
+    Resolved resolve(Target target,Binding active,boolean boundedHandlerCompletion) {
         var premises=new LinkedHashSet<String>();var seen=new HashSet<String>();
         while(true) {
             premises.addAll(target.proofs());
@@ -39,6 +41,8 @@ final class TopologyBinding {
                 case COMPLETE -> {if(!seen.add("completion:"+target.reference()))throw new IllegalArgumentException("cyclic topology completion");
                     var r=regions.get(target.reference());var b=boundaries.get(r.boundary());premises.addAll(b.proofs());
                     if(active!=null&&active.endpoint().equals(b.id())){premises.addAll(active.proofs());return new Resolved(TargetKind.COMPLETE,b.id(),List.copyOf(premises));}
+                    if(boundedHandlerCompletion&&active==null&&r.kind()==RegionKind.PARAGRAPH)
+                        return new Resolved(TargetKind.UNKNOWN_LOCAL,"HANDLER_COMPLETION_CONTEXT_UNAVAILABLE/"+b.id(),List.copyOf(premises));
                     target=b.ordinaryDefault();}
                 default -> {return new Resolved(target.kind(),target.reference(),List.copyOf(premises));}
             }
@@ -94,6 +98,21 @@ final class TopologyBinding {
         for(var p:topology.proofs()){c.touch();c.provenance(p.provenance());}
         for(var e:topology.outcomes()){c.touch();binder.resolve(e.target(),null);}
         for(var b:topology.bindings()){c.touch();binder.resolve(b.resume(),null);binder.entry(b);}
+        var facts=new HashMap<String,SpInput.StatementFact>();input.statements().forEach(s->facts.put(s.header().id().handle(),s));
+        for(var event:topology.exceptionalEvents()) {
+            var fact=facts.get(event.statement());
+            boolean valid;
+            if(event.origin()==EventOrigin.EXPLICIT_ABEND)valid=fact instanceof SpInput.CicsAbendFact abend
+                &&abend.dispatchEligibility().name().equals(event.eligibility().name());
+            else valid=fact instanceof SpInput.CicsFact command&&command.command()==SpInput.CicsCommand.XCTL
+                &&command.options().stream().allMatch(o->Set.of("PROGRAM","COMMAREA","LENGTH","RESP2").contains(o.name()))
+                &&command.options().stream().filter(o->o.name().equals("PROGRAM")).count()==1
+                &&command.options().stream().map(SpInput.CicsOption::name).distinct().count()==command.options().size()
+                &&command.gapCodes().stream().allMatch(g->Set.of("CICS_EFFECTS_SIGNATURE_PARTIAL","CICS_HANDLER_STATE_UNKNOWN","CICS_HOST_BINDING_UNAVAILABLE").contains(g));
+            c.require(valid,Admission.Rule.STRUCTURE,event.statement(),null,"exceptional event agrees with typed source fact");
+            if(fact!=null)for(var proof:event.proofs())c.require(binder.proof(proof).provenance().equals(fact.header().provenance()),
+                Admission.Rule.STRUCTURE,event.statement(),null,"exceptional event canonical source provenance");
+        }
         for(var use:input.fileInventory().operations().uses())use.control().ifPresent(control->{
             for(var route:control.routes())for(int i=0;i<route.destinations().size();i++)
                 c.require(binder.outcome(use.statement().handle(),"file/"+use.ordinal()+"/"+route.event()+"/"+i).isPresent(),

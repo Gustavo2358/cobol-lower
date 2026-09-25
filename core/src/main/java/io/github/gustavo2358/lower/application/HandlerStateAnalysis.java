@@ -7,19 +7,31 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
  * boundary, never a runtime logical-level identity. Empty states mean not reached. */
 public record HandlerStateAnalysis(UnitKey unit, List<Target> targets, List<Operation> operations,
         List<Event> events, List<Node> nodes, List<Derivation> derivations, List<Frontier> frontiers,
-        Metrics metrics) {
+        Metrics metrics, List<Selection> selections) {
+    public HandlerStateAnalysis(UnitKey unit,List<Target> targets,List<Operation> operations,List<Event> events,
+            List<Node> nodes,List<Derivation> derivations,List<Frontier> frontiers,Metrics metrics) {
+        this(unit,targets,operations,events,nodes,derivations,frontiers,metrics,List.of());
+    }
+    /** Source-only selection; premises remain open runtime conditions, not facts of failure. */
+    public record Selection(String event,Node source,String origin,List<String> premises,
+            Optional<String> target,Optional<Support> stateOnEntry,Optional<Node> localEntry,
+            boolean unknownLocalRemainder,boolean localInactivePossible,boolean outerLevelRemainder,
+            boolean bypassed,List<String> proofs) {
+        public Selection { premises=List.copyOf(premises);proofs=List.copyOf(proofs); }
+    }
     public HandlerStateAnalysis {
+        selections=List.copyOf(selections);
         targets=List.copyOf(targets); operations=List.copyOf(operations); events=List.copyOf(events);
         nodes=List.copyOf(nodes); derivations=List.copyOf(derivations); frontiers=List.copyOf(frontiers);
     }
-    public enum Kind { ENTRY_UNKNOWN, ACTIVE, CANCELED, CANCELED_UNKNOWN, UNKNOWN }
+    public enum Kind { ENTRY_UNKNOWN, ACTIVE, CANCELED, DEACTIVATED, CANCELED_UNKNOWN, UNKNOWN }
     public enum Cause { NONE, RESET_HISTORY_UNAVAILABLE, RESET_WITHOUT_CANCELED_EVIDENCE,
         CALL_EFFECT_UNAVAILABLE, HANDLER_OPERATION_UNAVAILABLE }
     public enum TargetForm { LABEL_LOCAL, LABEL_UNRESOLVED, PROGRAM_LITERAL, PROGRAM_DATA, PROGRAM_UNRESOLVED }
     public record State(Kind kind, String target, Cause cause) {
         public State {
             Objects.requireNonNull(kind); Objects.requireNonNull(target); Objects.requireNonNull(cause);
-            if((kind==Kind.ACTIVE||kind==Kind.CANCELED)!=!target.isEmpty())throw new IllegalArgumentException("correlated target state");
+            if((kind==Kind.ACTIVE||kind==Kind.CANCELED||kind==Kind.DEACTIVATED)!=!target.isEmpty())throw new IllegalArgumentException("correlated target state");
             if((kind==Kind.UNKNOWN)!=(cause!=Cause.NONE))throw new IllegalArgumentException("localized unknown cause");
         }
     }
@@ -39,7 +51,7 @@ public record HandlerStateAnalysis(UnitKey unit, List<Target> targets, List<Oper
             List<Support> afterSuccessfulCompletion) {
         public Operation { before=List.copyOf(before);afterSuccessfulCompletion=List.copyOf(afterSuccessfulCompletion); }
     }
-    public enum EventStatus { NOT_REACHED_IN_PUBLISHED_TOPOLOGY, ASSESSED, ELIGIBILITY_UNAVAILABLE }
+    public enum EventStatus { NOT_REACHED_IN_PUBLISHED_TOPOLOGY, ASSESSED, ASSESSED_WITH_CONDITIONAL_INGRESS, ELIGIBILITY_UNAVAILABLE }
     public record Candidate(String target, List<StatementId> activations) {
         public Candidate { activations=List.copyOf(activations); }
     }

@@ -77,3 +77,7 @@ explicit experimental opt-in. Final integrated evidence/PR state is recorded in 
 anchor analysis-cfg #45 campaign report. No W2/W3 or merge is started here.
 
 AIR harness reconciliation: pin `26016f10460336f237a33b2ed126a6a1427f0207` replaces `00373f638039c580bb833b9949df12cb8218e2fb`. Git diff confirms no AIR production sources or POM changes; the fixed module-policy gate reads the active lock rather than a historical literal. Existing semantic evidence remains equivalent; lower FAST is rerun for exact pin resolution.
+
+## R7 final source handler contract
+
+Current additional input contract: SP2.45 from frontend fbbf61d1840eb92dca804c53d8e9b6e60538318a. The strict pin is recorded in sources.lock.json. Exceptional source events, conditional handler selection and entry deactivation are analysis-only; AIR2.0, CFG and dependency-policy pins remain unchanged. Historical SP profiles and fixture bytes remain supported. See ../domain/cics-exceptional-handlers.md.

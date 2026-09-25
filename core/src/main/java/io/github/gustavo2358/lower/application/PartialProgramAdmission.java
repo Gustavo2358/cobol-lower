@@ -19,10 +19,14 @@ final class PartialProgramAdmission {
             // Phase A: published-fact consistency is independent of executable capability.
             validateKnownFacts(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
+            // Source-only assessment follows factual validation, independently of AIR readiness.
+            if(input.controlTopology().isPresent()&&(!input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()
+                    ||input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)))
+                c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
             // Phase B: readiness gates all executable profile qualification and lowering.
             c.phase=Phase.ADMISSION;
             if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)) {
-                if(input.controlTopology().isPresent()&&input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact))c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
+
                 c.nonExecutableCapabilities=input.statements().stream().flatMap(s->NonExecutableCapability.of(s).stream())
                     .sorted(Comparator.comparing(cap->cap.statement().handle())).toList();
                 if(policy==LowerInput.PublicationPolicy.EXECUTABLE_ONLY||input.controlTopology().isEmpty()) {

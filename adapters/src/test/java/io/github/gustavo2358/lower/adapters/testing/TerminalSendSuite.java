@@ -69,7 +69,7 @@ public final class TerminalSendSuite {
         var changed=standalone.deepCopy();command(changed).put("rawText"," ".repeat(fact.rawText().length()));need(command(input(changed)).length().equals(fact.length()),"no rawText reinterpretation");metamorphics++;
         changed=wire("real-derived");var values=new ArrayList<JsonNode>();changed.path("statements").forEach(values::add);Collections.reverse(values);((ArrayNode)changed.path("statements")).removeAll();values.forEach(((ArrayNode)changed.path("statements"))::add);need(state(changed).equals(state(wire("real-derived"))),"input order is not execution order");metamorphics++;
         for(var version:List.of("2.40.0","2.41.0","2.42.0","2.43.0")){var j=standalone.deepCopy();j.put("contractVersion",version);reject(j,SpJsonDecoder.Code.INPUT_ERROR);}
-        for(var version:List.of("2.45.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
+        for(var version:List.of("2.46.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
         var j=standalone.deepCopy();command(j).remove("length");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();((ObjectNode)command(j).path("length")).put("kind","INTEGER");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();command(j).put("commandKind","SEND_MAP");reject(j,SpJsonDecoder.Code.INPUT_ERROR);

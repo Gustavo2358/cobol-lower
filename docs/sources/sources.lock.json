@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "observed_on": "2026-09-24",
+  "observed_on": "2026-09-25",
   "policy": "Pinned snapshots; update only via reviewed contract change, never floating main at build time.",
   "sources": [
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "6268d9f7a13af8fbf3e1fa66ed9a37e53fe51aad",
+      "commit": "fbbf61d1840eb92dca804c53d8e9b6e60538318a",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
-      "contract_version": "2.43.0",
+      "contract_version": "2.45.0",
       "paths": [
         "docs/domain/cobol-semantic-product.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
@@ -94,7 +94,9 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/FactLocalitySemantics.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencies.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencyContract.java",
-        "docs/domain/cics-command-facts.md"
+        "docs/domain/cics-command-facts.md",
+        "docs/domain/cics-exceptional-handlers.md",
+        "src/test/java/io/github/gustavo2358/cobolexplorer/ExceptionalHandlerContractTest.java"
       ],
       "evidence_level": "R1-R1-F03 correction: producer/consumer reject duplicate occurrence-role outcomes before AIR; frontend local FAST/full PASS; SP2.39 authority and legacy separation preserved. R2 NOT STARTED.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
