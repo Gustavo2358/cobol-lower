@@ -1181,6 +1181,21 @@ final class Materialize {
                         logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())),v.additionalTransfers().stream().map(t->new MoveTransfer(source211(t.source(),h.id(),unit),reference(t.target(),h.id(),unit),new StorageFacts.Move(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList());
             }
+            case Wire211.CicsHandlerDocument v -> new CicsHandlerFact(h,v.handlerKind(),v.action(),v.targetKind(),
+                Optional.ofNullable(v.targetSyntax()),Optional.ofNullable(v.labelBindingStatus()),
+                Optional.ofNullable(v.labelTarget()).map(t->new CicsHandlerLabelTarget(new ProcedureId(unit,t.id()),provenance(t.declarationOrigin(),unit))),
+                Optional.ofNullable(v.targetEntry()).map(id->new StatementId(unit,id)),
+                Optional.ofNullable(v.entryOrigin()).map(o->provenance(o,unit)),Optional.ofNullable(v.targetOrigin()).map(o->provenance(o,unit)),
+                Optional.ofNullable(v.programTarget()).map(t->switch(t) {
+                    case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));
+                    case Wire211.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(),l.id()),l.text(),l.writtenText(),
+                        Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit));
+                }),new CicsHandlerScope(v.scope().kind(),v.scope().runtimeIdentity(),provenance(v.scope().provenance(),unit)),
+                v.rawText(),v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
+            case Wire211.CicsAbendDocument v -> new CicsAbendFact(h,v.eventKind(),v.dispatchEligibility(),v.rawText(),
+                v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
             case Wire211.CicsFileDocument v -> {
                 Optional<CallTarget> target=Optional.ofNullable(v.target()).map(t->switch(t) {
                     case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));

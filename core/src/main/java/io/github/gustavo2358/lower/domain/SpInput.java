@@ -52,9 +52,10 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         gaps = List.copyOf(gaps);
         Objects.requireNonNull(coverage, "coverage");
         Objects.requireNonNull(entryInventory, "entryInventory");
+        CicsContract.validateEntries(unit, statements, dataDeclarations);
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, CicsHandlerFact, CicsAbendFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -344,6 +345,50 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
         public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+    }
+
+    /** Input facts are preserved; no executable handler/event lowering is qualified. */
+    public enum ExecutableLowering { NOT_READY }
+    public enum CicsHandlerKind { ABEND }
+    public enum CicsHandlerAction { ACTIVATE, CANCEL, RESET, UNAVAILABLE }
+    public enum CicsHandlerTargetKind { LABEL, PROGRAM, NONE, UNAVAILABLE }
+    public enum CicsHandlerScopeKind { CURRENT_EXECUTION_LOGICAL_LEVEL }
+    public record CicsHandlerScope(CicsHandlerScopeKind kind, Availability runtimeIdentity, Provenance provenance) {
+        public CicsHandlerScope {
+            Objects.requireNonNull(kind); Objects.requireNonNull(provenance);
+            CicsContract.require(runtimeIdentity == Availability.UNAVAILABLE, "runtime scope identity unavailable");
+        }
+    }
+    public record CicsHandlerLabelTarget(ProcedureId id, Provenance declarationOrigin) {
+        public CicsHandlerLabelTarget { Objects.requireNonNull(id); Objects.requireNonNull(declarationOrigin); }
+    }
+    public record CicsHandlerFact(StatementHeader header, CicsHandlerKind handlerKind, CicsHandlerAction action,
+            CicsHandlerTargetKind targetKind, Optional<String> targetSyntax, Optional<ResolutionStatus> labelBindingStatus,
+            Optional<CicsHandlerLabelTarget> labelTarget, Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin,
+            Optional<Provenance> targetOrigin, Optional<CallTarget> programTarget, CicsHandlerScope scope, String rawText,
+            List<CicsOption> options, List<String> gapCodes) implements StatementFact {
+        public CicsHandlerFact {
+            Objects.requireNonNull(header); Objects.requireNonNull(handlerKind); Objects.requireNonNull(action);
+            Objects.requireNonNull(targetKind); Objects.requireNonNull(targetSyntax); Objects.requireNonNull(labelBindingStatus);
+            Objects.requireNonNull(labelTarget); Objects.requireNonNull(targetEntry); Objects.requireNonNull(entryOrigin);
+            Objects.requireNonNull(targetOrigin); Objects.requireNonNull(programTarget); Objects.requireNonNull(scope);
+            Objects.requireNonNull(rawText); options=List.copyOf(options); gapCodes=List.copyOf(gapCodes);
+            CicsContract.handler(header,action,targetKind,targetSyntax,labelBindingStatus,labelTarget,targetEntry,
+                entryOrigin,targetOrigin,programTarget,rawText,options);
+        }
+        public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
+    }
+    public enum CicsAbendEventKind { ABEND }
+    public enum CicsAbendEligibility { HANDLER_ELIGIBLE, HANDLERS_BYPASSED, UNAVAILABLE }
+    public record CicsAbendFact(StatementHeader header, CicsAbendEventKind eventKind,
+            CicsAbendEligibility dispatchEligibility, String rawText, List<CicsOption> options,
+            List<String> gapCodes) implements StatementFact {
+        public CicsAbendFact {
+            Objects.requireNonNull(header); Objects.requireNonNull(eventKind); Objects.requireNonNull(dispatchEligibility);
+            Objects.requireNonNull(rawText); options=List.copyOf(options); gapCodes=List.copyOf(gapCodes);
+            CicsContract.event(dispatchEligibility,rawText,options,gapCodes);
+        }
+        public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
     public enum CicsCommand { LINK, XCTL }

@@ -32,6 +32,13 @@ final class PartialProgramAdmission {
                         Rule.STRUCTURE,relation.getKey().handle(),destination.provenance(),"ordinary and intrinsic successors agree when both known");
                 }
             }
+            if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
+            if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)) {
+                for(var s:input.statements())if(s instanceof CicsHandlerFact||s instanceof CicsAbendFact)
+                    c.require(false,Rule.READINESS,s.header().id().handle(),s.header().provenance(),
+                        "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
+                return rejected(c,Status.IMPLEMENTATION_LIMIT);
+            }
             CallAdmission.validateFacts(input,c);
             var goToTargets=new HashMap<ProcedureId,GoToAdmission.CanonicalTarget>();
             var evaluateMembers=new HashMap<StatementId,Set<StatementId>>();

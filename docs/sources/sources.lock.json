@@ -6,10 +6,10 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "c3851795986380a7779a7376a08f4d1fb05c6344",
+      "commit": "1db76b3525588aa41438acd893bf51273e650909",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
-      "contract_version": "2.40.0",
+      "contract_version": "2.42.0",
       "paths": [
         "docs/domain/cobol-semantic-product.md",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java",
@@ -266,7 +266,8 @@
       "logical_text_w2": "Fixed textual aliases/ranges and existing AIR slice/concat contracts; local upstream FAST PASS; no corporate rerun.",
       "dependency_preservation": "Bounded nominal/value preservation; see docs/domain/dependency-preservation.md; AIR/IR unchanged.",
       "partial_structural_facts_w5": "SP 2.36 structural PERFORM kind and independent target entry; decoder/preservation only, executable composition deferred to W6.",
-      "control_composition_w7": "SP 2.37 publishes independently proved ordinary continuation relations; IF/EVALUATE arms and contextual completions remain independent. Historical wires retained."
+      "control_composition_w7": "SP 2.37 publishes independently proved ordinary continuation relations; IF/EVALUATE arms and contextual completions remain independent. Historical wires retained.",
+      "cics_consumer_r7_r3": "Closed admission 2.40/2.41/2.42; CICS_HANDLER/CICS_ABEND typed input preservation; executable lowering NOT_READY; no state, replacement, dispatch or AIR change."
     },
     {
       "id": "SRC-HARNESS",

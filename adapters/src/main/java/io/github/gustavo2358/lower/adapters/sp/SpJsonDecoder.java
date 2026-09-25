@@ -86,9 +86,24 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
-            boolean factContract=node.path("contractVersion").asText().equals("2.40.0");
+            if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual())
+                return reject(Code.INPUT_ERROR, "$/schema or contractVersion");
+            if (!node.path("schema").textValue().equals("cobol-semantic-product"))
+                return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
+            String receivedVersion=node.path("contractVersion").textValue();
+            var profile=SpContractProfile.admitted(receivedVersion);
+            if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
+            for(var statement:node.path("statements")) {
+                String variant=statement.path("variant").asText();
+                if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend())
+                    throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
+            }
+            if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
+                if(proof.path("rule").asText().equals("cics-handle-abend-ordinary-return"))
+                    throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.42");
+            boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
-                throw new PhysicalShape("$/factDependencies requires SP2.40 and is mandatory there");
+                throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42 and is mandatory there");
             io.github.gustavo2358.lower.domain.FactDependencies factDependencies=null;
             if(factContract) {
                 factDependencies=mapper.treeToValue(node.path("factDependencies"),io.github.gustavo2358.lower.domain.FactDependencies.class);
@@ -525,6 +540,8 @@ public final class SpJsonDecoder {
             return reject(Code.INPUT_ERROR,"$/statementEffects/"+ex.getMessage());
         } catch (PhysicalShape ex) {
             return reject(Code.INPUT_ERROR, ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            return reject(Code.INPUT_ERROR, "$/typed-contract: "+ex.getMessage());
         } catch (java.io.IOException ex) {
             return reject(Code.INPUT_ERROR, "$ bytes");
         }
