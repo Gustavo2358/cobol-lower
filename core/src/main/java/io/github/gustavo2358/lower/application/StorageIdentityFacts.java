@@ -14,7 +14,7 @@ final class StorageIdentityFacts {
             s.views().stream().sorted(Comparator.comparing(v->v.node().handle())).toList(),s.gapCodes(),
             s.relations().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),
             s.renames().stream().sorted(Comparator.comparing(r->r.id().handle())).toList(),new StorageFacts.EntryState(s.entryState().mode(),
-                s.entryState().conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList(),s.entryState().possibilityDomain()));
+                s.entryState().conditions().stream().sorted(Comparator.comparing(c->c.node().handle())).toList(),s.entryState().possibilityDomain()),s.logicalTextViews().stream().sorted(Comparator.comparing(v->v.node().handle())).toList());
     }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
@@ -52,11 +52,16 @@ final class StorageIdentityFacts {
                 field.accept("entryProof@1.4");value.accept(r.proof());if(r.logicalText().isPresent()){field.accept("logicalText@1.6");value.accept(r.logicalText().get());}
             }
             case StorageFacts.EntryState r -> {field.accept("StorageEntryState");value.accept(r.mode());value.accept(r.conditions());if(r.possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE){field.accept("sourceEvidence@1.6");value.accept(r.possibilityDomain());}}
+            case StorageFacts.LogicalTextView r -> {
+                field.accept("LogicalTextView");field.accept("node");value.accept(r.node());field.accept("root");value.accept(r.root());
+                field.accept("start");value.accept(r.start());field.accept("length");value.accept(r.length());
+            }
             case StorageFacts.Inventory r -> {
                 field.accept("StorageInventory");field.accept("profile");value.accept(r.profile());field.accept("profileId");value.accept(r.profileId());
                 field.accept("runtimeCodec");value.accept(r.runtimeCodec());field.accept("nodes");value.accept(r.nodes());field.accept("bases");value.accept(r.bases());
                 field.accept("views");value.accept(r.views());field.accept("gapCodes");value.accept(r.gapCodes());
                 if(!r.relations().isEmpty()){field.accept("relations");value.accept(r.relations());}
+                if(!r.logicalTextViews().isEmpty()){field.accept("logicalTextViews@1");value.accept(r.logicalTextViews());}
                 if(!r.renames().isEmpty()){field.accept("renames@1");value.accept(r.renames());}
                 if(!r.entryState().equals(StorageFacts.EntryState.unknown())){field.accept("entryState@1");value.accept(r.entryState());}
             }

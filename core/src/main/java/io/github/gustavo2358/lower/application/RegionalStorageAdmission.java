@@ -13,7 +13,7 @@ import static io.github.gustavo2358.lower.domain.StorageFacts.*;
 /** Validate source facts without calculating COBOL layout; prepare one immutable index per admission. */
 final class RegionalStorageAdmission {
     static final Memory.Codec IBM1047=new Memory.ExtensionCodec("text.ebcdic.ibm1047","1",Types.known(Types.Builtin.TEXT));
-    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData) {
+    record Index(SpInput owner,Map<NodeId,Node> nodes,Map<BaseId,Base> bases,Map<NodeId,View> views,Map<DataId,View> byData,LogicalTextIndex logical) {
         Index { nodes=Map.copyOf(nodes);bases=Map.copyOf(bases);views=Map.copyOf(views);byData=Map.copyOf(byData); }
         Optional<View> access(DataReference reference) {
             return reference.regionalAccess().map(a->{var v=views.get(a.view());return a.slice().map(s->new View(v.node(),v.base(),
@@ -36,7 +36,7 @@ final class RegionalStorageAdmission {
                 c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
-            return new Index(input,nodes,bases,views,byData);
+            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes));
         }
         require(input.compositional(),"regional facts require the compositional input profile");
         var storage=input.storage().get();boolean environment=storage.profile()==Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047;
@@ -78,6 +78,7 @@ final class RegionalStorageAdmission {
             node.data().ifPresent(id->byData.put(id,view));
         }
         require(views.size()==nodes.size()&&referencedBases.equals(bases.keySet()),"all physical nodes and bases require explicit view closure");
+        var logical=new LogicalTextIndex(input,nodes);
         var relationIds=new HashSet<RelationId>();
         for(var relation:storage.relations()) {
             c.touch();c.identity(relation.id().unit(),relation.id().handle(),"storage-relation",relation.provenance());c.provenance(relation.provenance());gaps(relation.gapCodes());
@@ -130,7 +131,9 @@ final class RegionalStorageAdmission {
             c.touch();var view=byData.get(declaration.id());
             if(view==null||!(CallAdmission.scalar(declaration)||PerformCountAdmission.integer(declaration)))continue;
             var node=nodes.get(view.node());
-            require(node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,
+            require((logical.byData.containsKey(declaration.id())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
+                    &&logical.byData.get(declaration.id()).length().equals(java.math.BigInteger.valueOf(declaration.scalarText().orElseThrow().logicalExtent())))
+                    ||node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,
                 "standalone scalar proof contradicts shared or nested physical storage");
             if(declaration.scalarText().isPresent()&&view.codec().isPresent())require(view.extent().value().orElseThrow()
                 .equals(java.math.BigInteger.valueOf(declaration.scalarText().get().logicalExtent())),"scalar text extent contradicts physical view");
@@ -176,7 +179,7 @@ final class RegionalStorageAdmission {
                     "declarative invariant needs independent local storage");
             }
         }
-        var index=new Index(input,nodes,bases,views,byData);
+        var index=new Index(input,nodes,bases,views,byData,logical);
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {

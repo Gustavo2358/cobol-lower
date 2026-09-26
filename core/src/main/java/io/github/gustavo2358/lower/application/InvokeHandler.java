@@ -86,8 +86,16 @@ final class InvokeHandler {
             new Interactions.ResultInventory(List.of(), call.surface().returning() == SpInput.ClausePresence.ABSENT ? Interactions.NoRemainder.INSTANCE : new Interactions.UnknownRemainder(contract)), signatureOrigin));
         var memory = new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(), true));
         var bounds = new Interactions.EffectBound(new Interactions.ForeignEffects(memory, memory, List.of()), List.of());
+        // Published absence of local exception handlers bounds CALL's unknown outcomes.
+        // Returning normally uses the published successor; nonreturn/error/foreign control
+        // remains open without inventing an arbitrary jump into the caller's statements.
+        var surface=call.surface();
+        boolean noHandlers=surface.onException()==SpInput.ClausePresence.ABSENT
+            &&surface.notOnException()==SpInput.ClausePresence.ABSENT&&surface.onOverflow()==SpInput.ClausePresence.ABSENT;
+        Scopes.ControlScope frontier=noHandlers&&normal!=null
+            ?new Scopes.UnitControl(unit,false,true,true,true,true,true):new Scopes.AllControl(unit.publication());
         var alternatives = new Control.InvocationOutcomes(normal == null ? List.of() : List.of(new Control.Normal(normal)),
-            new Scopes.WithinControl(new Scopes.AllControl(unit.publication())));
+            new Scopes.WithinControl(frontier));
         var precision = new Evidence.Precision(
             new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(outcomes)),
             new Evidence.Claim(scope, Evidence.PrecisionStatus.OPEN, List.of(effects)),

@@ -63,7 +63,7 @@ public final class IfOracle {
         check(links.get(callId).target().equals(invoke.header().id()) && hasLocation(origins,artifacts,invoke.header().origin(),call.header().provenance().original()),"real CALL Invoke origin/link");
         var retLabel = links.get(call.normalContinuation().statement().orElseThrow()).label();
         check(invoke.outcomes().known().equals(List.of(new Control.Normal(retLabel))),"Invoke normal -> real GOBACK");
-        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.AllControl(p.id()))) && invoke.contract() instanceof Interactions.UnknownContract,"W1 open outcomes/unknown contract");
+        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.UnitControl(p.units().getFirst().id(),false,true,true,true,true,true))) && invoke.contract() instanceof Interactions.UnknownContract,"W1 open outcomes/unknown contract");
         check(invoke.target() instanceof Interactions.ComputedTarget,"W1 computed CALL preserved");
         var target = (Interactions.ComputedTarget)invoke.target();
         check(target.name() instanceof Expressions.Read && target.namePolicy() instanceof Interactions.UnknownName,"computed CALL Read/UnknownName");
