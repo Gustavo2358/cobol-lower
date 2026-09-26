@@ -50,7 +50,7 @@
     },
     {
       "id": "WORK-FD-HARNESS",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "path": "docs/work/active/WORK-FD-HARNESS.json"
     }
   ],
@@ -281,7 +281,7 @@
   "backlog": [
     {
       "id": "BACKLOG-LOWER-001",
-      "title": "Primeiro slice Entry/GOBACK \u2192 AIR Return",
+      "title": "Primeiro slice Entry/GOBACK → AIR Return",
       "status": "completed",
       "phase": "foundation",
       "dependencies": [],
@@ -290,7 +290,7 @@
     },
     {
       "id": "BACKLOG-LOWER-002",
-      "title": "Sequenciamento e invent\u00e1rios execut\u00e1veis maiores",
+      "title": "Sequenciamento e inventários executáveis maiores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -301,7 +301,7 @@
     },
     {
       "id": "BACKLOG-LOWER-003",
-      "title": "Adapter AIR JSON de sa\u00edda e prova interoper\u00e1vel",
+      "title": "Adapter AIR JSON de saída e prova interoperável",
       "status": "completed",
       "phase": "transport",
       "dependencies": [
@@ -312,7 +312,7 @@
     },
     {
       "id": "BACKLOG-LOWER-004",
-      "title": "Primeira integra\u00e7\u00e3o com analysis-cfg",
+      "title": "Primeira integração com analysis-cfg",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -334,7 +334,7 @@
     },
     {
       "id": "BACKLOG-LOWER-006",
-      "title": "MOVE preciso e normaliza\u00e7\u00e3o de valores",
+      "title": "MOVE preciso e normalização de valores",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -356,7 +356,7 @@
     },
     {
       "id": "BACKLOG-LOWER-008",
-      "title": "CALL e contrato por site de intera\u00e7\u00e3o",
+      "title": "CALL e contrato por site de interação",
       "status": "completed",
       "phase": "capability",
       "dependencies": [
@@ -389,7 +389,7 @@
     },
     {
       "id": "BACKLOG-LOWER-011",
-      "title": "EVALUATE/SEARCH e sele\u00e7\u00e3o",
+      "title": "EVALUATE/SEARCH e seleção",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -400,7 +400,7 @@
     },
     {
       "id": "BACKLOG-LOWER-012",
-      "title": "Outros terminais e transfer\u00eancias",
+      "title": "Outros terminais e transferências",
       "status": "needs_discovery",
       "phase": "capability",
       "dependencies": [
@@ -433,7 +433,7 @@
     },
     {
       "id": "BACKLOG-LOWER-015",
-      "title": "Adapter de integra\u00e7\u00e3o em mem\u00f3ria e composi\u00e7\u00e3o Maven",
+      "title": "Adapter de integração em memória e composição Maven",
       "status": "candidate",
       "phase": "integration",
       "dependencies": [
@@ -444,7 +444,7 @@
     },
     {
       "id": "BACKLOG-LOWER-016",
-      "title": "Evolu\u00e7\u00e3o do harness e conformidade declarada",
+      "title": "Evolução do harness e conformidade declarada",
       "status": "candidate",
       "phase": "harness",
       "dependencies": [],
