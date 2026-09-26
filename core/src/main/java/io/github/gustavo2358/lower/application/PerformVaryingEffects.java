@@ -16,8 +16,8 @@ final class PerformVaryingEffects {
         var variable=controls.stream().filter(o->o.role()==SpInput.VaryingOperandRole.CONTROL_VARIABLE).findFirst().orElseThrow();
         var value=controls.stream().filter(o->o.role()==(initial?SpInput.VaryingOperandRole.FROM:SpInput.VaryingOperandRole.BY)).findFirst().orElseThrow();
         var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
-        var targetOrigin=origins.source(role+"-variable",p.header().id().handle(),variable.provenance());
-        var valueOrigin=origins.source(role+"-value",p.header().id().handle(),value.provenance());
+        var targetOrigin=origins.source(role+"-variable",p.header().id().handle()+"/level-"+variable.level(),variable.provenance());
+        var valueOrigin=origins.source(role+"-value",p.header().id().handle()+"/level-"+variable.level(),value.provenance());
         var origin=origins.derived(ids.id("origin",role,unit.localId(),p.header().id().handle()),
             List.of(source,targetOrigin,valueOrigin),"perform-varying@1/implicit-whole-item-write");
         var known=new ArrayList<Operand>();var reads=new ArrayList<OperandId>();

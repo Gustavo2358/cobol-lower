@@ -49,7 +49,7 @@ final class HandlerStateAnalyzer {
         binder.primaryEntry().ifPresent(e->route(root,e,initial,Optional.empty(),Optional.empty(),"PRIMARY_ENTRY",e.proofs()));
         while(!work.isEmpty()) {
             var node=reverse?work.removeLast():work.removeFirst();pops++;
-            if(node.location().startsWith("PHASE/"))phase(node);else occurrence(node);
+            if(node.location().startsWith("PHASE/")||node.location().startsWith("ESCAPE/"))phase(node);else occurrence(node);
         }
         var operations=new ArrayList<Operation>();var events=new ArrayList<Event>();
         for(var s:statements.values()) {
@@ -153,7 +153,10 @@ final class HandlerStateAnalyzer {
     }
     private void phase(Node node) {
         var context=contexts.get(node.context());var binding=context.binding();var name=node.location().substring(6);
-        if(name.equals("BODY")) {
+        if(node.location().startsWith("ESCAPE/")) {
+            if(summaries.computeIfAbsent(context.id(),k->new HashSet<>()).add(node))
+                for(var subscriber:subscribers.getOrDefault(context.id(),Set.of()))resume(context,node,subscriber);
+        } else if(name.equals("BODY")) {
             var entry=binder.entry(binding);route(context,entry,node.support(),Optional.of(node),Optional.empty(),binding.id()+"/BODY",entry.proofs());
         } else if(name.equals("RESUME")) {
             if(summaries.computeIfAbsent(context.id(),k->new HashSet<>()).add(node))
@@ -165,13 +168,25 @@ final class HandlerStateAnalyzer {
     }
     private void resume(Context callee,Node exit,Subscriber subscriber) {
         var callerContext=contexts.get(subscriber.caller().context());
-        var resolved=binder.resolve(callee.binding().resume(),callerContext.binding(),!callerContext.ingress().isEmpty());
+        var resolved=exit.location().startsWith("ESCAPE/")
+            ?new TopologyBinding.Resolved(TargetKind.ESCAPE,exit.location().substring(7),callee.binding().proofs())
+            :binder.resolve(callee.binding().resume(),callerContext.binding(),!callerContext.ingress().isEmpty());
         route(callerContext,resolved,exit.support(),Optional.of(exit),Optional.of(subscriber.caller()),
             callee.binding().id()+"/RESUME/"+subscriber.outcome(),merge(callee.binding().proofs(),resolved.proofs()));
     }
     private void route(Context context,TopologyBinding.Resolved target,Support support,Optional<Node> source,
             Optional<Node> caller,String authority,List<String> proofs) {
         switch(target.kind()) {
+            case ESCAPE -> {
+                var region=binder.region(target.reference());
+                if(region.kind()==RegionKind.INLINE_BODY&&context.binding()!=null&&context.binding().endpoint().equals(region.boundary()))
+                    insert(new Node(context.id(),"PHASE/RESUME",support),source,caller,authority,proofs);
+                else if(region.kind()!=RegionKind.INLINE_BODY&&(context.binding()==null||!binder.inline(context.binding())||binder.contains(context.binding(),region.id()))) {
+                    var completion=new ControlTopology.Target(TargetKind.COMPLETE,region.id(),target.proofs());
+                    route(context,binder.resolve(completion,context.binding(),!context.ingress().isEmpty()),support,source,caller,authority,proofs);
+                } else if(context.binding()!=null)insert(new Node(context.id(),"ESCAPE/"+region.id(),support),source,caller,authority,proofs);
+                else source.ifPresent(n->frontiers.add(new Frontier(n,authority,target.reference(),proofs)));
+            }
             case OCCURRENCE -> insert(new Node(context.id(),target.reference(),support),source,caller,authority,proofs);
             case COMPLETE -> insert(new Node(context.id(),"PHASE/"+Objects.requireNonNull(context.binding()).completionPhase(),support),source,caller,authority,proofs);
             case UNKNOWN_LOCAL -> source.ifPresent(n->frontiers.add(new Frontier(n,authority,target.reference(),proofs)));

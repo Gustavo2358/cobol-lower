@@ -11,7 +11,9 @@ import java.util.*;
  * bindings come from the same topology used by closure. Fact dispatch below
  * selects value/effect operations, never a source successor. */
 final class TopologyProgramAssembler {
-    private record Context(LocalIds ids,Binding binding,LabelId completion,String entry) { }
+    private record Context(LocalIds ids,Binding binding,LabelId completion,String entry,LabelId resume,Context parent) {
+        Context(LocalIds ids,Binding binding,LabelId completion,String entry) {this(ids,binding,completion,entry,null,null);}
+    }
     private final PartialProgramAdmission.Plan plan;
     private final SpInput input;
     private final TopologyBinding topology;
@@ -24,7 +26,9 @@ final class TopologyProgramAssembler {
     private final List<Evidence.Uncertainty> uncertainties;
     private final FileResourceLowering files;
     private final Map<String,SpInput.StatementFact> facts=new HashMap<>();
+    private final Map<SpInput.DataId,SpInput.DataFact> declarations=new HashMap<>();
     private final List<Sequence> sequences=new ArrayList<>();
+    private final Set<LabelId> emitted=new HashSet<>();
     private final Set<LabelId> synthetic=new HashSet<>();
     private final Map<OperationId,Terminator> explained=new HashMap<>();
     private final Map<String,OriginId> proofOrigins=new HashMap<>();
@@ -38,6 +42,7 @@ final class TopologyProgramAssembler {
         this.plan=plan;this.input=plan.admission().input().orElseThrow();this.topology=new TopologyBinding(input.controlTopology().orElseThrow());
         this.data=data;this.unit=unit;this.origins=origins;this.links=links;this.operands=operands;this.items=items;this.uncertainties=uncertainties;this.files=files;
         input.statements().forEach(s->facts.put(s.header().id().handle(),s));
+        input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
         // A frontier with no licensed continuation cannot depend on a PERFORM
         // resume context. Reuse its source occurrence, never its target spelling.
         for(var fact:input.statements())if(fact instanceof SpInput.CicsFact c
@@ -81,6 +86,24 @@ final class TopologyProgramAssembler {
         return origins.derived(ids.id("origin","topology-binding",unit.localId(),key),List.copyOf(sources),"control-topology@2.39/context-binding");
     }
     private LabelId destination(Target target,Context context,SpInput.StatementFact fact,String role) {
+        if(target.kind()==TargetKind.ESCAPE) {
+            var scope=topology.region(target.reference());
+            if(scope.kind()==RegionKind.INLINE_BODY) {
+                for(var frame=context;frame!=null;frame=frame.parent())
+                    if(frame.binding()!=null&&frame.binding().endpoint().equals(scope.boundary()))return Objects.requireNonNull(frame.resume());
+                throw new IllegalArgumentException("inline escape has no lexical activation");
+            }
+            // A paragraph escape abandons nested inline frames. Bind its frontier
+            // in its procedure activation. An explicit GO TO outside a range does
+            // not cancel that activation: reaching its endpoint still returns.
+            var frame=context;
+            while(frame.parent()!=null&&topology.inline(frame.binding())&&!topology.contains(frame.binding(),scope.id()))frame=frame.parent();
+            var completion=new Target(TargetKind.COMPLETE,scope.id(),target.proofs());
+            var resolved=topology.resolve(completion,frame.binding());
+            if(resolved.kind()==TargetKind.OCCURRENCE)
+                work.addLast(new Context(frame.ids(),frame.binding(),frame.completion(),resolved.reference(),frame.resume(),frame.parent()));
+            return destination(completion,frame,fact,role);
+        }
         var r=topology.resolve(target,context.binding());
         if(r.kind()==TargetKind.OCCURRENCE)return label(r.reference(),context.ids());
         if(r.kind()==TargetKind.COMPLETE)return Objects.requireNonNull(context.completion());
@@ -105,7 +128,9 @@ final class TopologyProgramAssembler {
         boolean shared=occurrenceFrontiers.contains(fact.header().id().handle());
         if(shared&&!emittedOccurrenceFrontiers.add(fact.header().id().handle()))return;
         var context=shared?new Context(occurrenceIds,null,null,fact.header().id().handle()):suppliedContext;
-        var ids=context.ids();var label=label(fact.header().id().handle(),ids);files.sourceEntry(label);
+        var ids=context.ids();var label=label(fact.header().id().handle(),ids);
+        if(!emitted.add(label))return;
+        files.sourceEntry(label);
         var published=topology.outcomes(fact.header().id().handle());
         var invoke=published.stream().filter(o->o.kind()==OutcomeKind.LOCAL_INVOKE).findFirst();
         var instructions=new ArrayList<Instruction>();Terminator term;
@@ -124,7 +149,7 @@ final class TopologyProgramAssembler {
                 for(var phase:call.phases())phases.put(phase.id(),new LabelId(unit,ids.id("label","topology-phase",call.id(),phase.id())));
                 if(entry.kind()==TargetKind.OCCURRENCE) {
                     phases.put("BODY",label(entry.reference(),childIds));
-                    work.addLast(new Context(childIds,call,phases.get(call.completionPhase()),entry.reference()));
+                    work.addLast(new Context(childIds,call,phases.get(call.completionPhase()),entry.reference(),resume,context));
                 } else if(entry.kind()==TargetKind.COMPLETE)phases.put("BODY",Objects.requireNonNull(phases.get(call.completionPhase())));
                 else throw new IllegalArgumentException("unadmitted invocation entry bound");
                 for(var phase:call.phases())phase(fact,phase,phases,context);
@@ -254,6 +279,21 @@ final class TopologyProgramAssembler {
         };
         explained.put(h.id(),result);return result;
     }
+    private boolean varyingEffectAvailable(SpInput.ProcedurePerformFact p) {
+        if(p.varying().isEmpty())return false;
+        var controls=p.varying().orElseThrow().controls();
+        return PerformVaryingAdmission.levelExecutable(controls,declarations::get)
+            &&controls.stream().flatMap(o->o.references().stream()).allMatch(r->r.wholeItemAccess()
+                .filter(w->data.index().containsKey(w.data())).isPresent());
+    }
+    private static SpInput.ProcedurePerformFact phasePayload(SpInput.ProcedurePerformFact p,int level) {
+        if(level==0)return p;
+        var varying=p.varying().orElseThrow();
+        var loop=level==1?p.loop():Optional.of(varying.afterLoops().get(level-2));
+        var controls=varying.controls().stream().filter(o->o.level()==level).toList();
+        return new SpInput.ProcedurePerformFact(p.header(),p.start(),p.end(),p.procedures(),p.normalContinuation(),loop,
+            p.times(),Optional.of(new SpInput.PerformVarying(1,controls)),p.gapCodes(),p.publicationKind(),p.targetEntry());
+    }
     private void phase(SpInput.StatementFact fact,Phase phase,Map<String,LabelId> labels,Context context) {
         var destinations=new HashMap<String,LabelId>();phase.edges().forEach(e->destinations.put(e.role(),labels.get(e.target())));
         Terminator term;
@@ -267,10 +307,14 @@ final class TopologyProgramAssembler {
                 var open=new Evidence.Claim(new Scopes.EntityScope(List.of(op)),Evidence.PrecisionStatus.OPEN,List.of(predicate.reason()));
                 term=new Operations.Branch(new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(exact,open,open,open,exact),List.of(predicate.reason())),predicate,destinations.get("true"),destinations.get("false"));
             } else term=PartialProgramAssembler.opaque(fact,destinations.get("next"),data,unit,context.ids().activation("phase:"+phase.id()),origins,uncertainties,operands,true,"TOPOLOGY_PHASE_EFFECTS_PARTIAL");
-        } else {var p=(SpInput.ProcedurePerformFact)fact;term=switch(phase.operation()) {
-            case "UNTIL_PREDICATE" -> PerformLoopAssembler.decision(p,destinations.get("false"),destinations.get("true"),data,unit,context.ids(),origins,operands,items,uncertainties);
-            case "COUNT_ENTRY","COUNT_REPEAT" -> PerformLoopAssembler.countDecision(p,phase.operation().equals("COUNT_ENTRY"),destinations.get("false"),destinations.get("true"),data,unit,context.ids(),origins,operands,items,uncertainties);
-            case "VARY_INITIAL","VARY_UPDATE" -> PerformVaryingEffects.effect(p,phase.operation().equals("VARY_INITIAL"),destinations.get("next"),data,unit,context.ids(),origins,operands,uncertainties);
+        } else {var p=phasePayload((SpInput.ProcedurePerformFact)fact,phase.level());
+            var phaseIds=phase.level()==0?context.ids():context.ids().activation("phase:"+phase.id());
+            term=switch(phase.operation()) {
+            case "UNTIL_PREDICATE" -> PerformLoopAssembler.decision(p,destinations.get("false"),destinations.get("true"),data,unit,phaseIds,origins,operands,items,uncertainties);
+            case "COUNT_ENTRY","COUNT_REPEAT" -> PerformLoopAssembler.countDecision(p,phase.operation().equals("COUNT_ENTRY"),destinations.get("false"),destinations.get("true"),data,unit,phaseIds,origins,operands,items,uncertainties);
+            case "VARY_INITIAL","VARY_UPDATE" -> !varyingEffectAvailable(p)
+                ?PartialProgramAssembler.opaque(fact,destinations.get("next"),data,unit,phaseIds.activation("unavailable-phase:"+phase.id()),origins,uncertainties,operands,true,"PERFORM_VARYING_OPERANDS_UNAVAILABLE")
+                :PerformVaryingEffects.effect(p,phase.operation().equals("VARY_INITIAL"),destinations.get("next"),data,unit,phaseIds,origins,operands,uncertainties);
             default -> throw new IllegalArgumentException("unsupported topology phase operation");
         };
         }

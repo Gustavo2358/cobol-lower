@@ -73,3 +73,7 @@ IndependentStorageSet. Wire13 não é reinterpretado. [Regras, prova e limites](
 
 [Fact dependency locality](fact-dependency-locality.md) defines the new causal proof
 graph. 2.40 requires it alongside R1 topology; <=2.39 retains historical meaning.
+
+SP 2.48 adds scoped control completion and typed multi-level VARYING payloads.
+See [control topology](control-topology.md#sp-248-scoped-exits-section-and-varying-levels)
+for versioning, validation and AIR translation obligations.

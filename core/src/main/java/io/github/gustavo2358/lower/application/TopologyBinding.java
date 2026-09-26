@@ -20,6 +20,16 @@ final class TopologyBinding {
         topology.boundaries().forEach(x->boundaries.put(x.id(),x));topology.outcomes().forEach(x->outcomes.put(x.id(),x));
         topology.bindings().forEach(x->bindings.put(x.id(),x));topology.proofs().forEach(x->proofs.put(x.id(),x));
     }
+    Region region(String id) { return Objects.requireNonNull(regions.get(id)); }
+    boolean inline(Binding binding) { return region(boundaries.get(binding.endpoint()).region()).kind()==RegionKind.INLINE_BODY; }
+    boolean contains(Binding binding,String scope) {
+        String current=scope;
+        while(!current.isEmpty()) {
+            if(regions.get(binding.region()).regions().contains(current))return true;
+            current=region(current).parent();
+        }
+        return false;
+    }
     List<Outcome> outcomes(String statement){return occurrences.get(statement).outcomes().stream().map(outcomes::get).toList();}
     Optional<Outcome> outcome(String statement,String role){return outcomes(statement).stream().filter(e->e.role().equals(role)).findFirst();}
     Binding binding(String id){return Objects.requireNonNull(bindings.get(id));}
@@ -99,6 +109,17 @@ final class TopologyBinding {
         for(var e:topology.outcomes()){c.touch();binder.resolve(e.target(),null);}
         for(var b:topology.bindings()){c.touch();binder.resolve(b.resume(),null);binder.entry(b);}
         var facts=new HashMap<String,SpInput.StatementFact>();input.statements().forEach(s->facts.put(s.header().id().handle(),s));
+        for(var binding:topology.bindings()) {
+            var fact=facts.get(binding.caller());
+            if(fact instanceof SpInput.ProcedurePerformFact p&&p.varying().filter(v->v.levels()>1&&!v.afterLoops().isEmpty()).isPresent())
+                c.require(binding.phases().stream().allMatch(phase->phase.level()>0),Admission.Rule.STRUCTURE,binding.caller(),null,"multi-level phases explicitly select their payload");
+        }
+        for(var binding:topology.bindings())for(var phase:binding.phases())if(phase.level()>0) {
+            var fact=facts.get(binding.caller());
+            c.require(fact instanceof SpInput.ProcedurePerformFact p&&p.varying().isPresent()
+                &&phase.level()<=p.varying().get().levels()&&p.varying().get().afterLoops().size()==p.varying().get().levels()-1,
+                Admission.Rule.STRUCTURE,binding.caller(),null,"phase level has a typed control/predicate payload");
+        }
         for(var event:topology.exceptionalEvents()) {
             var fact=facts.get(event.statement());
             boolean valid;

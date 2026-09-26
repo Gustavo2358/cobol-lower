@@ -48,7 +48,7 @@ final class Wire211 {
     record PerformParagraphDocument(String id, String entry, List<String> statements, List<String> completions, Wire.ProvenanceDocument provenance) { }
     record PerformCountDocument(PerformCountProfile profile,@Nullable String integer,@Nullable ReferenceDocument reference,Wire.ProvenanceDocument provenance) { }
     record VaryingOperandDocument(int level,VaryingOperandRole role,@Nullable String integer,List<ReferenceDocument> references,Wire.ProvenanceDocument provenance) { }
-    record PerformVaryingDocument(int levels,List<VaryingOperandDocument> controls) { }
+    record PerformVaryingDocument(int levels,List<VaryingOperandDocument> controls,List<PerformLoopDocument> afterLoops) { }
     record PerformLoopDocument(PerformTestMode testMode, ConditionDocument condition) { }
     record ProcedurePerformDocument(Wire.StatementHeaderDocument header, @Nullable PerformTargetDocument start, @Nullable PerformTargetDocument end,
         List<PerformParagraphDocument> procedures, ContinuationDocument normalContinuation, @Nullable PerformLoopDocument loop,@Nullable PerformCountDocument times,@Nullable PerformVaryingDocument varying,List<String> gapCodes) implements StatementDocument { }

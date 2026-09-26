@@ -30,13 +30,14 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                     &&eligibility==EventEligibility.HANDLER_ELIGIBLE,"event guard/origin agreement");
         }
     }
-    public enum RegionKind { PROCEDURE, PARAGRAPH, RANGE, IF, IF_ARM, EVALUATE, EVALUATE_ARM, FILE, FILE_HANDLER, INLINE_BODY, DECLARATIVE }
-    public enum TargetKind { OCCURRENCE, REGION_ENTRY, COMPLETE, PROGRAM_RETURN, UNKNOWN_LOCAL }
+    public enum RegionKind { PROCEDURE, SECTION, PARAGRAPH, RANGE, IF, IF_ARM, EVALUATE, EVALUATE_ARM, FILE, FILE_HANDLER, INLINE_BODY, DECLARATIVE }
+    public enum TargetKind { OCCURRENCE, REGION_ENTRY, COMPLETE, ESCAPE, PROGRAM_RETURN, UNKNOWN_LOCAL }
     public enum OutcomeKind { NORMAL, BRANCH, EXPLICIT_TRANSFER, LOCAL_INVOKE, PROGRAM_RETURN, UNKNOWN_LOCAL }
     public enum PhaseKind { PREDICATE, EFFECT }
     public record PhaseEdge(String role,String target) { public PhaseEdge {text(role);text(target);} }
-    public record Phase(String id,PhaseKind kind,String operation,List<PhaseEdge> edges,List<String> proofs) {
-        public Phase {text(id);Objects.requireNonNull(kind);text(operation);edges=sorted(nonempty(edges),PhaseEdge::role);proofs=sorted(nonempty(proofs),x->x);}
+    public record Phase(String id,PhaseKind kind,String operation,List<PhaseEdge> edges,List<String> proofs,int level) {
+        public Phase(String id,PhaseKind kind,String operation,List<PhaseEdge> edges,List<String> proofs) {this(id,kind,operation,edges,proofs,0);}
+        public Phase {require(level>=0,"nonnegative phase level");text(id);Objects.requireNonNull(kind);text(operation);edges=sorted(nonempty(edges),PhaseEdge::role);proofs=sorted(nonempty(proofs),x->x);}
     }
     public enum ProofKind { LOCAL_GRAMMAR, RESOLVED_TARGET, EXPANDED_INCLUDE, INPUT_REGION_ISOLATION, PARTIAL_UNKNOWN }
     public record Target(TargetKind kind, String reference, List<String> proofs) {
@@ -84,7 +85,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         }
         java.util.function.Consumer<Target> target=t->{refs(t.proofs(),ps);switch(t.kind()) {
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
-            case REGION_ENTRY, COMPLETE, UNKNOWN_LOCAL, PROGRAM_RETURN -> require(rs.containsKey(t.reference()),"target region");
+            case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN -> require(rs.containsKey(t.reference()),"target region");
         }};
         for(var o:occurrences){refs(o.proofs(),ps);require(rs.containsKey(o.region()),"occurrence region");refs(o.outcomes(),es);
             require(rs.get(o.region()).members().contains(o.statement()),"inventoried region member");
@@ -94,19 +95,27 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                 var e=es.get(id);require(e.statement().equals(o.statement()),"outcome owner");
                 require(roles.add(e.role()),"duplicate outcome role: "+o.statement()+"/"+e.role());
             }}
-        for(var r:regions){refs(r.proofs(),ps);refs(r.members(),os);refs(r.regions(),rs);target.accept(r.entry());
+        for(var r:regions){refs(r.proofs(),ps);refs(r.members(),os);refs(r.regions(),rs);target.accept(r.entry());require(r.entry().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
             for(var member:r.members())require(os.get(member).region().equals(r.id()),"member owner");
             require(r.parent().isEmpty()||rs.containsKey(r.parent()),"region parent");
             require(bs.containsKey(r.boundary())&&bs.get(r.boundary()).region().equals(r.id()),"region boundary");}
-        for(var b:boundaries){refs(b.proofs(),ps);require(rs.containsKey(b.region()),"boundary region");require(rs.get(b.region()).boundary().equals(b.id()),"single region boundary");target.accept(b.ordinaryDefault());}
+        for(var b:boundaries){refs(b.proofs(),ps);require(rs.containsKey(b.region()),"boundary region");require(rs.get(b.region()).boundary().equals(b.id()),"single region boundary");target.accept(b.ordinaryDefault());require(b.ordinaryDefault().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");}
         for(var e:outcomes){refs(e.proofs(),ps);require(os.containsKey(e.statement())&&os.get(e.statement()).outcomes().contains(e.id()),"inventoried outcome");target.accept(e.target());
             require(e.kind()==OutcomeKind.LOCAL_INVOKE?!e.binding().isEmpty()&&calls.containsKey(e.binding()):e.binding().isEmpty(),"outcome binding");
             if(e.kind()==OutcomeKind.LOCAL_INVOKE)require(calls.get(e.binding()).caller().equals(e.statement())
                 &&e.target().kind()==TargetKind.REGION_ENTRY&&e.target().reference().equals(calls.get(e.binding()).region()),"invocation target/binding agreement");
+            if(e.target().kind()==TargetKind.ESCAPE) {
+                var scope=rs.get(e.target().reference());
+                require(e.kind()==OutcomeKind.EXPLICIT_TRANSFER
+                    &&Set.of(RegionKind.PARAGRAPH,RegionKind.INLINE_BODY).contains(scope.kind()),"typed scope escape");
+                String parent=os.get(e.statement()).region();var seen=new HashSet<String>();
+                while(!parent.isEmpty()&&!parent.equals(scope.id())&&seen.add(parent))parent=rs.get(parent).parent();
+                require(parent.equals(scope.id()),"escape target is a lexical enclosing scope");
+            }
             if(e.kind()==OutcomeKind.PROGRAM_RETURN)require(e.target().kind()==TargetKind.PROGRAM_RETURN,"return target");
             if(e.kind()==OutcomeKind.UNKNOWN_LOCAL)require(e.target().kind()==TargetKind.UNKNOWN_LOCAL,"unknown target");
         }
-        for(var b:bindings){refs(b.proofs(),ps);require(os.containsKey(b.caller())&&rs.containsKey(b.region())&&bs.containsKey(b.endpoint()),"binding references");target.accept(b.resume());
+        for(var b:bindings){refs(b.proofs(),ps);require(os.containsKey(b.caller())&&rs.containsKey(b.region())&&bs.containsKey(b.endpoint()),"binding references");target.accept(b.resume());require(b.resume().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
             require(rs.get(b.region()).kind()==RegionKind.RANGE,"invoke region is range");
             require(!rs.get(b.region()).regions().isEmpty()&&rs.get(b.region()).regions().get(rs.get(b.region()).regions().size()-1).equals(bs.get(b.endpoint()).region()),"range endpoint");}
         for(var b:bindings) {
@@ -114,6 +123,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             for(var phase:b.phases())require(phaseIds.add(phase.id()),"duplicate phase identity");
             require(phaseIds.contains(b.entryPhase())&&phaseIds.contains(b.completionPhase()),"binding phase entry/completion");
             for(var phase:b.phases()) {refs(phase.proofs(),ps);
+                require(phase.level()==0||Set.of("UNTIL_PREDICATE","VARY_INITIAL","VARY_UPDATE").contains(phase.operation()),"level selects a VARYING payload");
                 require(phase.kind()==PhaseKind.PREDICATE?Set.of("UNTIL_PREDICATE","COUNT_ENTRY","COUNT_REPEAT").contains(phase.operation())
                     :Set.of("VARY_INITIAL","VARY_UPDATE").contains(phase.operation()),"phase operation payload kind");var roles=new HashSet<String>();
                 for(var edge:phase.edges())require(phaseIds.contains(edge.target())&&roles.add(edge.role()),"phase target/role");
