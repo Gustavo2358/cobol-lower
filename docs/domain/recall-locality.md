@@ -1,6 +1,8 @@
 # Locality of logical storage proofs
 
-Status: IN_PROGRESS. Scope: preserve logical values of an elementary item when an
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/cobol-lower/pull/35).
+
+Scope: preserve logical values of an elementary item when an
 unrelated sibling is repeated or redefined. No physical layout is inferred.
 
 Cause: the R2 producer requires the entire allocation region to have no OCCURS or

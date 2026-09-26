@@ -1,6 +1,6 @@
 # Explicit dependency input 1.0.0
 
-Status: IN_PROGRESS; approved scope, Draft review required.
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/cobol-lower/pull/35).
 
 The normal dependency entrypoint consumes an explicit manifest. It binds the existing
 AIR bytes, qualified-source-dependencies 1.0.0 bytes and typed StatementLinks from the
@@ -47,7 +47,7 @@ The memory port is DependencyInput(Publication, optional certificate, typed corr
 Digest checks belong to file adapters; memory construction checks the same identity,
 ownership and origin relationships. No core module imports file or JSON APIs.
 
-## Validation for Draft review
+## Validation of the initial manifest stage
 
 The repository FAST gate passes, including the existing qualified-source fixtures,
 manifest determinism, AIR byte parity and preservation of output on rejection.

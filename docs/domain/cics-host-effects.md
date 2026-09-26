@@ -1,6 +1,8 @@
 # Qualified CICS host effects and ordinary control
 
-Status: IN_PROGRESS. Scope: SP 2.46, source-qualified SYNCPOINT, RECEIVE MAP,
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/cobol-lower/pull/35).
+
+Scope: SP 2.46, source-qualified SYNCPOINT, RECEIVE MAP,
 SEND MAP and terminal SEND. The existing ControlTopology remains authoritative.
 
 ## Cause and authority

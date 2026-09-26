@@ -1,6 +1,8 @@
 # Logical VALUE invariants
 
-Status: IN_PROGRESS. Scope: source-owned lifetime proof for a closed local text cell.
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/cobol-lower/pull/35).
+
+Scope: source-owned lifetime proof for a closed local text cell.
 
 IBM Enterprise COBOL 6.4 initializes WORKING-STORAGE VALUE on first allocation and retains its last-used state across ordinary calls ([WORKING-STORAGE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=overview-working-storage-section)). Therefore a value that cannot be written or exposed for the whole program lifetime is invariant, without assuming an INITIAL program or choosing a byte encoding.
 
