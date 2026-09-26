@@ -89,7 +89,15 @@ public final class FactDependencyWireSuite {
         var stripped=decode(fixture("removed-diagnostic"));
         need(stripped.factDependencies().orElseThrow().facts().stream().filter(f->f.kind()==FactDependencies.FactKind.LOCAL_CELL)
             .noneMatch(stripped.factDependencies().orElseThrow()::available),"diagnostic deletion does not restore dependent cells");
-        need(lower(stripped).publication().isEmpty(),"inconsistent entry input evidence remains rejected before AIR");
+        // Diagnostic removal still cannot restore storage/control proof. The known
+        // topology root can now be published without the unavailable legacy start.
+        var strippedResult=lower(stripped);
+        need(strippedResult.publication().isPresent()&&strippedResult.validation().orElseThrow().isStructurallyValid(),
+            "known topology entry admits bounded output despite missing legacy precision");
+        var strippedPublication=strippedResult.publication().orElseThrow();
+        need(!strippedPublication.uncertainties().isEmpty(),"unavailable input remains explicit after diagnostic removal");
+        need(strippedPublication.units().getFirst().sequences().stream().allMatch(s->s.terminator() instanceof Operations.Opaque o
+                &&o.envelope().control().known().isEmpty()),"diagnostic removal invents neither return nor successor");
         var peer=tree.deepCopy();for(var key:List.of("inputs","proofs","regions","facts","bindings"))reverse((ArrayNode)peer.path("factDependencies").path(key));
         for(var key:List.of("nodes","bases","views"))reverse((ArrayNode)peer.path("storage").path(key));
         reverse((ArrayNode)peer.path("dataDeclarations"));reverse((ArrayNode)peer.path("statements"));

@@ -15,7 +15,11 @@ New and legacy assemblers are selected once. Legacy control fields remain useful
 for compatibility and operation payloads, never as an alternative authority for
 completion in the new assembler. The initial executable statement is resolved from
 the root PROCEDURE region; entryInventory retains signature/identity metadata and
-its start must agree with that root. A mismatch is rejected before AIR.
+a published known start must agree with that root. A mismatch is rejected before AIR.
+An unavailable legacy start does not veto a known topology root. Exactly one
+primary entry identity is still required, and an unknown topology root remains
+blocked. Input/signature gaps and UNKNOWN_LOCAL outcomes remain explicit; no
+continuation or dependency value is inferred from the missing legacy metadata.
 
 ## Closed algebra
 

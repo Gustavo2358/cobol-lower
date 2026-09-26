@@ -47,7 +47,10 @@ final class PartialProgramAdmission {
                     c.require(false,Rule.PROFILE_FACT,id.handle(),null,"supported logical value has an unrepresentable partial storage relation");
             }
             if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
-            c.require(input.entryInventory().entries().size()==1 && input.entryInventory().entries().getFirst().start().statement().isPresent(),
+            // Topology owns the executable start; legacy entry metadata still owns
+            // identity/signature. An absent legacy start is not a contradiction.
+            c.require(input.entryInventory().entries().size()==1 && (input.controlTopology().isPresent()
+                    || input.entryInventory().entries().getFirst().start().statement().isPresent()),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
             if(input.controlTopology().isPresent()) {
