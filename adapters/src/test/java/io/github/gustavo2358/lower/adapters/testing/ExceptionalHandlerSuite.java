@@ -87,7 +87,7 @@ public final class ExceptionalHandlerSuite {
         }need(run(reordered).a().equals(def.a()),"topology inventory permutation");metamorphics++;
         var ev=(ObjectNode)wire("default").path("controlTopology").path("exceptionalEvents").get(0); // wire negatives separate from real fixtures
         for(var version:List.of("2.40.0","2.41.0","2.42.0","2.43.0","2.44.0")){var w=wire("default");w.put("contractVersion",version);reject(w,"old profile rejects exceptional authority");}
-        for(var version:List.of("2.46.0","9.99","unknown")){var w=wire("default");w.put("contractVersion",version);w.withObject("controlTopology").put("exceptionalEvents",false);var r=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(w));need(r instanceof SpJsonDecoder.Rejected x&&x.diagnostic().code()==SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"version before malformed semantic shape");mutations++;}
+        for(var version:List.of("2.47.0","9.99","unknown")){var w=wire("default");w.put("contractVersion",version);w.withObject("controlTopology").put("exceptionalEvents",false);var r=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(w));need(r instanceof SpJsonDecoder.Rejected x&&x.diagnostic().code()==SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"version before malformed semantic shape");mutations++;}
         for(var field:List.of("premises","scope","eligibility","statement","proofs")){
             var w=wire("default");var x=(ObjectNode)w.path("controlTopology").path("exceptionalEvents").get(0);
             if(field.equals("premises")||field.equals("proofs"))x.putArray(field);else x.put(field,"INVENTED");reject(w,"invalid event "+field);

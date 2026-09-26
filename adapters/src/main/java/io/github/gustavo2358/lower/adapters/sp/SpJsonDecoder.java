@@ -93,12 +93,32 @@ public final class SpJsonDecoder {
             String receivedVersion=node.path("contractVersion").textValue();
             var profile=SpContractProfile.admitted(receivedVersion);
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
+            for(var effect:node.path("statementEffects"))
+                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!receivedVersion.equals("2.46.0"))
+                    throw new PhysicalShape("$/statementEffects/new embedded proof requires SP2.46");
+            for(var condition:node.path("storage").path("entryState").path("conditions"))
+                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!receivedVersion.equals("2.46.0"))
+                    throw new PhysicalShape("$/storage/entryState/LOGICAL_TEXT requires SP2.46");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
+                var condition=variant.equals("IF")?statement.path("condition"):statement.path("loop").path("condition");
+                if(condition.isObject()) {
+                    if(condition.has("textPredicate")&&!receivedVersion.equals("2.46.0"))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
+                    if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
+                }
                 if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!receivedVersion.equals("2.46.0"))
+                    throw new PhysicalShape("$/statements/RETRIEVE requires SP2.46");
+                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!receivedVersion.equals("2.46.0"))
+                    throw new PhysicalShape("$/statements/registrationEffects requires SP2.46");
+                if(variant.equals("CICS_HANDLER")&&!statement.has("registrationEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("registrationEffects");
+                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!receivedVersion.equals("2.46.0"))
+                    throw new PhysicalShape("$/statements/hostEffects requires SP2.46");
+                if(variant.equals("CICS_COMMAND")&&!statement.has("hostEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("hostEffects");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
             }
             if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
@@ -107,7 +127,7 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
-            if(!receivedVersion.equals("2.45.0")&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+            if(!java.util.Set.of("2.45.0","2.46.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
             if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");

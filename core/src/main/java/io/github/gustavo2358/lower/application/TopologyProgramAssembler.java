@@ -110,7 +110,7 @@ final class TopologyProgramAssembler {
         var invoke=published.stream().filter(o->o.kind()==OutcomeKind.LOCAL_INVOKE).findFirst();
         var instructions=new ArrayList<Instruction>();Terminator term;
         boolean precise=plan.precise().contains(fact.header().id());
-        if(NonExecutableCapability.of(fact).isPresent()) {
+        if(NonExecutableCapability.of(fact,plan.storage()).isPresent()) {
             term=frontier(fact,ids,"EXECUTABLE_CAPABILITY_NOT_READY",fact.header().id().handle());
         } else if(invoke.isPresent()) {
             var call=topology.binding(invoke.get().binding());
@@ -135,7 +135,13 @@ final class TopologyProgramAssembler {
             term=frontier(fact,ids,"TOPOLOGY_CONTROL_UNAVAILABLE",published.getFirst().target().reference());
         } else {
             var normal=topology.outcome(fact.header().id().handle(),"normal").map(o->destination(o.target(),context,fact,"normal")).orElse(null);
-            if(files.handles(fact)) {
+            if(fact instanceof SpInput.CicsCommandFact command&&CicsCommandMemory.ready(command,plan.storage())) {
+                var targets=published.stream().map(o->destination(o.target(),context,fact,o.role())).distinct().<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
+                term=CicsCommandMemory.translate(command,data,unit,ids,origins,operands,uncertainties,targets);
+            } else if(fact instanceof SpInput.CicsHandlerFact handler&&handler.registrationEffects().isPresent()) {
+                var targets=published.stream().map(o->destination(o.target(),context,fact,o.role())).distinct().<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
+                term=CicsCommandMemory.registration(handler,data,unit,ids,origins,operands,uncertainties,targets);
+            } else if(files.handles(fact)) {
                 var chain=files.sequences(fact,normal,ids,role->outcome(role,context,fact)).stream()
                     .map(s->new Sequence(s.label(),s.instructions(),explain(s.terminator(),fact,context),s.origin())).toList();
                 instructions.addAll(chain.getFirst().instructions());term=chain.getFirst().terminator();
@@ -209,10 +215,10 @@ final class TopologyProgramAssembler {
         var h=payload.header();var precision=h.precision();var scope=new Scopes.EntityScope(List.of(h.id()));
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","topology-region-unavailable",h.id().localId(),bound));
         var evidence=topology.outcomes(fact.header().id().handle()).stream().flatMap(o->o.proofs().stream()).distinct().toList();
-        var origin=evidence("unavailable/"+bound,evidence,ids);
-        boolean notReady=NonExecutableCapability.of(fact).isPresent();
+        var origin=evidence("unavailable/"+h.id().localId()+"/"+bound,evidence,ids);
+        boolean notReady=NonExecutableCapability.of(fact,plan.storage()).isPresent();
         uncertainties.add(new Evidence.Uncertainty(reason,notReady?"EXECUTABLE_CAPABILITY_NOT_READY":"CONTROL_TOPOLOGY_REGION_UNAVAILABLE",List.of(Evidence.Dimension.CONTROL),scope,
-            notReady?"Typed "+NonExecutableCapability.of(fact).orElseThrow().kind()+" retained at "+bound
+            notReady?"Typed "+NonExecutableCapability.of(fact,plan.storage()).orElseThrow().kind()+" retained at "+bound
                 +"; executable projection stops here. Source topology is retained in input; no source termination is claimed."
                 :"Source control remains unavailable at "+bound+"; no source impossibility or completion is claimed",origin));
         var reasons=new ArrayList<>(h.uncertainties());reasons.add(reason);

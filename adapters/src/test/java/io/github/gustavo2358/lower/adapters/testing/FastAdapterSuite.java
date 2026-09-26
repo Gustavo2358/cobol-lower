@@ -18,6 +18,12 @@ public final class FastAdapterSuite {
         TerminalSendSuite.main(new String[0]);
         ControlStorageDecouplingSuite.main(new String[0]);
         FactDependencyWireSuite.main(new String[0]);
+        RecallLocalitySuite.main(new String[0]);
+        CicsHostEffectsSuite.main(new String[0]);
+        DliEffectsSuite.main(new String[0]);
+        ConditionRegistrationSuite.main(new String[0]);
+        TextPredicateSuite.main(new String[0]);
+        LogicalInitialInvariantSuite.main(new String[0]);
         ControlTopologyWireSuite.main(new String[0]);
         TypedOccurrenceControlSuite.main(new String[0]);
         BoundedCicsControlSuite.main(new String[0]);

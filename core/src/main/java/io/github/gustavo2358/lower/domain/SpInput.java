@@ -3,6 +3,7 @@ package io.github.gustavo2358.lower.domain;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
 public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology, Optional<FactDependencies> factDependencies) {
@@ -348,7 +349,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     }
 
     /** Input facts are preserved; no executable handler/event lowering is qualified. */
-    public enum ExecutableLowering { NOT_READY }
+    public enum ExecutableLowering { NOT_READY, REQUIRES_STORAGE_ADMISSION }
     public enum CicsHandlerKind { ABEND }
     public enum CicsHandlerAction { ACTIVATE, CANCEL, RESET, UNAVAILABLE }
     public enum CicsHandlerTargetKind { LABEL, PROGRAM, NONE, UNAVAILABLE }
@@ -362,12 +363,24 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record CicsHandlerLabelTarget(ProcedureId id, Provenance declarationOrigin) {
         public CicsHandlerLabelTarget { Objects.requireNonNull(id); Objects.requireNonNull(declarationOrigin); }
     }
+    public enum CicsRegistrationEffects { NO_APPLICATION_MEMORY }
     public record CicsHandlerFact(StatementHeader header, CicsHandlerKind handlerKind, CicsHandlerAction action,
             CicsHandlerTargetKind targetKind, Optional<String> targetSyntax, Optional<ResolutionStatus> labelBindingStatus,
             Optional<CicsHandlerLabelTarget> labelTarget, Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin,
             Optional<Provenance> targetOrigin, Optional<CallTarget> programTarget, CicsHandlerScope scope, String rawText,
-            List<CicsOption> options, List<String> gapCodes) implements StatementFact {
+            List<CicsOption> options, List<String> gapCodes, Optional<CicsRegistrationEffects> registrationEffects) implements StatementFact {
+        public CicsHandlerFact(StatementHeader header,CicsHandlerKind handlerKind,CicsHandlerAction action,
+            CicsHandlerTargetKind targetKind,Optional<String> targetSyntax,Optional<ResolutionStatus> labelBindingStatus,
+            Optional<CicsHandlerLabelTarget> labelTarget,Optional<StatementId> targetEntry,Optional<Provenance> entryOrigin,
+            Optional<Provenance> targetOrigin,Optional<CallTarget> programTarget,CicsHandlerScope scope,String rawText,
+            List<CicsOption> options,List<String> gapCodes) {
+            this(header,handlerKind,action,targetKind,targetSyntax,labelBindingStatus,labelTarget,targetEntry,entryOrigin,targetOrigin,programTarget,scope,rawText,options,gapCodes,Optional.empty());
+        }
         public CicsHandlerFact {
+            Objects.requireNonNull(registrationEffects);
+            if(registrationEffects.isPresent())CicsContract.require((action==CicsHandlerAction.CANCEL||action==CicsHandlerAction.RESET
+                ||action==CicsHandlerAction.ACTIVATE&&targetKind==CicsHandlerTargetKind.LABEL&&targetEntry.isPresent())
+                &&options.stream().allMatch(o->Set.of("ABEND","LABEL","CANCEL","RESET","NOHANDLE").contains(o.name())&&o.reference().isEmpty()),"closed handler registration footprint");
             Objects.requireNonNull(header); Objects.requireNonNull(handlerKind); Objects.requireNonNull(action);
             Objects.requireNonNull(targetKind); Objects.requireNonNull(targetSyntax); Objects.requireNonNull(labelBindingStatus);
             Objects.requireNonNull(labelTarget); Objects.requireNonNull(targetEntry); Objects.requireNonNull(entryOrigin);
@@ -376,7 +389,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             CicsContract.handler(header,action,targetKind,targetSyntax,labelBindingStatus,labelTarget,targetEntry,
                 entryOrigin,targetOrigin,programTarget,rawText,options);
         }
-        public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
+        public ExecutableLowering executableLowering() { return registrationEffects.isPresent()?ExecutableLowering.REQUIRES_STORAGE_ADMISSION:ExecutableLowering.NOT_READY; }
     }
     public enum CicsAbendEventKind { ABEND }
     public enum CicsAbendEligibility { HANDLER_ELIGIBLE, HANDLERS_BYPASSED, UNAVAILABLE }
@@ -391,7 +404,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
-    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL }
+    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
     public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
     /** Typed source expression. LENGTH_OF denotes declaration extent, not stored value. */
     public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
@@ -404,9 +417,12 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
     public enum CicsCommandSyntaxStatus { SUPPORTED, UNAVAILABLE }
+    public record CicsHostEffects(List<Integer> literalOptions) {
+        public CicsHostEffects { literalOptions=List.copyOf(literalOptions);CicsContract.require(new java.util.HashSet<>(literalOptions).size()==literalOptions.size(),"unique literal option proofs"); }
+    }
     /** Positive source facts, retained independently of executable lowering. */
     public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length) implements StatementFact {
+            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length,Optional<CicsHostEffects> hostEffects) implements StatementFact {
         public CicsCommandFact {
             Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);
             Objects.requireNonNull(rawText);options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
@@ -417,9 +433,24 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
                 ||commandKind==CicsCommandKind.SEND_TERMINAL&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
                 throw new IllegalArgumentException("terminal LENGTH expression required exactly when published");
             length.flatMap(OperandExpression::reference).ifPresent(r->{if(!r.id().statement().equals(header.id()))throw new IllegalArgumentException("expression owner");});
+            Objects.requireNonNull(hostEffects);
+            if(hostEffects.isPresent()) {
+                CicsContract.require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED,"host effects require supported syntax");
+                var names=options.stream().map(CicsOption::name).collect(java.util.stream.Collectors.toSet());
+                CicsContract.require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO"),"RECEIVE host area must be explicit");
+                CicsContract.require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM"),"SEND host area must be explicit");
+                var literals=new java.util.HashSet<>(hostEffects.orElseThrow().literalOptions());
+                for(var option:options) {
+                    if(literals.remove(option.start()))CicsContract.require(java.util.Set.of("MAP","MAPSET").contains(option.name())&&option.reference().isEmpty(),"literal proof belongs to a name parameter");
+                    else if(option.operand().isPresent()&&!option.name().equals("LENGTH"))CicsContract.require(option.reference().filter(r->r.logicalWholeItem().isPresent()).isPresent(),"every host operand must have a whole reference");
+                }
+                CicsContract.require(literals.isEmpty(),"literal proof refers to a published option");
+            }
+
         }
-        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty());}
-        public ExecutableLowering executableLowering(){return ExecutableLowering.NOT_READY;}
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g,Optional<OperandExpression> l){this(h,k,s,raw,o,g,l,Optional.empty());}
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty(),Optional.empty());}
+        public ExecutableLowering executableLowering(){return hostEffects.isPresent()?ExecutableLowering.REQUIRES_STORAGE_ADMISSION:ExecutableLowering.NOT_READY;}
     }
     public enum CicsCommand { LINK, XCTL }
     public enum CicsConditions { LOCAL_CONDITION, DEFAULT_ENTRY_PREFIX, UNKNOWN }
@@ -530,13 +561,22 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             Objects.requireNonNull(normalContinuation); gapCodes=List.copyOf(gapCodes); }
     }
 
+    public enum TextPredicateKind { EQUAL_TEXT, EQUAL_SPACES, EQUAL_LOW_VALUES, EQUAL_HIGH_VALUES, NOT, AND, OR }
+    public record TextPredicate(TextPredicateKind kind,Optional<OperandId> reference,Optional<String> text,List<TextPredicate> children) {
+        public TextPredicate {Objects.requireNonNull(kind);Objects.requireNonNull(reference);Objects.requireNonNull(text);children=List.copyOf(children);}
+    }
     public record IfFact(StatementHeader header, String conditionShape, PredicateGuarantee predicateGuarantee,
             List<DataReference> conditionReads, Provenance conditionProvenance, boolean explicitlyTerminated,
             Optional<StatementId> continuation, NormalContinuation normalContinuation, IfArm thenArm, IfArm elseArm,
-            IfProfile profile) implements StatementFact {
+            IfProfile profile,Optional<TextPredicate> textPredicate) implements StatementFact {
         public IfFact { Objects.requireNonNull(header); Objects.requireNonNull(conditionShape); Objects.requireNonNull(predicateGuarantee);
             conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(conditionProvenance); Objects.requireNonNull(continuation);
-            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(thenArm); Objects.requireNonNull(elseArm); Objects.requireNonNull(profile); }
+            Objects.requireNonNull(normalContinuation); Objects.requireNonNull(thenArm); Objects.requireNonNull(elseArm); Objects.requireNonNull(profile);Objects.requireNonNull(textPredicate); }
+        public IfFact(StatementHeader header,String conditionShape,PredicateGuarantee predicateGuarantee,
+            List<DataReference> conditionReads,Provenance conditionProvenance,boolean explicitlyTerminated,
+            Optional<StatementId> continuation,NormalContinuation normalContinuation,IfArm thenArm,IfArm elseArm,IfProfile profile) {
+            this(header,conditionShape,predicateGuarantee,conditionReads,conditionProvenance,explicitlyTerminated,continuation,normalContinuation,thenArm,elseArm,profile,Optional.empty());
+        }
     }
     public record IndependentStorageSet(Availability availability, StorageIndependenceRule rule, String authority,
             List<DataId> members, Optional<Provenance> provenance, List<String> gapCodes) {
@@ -547,7 +587,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum EffectBound { NONE, ALL }
     public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum EffectValueTransform { NONE, UNKNOWN }
-    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS }
+    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
     public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
             List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
             EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {
