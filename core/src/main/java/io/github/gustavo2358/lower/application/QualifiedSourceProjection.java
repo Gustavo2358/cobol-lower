@@ -2,6 +2,8 @@ package io.github.gustavo2358.lower.application;
 
 import java.util.*;
 import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.domain.NominalValues;
+import io.github.gustavo2358.lower.source.NominalValueEvidence;
 import io.github.gustavo2358.lower.source.QualifiedSourceDependencies.*;
 
 /** Lossless source/state projection. No AIR assembly or new transfer/value rule. */
@@ -55,7 +57,29 @@ public final class QualifiedSourceProjection {
             var values=values(target);
             occurrences.add(new Occurrence(id(s.header().id()),technology,command,namespace,profile,target.map(t->t instanceof SpInput.LiteralCallTarget?"LITERAL":"COMPUTED").orElse("UNAVAILABLE"),operands(target),values,values.isEmpty(),qualifications.getOrDefault(s.header().id().handle(),List.of())));
         }
-        return new UnitEvidence(unit(input.unit()),state.isPresent(),statements,occurrences,targets,nodes,derivations,selections,events,guards,proofs,frontiers);
+        return new UnitEvidence(unit(input.unit()),state.isPresent(),statements,occurrences,targets,nodes,derivations,selections,events,guards,proofs,frontiers,nominal(input,occurrences,derivations));
+    }
+    private static Optional<NominalValueEvidence> nominal(SpInput input,List<Occurrence> occurrences,List<Derivation> derivations) {
+        return input.nominalValues().map(raw->{
+            var sinks=new HashSet<String>();for(var o:occurrences)if(o.targetKind().equals("COMPUTED"))sinks.add(o.id().handle());
+            var facts=new NominalValues(raw.authority(),raw.symbols(),raw.assignments(),raw.conditions(),raw.queries().stream().filter(q->sinks.contains(q.statement())).toList());
+            var symbols=new HashSet<String>();facts.symbols().forEach(s->symbols.add(s.node()));
+            var storage=input.storage().orElseThrow();
+            var declarations=storage.nodes().stream().filter(n->symbols.contains(n.id().handle()))
+                .map(n->new NominalValueEvidence.Declaration(n.id().handle(),origin(n.provenance()))).toList();
+            var seeds=storage.entryState().conditions().stream().filter(c->symbols.contains(c.node().handle())&&c.logicalText().isPresent())
+                .map(c->new NominalValueEvidence.Seed(c.node().handle(),c.logicalText().orElseThrow(),c.proof().name(),origin(c.provenance()))).toList();
+            var predicates=new HashSet<String>();facts.conditions().forEach(c->predicates.add(c.statement()));
+            var outcomes=new HashMap<String,Boolean>();input.controlTopology().ifPresent(t->t.outcomes().forEach(o->{
+                if(predicates.contains(o.statement())&&Set.of("then","else").contains(o.role()))outcomes.put(o.id(),o.role().equals("then"));
+            }));
+            var branches=derivations.stream().filter(d->outcomes.containsKey(d.authority()))
+                .map(d->new NominalValueEvidence.Branch(d.id(),outcomes.get(d.authority()))).toList();
+            var uncertainties=input.factDependencies().stream().flatMap(g->g.inputs().stream())
+                .filter(i->!i.available()&&!i.kind().name().equals("PHYSICAL_PROFILE"))
+                .map(i->new NominalValueEvidence.Uncertainty(i.id(),i.kind().name(),origin(i.provenance()))).toList();
+            return new NominalValueEvidence(facts,declarations,seeds,branches,uncertainties);
+        });
     }
     /** Multi-unit adapters use the same public input admission before projecting. */
     public static UnitEvidence admitAndProject(SpInput input,LowerInput.Options options) {

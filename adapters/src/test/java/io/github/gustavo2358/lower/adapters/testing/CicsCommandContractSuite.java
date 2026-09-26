@@ -49,7 +49,7 @@ public final class CicsCommandContractSuite {
         }
         var base=wire("receive-resp");
         for(var version:List.of("2.40.0","2.41.0","2.42.0")){var j=base.deepCopy();j.put("contractVersion",version);reject(j,SpJsonDecoder.Code.INPUT_ERROR);}
-        for(var version:List.of("2.47.0","9.99","future")){var j=base.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","INVENTED");reject(j,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
+        for(var version:List.of("2.48.0","9.99","future")){var j=base.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","INVENTED");reject(j,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
         for(var field:List.of("controlTopology","factDependencies")){var j=base.deepCopy();j.remove(field);reject(j,SpJsonDecoder.Code.INPUT_ERROR);}
         var j=base.deepCopy();command(j).put("commandKind","SYNCPOINT");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=base.deepCopy();command(j).put("handlerTarget","statement:3");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
