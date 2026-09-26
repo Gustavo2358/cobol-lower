@@ -8,6 +8,7 @@ public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
         TopologyEntryAdmissionSuite.main(new String[0]);
+        NominalValueSuite.main(new String[0]);
         QualifiedSourceSuite.main(new String[0]);
         ExceptionalHandlerSuite.main(new String[0]);
         CicsConsumerContractSuite.main(new String[0]);
@@ -18,6 +19,12 @@ public final class FastAdapterSuite {
         TerminalSendSuite.main(new String[0]);
         ControlStorageDecouplingSuite.main(new String[0]);
         FactDependencyWireSuite.main(new String[0]);
+        RecallLocalitySuite.main(new String[0]);
+        CicsHostEffectsSuite.main(new String[0]);
+        DliEffectsSuite.main(new String[0]);
+        ConditionRegistrationSuite.main(new String[0]);
+        TextPredicateSuite.main(new String[0]);
+        LogicalInitialInvariantSuite.main(new String[0]);
         ControlTopologyWireSuite.main(new String[0]);
         TypedOccurrenceControlSuite.main(new String[0]);
         BoundedCicsControlSuite.main(new String[0]);

@@ -47,11 +47,14 @@ final class IfSequenceAssembler {
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties) {
         var origin = origins.source("statement", f.header().id().handle(), f.header().provenance());
         var operation = new OperationId(unit, ids.id("operation", "if-branch", unit.localId(), f.header().id().handle()));
-        var predicate = IfPredicate.translate(f, operation, data, ids, origins, operands, items, uncertainties);
+        int uncertaintyStart=uncertainties.size();
+        var predicate = TextPredicateLowerer.translate(f,operation,data,ids,origins,operands,uncertainties)
+            .orElseGet(()->IfPredicate.translate(f, operation, data, ids, origins, operands, items, uncertainties));
+        var predicateReasons=uncertainties.subList(uncertaintyStart,uncertainties.size()).stream().map(Evidence.Uncertainty::id).toList();
         var exact = new Evidence.Claim(new Scopes.EntityScope(List.of(operation)), Evidence.PrecisionStatus.EXACT, List.of());
-        var values = new Evidence.Claim(new Scopes.EntityScope(List.of(predicate.header().id())), Evidence.PrecisionStatus.OPEN, List.of(predicate.reason()));
-        var branch = new Operations.Branch(new Operations.Header(operation, origin, Evidence.CoverageStatus.ABSTRACTED,
-            new Evidence.Precision(exact, exact, exact, values, exact), List.of(predicate.reason())), predicate, thenLabel, elseLabel);
+        var values = new Evidence.Claim(new Scopes.EntityScope(List.of(predicate.header().id())), predicateReasons.isEmpty()?Evidence.PrecisionStatus.EXACT:Evidence.PrecisionStatus.OPEN, predicateReasons);
+        var branch = new Operations.Branch(new Operations.Header(operation, origin, predicateReasons.isEmpty()?Evidence.CoverageStatus.MODELED:Evidence.CoverageStatus.ABSTRACTED,
+            new Evidence.Precision(exact, exact, exact, values, exact), predicateReasons), predicate, thenLabel, elseLabel);
         return branch;
     }
     private static LabelId label(String role, SpInput.StatementId source, UnitId unit, LocalIds ids) {

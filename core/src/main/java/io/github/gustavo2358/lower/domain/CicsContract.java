@@ -68,6 +68,7 @@ final class CicsContract {
     }
     static void command(StatementHeader header,CicsCommandKind kind,CicsCommandSyntaxStatus syntax,String raw,List<CicsOption> options,List<String> gaps) {
         var allowed=new HashSet<>(Set.of("RESP","RESP2","NOHANDLE"));
+        if(kind==CicsCommandKind.RETRIEVE)allowed.add("INTO");
         if(kind==CicsCommandKind.SEND_TERMINAL)allowed.addAll(Set.of("FROM","LENGTH","ERASE"));
         if(kind==CicsCommandKind.SEND_MAP||kind==CicsCommandKind.RECEIVE_MAP)allowed.addAll(Set.of("MAP","MAPSET",kind==CicsCommandKind.SEND_MAP?"FROM":"INTO"));
         if(kind==CicsCommandKind.SEND_MAP)allowed.addAll(Set.of("CURSOR","ERASE","FREEKB"));
@@ -82,7 +83,7 @@ final class CicsContract {
         }
         require(header.coverage()!=CoverageStatus.MODELED,"command effects remain partial");
         if(syntax==CicsCommandSyntaxStatus.SUPPORTED) {
-            require(shape&&(kind==CicsCommandKind.SYNCPOINT||names.contains(kind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command shape");
+            require(shape&&(kind==CicsCommandKind.SYNCPOINT||names.contains(kind==CicsCommandKind.RETRIEVE?"INTO":kind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command shape");
             require(gaps.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"supported command syntax gaps");
         } else require(gaps.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"unavailable command cause");
     }

@@ -27,9 +27,9 @@ final class PartialProgramAdmission {
             c.phase=Phase.ADMISSION;
             if(input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact||s instanceof CicsCommandFact)) {
 
-                c.nonExecutableCapabilities=input.statements().stream().flatMap(s->NonExecutableCapability.of(s).stream())
+                c.nonExecutableCapabilities=input.statements().stream().flatMap(s->NonExecutableCapability.of(s,c.regionalStorage).stream())
                     .sorted(Comparator.comparing(cap->cap.statement().handle())).toList();
-                if(policy==LowerInput.PublicationPolicy.EXECUTABLE_ONLY||input.controlTopology().isEmpty()) {
+                if(!c.nonExecutableCapabilities.isEmpty()&&(policy==LowerInput.PublicationPolicy.EXECUTABLE_ONLY||input.controlTopology().isEmpty())) {
                     for(var cap:c.nonExecutableCapabilities)
                         c.require(false,Rule.READINESS,cap.statement().handle(),cap.provenance(),
                             "semantic fact preserved; executable lowering NOT_READY (R7-R3)");
@@ -201,6 +201,12 @@ final class PartialProgramAdmission {
                     if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN,
                         Rule.PROFILE_FACT,o.header().id().handle(),null,"receiver value transform remains uninterpreted");
                     for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
+                    if(e.proof()==EffectProof.DLI_HOST_OPERANDS||e.proof()==EffectProof.CICS_CONDITION_REGISTRATION)c.require(
+                        e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE
+                        &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
+                        &&e.environment()==EnvironmentEffect.UNKNOWN,Rule.PROFILE_FACT,o.header().id().handle(),null,"embedded bounded footprint retains external environment");
+                    if(e.proof()==EffectProof.CICS_CONDITION_REGISTRATION)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty(),
+                        Rule.PROFILE_FACT,o.header().id().handle(),null,"condition registration has no application memory operands");
                     if(e.proof()==EffectProof.NO_OP)c.require(e.knownReads().isEmpty()&&e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE&&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE&&e.values()==EffectValueTransform.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"NO_OP proof has no effects");
                     if(e.proof()==EffectProof.DISPLAY_SIMPLE)c.require(e.mayWrites().isEmpty()&&e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
                         &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
@@ -214,6 +220,7 @@ final class PartialProgramAdmission {
             if (s instanceof IfFact f) {
                 var operands = new HashSet<OperandId>();
                 for (var ref : f.conditionReads()) CallAdmission.reference(ref,f.header(),operands,c);
+                f.textPredicate().ifPresent(p->TextPredicateLowerer.validate(f,p,c));
                 c.provenance(f.conditionProvenance()); c.provenance(f.predicateGuarantee().provenance());
                 c.provenance(f.thenArm().provenance()); c.provenance(f.elseArm().provenance());
                 validateArm(f,f.thenArm(),Branch.THEN,c); validateArm(f,f.elseArm(),Branch.ELSE,c);

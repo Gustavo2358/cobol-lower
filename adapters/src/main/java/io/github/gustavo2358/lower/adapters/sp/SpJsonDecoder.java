@@ -93,12 +93,32 @@ public final class SpJsonDecoder {
             String receivedVersion=node.path("contractVersion").textValue();
             var profile=SpContractProfile.admitted(receivedVersion);
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
+            for(var effect:node.path("statementEffects"))
+                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                    throw new PhysicalShape("$/statementEffects/new embedded proof requires SP2.46");
+            for(var condition:node.path("storage").path("entryState").path("conditions"))
+                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                    throw new PhysicalShape("$/storage/entryState/LOGICAL_TEXT requires SP2.46");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
+                var condition=variant.equals("IF")?statement.path("condition"):statement.path("loop").path("condition");
+                if(condition.isObject()) {
+                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
+                    if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
+                }
                 if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                    throw new PhysicalShape("$/statements/RETRIEVE requires SP2.46");
+                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                    throw new PhysicalShape("$/statements/registrationEffects requires SP2.46");
+                if(variant.equals("CICS_HANDLER")&&!statement.has("registrationEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("registrationEffects");
+                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                    throw new PhysicalShape("$/statements/hostEffects requires SP2.46");
+                if(variant.equals("CICS_COMMAND")&&!statement.has("hostEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("hostEffects");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
             }
             if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
@@ -107,10 +127,17 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
-            if(!receivedVersion.equals("2.45.0")&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
             if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
+            io.github.gustavo2358.lower.domain.NominalValues nominalValues=null;
+            if(node.has("nominalValues")) {
+                if(!receivedVersion.equals("2.47.0"))throw new PhysicalShape("$/nominalValues requires SP2.47");
+                nominalValues=mapper.treeToValue(node.get("nominalValues"),io.github.gustavo2358.lower.domain.NominalValues.class);
+                requirePhysical(nominalValues,"$/nominalValues",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("nominalValues");
+            }
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
                 throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42/2.43 and is mandatory there");
@@ -538,7 +565,7 @@ public final class SpJsonDecoder {
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
             }
             if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
-                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies));
+                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies),java.util.Optional.ofNullable(nominalValues));
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");

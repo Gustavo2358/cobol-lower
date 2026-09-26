@@ -1,0 +1,3705 @@
+{
+  "schema" : "cobol-semantic-product",
+  "contractVersion" : "2.46.0",
+  "unit" : {
+    "canonicalProgramName" : "SAMPLE",
+    "compilationUnitId" : "LOGICAL-INVARIANT.CBL",
+    "structuralPath" : [ 0 ]
+  },
+  "policy" : {
+    "dllMode" : "UNSPECIFIED",
+    "dynamMode" : "UNSPECIFIED",
+    "pgmnameMode" : "UNSPECIFIED",
+    "policyId" : "cobol-explorer/explicit-options",
+    "qualifyMode" : "UNSPECIFIED",
+    "version" : "3.0.0"
+  },
+  "dataDeclarations" : [ {
+    "canonicalName" : "NAME-A",
+    "coverage" : "MODELED",
+    "id" : "data:0",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 36,
+        "endLine" : 5,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 5
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 43,
+        "endLine" : 5,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 5
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 8,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  }, {
+    "canonicalName" : "AREA-A",
+    "coverage" : "MODELED",
+    "id" : "data:1",
+    "picture" : "X(16)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 20,
+        "endLine" : 6,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 6
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 27,
+        "endLine" : 6,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 6
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 16,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  }, {
+    "canonicalName" : "KEY-A",
+    "coverage" : "MODELED",
+    "id" : "data:2",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 18,
+        "endLine" : 7,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 7
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 25,
+        "endLine" : 7,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 7
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 8,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  }, {
+    "canonicalName" : "PCB-A",
+    "coverage" : "MODELED",
+    "id" : "data:3",
+    "picture" : "S9(4)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 32,
+        "endLine" : 8,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 8
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 39,
+        "endLine" : 8,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 8
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : null
+  }, {
+    "canonicalName" : "PSB-A",
+    "coverage" : "MODELED",
+    "id" : "data:4",
+    "picture" : "X(8)",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 18,
+        "endLine" : 9,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 9
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 25,
+        "endLine" : 9,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 9
+      }
+    },
+    "readiness" : {
+      "cfg" : {
+        "scope" : "declaration alone has no control successor",
+        "status" : "NOT_APPLICABLE"
+      },
+      "effectsDataflow" : {
+        "scope" : "nominal identity available; general storage layout and aliases unknown",
+        "status" : "PARTIAL"
+      },
+      "lowering" : {
+        "scope" : "declaration surface and nominal identity available",
+        "status" : "SUFFICIENT"
+      }
+    },
+    "scalarInteger" : null,
+    "scalarText" : {
+      "declarationScope" : "LOCAL",
+      "logicalDomain" : "TEXT",
+      "logicalExtent" : 8,
+      "storageClass" : "WORKING_STORAGE"
+    }
+  } ],
+  "statements" : [ {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "PARTIAL",
+      "id" : "statement:1",
+      "programPoint" : 0,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "EMBEDDED_LANGUAGE",
+    "observedShape" : "OPAQUE_DLI",
+    "gapCode" : "OBSERVED_STATEMENT_PARTIAL",
+    "knownReferences" : [ {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "PCB-A",
+          "id" : "data:3"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:3",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:1:0",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 11,
+          "file" : "<preprocessed>",
+          "startColumn" : 32,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : null
+    }, {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "KEY-A",
+          "id" : "data:2"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:2",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:1:1",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 50,
+          "endLine" : 12,
+          "file" : "<preprocessed>",
+          "startColumn" : 46,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "READ",
+      "wholeItemAccess" : {
+        "data" : "data:2"
+      }
+    }, {
+      "binding" : {
+        "candidates" : [ {
+          "canonicalName" : "AREA-A",
+          "id" : "data:1"
+        } ],
+        "reason" : "UNIQUE_VISIBLE_DECLARATION",
+        "selected" : "data:1",
+        "status" : "RESOLVED"
+      },
+      "id" : "operand:1:2",
+      "logicalWholeItem" : null,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 28,
+          "endLine" : 12,
+          "file" : "<preprocessed>",
+          "startColumn" : 23,
+          "startLine" : 12
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "regionalAccess" : null,
+      "regionalAlternatives" : [ ],
+      "role" : "WRITE",
+      "wholeItemAccess" : {
+        "data" : "data:1"
+      }
+    } ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "OBSERVED",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "PARTIAL",
+      "id" : "statement:2",
+      "programPoint" : 1,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 40,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 28,
+          "endLine" : 14,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "effectsDataflow" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "statement shape is outside the current projection capability",
+          "status" : "BLOCKED"
+        }
+      }
+    },
+    "observedKind" : "EMBEDDED_LANGUAGE",
+    "observedShape" : "OPAQUE_DLI",
+    "gapCode" : "OBSERVED_STATEMENT_PARTIAL",
+    "knownReferences" : [ ],
+    "normalContinuation" : {
+      "availability" : "UNAVAILABLE",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 40,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 28,
+          "endLine" : 14,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "statement" : null
+    }
+  }, {
+    "variant" : "CALL",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "MODELED",
+      "id" : "statement:0",
+      "programPoint" : 2,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 10,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "conditional local successor after normal return only; other outcomes remain open",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "CALL external effects UNKNOWN; outcome knowledge OPEN",
+          "status" : "PARTIAL"
+        },
+        "lowering" : {
+          "scope" : "CALL source facts for the parameterless whole-text/literal slice; no AIR certification",
+          "status" : "SUFFICIENT"
+        }
+      }
+    },
+    "syntax" : "IDENTIFIER_OR_EXPRESSION",
+    "target" : {
+      "kind" : "DATA",
+      "reference" : {
+        "binding" : {
+          "candidates" : [ {
+            "canonicalName" : "NAME-A",
+            "id" : "data:0"
+          } ],
+          "reason" : "UNIQUE_VISIBLE_DECLARATION",
+          "selected" : "data:0",
+          "status" : "RESOLVED"
+        },
+        "id" : "operand:0:0",
+        "logicalWholeItem" : "data:0",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 10,
+            "endLine" : 15,
+            "file" : "<preprocessed>",
+            "startColumn" : 5,
+            "startLine" : 15
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 17,
+            "endLine" : 15,
+            "file" : "logical-invariant.cbl",
+            "startColumn" : 12,
+            "startLine" : 15
+          }
+        },
+        "regionalAccess" : null,
+        "regionalAlternatives" : [ ],
+        "role" : "CALL_TARGET",
+        "wholeItemAccess" : {
+          "data" : "data:0"
+        }
+      }
+    },
+    "runtimeTarget" : "UNKNOWN",
+    "runtimeUncertaintyCode" : "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN",
+    "normalContinuation" : {
+      "availability" : "KNOWN",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 10,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      },
+      "statement" : "statement:3"
+    },
+    "surface" : {
+      "argumentCount" : 0,
+      "notOnException" : "ABSENT",
+      "onException" : "ABSENT",
+      "onOverflow" : "ABSENT",
+      "returning" : "ABSENT",
+      "using" : "ABSENT"
+    },
+    "effects" : "UNKNOWN",
+    "outcomes" : "OPEN"
+  }, {
+    "variant" : "GOBACK",
+    "header" : {
+      "containment" : {
+        "branch" : "ROOT",
+        "parent" : null
+      },
+      "coverage" : "MODELED",
+      "id" : "statement:3",
+      "programPoint" : 3,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 5,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 12,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 16
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "GOBACK has no local successor",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "GOBACK runtime result and lifecycle effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "GOBACK concludes the current program invocation",
+          "status" : "SUFFICIENT"
+        }
+      }
+    },
+    "exit" : "CURRENT_PROGRAM_INVOCATION",
+    "localContinuation" : "NONE"
+  } ],
+  "structure" : {
+    "branches" : [ ],
+    "roots" : [ "statement:1", "statement:2", "statement:0", "statement:3" ]
+  },
+  "gaps" : [ {
+    "code" : "OBSERVED_STATEMENT_PARTIAL",
+    "detail" : "DLI region is preserved opaquely; IMS dependencies, effects and control remain unknown.",
+    "provenance" : {
+      "exact" : false,
+      "expanded" : {
+        "endColumn" : 17,
+        "endLine" : 13,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 11
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 15,
+        "endLine" : 13,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 11
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:1"
+  }, {
+    "code" : "OBSERVED_STATEMENT_PARTIAL",
+    "detail" : "DLI region is preserved opaquely; IMS dependencies, effects and control remain unknown.",
+    "provenance" : {
+      "exact" : false,
+      "expanded" : {
+        "endColumn" : 40,
+        "endLine" : 14,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 14
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 28,
+        "endLine" : 14,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 14
+      }
+    },
+    "scope" : "CAPABILITY",
+    "statement" : "statement:2"
+  }, {
+    "code" : "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN",
+    "detail" : "CALL identifier/expression binds its data reference, not the runtime program target",
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 10,
+        "endLine" : 15,
+        "file" : "<preprocessed>",
+        "startColumn" : 5,
+        "startLine" : 15
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 17,
+        "endLine" : 15,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 12,
+        "startLine" : 15
+      }
+    },
+    "scope" : "RUNTIME_CALL_TARGET",
+    "statement" : "statement:0"
+  } ],
+  "coverage" : {
+    "inputMissingStatements" : 0,
+    "inventoryStatus" : "COMPLETE",
+    "modeledStatements" : 2,
+    "observedStatements" : 4,
+    "partialStatements" : 2,
+    "readiness" : {
+      "cfg" : {
+        "scope" : "complete observed inventory bounded by each statement's structural readiness",
+        "status" : "BLOCKED"
+      },
+      "effectsDataflow" : {
+        "scope" : "report dependency claim bounded by each statement's effects readiness",
+        "status" : "BLOCKED"
+      },
+      "lowering" : {
+        "scope" : "report binding claim combined with every observed statement fact",
+        "status" : "BLOCKED"
+      }
+    },
+    "unsupportedStatements" : 0
+  },
+  "entryInventory" : {
+    "entries" : [ {
+      "availability" : "KNOWN",
+      "coverage" : "MODELED",
+      "gaps" : [ ],
+      "id" : "entry:0",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      },
+      "readiness" : {
+        "cfg" : {
+          "scope" : "primary entry start only; no sequence or reachability claim",
+          "status" : "SUFFICIENT"
+        },
+        "effectsDataflow" : {
+          "scope" : "entry state, storage and effects are not published",
+          "status" : "BLOCKED"
+        },
+        "lowering" : {
+          "scope" : "primary entry, canonical executable start and published signature availability",
+          "status" : "SUFFICIENT"
+        }
+      },
+      "role" : "PRIMARY",
+      "signature" : {
+        "availability" : "KNOWN",
+        "parameterCount" : 0,
+        "returningClause" : "ABSENT"
+      },
+      "start" : {
+        "availability" : "KNOWN",
+        "statement" : "statement:1"
+      }
+    } ],
+    "gapCodes" : [ "ALTERNATE_ENTRIES_NOT_PROJECTED" ],
+    "scope" : "PRIMARY_ONLY",
+    "status" : "PARTIAL"
+  },
+  "storageIndependence" : {
+    "authority" : "IBM_ENTERPRISE_COBOL_6_4_WORKING_STORAGE",
+    "availability" : "KNOWN",
+    "gapCodes" : [ ],
+    "members" : [ "data:0", "data:1", "data:2", "data:4" ],
+    "provenance" : {
+      "exact" : true,
+      "expanded" : {
+        "endColumn" : 18,
+        "endLine" : 9,
+        "file" : "<preprocessed>",
+        "startColumn" : 0,
+        "startLine" : 4
+      },
+      "includeChain" : [ ],
+      "original" : {
+        "endColumn" : 25,
+        "endLine" : 9,
+        "file" : "logical-invariant.cbl",
+        "startColumn" : 7,
+        "startLine" : 4
+      }
+    },
+    "rule" : "INDEPENDENT_WORKING_STORAGE_ROOTS"
+  },
+  "storage" : {
+    "bases" : [ {
+      "allocation" : "UNPROVEN",
+      "extent" : {
+        "gapCodes" : [ "UNKNOWN_EXTENT" ],
+        "value" : null
+      },
+      "id" : "storage-base:4",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      }
+    }, {
+      "allocation" : "UNPROVEN",
+      "extent" : {
+        "gapCodes" : [ "UNKNOWN_EXTENT" ],
+        "value" : null
+      },
+      "id" : "storage-base:7",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }
+    }, {
+      "allocation" : "UNPROVEN",
+      "extent" : {
+        "gapCodes" : [ "UNKNOWN_EXTENT" ],
+        "value" : null
+      },
+      "id" : "storage-base:9",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      }
+    }, {
+      "allocation" : "UNPROVEN",
+      "extent" : {
+        "gapCodes" : [ "UNKNOWN_EXTENT" ],
+        "value" : null
+      },
+      "id" : "storage-base:11",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      }
+    }, {
+      "allocation" : "UNPROVEN",
+      "extent" : {
+        "gapCodes" : [ "UNKNOWN_EXTENT" ],
+        "value" : null
+      },
+      "id" : "storage-base:15",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      }
+    } ],
+    "entryState" : {
+      "conditions" : [ {
+        "bytes" : [ ],
+        "gapCodes" : [ ],
+        "kind" : "LOGICAL_TEXT",
+        "logicalText" : "PROGA001",
+        "node" : "storage-node:4",
+        "proof" : "DECLARATIVE_INVARIANT",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 34,
+            "endLine" : 5,
+            "file" : "<preprocessed>",
+            "startColumn" : 19,
+            "startLine" : 5
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 41,
+            "endLine" : 5,
+            "file" : "logical-invariant.cbl",
+            "startColumn" : 26,
+            "startLine" : 5
+          }
+        }
+      }, {
+        "bytes" : [ ],
+        "gapCodes" : [ "STORAGE_NOT_PROVEN", "VALUE_NOT_PROVEN", "ENTRY_STATE_NOT_PROVEN" ],
+        "kind" : "UNKNOWN",
+        "logicalText" : null,
+        "node" : "storage-node:11",
+        "proof" : "NONE",
+        "provenance" : {
+          "exact" : true,
+          "expanded" : {
+            "endColumn" : 30,
+            "endLine" : 8,
+            "file" : "<preprocessed>",
+            "startColumn" : 24,
+            "startLine" : 8
+          },
+          "includeChain" : [ ],
+          "original" : {
+            "endColumn" : 37,
+            "endLine" : 8,
+            "file" : "logical-invariant.cbl",
+            "startColumn" : 31,
+            "startLine" : 8
+          }
+        }
+      } ],
+      "mode" : "UNKNOWN"
+    },
+    "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+    "logicalExactViews" : [ {
+      "length" : "8",
+      "node" : "storage-node:4",
+      "representative" : "storage-node:4"
+    }, {
+      "length" : "16",
+      "node" : "storage-node:7",
+      "representative" : "storage-node:7"
+    }, {
+      "length" : "8",
+      "node" : "storage-node:9",
+      "representative" : "storage-node:9"
+    }, {
+      "length" : "8",
+      "node" : "storage-node:15",
+      "representative" : "storage-node:15"
+    } ],
+    "nodes" : [ {
+      "data" : "data:0",
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "filler" : false,
+      "id" : "storage-node:4",
+      "kind" : "ELEMENTARY",
+      "order" : 0,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      }
+    }, {
+      "data" : "data:1",
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "filler" : false,
+      "id" : "storage-node:7",
+      "kind" : "ELEMENTARY",
+      "order" : 1,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }
+    }, {
+      "data" : "data:2",
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "filler" : false,
+      "id" : "storage-node:9",
+      "kind" : "ELEMENTARY",
+      "order" : 2,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      }
+    }, {
+      "data" : "data:3",
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "filler" : false,
+      "id" : "storage-node:11",
+      "kind" : "OPAQUE",
+      "order" : 3,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      }
+    }, {
+      "data" : "data:4",
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "filler" : false,
+      "id" : "storage-node:15",
+      "kind" : "ELEMENTARY",
+      "order" : 4,
+      "parent" : null,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      }
+    } ],
+    "profile" : "UNSPECIFIED",
+    "profileId" : null,
+    "relations" : [ ],
+    "renames" : [ ],
+    "runtimeCodec" : null,
+    "version" : "1.11.0",
+    "views" : [ {
+      "base" : "storage-base:4",
+      "codec" : null,
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "node" : "storage-node:4",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      }
+    }, {
+      "base" : "storage-base:7",
+      "codec" : null,
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "node" : "storage-node:7",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }
+    }, {
+      "base" : "storage-base:9",
+      "codec" : null,
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "node" : "storage-node:9",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      }
+    }, {
+      "base" : "storage-base:11",
+      "codec" : null,
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "node" : "storage-node:11",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      }
+    }, {
+      "base" : "storage-base:15",
+      "codec" : null,
+      "extent" : {
+        "gapCodes" : [ "PROFILE_NOT_SELECTED" ],
+        "value" : null
+      },
+      "node" : "storage-node:15",
+      "offset" : {
+        "gapCodes" : [ ],
+        "value" : "0"
+      },
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      }
+    } ]
+  },
+  "statementEffects" : [ {
+    "environment" : "UNKNOWN",
+    "exposedRegions" : [ ],
+    "knownReads" : [ "operand:1:0", "operand:1:1" ],
+    "mayWrites" : [ "operand:1:2" ],
+    "mustOverwrite" : [ ],
+    "proof" : "DLI_HOST_OPERANDS",
+    "statement" : "statement:1",
+    "unknownExposureBound" : "NONE",
+    "unknownReadBound" : "NONE",
+    "unknownWriteBound" : "NONE",
+    "values" : "UNKNOWN",
+    "version" : "1.0.0"
+  }, {
+    "environment" : "UNKNOWN",
+    "exposedRegions" : [ ],
+    "knownReads" : [ ],
+    "mayWrites" : [ ],
+    "mustOverwrite" : [ ],
+    "proof" : "DLI_HOST_OPERANDS",
+    "statement" : "statement:2",
+    "unknownExposureBound" : "NONE",
+    "unknownReadBound" : "NONE",
+    "unknownWriteBound" : "NONE",
+    "values" : "UNKNOWN",
+    "version" : "1.0.0"
+  } ],
+  "fileInventory" : {
+    "auxiliary" : {
+      "availability" : "KNOWN",
+      "clauses" : [ ],
+      "gapCodes" : [ ]
+    },
+    "availability" : "KNOWN",
+    "declarations" : [ ],
+    "declaratives" : [ ],
+    "gapCodes" : [ ],
+    "operations" : {
+      "availability" : "PARTIAL",
+      "gapCodes" : [ "FILE_EFFECTS_CONTROL_PARTIAL" ],
+      "uses" : [ ]
+    },
+    "sortAvailability" : "KNOWN",
+    "sortPlans" : [ ],
+    "version" : "1.6.0"
+  },
+  "controlTopology" : {
+    "authority" : "FRONTEND_CONTROL_TOPOLOGY_R1",
+    "bindings" : [ ],
+    "boundaries" : [ {
+      "id" : "boundary:region:paragraph:18",
+      "ordinaryDefault" : {
+        "kind" : "UNKNOWN_LOCAL",
+        "proofs" : [ "proof:region:paragraph:18" ],
+        "reference" : "region:procedure:17"
+      },
+      "proofs" : [ "proof:region:paragraph:18" ],
+      "region" : "region:paragraph:18"
+    }, {
+      "id" : "boundary:region:procedure:17",
+      "ordinaryDefault" : {
+        "kind" : "UNKNOWN_LOCAL",
+        "proofs" : [ "proof:region:procedure:17" ],
+        "reference" : "region:procedure:17"
+      },
+      "proofs" : [ "proof:region:procedure:17" ],
+      "region" : "region:procedure:17"
+    } ],
+    "occurrences" : [ {
+      "outcomes" : [ "outcome:statement:0/normal" ],
+      "proofs" : [ "proof:statement:0" ],
+      "region" : "region:paragraph:18",
+      "statement" : "statement:0"
+    }, {
+      "outcomes" : [ "outcome:statement:1/dli/failure", "outcome:statement:1/normal" ],
+      "proofs" : [ "proof:statement:1/dli-failure" ],
+      "region" : "region:paragraph:18",
+      "statement" : "statement:1"
+    }, {
+      "outcomes" : [ "outcome:statement:2/dli/failure", "outcome:statement:2/normal" ],
+      "proofs" : [ "proof:statement:2/dli-failure" ],
+      "region" : "region:paragraph:18",
+      "statement" : "statement:2"
+    }, {
+      "outcomes" : [ "outcome:statement:3/return" ],
+      "proofs" : [ "proof:statement:3" ],
+      "region" : "region:paragraph:18",
+      "statement" : "statement:3"
+    } ],
+    "outcomes" : [ {
+      "binding" : "",
+      "id" : "outcome:statement:0/normal",
+      "kind" : "NORMAL",
+      "proofs" : [ "proof:statement:0" ],
+      "role" : "normal",
+      "statement" : "statement:0",
+      "target" : {
+        "kind" : "OCCURRENCE",
+        "proofs" : [ "proof:statement:0" ],
+        "reference" : "statement:3"
+      }
+    }, {
+      "binding" : "",
+      "id" : "outcome:statement:1/dli/failure",
+      "kind" : "UNKNOWN_LOCAL",
+      "proofs" : [ "proof:statement:1/dli-failure" ],
+      "role" : "dli/failure",
+      "statement" : "statement:1",
+      "target" : {
+        "kind" : "UNKNOWN_LOCAL",
+        "proofs" : [ "proof:statement:1/dli-failure" ],
+        "reference" : "region:paragraph:18"
+      }
+    }, {
+      "binding" : "",
+      "id" : "outcome:statement:1/normal",
+      "kind" : "NORMAL",
+      "proofs" : [ "proof:statement:1/dli-normal" ],
+      "role" : "normal",
+      "statement" : "statement:1",
+      "target" : {
+        "kind" : "OCCURRENCE",
+        "proofs" : [ "proof:statement:1" ],
+        "reference" : "statement:2"
+      }
+    }, {
+      "binding" : "",
+      "id" : "outcome:statement:2/dli/failure",
+      "kind" : "UNKNOWN_LOCAL",
+      "proofs" : [ "proof:statement:2/dli-failure" ],
+      "role" : "dli/failure",
+      "statement" : "statement:2",
+      "target" : {
+        "kind" : "UNKNOWN_LOCAL",
+        "proofs" : [ "proof:statement:2/dli-failure" ],
+        "reference" : "region:paragraph:18"
+      }
+    }, {
+      "binding" : "",
+      "id" : "outcome:statement:2/normal",
+      "kind" : "NORMAL",
+      "proofs" : [ "proof:statement:2/dli-normal" ],
+      "role" : "normal",
+      "statement" : "statement:2",
+      "target" : {
+        "kind" : "OCCURRENCE",
+        "proofs" : [ "proof:statement:2" ],
+        "reference" : "statement:0"
+      }
+    }, {
+      "binding" : "",
+      "id" : "outcome:statement:3/return",
+      "kind" : "PROGRAM_RETURN",
+      "proofs" : [ "proof:statement:3" ],
+      "role" : "return",
+      "statement" : "statement:3",
+      "target" : {
+        "kind" : "PROGRAM_RETURN",
+        "proofs" : [ "proof:statement:3" ],
+        "reference" : "region:procedure:17"
+      }
+    } ],
+    "proofs" : [ {
+      "dependencies" : [ "proof:region:procedure:17/input" ],
+      "id" : "proof:region:paragraph:18",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "rule" : "paragraph-boundary"
+    }, {
+      "dependencies" : [ ],
+      "id" : "proof:region:procedure:17",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      },
+      "rule" : "procedure-region"
+    }, {
+      "dependencies" : [ "proof:region:procedure:17" ],
+      "id" : "proof:region:procedure:17/input",
+      "kind" : "INPUT_REGION_ISOLATION",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      },
+      "rule" : "procedure-syntax-independent-of-missing-data-input"
+    }, {
+      "dependencies" : [ "proof:region:procedure:17/input" ],
+      "id" : "proof:statement:0",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 10,
+          "endLine" : 15,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 15
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 17,
+          "endLine" : 15,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 15
+        }
+      },
+      "rule" : "statement-scope"
+    }, {
+      "dependencies" : [ "proof:region:procedure:17/input" ],
+      "id" : "proof:statement:1",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "rule" : "statement-scope"
+    }, {
+      "dependencies" : [ "proof:statement:1/dli-normal" ],
+      "id" : "proof:statement:1/dli-failure",
+      "kind" : "PARTIAL_UNKNOWN",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "rule" : "dli-command-failure"
+    }, {
+      "dependencies" : [ "proof:statement:1" ],
+      "id" : "proof:statement:1/dli-normal",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 17,
+          "endLine" : 13,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 11
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 15,
+          "endLine" : 13,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 11
+        }
+      },
+      "rule" : "dli-command-ordinary-return"
+    }, {
+      "dependencies" : [ "proof:region:procedure:17/input" ],
+      "id" : "proof:statement:2",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 40,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 28,
+          "endLine" : 14,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "rule" : "statement-scope"
+    }, {
+      "dependencies" : [ "proof:statement:2/dli-normal" ],
+      "id" : "proof:statement:2/dli-failure",
+      "kind" : "PARTIAL_UNKNOWN",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 40,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 28,
+          "endLine" : 14,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "rule" : "dli-command-failure"
+    }, {
+      "dependencies" : [ "proof:statement:2" ],
+      "id" : "proof:statement:2/dli-normal",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 40,
+          "endLine" : 14,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 14
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 28,
+          "endLine" : 14,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 14
+        }
+      },
+      "rule" : "dli-command-ordinary-return"
+    }, {
+      "dependencies" : [ "proof:region:procedure:17/input" ],
+      "id" : "proof:statement:3",
+      "kind" : "LOCAL_GRAMMAR",
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 5,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 16
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 12,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 16
+        }
+      },
+      "rule" : "statement-scope"
+    } ],
+    "regions" : [ {
+      "boundary" : "boundary:region:paragraph:18",
+      "entry" : {
+        "kind" : "OCCURRENCE",
+        "proofs" : [ "proof:region:paragraph:18" ],
+        "reference" : "statement:1"
+      },
+      "id" : "region:paragraph:18",
+      "kind" : "PARAGRAPH",
+      "members" : [ "statement:0", "statement:1", "statement:2", "statement:3" ],
+      "parent" : "region:procedure:17",
+      "proofs" : [ "proof:region:paragraph:18" ],
+      "regions" : [ ]
+    }, {
+      "boundary" : "boundary:region:procedure:17",
+      "entry" : {
+        "kind" : "OCCURRENCE",
+        "proofs" : [ "proof:region:procedure:17" ],
+        "reference" : "statement:1"
+      },
+      "id" : "region:procedure:17",
+      "kind" : "PROCEDURE",
+      "members" : [ ],
+      "parent" : "",
+      "proofs" : [ "proof:region:procedure:17" ],
+      "regions" : [ "region:paragraph:18" ]
+    } ]
+  },
+  "factDependencies" : {
+    "authority" : "FRONTEND_FACT_DEPENDENCY_LOCALITY_R2",
+    "bindings" : [ {
+      "cells" : [ ],
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:11" ],
+      "exactCell" : "",
+      "node" : "storage-node:11",
+      "region" : "storage-base:11",
+      "regions" : [ "storage-base:11" ]
+    }, {
+      "cells" : [ "storage-node:15" ],
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:15" ],
+      "exactCell" : "storage-node:15",
+      "node" : "storage-node:15",
+      "region" : "storage-base:15",
+      "regions" : [ ]
+    }, {
+      "cells" : [ "storage-node:4" ],
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:4" ],
+      "exactCell" : "storage-node:4",
+      "node" : "storage-node:4",
+      "region" : "storage-base:4",
+      "regions" : [ ]
+    }, {
+      "cells" : [ "storage-node:7" ],
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:7" ],
+      "exactCell" : "storage-node:7",
+      "node" : "storage-node:7",
+      "region" : "storage-base:7",
+      "regions" : [ ]
+    }, {
+      "cells" : [ "storage-node:9" ],
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:9" ],
+      "exactCell" : "storage-node:9",
+      "node" : "storage-node:9",
+      "region" : "storage-base:9",
+      "regions" : [ ]
+    } ],
+    "facts" : [ {
+      "dependencies" : [ "ALIAS_CLOSURE/storage-base:11", "LOCAL_ALLOCATION/storage-base:11", "LOGICAL_TYPE/storage-node:11" ],
+      "id" : "LOCAL_CELL/storage-node:11",
+      "kind" : "LOCAL_CELL",
+      "region" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "ALIAS_CLOSURE/storage-base:15", "LOCAL_ALLOCATION/storage-base:15", "LOGICAL_TYPE/storage-node:15" ],
+      "id" : "LOCAL_CELL/storage-node:15",
+      "kind" : "LOCAL_CELL",
+      "region" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "ALIAS_CLOSURE/storage-base:4", "LOCAL_ALLOCATION/storage-base:4", "LOGICAL_TYPE/storage-node:4" ],
+      "id" : "LOCAL_CELL/storage-node:4",
+      "kind" : "LOCAL_CELL",
+      "region" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "ALIAS_CLOSURE/storage-base:7", "LOCAL_ALLOCATION/storage-base:7", "LOGICAL_TYPE/storage-node:7" ],
+      "id" : "LOCAL_CELL/storage-node:7",
+      "kind" : "LOCAL_CELL",
+      "region" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "ALIAS_CLOSURE/storage-base:9", "LOCAL_ALLOCATION/storage-base:9", "LOGICAL_TYPE/storage-node:9" ],
+      "id" : "LOCAL_CELL/storage-node:9",
+      "kind" : "LOCAL_CELL",
+      "region" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "LOGICAL_TYPE/storage-node:11" ],
+      "id" : "LOGICAL_TEXT/storage-node:11",
+      "kind" : "LOGICAL_TEXT",
+      "region" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "LOGICAL_TYPE/storage-node:15" ],
+      "id" : "LOGICAL_TEXT/storage-node:15",
+      "kind" : "LOGICAL_TEXT",
+      "region" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "LOGICAL_TYPE/storage-node:4" ],
+      "id" : "LOGICAL_TEXT/storage-node:4",
+      "kind" : "LOGICAL_TEXT",
+      "region" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "LOGICAL_TYPE/storage-node:7" ],
+      "id" : "LOGICAL_TEXT/storage-node:7",
+      "kind" : "LOGICAL_TEXT",
+      "region" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "LOGICAL_TYPE/storage-node:9" ],
+      "id" : "LOGICAL_TEXT/storage-node:9",
+      "kind" : "LOGICAL_TEXT",
+      "region" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "PHYSICAL_VIEW/storage-node:11" ],
+      "id" : "PHYSICAL_VIEW/storage-node:11",
+      "kind" : "PHYSICAL_VIEW",
+      "region" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "PHYSICAL_VIEW/storage-node:15" ],
+      "id" : "PHYSICAL_VIEW/storage-node:15",
+      "kind" : "PHYSICAL_VIEW",
+      "region" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "PHYSICAL_VIEW/storage-node:4" ],
+      "id" : "PHYSICAL_VIEW/storage-node:4",
+      "kind" : "PHYSICAL_VIEW",
+      "region" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "PHYSICAL_VIEW/storage-node:7" ],
+      "id" : "PHYSICAL_VIEW/storage-node:7",
+      "kind" : "PHYSICAL_VIEW",
+      "region" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "PHYSICAL_VIEW/storage-node:9" ],
+      "id" : "PHYSICAL_VIEW/storage-node:9",
+      "kind" : "PHYSICAL_VIEW",
+      "region" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:11" ],
+      "id" : "SOURCE_IDENTITY/storage-node:11",
+      "kind" : "SOURCE_IDENTITY",
+      "region" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:15" ],
+      "id" : "SOURCE_IDENTITY/storage-node:15",
+      "kind" : "SOURCE_IDENTITY",
+      "region" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:4" ],
+      "id" : "SOURCE_IDENTITY/storage-node:4",
+      "kind" : "SOURCE_IDENTITY",
+      "region" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:7" ],
+      "id" : "SOURCE_IDENTITY/storage-node:7",
+      "kind" : "SOURCE_IDENTITY",
+      "region" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:9" ],
+      "id" : "SOURCE_IDENTITY/storage-node:9",
+      "kind" : "SOURCE_IDENTITY",
+      "region" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:11" ],
+      "id" : "STORAGE_IDENTITY/storage-base:11",
+      "kind" : "STORAGE_IDENTITY",
+      "region" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:15" ],
+      "id" : "STORAGE_IDENTITY/storage-base:15",
+      "kind" : "STORAGE_IDENTITY",
+      "region" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:4" ],
+      "id" : "STORAGE_IDENTITY/storage-base:4",
+      "kind" : "STORAGE_IDENTITY",
+      "region" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:7" ],
+      "id" : "STORAGE_IDENTITY/storage-base:7",
+      "kind" : "STORAGE_IDENTITY",
+      "region" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "LOCAL_ALLOCATION/storage-base:9" ],
+      "id" : "STORAGE_IDENTITY/storage-base:9",
+      "kind" : "STORAGE_IDENTITY",
+      "region" : "storage-base:9",
+      "subject" : "storage-base:9"
+    } ],
+    "inputs" : [ {
+      "available" : false,
+      "closureScopes" : [ ],
+      "contextScopes" : [ ],
+      "declarationScopes" : [ ],
+      "id" : "input:profile",
+      "kind" : "PHYSICAL_PROFILE",
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 19,
+          "endLine" : 17,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 1
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 26,
+          "endLine" : 17,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 1
+        }
+      }
+    } ],
+    "proofs" : [ {
+      "dependencies" : [ "ALIAS_INVENTORY/storage-base:11", "REGION_CLOSURE/storage-base:11" ],
+      "id" : "ALIAS_CLOSURE/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "ALIAS_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_CLOSURE",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "ALIAS_INVENTORY/storage-base:15", "REGION_CLOSURE/storage-base:15" ],
+      "id" : "ALIAS_CLOSURE/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "ALIAS_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_CLOSURE",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "ALIAS_INVENTORY/storage-base:4", "REGION_CLOSURE/storage-base:4" ],
+      "id" : "ALIAS_CLOSURE/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "ALIAS_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_CLOSURE",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "ALIAS_INVENTORY/storage-base:7", "REGION_CLOSURE/storage-base:7" ],
+      "id" : "ALIAS_CLOSURE/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "ALIAS_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_CLOSURE",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "ALIAS_INVENTORY/storage-base:9", "REGION_CLOSURE/storage-base:9" ],
+      "id" : "ALIAS_CLOSURE/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "ALIAS_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_CLOSURE",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:11" ],
+      "id" : "ALIAS_INVENTORY/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "ALIAS_INVENTORY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_INVENTORY",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:15" ],
+      "id" : "ALIAS_INVENTORY/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "ALIAS_INVENTORY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_INVENTORY",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:4" ],
+      "id" : "ALIAS_INVENTORY/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "ALIAS_INVENTORY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_INVENTORY",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:7" ],
+      "id" : "ALIAS_INVENTORY/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "ALIAS_INVENTORY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_INVENTORY",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:9" ],
+      "id" : "ALIAS_INVENTORY/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "ALIAS_INVENTORY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/ALIAS_INVENTORY",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:11" ],
+      "id" : "DECLARATION_CONTEXT/storage-node:11",
+      "inputs" : [ ],
+      "kind" : "DECLARATION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/DECLARATION_CONTEXT",
+      "scope" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:15" ],
+      "id" : "DECLARATION_CONTEXT/storage-node:15",
+      "inputs" : [ ],
+      "kind" : "DECLARATION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/DECLARATION_CONTEXT",
+      "scope" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:4" ],
+      "id" : "DECLARATION_CONTEXT/storage-node:4",
+      "inputs" : [ ],
+      "kind" : "DECLARATION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/DECLARATION_CONTEXT",
+      "scope" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:7" ],
+      "id" : "DECLARATION_CONTEXT/storage-node:7",
+      "inputs" : [ ],
+      "kind" : "DECLARATION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/DECLARATION_CONTEXT",
+      "scope" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-node:9" ],
+      "id" : "DECLARATION_CONTEXT/storage-node:9",
+      "inputs" : [ ],
+      "kind" : "DECLARATION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/DECLARATION_CONTEXT",
+      "scope" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "REGION_CONTEXT/storage-base:11", "SOURCE_SYNTAX/storage-base:11" ],
+      "id" : "LOCAL_ALLOCATION/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "LOCAL_ALLOCATION",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/LOCAL_ALLOCATION",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "REGION_CONTEXT/storage-base:15", "SOURCE_SYNTAX/storage-base:15" ],
+      "id" : "LOCAL_ALLOCATION/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "LOCAL_ALLOCATION",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/LOCAL_ALLOCATION",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "REGION_CONTEXT/storage-base:4", "SOURCE_SYNTAX/storage-base:4" ],
+      "id" : "LOCAL_ALLOCATION/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "LOCAL_ALLOCATION",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/LOCAL_ALLOCATION",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "REGION_CONTEXT/storage-base:7", "SOURCE_SYNTAX/storage-base:7" ],
+      "id" : "LOCAL_ALLOCATION/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "LOCAL_ALLOCATION",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/LOCAL_ALLOCATION",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "REGION_CONTEXT/storage-base:9", "SOURCE_SYNTAX/storage-base:9" ],
+      "id" : "LOCAL_ALLOCATION/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "LOCAL_ALLOCATION",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/LOCAL_ALLOCATION",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "DECLARATION_CONTEXT/storage-node:11", "SOURCE_SYNTAX/storage-node:11" ],
+      "id" : "LOGICAL_TYPE/storage-node:11",
+      "inputs" : [ ],
+      "kind" : "LOGICAL_TYPE",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/LOGICAL_TYPE",
+      "scope" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "DECLARATION_CONTEXT/storage-node:15", "SOURCE_SYNTAX/storage-node:15" ],
+      "id" : "LOGICAL_TYPE/storage-node:15",
+      "inputs" : [ ],
+      "kind" : "LOGICAL_TYPE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/LOGICAL_TYPE",
+      "scope" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "DECLARATION_CONTEXT/storage-node:4", "SOURCE_SYNTAX/storage-node:4" ],
+      "id" : "LOGICAL_TYPE/storage-node:4",
+      "inputs" : [ ],
+      "kind" : "LOGICAL_TYPE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/LOGICAL_TYPE",
+      "scope" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "DECLARATION_CONTEXT/storage-node:7", "SOURCE_SYNTAX/storage-node:7" ],
+      "id" : "LOGICAL_TYPE/storage-node:7",
+      "inputs" : [ ],
+      "kind" : "LOGICAL_TYPE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/LOGICAL_TYPE",
+      "scope" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "DECLARATION_CONTEXT/storage-node:9", "SOURCE_SYNTAX/storage-node:9" ],
+      "id" : "LOGICAL_TYPE/storage-node:9",
+      "inputs" : [ ],
+      "kind" : "LOGICAL_TYPE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/LOGICAL_TYPE",
+      "scope" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ "PROFILE/storage-base:11", "REGION_CLOSURE/storage-base:11", "REGION_CONTEXT/storage-base:11", "SOURCE_SYNTAX/storage-node:11" ],
+      "id" : "PHYSICAL_VIEW/storage-node:11",
+      "inputs" : [ ],
+      "kind" : "PHYSICAL_VIEW",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/PHYSICAL_VIEW",
+      "scope" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ "PROFILE/storage-base:15", "REGION_CLOSURE/storage-base:15", "REGION_CONTEXT/storage-base:15", "SOURCE_SYNTAX/storage-node:15" ],
+      "id" : "PHYSICAL_VIEW/storage-node:15",
+      "inputs" : [ ],
+      "kind" : "PHYSICAL_VIEW",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/PHYSICAL_VIEW",
+      "scope" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ "PROFILE/storage-base:4", "REGION_CLOSURE/storage-base:4", "REGION_CONTEXT/storage-base:4", "SOURCE_SYNTAX/storage-node:4" ],
+      "id" : "PHYSICAL_VIEW/storage-node:4",
+      "inputs" : [ ],
+      "kind" : "PHYSICAL_VIEW",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/PHYSICAL_VIEW",
+      "scope" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ "PROFILE/storage-base:7", "REGION_CLOSURE/storage-base:7", "REGION_CONTEXT/storage-base:7", "SOURCE_SYNTAX/storage-node:7" ],
+      "id" : "PHYSICAL_VIEW/storage-node:7",
+      "inputs" : [ ],
+      "kind" : "PHYSICAL_VIEW",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/PHYSICAL_VIEW",
+      "scope" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ "PROFILE/storage-base:9", "REGION_CLOSURE/storage-base:9", "REGION_CONTEXT/storage-base:9", "SOURCE_SYNTAX/storage-node:9" ],
+      "id" : "PHYSICAL_VIEW/storage-node:9",
+      "inputs" : [ ],
+      "kind" : "PHYSICAL_VIEW",
+      "localPremise" : false,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/PHYSICAL_VIEW",
+      "scope" : "storage-base:9",
+      "subject" : "storage-node:9"
+    }, {
+      "dependencies" : [ ],
+      "id" : "PROFILE/storage-base:11",
+      "inputs" : [ "input:profile" ],
+      "kind" : "PROFILE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/PROFILE",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ ],
+      "id" : "PROFILE/storage-base:15",
+      "inputs" : [ "input:profile" ],
+      "kind" : "PROFILE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/PROFILE",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ ],
+      "id" : "PROFILE/storage-base:4",
+      "inputs" : [ "input:profile" ],
+      "kind" : "PROFILE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/PROFILE",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ ],
+      "id" : "PROFILE/storage-base:7",
+      "inputs" : [ "input:profile" ],
+      "kind" : "PROFILE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/PROFILE",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ ],
+      "id" : "PROFILE/storage-base:9",
+      "inputs" : [ "input:profile" ],
+      "kind" : "PROFILE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/PROFILE",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:11" ],
+      "id" : "REGION_BOUNDARY/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "REGION_BOUNDARY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_BOUNDARY",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:15" ],
+      "id" : "REGION_BOUNDARY/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "REGION_BOUNDARY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : false,
+        "expanded" : {
+          "endColumn" : 7,
+          "endLine" : 16,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 10
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 14,
+          "endLine" : 16,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 10
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_BOUNDARY",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:4" ],
+      "id" : "REGION_BOUNDARY/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "REGION_BOUNDARY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_BOUNDARY",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:7" ],
+      "id" : "REGION_BOUNDARY/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "REGION_BOUNDARY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_BOUNDARY",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:9" ],
+      "id" : "REGION_BOUNDARY/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "REGION_BOUNDARY",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_BOUNDARY",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "REGION_BOUNDARY/storage-base:11", "SOURCE_SYNTAX/storage-base:11" ],
+      "id" : "REGION_CLOSURE/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "REGION_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CLOSURE",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "REGION_BOUNDARY/storage-base:15", "SOURCE_SYNTAX/storage-base:15" ],
+      "id" : "REGION_CLOSURE/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "REGION_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CLOSURE",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "REGION_BOUNDARY/storage-base:4", "SOURCE_SYNTAX/storage-base:4" ],
+      "id" : "REGION_CLOSURE/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "REGION_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CLOSURE",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "REGION_BOUNDARY/storage-base:7", "SOURCE_SYNTAX/storage-base:7" ],
+      "id" : "REGION_CLOSURE/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "REGION_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CLOSURE",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "REGION_BOUNDARY/storage-base:9", "SOURCE_SYNTAX/storage-base:9" ],
+      "id" : "REGION_CLOSURE/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "REGION_CLOSURE",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CLOSURE",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:11" ],
+      "id" : "REGION_CONTEXT/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "REGION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CONTEXT",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:15" ],
+      "id" : "REGION_CONTEXT/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "REGION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CONTEXT",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:4" ],
+      "id" : "REGION_CONTEXT/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "REGION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CONTEXT",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:7" ],
+      "id" : "REGION_CONTEXT/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "REGION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CONTEXT",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ "SOURCE_SYNTAX/storage-base:9" ],
+      "id" : "REGION_CONTEXT/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "REGION_CONTEXT",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/REGION_CONTEXT",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-base:11",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:11",
+      "subject" : "storage-base:11"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-base:15",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:15",
+      "subject" : "storage-base:15"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-base:4",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:4",
+      "subject" : "storage-base:4"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-base:7",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:7",
+      "subject" : "storage-base:7"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-base:9",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:9",
+      "subject" : "storage-base:9"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-node:11",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:11",
+      "subject" : "storage-node:11"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-node:15",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:15",
+      "subject" : "storage-node:15"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-node:4",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:4",
+      "subject" : "storage-node:4"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-node:7",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:7",
+      "subject" : "storage-node:7"
+    }, {
+      "dependencies" : [ ],
+      "id" : "SOURCE_SYNTAX/storage-node:9",
+      "inputs" : [ ],
+      "kind" : "SOURCE_SYNTAX",
+      "localPremise" : true,
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      },
+      "rule" : "IBM6.4/R2/SOURCE_SYNTAX",
+      "scope" : "storage-base:9",
+      "subject" : "storage-node:9"
+    } ],
+    "regions" : [ {
+      "id" : "storage-base:11",
+      "members" : [ "storage-node:11" ],
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 32,
+          "endLine" : 8,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 8
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 39,
+          "endLine" : 8,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 8
+        }
+      }
+    }, {
+      "id" : "storage-base:15",
+      "members" : [ "storage-node:15" ],
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 9,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 9
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 9,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 9
+        }
+      }
+    }, {
+      "id" : "storage-base:4",
+      "members" : [ "storage-node:4" ],
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 36,
+          "endLine" : 5,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 5
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 43,
+          "endLine" : 5,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 5
+        }
+      }
+    }, {
+      "id" : "storage-base:7",
+      "members" : [ "storage-node:7" ],
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 20,
+          "endLine" : 6,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 6
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 27,
+          "endLine" : 6,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 6
+        }
+      }
+    }, {
+      "id" : "storage-base:9",
+      "members" : [ "storage-node:9" ],
+      "provenance" : {
+        "exact" : true,
+        "expanded" : {
+          "endColumn" : 18,
+          "endLine" : 7,
+          "file" : "<preprocessed>",
+          "startColumn" : 0,
+          "startLine" : 7
+        },
+        "includeChain" : [ ],
+        "original" : {
+          "endColumn" : 25,
+          "endLine" : 7,
+          "file" : "logical-invariant.cbl",
+          "startColumn" : 7,
+          "startLine" : 7
+        }
+      }
+    } ]
+  }
+}

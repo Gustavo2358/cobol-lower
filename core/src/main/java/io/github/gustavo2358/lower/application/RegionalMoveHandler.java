@@ -12,6 +12,14 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        // A logical Cell can use the whole-item proof without a byte codec.
+        // Physical destinations retain their published byte transfer and codec obligations.
+        if(move.copySemantics()==SpInput.CopySemantics.FULL_IDENTITY
+                &&move.target().wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(d->!data.views().containsKey(d)).isPresent()
+                &&move.target().wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(data.index()::containsKey).isPresent()
+                &&(!(move.source() instanceof SpInput.DataReference read)
+                    ||read.wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(data.index()::containsKey).isPresent()))
+            return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items));
         if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT) {
             boolean available=move.target().logicalWholeItem().filter(data.index()::containsKey).isPresent()
                 &&(!(move.source() instanceof SpInput.DataReference r)||r.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(r::logicalWholeItem).filter(data.index()::containsKey).isPresent());

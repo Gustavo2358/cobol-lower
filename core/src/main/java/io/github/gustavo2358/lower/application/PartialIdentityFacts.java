@@ -9,11 +9,12 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
-            case SpInput.CicsHandlerFact r -> {field.accept("CicsHandlerFact");value.accept(r.header());value.accept(r.handlerKind());value.accept(r.action());value.accept(r.targetKind());value.accept(r.targetSyntax());value.accept(r.labelBindingStatus());value.accept(r.labelTarget());value.accept(r.targetEntry());value.accept(r.entryOrigin());value.accept(r.targetOrigin());value.accept(r.programTarget());value.accept(r.scope());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());}
+            case SpInput.CicsHandlerFact r -> {field.accept("CicsHandlerFact");value.accept(r.header());value.accept(r.handlerKind());value.accept(r.action());value.accept(r.targetKind());value.accept(r.targetSyntax());value.accept(r.labelBindingStatus());value.accept(r.labelTarget());value.accept(r.targetEntry());value.accept(r.entryOrigin());value.accept(r.targetOrigin());value.accept(r.programTarget());value.accept(r.scope());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());if(r.registrationEffects().isPresent())value.accept(r.registrationEffects());}
             case SpInput.CicsHandlerScope r -> {field.accept("CicsHandlerScope");value.accept(r.kind());value.accept(r.runtimeIdentity());value.accept(r.provenance());}
             case SpInput.CicsHandlerLabelTarget r -> {field.accept("CicsHandlerLabelTarget");value.accept(r.id());value.accept(r.declarationOrigin());}
             case SpInput.CicsAbendFact r -> {field.accept("CicsAbendFact");value.accept(r.header());value.accept(r.eventKind());value.accept(r.dispatchEligibility());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());}
-            case SpInput.CicsCommandFact r -> {field.accept("CicsCommandFact");value.accept(r.header());value.accept(r.commandKind());value.accept(r.syntaxStatus());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());if(r.length().isPresent())value.accept(r.length());}
+            case SpInput.CicsCommandFact r -> {field.accept("CicsCommandFact");value.accept(r.header());value.accept(r.commandKind());value.accept(r.syntaxStatus());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());if(r.length().isPresent())value.accept(r.length());if(r.hostEffects().isPresent())value.accept(r.hostEffects());}
+            case SpInput.CicsHostEffects r -> {field.accept("CicsHostEffects");value.accept(r.literalOptions());}
             case SpInput.OperandExpression r -> {field.accept("OperandExpression");value.accept(r.kind());value.accept(r.integer());value.accept(r.reference());value.accept(r.provenance());}
             case io.github.gustavo2358.lower.domain.FactDependencies r -> {field.accept("FactDependencies");value.accept(r.authority());value.accept(r.inputs());value.accept(r.proofs());value.accept(r.regions());value.accept(r.facts());value.accept(r.bindings());}
             case io.github.gustavo2358.lower.domain.FactDependencies.Input r -> {field.accept("FactDependencies.Input");value.accept(r.id());value.accept(r.kind());value.accept(r.available());value.accept(r.contextScopes());value.accept(r.closureScopes());value.accept(r.declarationScopes());value.accept(r.provenance());}
@@ -397,10 +398,14 @@ final class PartialIdentityFacts {
                 field.accept("normalContinuation"); value.accept(r.normalContinuation());
                 field.accept("gapCodes"); value.accept(r.gapCodes());
             }
+            case SpInput.TextPredicate r -> {
+                field.accept("TextPredicate");value.accept(r.kind());value.accept(r.reference());value.accept(r.text());value.accept(r.children());
+            }
             case SpInput.IfFact r -> {
                 field.accept("IfFact");
                 field.accept("header"); value.accept(r.header());
                 field.accept("conditionShape"); value.accept(r.conditionShape());
+                if(r.textPredicate().isPresent()){field.accept("textPredicate");value.accept(r.textPredicate());}
                 field.accept("predicateGuarantee"); value.accept(r.predicateGuarantee());
                 field.accept("conditionReads"); value.accept(r.conditionReads());
                 field.accept("conditionProvenance"); value.accept(r.conditionProvenance());

@@ -1,6 +1,8 @@
 # R9 — qualified source dependency evidence
 
-Status: IN_PROGRESS. Scope: lower → dependency source contract only.
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/cobol-lower/pull/35).
+
+Scope: lower → dependency source contract only.
 
 The authorized contract is `qualified-source-dependencies` 1.0.0. It transports
 validated source occurrence identities, literal value authority and the existing
@@ -111,3 +113,13 @@ composition; codec roundtrip; invalid versions, identities, proofs, guards and
 candidate references; file correlation and rejection without destination mutation.
 R7 state suites and both repository FAST gates remain required. The real corpus
 is an external source of evidence, never a fixture-specific product rule.
+
+## Conditional nominal values
+
+The optional unit `nominalValues` block carries SP 2.47 source declarations,
+MOVE assignments, predicates and computed target operands, together with
+declaration/seed provenance, existing derivation branch roles and missing inputs.
+It does not assert executable storage, allocation independence or new control.
+The typed port, JSON reader and schema admit the same closed structure. Older
+documents without the block keep the same bytes. See
+[conditional dependency candidates](conditional-dependency-candidates.md).

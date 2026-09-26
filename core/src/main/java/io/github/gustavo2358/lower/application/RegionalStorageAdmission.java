@@ -191,13 +191,16 @@ final class RegionalStorageAdmission {
             if(pv.offset().value().isPresent()&&pv.extent().value().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent())
                 require(view.offset().value().get().compareTo(pv.offset().value().get())>=0&&end(view).compareTo(end(pv))<=0,"child view exceeds published parent extent");
         });
+        var factIndex=input.factDependencies().map(FactDependencyIndex::new).orElse(null);
         var componentSizes=new HashMap<BaseId,Integer>();
         for(var view:views.values())componentSizes.merge(view.base(),1,Integer::sum);
         for(var declaration:input.dataDeclarations()) {
             c.touch();var view=byData.get(declaration.id());
             if(view==null||!(CallAdmission.scalar(declaration)||PerformCountAdmission.integer(declaration)))continue;
             var node=nodes.get(view.node());
-            require((logical.byData.containsKey(declaration.id())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
+            require((factIndex!=null&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
+                    &&factIndex.cells.containsKey(node.id().handle()))
+                    ||(logical.byData.containsKey(declaration.id())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
                     &&logical.byData.get(declaration.id()).length().equals(java.math.BigInteger.valueOf(declaration.scalarText().orElseThrow().logicalExtent())))
                     ||node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,
                 "standalone scalar proof contradicts shared or nested physical storage");
@@ -219,7 +222,7 @@ final class RegionalStorageAdmission {
         for(var condition:storage.entryState().conditions()) {
             c.touch();c.provenance(condition.provenance());gaps(condition.gapCodes());
             require(nodes.containsKey(condition.node())&&initialNodes.add(condition.node()),"initial condition needs unique existing node");
-            require((condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)==condition.logicalText().isPresent(),"logical text requires its own initial kind");
+            require((condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT||condition.kind()==InitialKind.LOGICAL_TEXT)==condition.logicalText().isPresent(),"logical text requires its own initial kind");
             require(condition.kind()!=InitialKind.POSSIBLE_LOGICAL_TEXT||storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE,"logical text requires source evidence contract");
             require(condition.bytes().stream().allMatch(b->b>=0&&b<=255),"invalid initial octet");
             require(condition.kind()==InitialKind.LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.bytes().isEmpty(),"only literal initial state carries bytes");
@@ -228,7 +231,11 @@ final class RegionalStorageAdmission {
                 :(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES||condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT)?condition.proof()==InitialProof.DECLARATIVE_POSSIBILITY
                 :Set.of(InitialProof.EXPLICIT_INITIAL,InitialProof.PROGRAM_INITIAL,InitialProof.DECLARATIVE_INVARIANT).contains(condition.proof()),"initial kind contradicts proof");
             require(condition.kind()!=InitialKind.POSSIBLE_LITERAL_BYTES||!condition.bytes().isEmpty()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"possible entry requires bytes and lifecycle remainder");
-            if(condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT) {
+            if(condition.kind()==InitialKind.LOGICAL_TEXT) {
+                require(condition.provenance().exact()&&condition.proof()==InitialProof.DECLARATIVE_INVARIANT
+                    &&storage.entryState().mode()==EntryMode.UNKNOWN&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE
+                    &&factIndex!=null&&factIndex.cells.containsKey(condition.node().handle()),"logical entry invariant requires positive cell and lifetime proof");
+            } else if(condition.kind()==InitialKind.POSSIBLE_LOGICAL_TEXT) {
                 require(condition.provenance().exact()&&condition.gapCodes().contains("ENTRY_STATE_NOT_PROVEN"),"logical source text needs provenance and remainder");
             } else if(condition.kind()==InitialKind.POSSIBLE_LITERAL_BYTES&&storage.entryState().possibilityDomain()==PossibilityDomain.LOGICAL_SOURCE) {
                 require(environment&&condition.provenance().exact(),"logical source evidence requires provenance and selected encoding profile");
@@ -246,7 +253,7 @@ final class RegionalStorageAdmission {
             }
         }
         var index=new Index(input,nodes,bases,views,byData,logical,
-            storage.logicalExactViews().stream().map(LogicalExactView::node).collect(java.util.stream.Collectors.toSet()),input.factDependencies().map(FactDependencyIndex::new).orElse(null));
+            storage.logicalExactViews().stream().map(LogicalExactView::node).collect(java.util.stream.Collectors.toSet()),factIndex);
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {

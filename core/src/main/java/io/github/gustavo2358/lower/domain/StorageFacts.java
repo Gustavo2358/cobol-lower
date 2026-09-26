@@ -50,7 +50,7 @@ public final class StorageFacts {
         public Move { Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes); }
     }
     public enum EntryMode { UNKNOWN, INITIAL, PRESERVED }
-    public enum InitialKind { LITERAL_BYTES, POSSIBLE_LITERAL_BYTES, POSSIBLE_LOGICAL_TEXT, PRESERVE, UNKNOWN }
+    public enum InitialKind { LITERAL_BYTES, POSSIBLE_LITERAL_BYTES, POSSIBLE_LOGICAL_TEXT, LOGICAL_TEXT, PRESERVE, UNKNOWN }
     public enum InitialProof { NONE, EXPLICIT_INITIAL, EXPLICIT_PRESERVED, PROGRAM_INITIAL, DECLARATIVE_INVARIANT, DECLARATIVE_POSSIBILITY }
     public record InitialCondition(NodeId node,InitialKind kind,List<Integer> bytes,List<String> gapCodes,Provenance provenance,InitialProof proof,Optional<String> logicalText) {
         public InitialCondition {Objects.requireNonNull(logicalText);Objects.requireNonNull(proof);Objects.requireNonNull(node);Objects.requireNonNull(kind);bytes=List.copyOf(bytes);gapCodes=List.copyOf(gapCodes);Objects.requireNonNull(provenance);}

@@ -237,8 +237,7 @@ final class PartialProgramAssembler {
         var memory=OpaqueOperands.memory(fact,known,unit.publication());
         boolean memoryOpen=!(memory.otherReads() instanceof Scopes.NoMemory)||!(memory.otherWrites() instanceof Scopes.NoMemory);
         boolean externalEnvironment=fact instanceof SpInput.OtherStatement o && o.effects().isPresent()
-            &&(o.effects().orElseThrow().environment()==SpInput.EnvironmentEffect.OUTPUT
-                ||o.effects().orElseThrow().environment()==SpInput.EnvironmentEffect.INPUT);
+            &&o.effects().orElseThrow().environment()!=SpInput.EnvironmentEffect.NONE;
         var header=new Operations.Header(id,origin,Evidence.CoverageStatus.ABSTRACTED,
             new Evidence.Precision(next==null?open:exact,memoryOpen?open:exact,memoryOpen||externalEnvironment?open:exact,open,externalEnvironment?open:exact),effectGaps);
         // AIR has one descriptive identity for an opaque construction; the SP shape is the most specific published identity.
