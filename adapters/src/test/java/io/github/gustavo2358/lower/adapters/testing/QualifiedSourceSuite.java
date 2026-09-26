@@ -34,6 +34,17 @@ public final class QualifiedSourceSuite {
                 need(CobolLower.run(new String[]{sp.toString(),ordinary.toString()},err)==0,"legacy CLI");
                 need(CobolLower.run(new String[]{sp.toString(),air.toString(),"--source-evidence",side.toString()},err)==0,"source CLI "+errors);
                 need(Arrays.equals(Files.readAllBytes(air),Files.readAllBytes(ordinary)),"zero executable AIR delta "+name);
+                var manifest=dir.resolve("dependency-input.json");
+                need(io.github.gustavo2358.lower.adapters.cli.CobolDependencyInput.run(new String[]{sp.toString(),manifest.toString()},err)==0,"explicit dependency input "+errors);
+                var bundle=new com.fasterxml.jackson.databind.ObjectMapper().readTree(Files.readAllBytes(manifest));
+                need(bundle.path("schema").asText().equals("dependency-input"),"input schema");
+                need(Arrays.equals(Files.readAllBytes(air),Files.readAllBytes(dir.resolve(bundle.path("air").path("path").asText()))),"bundle preserves AIR bytes");
+                var first=Files.readAllBytes(manifest);
+                need(io.github.gustavo2358.lower.adapters.cli.CobolDependencyInput.run(new String[]{sp.toString(),manifest.toString()},err)==0,"repeat bundle");
+                need(Arrays.equals(first,Files.readAllBytes(manifest)),"deterministic bundle");
+                var snapshotPath=dir.resolve(bundle.path("air").path("path").asText());var snapshot=Files.readAllBytes(snapshotPath);
+                need(io.github.gustavo2358.lower.adapters.cli.CobolDependencyInput.run(new String[]{sp.toString(),snapshotPath.toString()},err)==CobolLower.OUTPUT,"manifest cannot overwrite its AIR snapshot");
+                need(Arrays.equals(snapshot,Files.readAllBytes(snapshotPath)),"failed publication preserves existing snapshot");
                 var codec=new QualifiedSourceJson();var contract=codec.decode(Files.readAllBytes(side));need(contract.units().equals(List.of(evidence)),"memory and file port parity");
                 need(codec.decode(codec.encode(contract)).equals(contract),"producer roundtrip");
             } finally {try(var paths=Files.walk(dir)){for(var p:paths.sorted(Comparator.reverseOrder()).toList())Files.delete(p);}}
