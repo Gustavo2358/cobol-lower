@@ -95,9 +95,10 @@ final class Wire211 {
         CicsHandlerTargetKind targetKind,@Nullable String targetSyntax,@Nullable ResolutionStatus labelBindingStatus,
         @Nullable CicsHandlerLabelDocument labelTarget,@Nullable String targetEntry,@Nullable Wire.ProvenanceDocument entryOrigin,
         @Nullable Wire.ProvenanceDocument targetOrigin,@Nullable TargetDocument programTarget,CicsHandlerScopeDocument scope,
-        String rawText,List<CicsOptionDocument> options,List<String> gapCodes) implements StatementDocument { }
+        String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable CicsRegistrationEffects registrationEffects) implements StatementDocument { }
     record CicsCommandDocument(Wire.StatementHeaderDocument header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-        String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable OperandExpressionDocument length) implements StatementDocument { }
+        String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable OperandExpressionDocument length,@Nullable CicsHostEffectsDocument hostEffects) implements StatementDocument { }
+    record CicsHostEffectsDocument(List<Integer> literalOptions) { }
     record OperandExpressionDocument(OperandExpressionKind kind,@Nullable String integer,@Nullable ReferenceDocument reference,Wire.ProvenanceDocument provenance) { }
     record CicsAbendDocument(Wire.StatementHeaderDocument header,CicsAbendEventKind eventKind,CicsAbendEligibility dispatchEligibility,
         String rawText,List<CicsOptionDocument> options,List<String> gapCodes) implements StatementDocument { }
@@ -110,7 +111,10 @@ final class Wire211 {
     record PredicateDocument(Availability availability, PredicateProfile profile, PredicateDomain resultDomain,
         PredicateEvaluation evaluation, PredicateCompletion normalCompletion, ReadsCompleteness readsCompleteness,
         PredicateTruth truthValue, List<String> knownReads, Wire.ProvenanceDocument provenance, List<String> gapCodes) { }
-    record ConditionDocument(String shape, List<ReferenceDocument> references, Wire.ProvenanceDocument provenance, PredicateDocument predicate) { }
+    record TextPredicateDocument(TextPredicateKind kind,@Wire.Nullable String reference,@Wire.Nullable String text,List<TextPredicateDocument> children) { }
+    record ConditionDocument(String shape, List<ReferenceDocument> references, Wire.ProvenanceDocument provenance, PredicateDocument predicate,@Wire.Nullable TextPredicateDocument textPredicate) {
+        ConditionDocument(String shape,List<ReferenceDocument> references,Wire.ProvenanceDocument provenance,PredicateDocument predicate){this(shape,references,provenance,predicate,null);}
+    }
     record ArmDocument(ClausePresence presence, Availability contentAvailability, Wire.ExecutableStartDocument entry,
         Wire.ProvenanceDocument provenance, List<String> gapCodes) { }
     record StorageDocument(Availability availability, StorageIndependenceRule rule, String authority, List<String> members,

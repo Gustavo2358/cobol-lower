@@ -1192,12 +1192,13 @@ final class Materialize {
                         Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit));
                 }),new CicsHandlerScope(v.scope().kind(),v.scope().runtimeIdentity(),provenance(v.scope().provenance(),unit)),
                 v.rawText(),v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
-                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes(),Optional.ofNullable(v.registrationEffects()));
             case Wire211.CicsCommandDocument v -> new CicsCommandFact(h,v.commandKind(),v.syntaxStatus(),v.rawText(),
                 v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes(),
                 Optional.ofNullable(v.length()).map(e->new OperandExpression(e.kind(),Optional.ofNullable(e.integer()).map(java.math.BigInteger::new),
-                    Optional.ofNullable(e.reference()).map(r->reference(r,h.id(),unit)),provenance(e.provenance(),unit))));
+                    Optional.ofNullable(e.reference()).map(r->reference(r,h.id(),unit)),provenance(e.provenance(),unit))),
+                Optional.ofNullable(v.hostEffects()).map(e->new CicsHostEffects(e.literalOptions())));
             case Wire211.CicsAbendDocument v -> new CicsAbendFact(h,v.eventKind(),v.dispatchEligibility(),v.rawText(),
                 v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
                     Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
@@ -1235,10 +1236,13 @@ final class Materialize {
                     p.readsCompleteness(),p.truthValue(),p.knownReads().stream().map(id -> new OperandId(h.id(),id)).toList(),provenance(p.provenance(),unit),p.gapCodes());
                 yield new IfFact(h,condition.shape(),predicate,condition.references().stream().map(r -> reference(r,h.id(),unit)).toList(),
                     provenance(condition.provenance(),unit),v.explicitlyTerminated(),Optional.ofNullable(v.continuation()).map(id -> new StatementId(unit,id)),
-                    continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile());
+                    continuation(v.normalContinuation(),unit),arm(v.thenArm(),unit),arm(v.elseArm(),unit),v.profile(),Optional.ofNullable(condition.textPredicate()).map(t->textPredicate(t,h.id())));
             }
             case Wire211.ObservedDocument v -> observed(h, v.observedKind(), v.observedShape(), v.gapCode(), continuation(v.normalContinuation(),unit), v.knownReferences().stream().map(r->reference(r,h.id(),unit)).toList());
         };
+    }
+    private static TextPredicate textPredicate(Wire211.TextPredicateDocument p,StatementId statement) {
+        return new TextPredicate(p.kind(),Optional.ofNullable(p.reference()).map(id->new OperandId(statement,id)),Optional.ofNullable(p.text()),p.children().stream().map(c->textPredicate(c,statement)).toList());
     }
     private static LogicalValue logical(Wire211.LogicalDocument value) {
         return new LogicalValue(value.logicalDomain(), value.value(), value.logicalExtent());

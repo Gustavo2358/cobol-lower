@@ -36,6 +36,8 @@ final class PartialProgramLowerer implements LowerInput {
         var requiredData=new LinkedHashSet<SpInput.DataId>();
         input.fileInventory().declarations().forEach(declaration->requiredData.addAll(declaration.records()));
         if(context!=null)requiredData.addAll(context.requiredData(input));
+        for(var fact:input.statements())if(fact instanceof SpInput.CicsCommandFact command&&CicsCommandMemory.ready(command,plan.storage()))
+            CicsCommandMemory.references(command).forEach(ref->requiredData.add(ref.logicalWholeItem().orElseThrow()));
         var data = RegionalDataTranslator.translate(plan.data(), plan.storage(),
             requiredData,context==null?Set.of():context.logicalText(input),context==null?Set.of():context.captureLocals(input),
             unit, ids, origins, items, uncertainties);

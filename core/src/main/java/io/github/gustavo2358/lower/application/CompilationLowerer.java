@@ -9,11 +9,6 @@ public final class CompilationLowerer {
         var invalid=CompilationAdmission.validate(input);
         if(invalid.isPresent())return reject(Admission.Status.INVALID_INPUT,invalid.orElseThrow());
         var ordered=input.units().stream().sorted(Comparator.comparing(u->u.product().unit(),CompilationAdmission.ORDER)).toList();
-        // Executable-only requests retain their NOT_READY barrier.
-        for(var unit:ordered)if(options.publicationPolicy()==LowerInput.PublicationPolicy.EXECUTABLE_ONLY&&unit.product().statements().stream().anyMatch(s->
-                s instanceof SpInput.CicsHandlerFact||s instanceof SpInput.CicsAbendFact||s instanceof SpInput.CicsCommandFact))
-            return failure(new PartialProgramAdmission().plan(unit.product(),options.admission()).admission());
-
         var canonical=new SpCompilation(input.inventoryStatus(),input.unitInventory().stream().sorted(CompilationAdmission.ORDER).toList(),ordered);
         var revision=CanonicalRevision.compilation(canonical,options.maximumIdentityCharacters());
         if(revision.isEmpty())return reject(Admission.Status.IMPLEMENTATION_LIMIT,"publication identity budget below 32 characters");

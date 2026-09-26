@@ -27,7 +27,7 @@ final class RegionalDataTranslator {
         }
         source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
             .ifPresent(s->s.entryState().conditions().stream()
-                .filter(c->c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT)
+                .filter(c->c.kind()==StorageFacts.InitialKind.POSSIBLE_LITERAL_BYTES||c.kind()==StorageFacts.InitialKind.POSSIBLE_LOGICAL_TEXT||c.kind()==StorageFacts.InitialKind.LOGICAL_TEXT)
                 .forEach(c->source.nodes().get(c.node()).data().ifPresent(result::add)));
         return result;
     }
@@ -85,9 +85,13 @@ final class RegionalDataTranslator {
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
         // A proved standalone legacy scalar may have an unknown byte representation. Keep its
         // single abstract Cell as this component's representative, without a second allocation.
+        var baseMembers=new HashMap<StorageFacts.BaseId,Integer>();
+        source.views().values().forEach(v->baseMembers.merge(v.base(),1,Integer::sum));
         for(var link:legacy.index().values()) {
             var view=source.byData().get(link.source());
-            if(view!=null&&!source.logical().byData.containsKey(link.source()))physical.put(view.base(),link.storage().orElseThrow());
+            // A child Cell represents its own value, never the entire containing record.
+            if(view!=null&&baseMembers.get(view.base())==1&&!source.logical().byData.containsKey(link.source()))
+                physical.put(view.base(),link.storage().orElseThrow());
         }
         for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList()) {
             var origin=origins.source("storage-base",base.id().handle(),base.provenance());
@@ -147,7 +151,7 @@ final class RegionalDataTranslator {
         for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
             if(index.containsKey(declaration.id()))continue;
             var logical=source.logical().byData.get(declaration.id());
-            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP
+            if(!requiredData.contains(declaration.id())&&logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP
                     &&(source.byData().get(declaration.id())==null
                         ||!exactByNode.containsKey(source.byData().get(declaration.id()).node()))) {
                 var outputs=source.logical().leaves(logical).stream().map(v->source.logical().nodes.get(v.node()).data()).flatMap(Optional::stream)
