@@ -76,8 +76,7 @@ public final class CicsProgramControlSuite {
                 .filter(i->i.target() instanceof Interactions.ComputedTarget t&&t.namespace().equals("cics.program")).findFirst().orElseThrow();
             var target=(Interactions.ComputedTarget)invoke.target();
             if(!(target.namePolicy() instanceof Interactions.ExtensionName e&&e.name().equals("cics-ts.program")))throw new AssertionError("platform policy");
-            if(name.equals("short")!=(target.name() instanceof Expressions.Unknown))throw new AssertionError("eight-byte proof");
-            if(!name.equals("short")&&!(target.name() instanceof Expressions.Read))throw new AssertionError("storage read");
+            if(!(target.name() instanceof Expressions.Read))throw new AssertionError("physical or nominal read retained; name interpretation owns length rejection");
             if(name.equals("slice")&&!(((Expressions.Read)target.name()).place() instanceof Places.RegionSlice))throw new AssertionError("slice identity");
             var signature=((Interactions.ExternalSignature)invoke.signature()).signature();
             if(!(signature.parameters().remainder() instanceof Interactions.UnknownRemainder)||!(signature.results().remainder() instanceof Interactions.UnknownRemainder))throw new AssertionError("partial signature");

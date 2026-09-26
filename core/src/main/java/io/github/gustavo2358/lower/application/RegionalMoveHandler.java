@@ -12,6 +12,7 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items));
         if(storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
         var result=new ArrayList<Instruction>();result.add(translate(move,fitted&&move.additionalTransfers().isEmpty(),data,unit,ids,origins,links,items,uncertainties));
         for(var t:move.additionalTransfers()) {

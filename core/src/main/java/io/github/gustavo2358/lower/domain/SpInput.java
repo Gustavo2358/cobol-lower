@@ -5,7 +5,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure,
+            List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence,
+            boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,SourceFacts.Inventory.unavailable());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage) {
         this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,FileFacts.Inventory.unavailable());
     }
@@ -19,6 +24,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(sourceDependencies);
         Objects.requireNonNull(fileInventory);
         Objects.requireNonNull(storage);
         Objects.requireNonNull(storageIndependence, "storageIndependence");
@@ -230,7 +236,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum LogicalDomain { TEXT }
     public enum StorageClass { WORKING_STORAGE }
     public enum DeclarationScope { LOCAL }
-    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, UNAVAILABLE }
+    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, POSSIBLE_TEXT, UNAVAILABLE }
     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
     public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
     public enum OperandRole { READ, WRITE, CALL_TARGET }

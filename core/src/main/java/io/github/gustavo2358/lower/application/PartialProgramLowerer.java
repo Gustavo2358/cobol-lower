@@ -78,9 +78,12 @@ final class PartialProgramLowerer implements LowerInput {
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
         if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        if(input.statements().stream().anyMatch(s->s instanceof SpInput.CicsFact||s instanceof SpInput.CicsFileFact))
+            if(!required.contains(Capabilities.TARGET_POSSIBILITIES))required.add(Capabilities.TARGET_POSSIBILITIES);
         if(input.statements().stream().anyMatch(SpInput.CicsFileFact.class::isInstance))required.add(CicsFileInvokeHandler.NAME);
-        var resources=files.resources();
-        if(files.available())required.add(Capabilities.RESOURCE_BINDINGS);
+        var resources=new ArrayList<>(files.resources());
+        resources.addAll(SourceResourceLowering.resources(input,unit,ids,origins,unitOrigin));
+        if(files.available()||input.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE)required.add(Capabilities.RESOURCE_BINDINGS);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),
             List.of(body), data.storage(), resources, List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);

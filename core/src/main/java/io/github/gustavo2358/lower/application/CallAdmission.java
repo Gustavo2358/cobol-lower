@@ -104,8 +104,19 @@ public final class CallAdmission implements AdmitInput {
                     }
                     continuation(m.normalContinuation(), m.header(), c);
                     if (m.source() instanceof LiteralSource literal) literal.logicalValue().ifPresent(v -> logical(v, m.header(), c));
-                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT) == m.textAdjustment().isPresent(),
-                        Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT iff textAdjustment present");
+                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT || m.copySemantics() == CopySemantics.POSSIBLE_TEXT) == m.textAdjustment().isPresent(),
+                        Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT/POSSIBLE_TEXT iff textAdjustment present");
+                    if(m.copySemantics()==CopySemantics.POSSIBLE_TEXT) {
+                        c.require(m.header().provenance().exact()&&m.target().logicalWholeItem().isPresent()
+                            &&m.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()
+                            &&m.additionalTransfers().isEmpty(),Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),"Possible text requires local literal and whole logical receiver");
+                        if(m.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()&&m.textAdjustment().isPresent()) {
+                            var value=literal.logicalValue().orElseThrow();var adjustment=m.textAdjustment().orElseThrow();
+                            c.require(value.logicalExtent()<=adjustment.receiverExtent()
+                                &&adjustment.result().value().equals(value.value()+" ".repeat(Math.max(0,adjustment.receiverExtent()-value.logicalExtent()))),
+                                Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),"Possible text result must preserve literal plus right spaces");
+                        }
+                    }
                     m.textAdjustment().ifPresent(a -> {
                         c.provenance(a.provenance()); logical(a.result(), m.header(), c);
                         c.require(a.receiverExtent() > 0 && a.receiverExtent() == a.result().logicalExtent(), Rule.PROFILE_FACT,
@@ -162,9 +173,9 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(binding.status() == ResolutionStatus.RESOLVED
                 && binding.selected().equals(Optional.of(w.data())) && c.data(w.data()) != null,
             Rule.PROFILE_FACT, h.id().handle(), reference.provenance(), "Whole-item proof agrees with uniquely selected DATA"));
-        reference.logicalWholeItem().ifPresent(data -> c.require(reference.provenance().exact()&&binding.status()==ResolutionStatus.RESOLVED
+        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact)&&binding.status()==ResolutionStatus.RESOLVED
                 &&binding.selected().equals(Optional.of(data))&&c.data(data)!=null,
-            Rule.PROFILE_FACT,h.id().handle(),reference.provenance(),"Logical access requires exact source shape and unique declaration"));
+            Rule.PROFILE_FACT,h.id().handle(),reference.provenance(),"Logical access requires exact source or canonical typed CICS host and unique declaration"));
     }
     static void continuation(NormalContinuation next, StatementHeader h, EntryGobackAdmission.Context c) {
         c.provenance(next.provenance());
