@@ -102,19 +102,20 @@ def architecture_errors(root, dependency_tree, air_jar, hash_jar):
 
 
 def output_boundary_errors(root):
-    """Codec remains an external artifact; Jackson belongs only to the SP input adapter."""
+    """Codec remains an external artifact; JSON is confined to SP input and the separate R9 source contract adapters."""
     errors = []
     json_library = re.compile(r"com[./](?:fasterxml[./]|google[./]gson[./])|org[./]json[./]|jakarta[./]json[./]")
     for path in (root / "adapters/src/main/java").rglob("*.java"):
         text = path.read_text()
-        if "/adapters/sp/" not in path.as_posix() and json_library.search(text):
+        source_contract = "/adapters/source/" in path.as_posix() and path.name in {"QualifiedSourceJson.java", "QualifiedSourceFileOutput.java"}
+        if "/adapters/sp/" not in path.as_posix() and not source_contract and json_library.search(text):
             errors.append("ARCH_AIR_OUTPUT JSON library outside SP input: " + str(path))
         if re.search(r"\b(?:class|record|interface|enum)\s+(?:AirJson|BindingWriter|BindingReader|Json)\b", text):
             errors.append("ARCH_AIR_OUTPUT copied codec: " + str(path))
         if "package io.github.gustavo2358.air." in text:
             errors.append("ARCH_AIR_OUTPUT upstream package ownership: " + str(path))
     for path in (root / "adapters/target/classes").rglob("*.class"):
-        if "/adapters/sp/" in path.as_posix():
+        if "/adapters/sp/" in path.as_posix() or ("/adapters/source/" in path.as_posix() and path.name in {"QualifiedSourceJson.class", "QualifiedSourceFileOutput.class"}):
             continue
         result = subprocess.run(["javap", "-v", "-p", str(path)], text=True, capture_output=True)
         if result.returncode:

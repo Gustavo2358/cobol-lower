@@ -30,11 +30,12 @@ public final class CobolLower {
     }
     /** Composition seam; no JVM exit, alternate semantic decoder or lowering. */
     public static int run(String[] args, PrintStream err, FileLowering lowering, LowerInput.Options options, AirFileOutput output) {
-        if (args.length != 2 || args[0].isEmpty() || args[1].isEmpty()) return usage(err);
-        Path input, destination;
-        try { input = Path.of(args[0]); destination = Path.of(args[1]); }
+        if ((args.length != 2 && !(args.length==4 && args[2].equals("--source-evidence") && !args[3].isBlank())) || args[0].isEmpty() || args[1].isEmpty()) return usage(err);
+        Path input, destination, evidence;
+        try { input = Path.of(args[0]); destination = Path.of(args[1]); evidence=args.length==4?Path.of(args[3]):null;
+            if(evidence!=null && (evidence.toAbsolutePath().normalize().equals(input.toAbsolutePath().normalize()) || evidence.toAbsolutePath().normalize().equals(destination.toAbsolutePath().normalize())))return usage(err); }
         catch (InvalidPathException ex) { return usage(err); }
-        var physical = lowering.lower(input, options);
+        var physical = lowering.lower(input, options,evidence!=null);
         if (physical instanceof FileLowering.PhysicalFailure failure) {
             var diagnostic = failure.diagnostic();
             err.println("SP " + diagnostic.code() + " " + diagnostic.phase() + " " + diagnostic.location());
@@ -54,6 +55,9 @@ public final class CobolLower {
                 err.println("Lowering PARTIAL: INCOMPLETE_VALIDATION; scoped operation preconditions remain open");
                 output.writePartial(result.publication().orElseThrow(),destination);
             } else output.write(result.publication().orElseThrow(), destination);
+            if(evidence!=null)new io.github.gustavo2358.lower.adapters.source.QualifiedSourceFileOutput().write((FileLowering.Lowered)physical,options,destination,evidence);
+        } catch (IllegalArgumentException ex) {
+            err.println("SOURCE_EVIDENCE_INVALID: "+ex.getMessage());return CODEC;
         } catch (AirJsonException ex) {
             err.println("AIR codec " + ex.code() + " " + ex.path() + ": " + ex.getMessage());
             return CODEC;
@@ -64,7 +68,7 @@ public final class CobolLower {
         return SUCCESS;
     }
     private static int usage(PrintStream err) {
-        err.println("Usage: cobol-lower <semantic-product.json> <air.json>");
+        err.println("Usage: cobol-lower <semantic-product.json> <air.json> [--source-evidence <source.json>]");
         return USAGE;
     }
 }
