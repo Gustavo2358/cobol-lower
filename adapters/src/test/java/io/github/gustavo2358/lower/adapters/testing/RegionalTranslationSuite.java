@@ -57,7 +57,7 @@ public final class RegionalTranslationSuite {
         var x=copyResult.data().stream().filter(d->d.source().handle().equals("data:0")).findFirst().orElseThrow();
         var y=copyResult.data().stream().filter(d->d.source().handle().equals("data:1")).findFirst().orElseThrow();
         check(copying.source().region().equals(x.storage().orElseThrow())&&copying.destination().region().equals(y.storage().orElseThrow())&&copying.length().equals(BigInteger.valueOf(4)),"copy source and destination preserve independent SP correlation");
-        check(copy.premises().stream().anyMatch(p->p.assertion() instanceof Proofs.DisjointStorage d&&d.storage().size()==2),"copy retains source allocation disjunction proof");
+        check(copy.premises().isEmpty(),"positive source bases require no generated disjoint premise");
         var unknown=lower("unknown-prefix").publication().orElseThrow();
         check(unknown.storage().stream().anyMatch(s->s instanceof Memory.Region r&&r.extent().isEmpty()&&r.extentUnknown().isPresent()),"unknown physical extent is retained, never zero");
         check(instructions(unknown).stream().noneMatch(Operations.Assign.class::isInstance),"unproved offset never becomes precise write");
@@ -89,9 +89,7 @@ public final class RegionalTranslationSuite {
         var unknownMove=new SpInput.MoveFact(move.header(),move.source(),target,SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(effect));
         var statements=new ArrayList<>(input.statements());statements.set(0,unknownMove);
         var unknown=lower(IfInputs.with(input,"statements",statements)).publication().orElseThrow();
-        check(instructions(unknown).getFirst() instanceof Operations.HavocMust h&&h.destination() instanceof Places.RegionSlice p
-            &&p.offset() instanceof Expressions.Literal o&&o.value().equals(new Values.IntValue(BigInteger.valueOf(6)))
-            &&p.length() instanceof Expressions.Literal l&&l.value().equals(new Values.IntValue(BigInteger.valueOf(8))),"unknown source still writes only the proved child interval");
+        check(instructions(unknown).getFirst() instanceof Operations.Nop,"unimplemented value transform has no substitute regional write");
         var copy=((SpJsonDecoder.Decoded)decoder.decode(RegionalStorageIntegrationSuite.fixture("copy-capture"))).input();
         var original=(SpInput.MoveFact)copy.statements().getFirst();
         for(String text:List.of("AB","€")) {
@@ -106,13 +104,13 @@ public final class RegionalTranslationSuite {
             var op=result.statements().stream().filter(l->l.source().equals(original.header().id())).map(LoweringResult.StatementLink::target).toList();
             var write=instructions(result.publication().orElseThrow()).stream().filter(i->op.contains(i.header().id())).findFirst().orElseThrow();
             check(text.equals("AB")?write instanceof Operations.Assign a&&a.value() instanceof Expressions.Literal l&&l.value().equals(new Values.TextValue("AB  "))
-                :write instanceof Operations.HavocMust,"proved scalar fitting survives when encodable; unsupported runtime character retains havoc");
+                :write instanceof Operations.Nop,"proved scalar fitting survives when encodable; unsupported runtime character is omitted with coverage");
             var legacyTarget=IfInputs.with(update.target(),"regionalAccess",Optional.empty());
             var legacy=IfInputs.with(IfInputs.with(update,"regionalMove",Optional.empty()),"target",legacyTarget);
             changed.set(0,legacy);var legacyResult=lower(IfInputs.with(copy,"statements",changed));
             var legacyOps=legacyResult.statements().stream().filter(l->l.source().equals(original.header().id())).map(LoweringResult.StatementLink::target).toList();
             var legacyWrite=instructions(legacyResult.publication().orElseThrow()).stream().filter(i->legacyOps.contains(i.header().id())).findFirst().orElseThrow();
-            check(text.equals("AB")?legacyWrite instanceof Operations.Assign:legacyWrite instanceof Operations.HavocMust,"legacy-only access still respects explicit physical codec");
+            check(text.equals("AB")?legacyWrite instanceof Operations.Assign:legacyWrite instanceof Operations.Nop,"legacy-only access still respects explicit physical codec");
         }
     }
 
@@ -128,7 +126,7 @@ public final class RegionalTranslationSuite {
         var inventory=IfInputs.with(IfInputs.with(IfInputs.with(physical,"nodes",nodes),"bases",bases),"views",views);
         var result=lower(IfInputs.with(IfInputs.with(input,"storage",Optional.of(inventory)),"dataDeclarations",data));var p=result.publication().orElseThrow();
         check(p.storage().size()==2&&p.storage().stream().filter(Memory.Cell.class::isInstance).count()==1,"numeric scalar keeps one abstract Cell, without a duplicate Region");
-        check(p.premises().stream().anyMatch(proof->proof.assertion() instanceof Proofs.DisjointStorage d&&d.storage().size()==2&&new HashSet<>(d.storage()).size()==2),"component proof covers region and legacy numeric Cell exactly once");
+        check(p.premises().isEmpty(),"positive source bases require no generated disjoint premise");
     }
 
 }

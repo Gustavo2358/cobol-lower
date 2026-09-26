@@ -1,0 +1,20 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TWOF.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT F ASSIGN TO FIRSTDD.
+       SELECT G ASSIGN TO OTHERDD.
+       DATA DIVISION.
+       FILE SECTION.
+       FD F.
+       01 R.
+        02 K PIC X(8).
+       FD G.
+       01 S.
+        02 L PIC X(8).
+       WORKING-STORAGE SECTION.
+       01 BUF PIC X(8).
+       PROCEDURE DIVISION.
+       GOBACK.
+       END PROGRAM TWOF.

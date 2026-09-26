@@ -32,7 +32,10 @@ public final class PerformTimesIntegrationSuite {
         for(var name:List.of("incoming","escape","cycle","recursive","partial-end","noninteger","unresolved","zero")) {
             var adversarial=PerformFamilyIntegrationSuite.inputFixture("times-"+name);
             var facts=adversarial.statements().stream().map(s->s instanceof SpInput.ProcedurePerformFact f?IfInputs.with(f,"gapCodes",List.of()):s).toList();
-            check(new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"false closed TIMES rejected "+name);
+            var original=new CobolLowerer().lower(adversarial,CobolLower.OPTIONS);
+            var diagnosticOnly=new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS);
+            check(original.publication().isPresent()&&diagnosticOnly.status()==original.status(),
+                "TIMES gap metadata cannot change structural admission "+name);
         }
         try(var stream=PerformTimesIntegrationSuite.class.getResourceAsStream("/sp/perform-family/times-identifier.json")) {
             var json=new ObjectMapper();var raw=(ObjectNode)json.readTree(stream);raw.put("contractVersion","2.3.0");

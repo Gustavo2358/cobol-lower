@@ -104,6 +104,25 @@ public final class CallAdmission implements AdmitInput {
                     }
                     continuation(m.normalContinuation(), m.header(), c);
                     if (m.source() instanceof LiteralSource literal) literal.logicalValue().ifPresent(v -> logical(v, m.header(), c));
+                    var logicalTargets = new HashSet<OperandId>();
+                    for(var transfer:m.logicalTransfers()) {
+                        var receiver=m.transfers().stream().map(MoveTransfer::target)
+                            .filter(r->r.id().equals(transfer.target())).findFirst().orElse(null);
+                        var declaration=receiver==null?null:receiver.logicalWholeItem().map(c.data::get).orElse(null);
+                        var scalar=declaration==null?null:declaration.scalarText().orElse(null);
+                        boolean supported=logicalTargets.add(transfer.target())&&scalar!=null
+                            &&m.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()
+                            &&transfer.value().logicalDomain()==LogicalDomain.TEXT
+                            &&transfer.value().logicalExtent()==scalar.logicalExtent();
+                        if(supported) {
+                            var source=((LiteralSource)m.source()).logicalValue().orElseThrow().value();
+                            int n=scalar.logicalExtent(),count=source.codePointCount(0,source.length());
+                            var expected=count>n?source.substring(0,source.offsetByCodePoints(0,n)):source+" ".repeat(n-count);
+                            supported=expected.equals(transfer.value().value());
+                        }
+                        c.require(supported,Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),
+                            "Independent logical transfer must fit a proved literal into its own whole receiver");
+                    }
                     c.require((m.copySemantics() == CopySemantics.FITTED_TEXT || m.copySemantics() == CopySemantics.POSSIBLE_TEXT) == m.textAdjustment().isPresent(),
                         Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT/POSSIBLE_TEXT iff textAdjustment present");
                     if(m.copySemantics()==CopySemantics.POSSIBLE_TEXT) {
@@ -173,7 +192,7 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(binding.status() == ResolutionStatus.RESOLVED
                 && binding.selected().equals(Optional.of(w.data())) && c.data(w.data()) != null,
             Rule.PROFILE_FACT, h.id().handle(), reference.provenance(), "Whole-item proof agrees with uniquely selected DATA"));
-        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact)&&binding.status()==ResolutionStatus.RESOLVED
+        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact||c.lookup(h.id()) instanceof CicsCommandFact)&&binding.status()==ResolutionStatus.RESOLVED
                 &&binding.selected().equals(Optional.of(data))&&c.data(data)!=null,
             Rule.PROFILE_FACT,h.id().handle(),reference.provenance(),"Logical access requires exact source or canonical typed CICS host and unique declaration"));
     }

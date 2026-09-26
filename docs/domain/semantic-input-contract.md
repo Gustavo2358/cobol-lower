@@ -68,3 +68,8 @@ o antigo probe de versão futura agora usa 1.4.0. Não há negociação ou downg
 
 SP 1.4.0 usa Wire14 fechado, IfFact tipado, PredicateGuarantee, IfArm e
 IndependentStorageSet. Wire13 não é reinterpretado. [Regras, prova e limites](simple-if-diamond.md).
+
+## SP 2.40 fact dependency locality
+
+[Fact dependency locality](fact-dependency-locality.md) defines the new causal proof
+graph. 2.40 requires it alongside R1 topology; <=2.39 retains historical meaning.

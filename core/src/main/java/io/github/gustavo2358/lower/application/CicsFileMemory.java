@@ -10,21 +10,21 @@ final class CicsFileMemory {
     record Result(List<Place> operands,Interactions.EffectBound bound) { }
     static Result effects(CicsFileFact f,ScalarDataTranslator.Result data,CicsFileInvokeHandler.Context c) {
         var reads=new LinkedHashSet<Scopes.MemoryScope>();var writes=new LinkedHashSet<Scopes.MemoryScope>();
-        var operands=new ArrayList<Place>();var returned=new ArrayList<OperandId>();boolean unknown=!CicsFileAdmission.wellFormed(f);
+        var operands=new ArrayList<Place>();var returned=new ArrayList<OperandId>();
         for(int n=0;n<f.options().size();n++) {
             var option=f.options().get(n);if(option.role()==CicsFileRole.NONE)continue;
-            if(option.role()==CicsFileRole.UNKNOWN){unknown=true;continue;}
+            if(option.role()==CicsFileRole.UNKNOWN)continue;
             boolean read=option.role()==CicsFileRole.READ||option.role()==CicsFileRole.READ_WRITE;
             boolean write=option.role()==CicsFileRole.WRITE||option.role()==CicsFileRole.READ_WRITE;
-            var ref=option.reference().orElse(null);if(ref==null){if(write)writes.add(new Scopes.VisibleMemory(c.op.unit(),true));else if(option.literal().isEmpty()&&option.integer().isEmpty()&&!option.canonicalName().equals("FILE"))reads.add(new Scopes.VisibleMemory(c.op.unit(),true));continue;}
+            var ref=option.reference().orElse(null);if(ref==null)continue;
             var object=ref.binding().selected().map(data.nominal()::get).orElse(null);var view=c.view(ref);
             var source=c.origins.source("cics-file-option",ref.id().handle(),ref.provenance());
             if(read){var width=readWidth(f,option);boolean bounded=object!=null&&view!=null&&width!=null&&width.signum()>=0&&width.compareTo(view.extent())<=0;
-                if(width==null||width.signum()!=0)reads.add(bounded?new Scopes.ObjectsMemory(List.of(object)):new Scopes.VisibleMemory(c.op.unit(),true));}
+                if((width==null||width.signum()!=0)&&object!=null)reads.add(new Scopes.ObjectsMemory(List.of(object)));}
             if(write) {
                 BigInteger width=width(f,option,view);
                 boolean bounded=object!=null&&view!=null&&width!=null&&width.signum()>=0&&width.compareTo(view.extent())<=0;
-                if(width==null||width.signum()!=0)writes.add(bounded?new Scopes.ObjectsMemory(List.of(object)):new Scopes.VisibleMemory(c.op.unit(),true));
+                if((width==null||width.signum()!=0)&&object!=null)writes.add(new Scopes.ObjectsMemory(List.of(object)));
                 if(bounded&&Set.of("RESP","RESP2").contains(option.canonicalName())&&width.equals(view.extent())&&data.index().containsKey(ref.binding().selected().orElseThrow())){
                     var place=RegionalPlaces.place(ref,data.index().get(ref.binding().selected().orElseThrow()),c.header("effect-"+n,Operand.Role.VALUE_WRITE,source),c.ids);
                     operands.add(place);returned.add(place.header().id());c.link(ref,List.of(place.header().id()),source);
@@ -34,7 +34,6 @@ final class CicsFileMemory {
                 var place=new Places.ObjectPlace(c.header("host-"+n,write?Operand.Role.VALUE_WRITE:Operand.Role.VALUE_READ,source),object);operands.add(place);c.link(ref,List.of(place.header().id()),source);
             }
         }
-        if(unknown){reads.add(new Scopes.VisibleMemory(c.op.unit(),true));writes.add(new Scopes.VisibleMemory(c.op.unit(),true));returned.clear();}
         var otherwise=new Interactions.ForeignEffects(bound(reads),bound(writes),List.of());
         var per=returned.isEmpty()?List.<Interactions.OutcomeEffects>of():List.of(new Interactions.OutcomeEffects(Control.NormalOutcome.INSTANCE,new Interactions.ForeignEffects(otherwise.reads(),otherwise.writes(),returned)));
         return new Result(List.copyOf(operands),new Interactions.EffectBound(otherwise,per));

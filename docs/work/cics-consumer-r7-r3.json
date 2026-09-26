@@ -1,0 +1,11 @@
+{
+  "id": "R7-R3",
+  "title": "SP 2.42 consumer admission and typed preservation",
+  "status": "IN_PROGRESS",
+  "scope": [
+    "version admission",
+    "typed CICS_HANDLER/CICS_ABEND input preservation"
+  ],
+  "pr": "https://github.com/Gustavo2358/cobol-lower/pull/34",
+  "notes": "Human review pending. No handler state/replacement/dispatch; AIR unchanged."
+}

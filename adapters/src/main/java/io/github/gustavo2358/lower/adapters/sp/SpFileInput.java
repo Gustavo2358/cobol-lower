@@ -20,6 +20,7 @@ public final class SpFileInput {
             return decoder.decode(bytes);
         } catch (IOException ex) { return error(); }
     }
+    public CompilationJsonDecoder.Result decodeDocument(byte[] bytes){return documentDecoder.decode(bytes);}
     public CompilationJsonDecoder.Result readDocument(Path path){
         if(path==null)return new CompilationJsonDecoder.Rejected(error().diagnostic());
         try(var input=Files.newInputStream(path)){return documentDecoder.decode(input.readAllBytes());}

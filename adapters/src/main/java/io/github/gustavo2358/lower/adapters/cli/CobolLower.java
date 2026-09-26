@@ -21,35 +21,43 @@ public final class CobolLower {
     public static final SpJsonDecoder.Limits INPUT_LIMITS = new SpJsonDecoder.Limits(ProductionLimits.SP_DEPTH);
     public static final LowerInput.Options OPTIONS = new LowerInput.Options(new AdmitInput.Limits(100),
             1_000_000, ValidationOptions.defaults());
+    public static final LowerInput.Options POSITIVE_OPTIONS = new LowerInput.Options(OPTIONS.admission(),
+            OPTIONS.maximumIdentityCharacters(),OPTIONS.validation(),LowerInput.PublicationPolicy.BOUNDED_POSITIVE);
     private CobolLower() { }
     public static void main(String[] args) { System.exit(run(args, System.err)); }
     public static int run(String[] args, PrintStream err) {
-        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), OPTIONS, new AirFileOutput());
+        return run(args, err, new FileLowering(new SpFileInput(INPUT_LIMITS), new CobolLowerer()), POSITIVE_OPTIONS, new AirFileOutput());
     }
     /** Composition seam; no JVM exit, alternate semantic decoder or lowering. */
     public static int run(String[] args, PrintStream err, FileLowering lowering, LowerInput.Options options, AirFileOutput output) {
-        if (args.length != 2 || args[0].isEmpty() || args[1].isEmpty()) return usage(err);
-        Path input, destination;
-        try { input = Path.of(args[0]); destination = Path.of(args[1]); }
+        if ((args.length != 2 && !(args.length==4 && args[2].equals("--source-evidence") && !args[3].isBlank())) || args[0].isEmpty() || args[1].isEmpty()) return usage(err);
+        Path input, destination, evidence;
+        try { input = Path.of(args[0]); destination = Path.of(args[1]); evidence=args.length==4?Path.of(args[3]):null;
+            if(evidence!=null && (evidence.toAbsolutePath().normalize().equals(input.toAbsolutePath().normalize()) || evidence.toAbsolutePath().normalize().equals(destination.toAbsolutePath().normalize())))return usage(err); }
         catch (InvalidPathException ex) { return usage(err); }
-        var physical = lowering.lower(input, options);
+        var physical = lowering.lower(input, options,evidence!=null);
         if (physical instanceof FileLowering.PhysicalFailure failure) {
             var diagnostic = failure.diagnostic();
             err.println("SP " + diagnostic.code() + " " + diagnostic.phase() + " " + diagnostic.location());
             return INPUT;
         }
         var result = ((FileLowering.Lowered) physical).result();
-        if ((result.status() != LoweringResult.Status.SUCCESS && result.status()!=LoweringResult.Status.PARTIAL) || result.publication().isEmpty()) {
+        if ((result.status() != LoweringResult.Status.SUCCESS && result.status()!=LoweringResult.Status.PARTIAL && result.status()!=LoweringResult.Status.BOUNDED_PUBLICATION) || result.publication().isEmpty()) {
             err.println("Lowering " + result.status());
             for (var diagnostic : result.admission().diagnostics())
                 err.println(diagnostic.rule() + " " + diagnostic.subject() + ": " + diagnostic.requirement());
             return LOWERING;
         }
         try {
-            if(result.status()==LoweringResult.Status.PARTIAL) {
+            if(result.status()==LoweringResult.Status.BOUNDED_PUBLICATION)
+                err.println("Lowering BOUNDED_PUBLICATION: "+result.admission().nonExecutableCapabilities().size()+" typed capabilities NOT_READY; positive facts available, executable frontiers retained");
+            if(result.validation().orElseThrow().status()==io.github.gustavo2358.air.validation.ValidationResult.Status.INCOMPLETE_VALIDATION) {
                 err.println("Lowering PARTIAL: INCOMPLETE_VALIDATION; scoped operation preconditions remain open");
                 output.writePartial(result.publication().orElseThrow(),destination);
             } else output.write(result.publication().orElseThrow(), destination);
+            if(evidence!=null)new io.github.gustavo2358.lower.adapters.source.QualifiedSourceFileOutput().write((FileLowering.Lowered)physical,options,destination,evidence);
+        } catch (IllegalArgumentException ex) {
+            err.println("SOURCE_EVIDENCE_INVALID: "+ex.getMessage());return CODEC;
         } catch (AirJsonException ex) {
             err.println("AIR codec " + ex.code() + " " + ex.path() + ": " + ex.getMessage());
             return CODEC;
@@ -60,7 +68,7 @@ public final class CobolLower {
         return SUCCESS;
     }
     private static int usage(PrintStream err) {
-        err.println("Usage: cobol-lower <semantic-product.json> <air.json>");
+        err.println("Usage: cobol-lower <semantic-product.json> <air.json> [--source-evidence <source.json>]");
         return USAGE;
     }
 }

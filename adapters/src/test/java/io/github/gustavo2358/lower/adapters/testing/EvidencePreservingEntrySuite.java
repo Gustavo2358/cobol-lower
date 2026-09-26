@@ -35,8 +35,16 @@ public final class EvidencePreservingEntrySuite {
             if(List.of("unknown-offset","unknown-base","unknown-profile","preserved-logical").contains(name)) {
                 check(condition.place() instanceof Places.ObjectPlace,"unknown physical view uses logical object");
                 var object=((Places.ObjectPlace)condition.place()).object();
-                check(unit.objects().stream().filter(o->o.id().equals(object)).allMatch(o->o.storage() instanceof Memory.UnknownBinding),"no invented physical binding");
-                check(result.data().stream().filter(d->d.object().equals(object)).allMatch(d->d.storage().isEmpty()),"no invented storage identity");
+                var binding=unit.objects().stream().filter(o->o.id().equals(object)).map(Memory.ObjectDeclaration::storage).findFirst().orElseThrow();
+                if(List.of("unknown-offset","unknown-base").contains(name)) {
+                    check(binding instanceof Memory.UnknownBinding,"unproved partial relation remains bounded location uncertainty: "+name);
+                    check(result.data().stream().filter(d->d.object().equals(object)).allMatch(d->d.storage().isEmpty()),"no invented physical identity: "+name);
+                } else {
+                    check(binding instanceof Memory.CellBinding,"supported logical value has positive Cell despite physical gap: "+name+" "+binding);
+                    var cell=((Memory.CellBinding)binding).storage();
+                    check(p.storage().stream().anyMatch(s->s instanceof Memory.Cell c&&c.header().id().equals(cell)),"logical Cell published: "+name);
+                    check(result.data().stream().filter(d->d.object().equals(object)).allMatch(d->d.storage().equals(Optional.of(cell))),"DataLink retains logical storage identity: "+name);
+                }
             }
             var codec=new AirJson();check(p.equals(codec.decode(codec.encode(p))),"AIR codec preserves entry and target");
             if(name.equals("unknown-allocation")) {

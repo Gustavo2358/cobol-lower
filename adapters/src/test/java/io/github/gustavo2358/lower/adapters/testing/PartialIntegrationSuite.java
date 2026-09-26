@@ -41,7 +41,7 @@ public final class PartialIntegrationSuite {
                 int n=Integer.parseInt(name.substring("compose-".length()));
                 for(var family:SpInput.StatementFact.class.getPermittedSubclasses())
                     if(family!=SpInput.OtherStatement.class && family!=SpInput.GobackFact.class && family!=SpInput.EvaluateFact.class && family!=SpInput.GoToFact.class && family!=SpInput.ConditionalGoToFact.class /* ConditionalGoToIntegrationSuite; SP2 multiplicity: EvaluateIntegrationSuite / GoToIntegrationSuite */)
-                        check((family==SpInput.CicsFileFact.class?CicsFileControlSuite.composition(n):family==SpInput.CicsFact.class?CicsProgramControlSuite.composition(n):family==SpInput.ProcedurePerformFact.class?PerformFamilyIntegrationSuite.inputFixture("thru-"+n):input).statements().stream().filter(family::isInstance).count()>=n,
+                        check((family==SpInput.CicsCommandFact.class?CicsCommandContractSuite.composition(n):(family==SpInput.CicsHandlerFact.class||family==SpInput.CicsAbendFact.class)?CicsConsumerContractSuite.composition(n):family==SpInput.CicsFileFact.class?CicsFileControlSuite.composition(n):family==SpInput.CicsFact.class?CicsProgramControlSuite.composition(n):family==SpInput.ProcedurePerformFact.class?PerformFamilyIntegrationSuite.inputFixture("thru-"+n):input).statements().stream().filter(family::isInstance).count()>=n,
                             "every typed semantic family needs a multiplicity fixture: "+family.getSimpleName()+" N="+n);
             }
             if(name.startsWith("compose-")||name.startsWith("perform-")) {
@@ -60,16 +60,30 @@ public final class PartialIntegrationSuite {
                         "activation return retains target-resolution and body provenance");
                 }
             }
-            if(List.of("p1","p2","p3","p5","read","if-unknown").contains(name)) {
+            if(List.of("p1","p2","p3","p5","read").contains(name)) {
                 check(unit.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.Opaque),"conservative operation retained "+name);
                 check(!publication.uncertainties().isEmpty(),"explicit gap "+name);
+            }
+            if(name.equals("if-unknown")) {
+                var branch=unit.sequences().stream().map(Sequence::terminator)
+                    .filter(Operations.Branch.class::isInstance).map(Operations.Branch.class::cast).findFirst().orElseThrow();
+                var fact=input.statements().stream().filter(SpInput.IfFact.class::isInstance)
+                    .map(SpInput.IfFact.class::cast).findFirst().orElseThrow();
+                var thenEntry=fact.thenArm().entry().statement().orElseThrow();
+                var elseEntry=fact.elseArm().entry().statement().orElseThrow();
+                check(branch.trueDestination().equals(r.statements().stream().filter(l->l.source().equals(thenEntry)).findFirst().orElseThrow().label()),
+                    "unmodeled IF predicate retains true arm");
+                check(branch.falseDestination().equals(r.statements().stream().filter(l->l.source().equals(elseEntry)).findFirst().orElseThrow().label()),
+                    "unmodeled IF predicate retains false arm");
+                check(unit.sequences().stream().noneMatch(s->s.terminator() instanceof Operations.Opaque),
+                    "predicate gap creates no opaque control or memory");
             }
             for(var sequence:unit.sequences()) if(sequence.terminator() instanceof Operations.Opaque opaque
                     && publication.uncertainties().stream().anyMatch(u->opaque.header().uncertainties().contains(u.id()) && u.code().equals("cobol-lower:NORMAL_CONTINUATION_NOT_PROVEN"))) {
                 var memory=opaque.envelope().memory();
-                check(opaque.knownOperands().isEmpty() && memory.knownReads().isEmpty() && memory.knownWrites().isEmpty()
+                check(memory.knownWrites().isEmpty()
                     && memory.otherReads()==Scopes.NoMemory.INSTANCE && memory.otherWrites()==Scopes.NoMemory.INSTANCE,
-                    "control-only frontier does not repeat or reopen a proved write "+name);
+                    "control-only frontier retains operands without repeating or reopening a proved write "+name);
             }
             var bytes=codec.encode(publication);check(Arrays.equals(bytes,codec.encode(codec.decode(bytes))),"AIR A/B "+name);
             var facts=new ArrayList<>(input.statements());Collections.reverse(facts);
@@ -84,13 +98,26 @@ public final class PartialIntegrationSuite {
         facts.set(facts.indexOf(first),contradictory);
         var rejected=new CobolLowerer().lower(IfInputs.with(basic,"statements",facts),CobolLower.OPTIONS);
         check(rejected.status()==LoweringResult.Status.INVALID_INPUT && rejected.publication().isEmpty(),"contradictory intrinsic body is structural invalidity, not partial success");
+        var callBase=fixture("p4");var callFacts=new ArrayList<>(callBase.statements());
+        for(int i=0;i<callFacts.size();i++)if(callFacts.get(i) instanceof SpInput.CallFact c) {
+            var absent=new SpInput.NormalContinuation(SpInput.ContinuationAvailability.UNAVAILABLE,Optional.empty(),c.normalContinuation().provenance());
+            callFacts.set(i,new SpInput.CallFact(c.header(),c.syntax(),c.target(),c.runtimeTarget(),c.runtimeUncertaintyCode(),absent,c.surface(),c.effects(),c.outcomes()));
+            break;
+        }
+        var callResidual=new CobolLowerer().lower(IfInputs.with(callBase,"statements",callFacts),CobolLower.OPTIONS);
+        check(callResidual.publication().isPresent(),"CALL target and finite unit survive unmaterialized continuation: "+callResidual.status()+" "+callResidual.admission().diagnostics()+" "+callResidual.validation());
+        var residualInvoke=callResidual.publication().orElseThrow().units().getFirst().sequences().stream().map(Sequence::terminator)
+            .filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast).filter(i->i.action().equals("call")).findFirst().orElseThrow();
+        check(residualInvoke.outcomes().known().isEmpty()&&residualInvoke.outcomes().remainder() instanceof Scopes.WithinControl within
+            &&within.scope() instanceof Scopes.LabelsControl labels&&labels.labels().isEmpty(),
+            "unknown CALL completion retains only a bounded local frontier, never AllControl");
         var entries=fixture("entry-using");var entryPublication=lower(entries).publication().orElseThrow();
         check(entryPublication.units().getFirst().entries().getFirst().signature().parameters().remainder() instanceof Interactions.UnknownRemainder,
             "unavailable entry signature remains open");
         for(var name:List.of("must-write","p4")) {
             var publication=lower(fixture(name)).publication().orElseThrow();
-            check(publication.units().getFirst().sequences().stream().flatMap(q->q.instructions().stream()).anyMatch(Operations.HavocMust.class::isInstance),
-                "proved mandatory write uses generic HavocMust "+name);
+            check(publication.units().getFirst().sequences().stream().flatMap(q->q.instructions().stream()).anyMatch(Operations.Nop.class::isInstance),
+                "unimplemented MOVE transformation has no substitute write "+name);
         }
         System.out.println("PARTIAL_COMPOSITIONALITY=PASS");
     }

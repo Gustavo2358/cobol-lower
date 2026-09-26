@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LEGACYORDINARYINCOMINGLIVE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-FLAG PIC X.
+       01 WS-TARGET PIC X(8).
+       PROCEDURE DIVISION.
+       MAIN.
+           PERFORM P
+           CALL WS-TARGET
+           GO TO P-OTHER.
+       P-OTHER.
+           MOVE 'PROGC001' TO WS-TARGET.
+       P.
+           MOVE 'PROGB001' TO WS-TARGET.
+       P-CALL.
+           CALL WS-TARGET
+           GOBACK.

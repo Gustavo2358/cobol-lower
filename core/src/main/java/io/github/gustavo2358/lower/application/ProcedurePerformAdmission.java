@@ -17,13 +17,18 @@ final class ProcedurePerformAdmission {
         p.loop().ifPresent(l->{
             c.provenance(l.provenance());c.provenance(l.predicate().provenance());
             for(var read:l.conditionReads())CallAdmission.reference(read,p.header(),operands,c);
-            if(p.gapCodes().isEmpty())IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
+            if(l.predicate().availability()==Availability.KNOWN)IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
         });
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());
         });
+        if(c.input.controlTopology().isPresent())return; // Topology owns range/completion integrity.
         p.normalContinuation().statement().ifPresent(id->need(c,p,c.lookup(id)!=null
             &&c.lookup(id).header().provenance().equals(p.normalContinuation().provenance()),"resume provenance agrees with referenced statement"));
+        p.targetEntry().ifPresent(id->need(c,p,p.start().isPresent()&&c.lookup(id)!=null
+            &&id.unit().equals(p.header().id().unit())&&c.lookup(id).header().containment().branch()==Branch.ROOT,
+            "known target entry references a local root statement"));
+        if(!p.procedures().isEmpty())need(c,p,p.targetEntry().filter(p.procedures().getFirst().entry()::equals).isPresent(),"target entry agrees with complete range");
         var all=new HashSet<StatementId>();var paragraphs=new HashSet<ProcedureId>();
         for(var r:p.procedures()) {
             c.identity(r.id().unit(),r.id().handle(),"procedure",r.provenance());c.provenance(r.provenance());
@@ -35,24 +40,19 @@ final class ProcedurePerformAdmission {
             for(var id:r.completions()) {
                 need(c,p,local.contains(id)&&completions.add(id),"distinct local completion frontier");
                 var s=c.lookup(id);var next=s==null?null:PartialProgramAdmission.next(s);
-                need(c,p,next!=null&&next.statement().isEmpty()&&!(s instanceof GobackFact)&&!(s instanceof GoToFact),"normal completion cannot override explicit control");
+                need(c,p,next!=null&&(next.statement().isEmpty()||s instanceof CallFact&&next.statement().filter(local::contains).isEmpty())&&!(s instanceof GobackFact)&&!(s instanceof GoToFact),"normal completion cannot override explicit control");
             }
             for(var id:local) {
                 var s=c.lookup(id);if(s==null)continue;
                 s.header().containment().parent().ifPresent(parent->need(c,p,local.contains(parent),"whole structured statement belongs to paragraph"));
                 var next=PartialProgramAdmission.next(s);
                 if(next!=null) {
-                    need(c,p,next.statement().filter(local::contains).isPresent()||next.statement().isEmpty(),"intrinsic normal edge stays in paragraph");
-                    if(p.gapCodes().isEmpty())need(c,p,next.statement().isPresent()||completions.contains(id),"missing normal edge needs explicit completion frontier");
+                    need(c,p,next.statement().filter(local::contains).isPresent()||next.statement().isEmpty()||s instanceof CallFact&&completions.contains(id),"intrinsic normal edge stays in paragraph");
                 }
             }
         }
         if(!p.procedures().isEmpty())need(c,p,p.start().filter(t->t.id().equals(p.procedures().getFirst().id())).isPresent()
             &&p.end().filter(t->t.id().equals(p.procedures().getLast().id())).isPresent(),"range endpoints agree with typed order");
-        if(p.gapCodes().isEmpty())need(c,p,p.start().isPresent()&&p.end().isPresent()&&!p.procedures().isEmpty()
-            &&p.normalContinuation().statement().isPresent()&&p.normalContinuation().provenance().exact()&&p.header().provenance().exact()
-            &&p.start().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent()
-            &&p.end().filter(t->t.referenceOrigin().exact()&&(t.paragraphOrigin().exact()||cicsParagraph(p,t.id(),c))).isPresent(),"closed range has exact endpoints and resume");
     }
     private static boolean cicsParagraph(ProcedurePerformFact p,ProcedureId id,EntryGobackAdmission.Context c) {
         return p.procedures().stream().filter(r->r.id().equals(id)).anyMatch(r->r.statements().stream().map(c::lookup)
@@ -60,11 +60,16 @@ final class ProcedurePerformAdmission {
     }
     static List<StatementFact> qualify(ProcedurePerformFact p,EntryGobackAdmission.Context c,Set<StatementId> precise,Set<StatementId> primary,
             List<StatementFact> inventory) {
-        if(!p.gapCodes().isEmpty())return List.of();
+        // W5 accepts and preserves source facts. Compositional execution is a separate capability (W6).
+        if(p.publicationKind()==PerformPublicationKind.STRUCTURAL_FACTS)return List.of();
+        if(p.start().isEmpty()||p.end().isEmpty()||p.procedures().isEmpty()
+                ||p.normalContinuation().statement().isEmpty()
+                ||p.times().filter(t->t.profile()==PerformCountProfile.UNAVAILABLE).isPresent()
+                ||!PerformVaryingAdmission.executable(p,c))return List.of();
         var members=members(p);boolean structural=primary.contains(p.header().id())
             &&p.normalContinuation().statement().filter(primary::contains).isPresent()&&Collections.disjoint(primary,members);
         for(var s:inventory) {
-            if(s instanceof ProcedurePerformFact other && other!=p && other.gapCodes().isEmpty()) {
+            if(s instanceof ProcedurePerformFact other && other!=p && !other.procedures().isEmpty()) {
                 var overlap=members(other);structural&=overlap.equals(members)||Collections.disjoint(overlap,members);
             }
             if(!members.contains(s.header().id())) {
@@ -107,8 +112,10 @@ final class ProcedurePerformAdmission {
                 e.otherArm().entry().statement().ifPresent(id->todo.push(new Visit(id,false)));
             }
         }
-        need(c,p,structural,"isolated range graph contradicts published activation proof");
-        if(!structural||!supported)return List.of();
+        if(!structural) {
+            return List.of();
+        }
+        if(!supported)return List.of();
         // Stable serialization only: each successor is supplied by a fact or explicit paragraph completion.
         return members.stream().map(c::lookup).sorted(Comparator.comparingInt(s->s.header().programPoint())).toList();
     }

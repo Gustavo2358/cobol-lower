@@ -15,17 +15,21 @@ final class EvaluateAdmission {
         c.require(!e.arms().isEmpty(),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"literal arms required");
         var members=new HashSet<StatementId>();
         for(int i=0;i<e.arms().size();i++) {
-            c.touch(); var a=e.arms().get(i); var l=a.selection(); c.provenance(l.provenance());
-            CallAdmission.operand(l.id(),e.header(),operands,c);
-            c.require(a.ordinal()==i && a.control().presence()==ClausePresence.PRESENT,Rule.STRUCTURE,e.header().id().handle(),l.provenance(),"semantic WHEN ordinal and presence required");
-            c.require(l.kind()==LiteralKind.ALPHANUMERIC && l.logicalValue().filter(v -> v.logicalDomain()==LogicalDomain.TEXT
-                        && v.logicalExtent()==v.value().codePointCount(0,v.value().length())).isPresent(),
-                Rule.PROFILE_FACT,e.header().id().handle(),l.provenance(),"typed simple literal and unique operand identity required");
+            c.touch(); var a=e.arms().get(i); c.provenance(a.conditionOrigin());
+            c.require(a.ordinal()==i && a.control().presence()==ClausePresence.PRESENT,Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"semantic WHEN ordinal and presence required");
+            a.selection().ifPresent(l -> {
+                c.provenance(l.provenance());CallAdmission.operand(l.id(),e.header(),operands,c);
+                c.require(l.kind()==LiteralKind.ALPHANUMERIC && l.logicalValue().filter(v -> v.logicalDomain()==LogicalDomain.TEXT
+                            && v.logicalExtent()==v.value().codePointCount(0,v.value().length())).isPresent(),
+                    Rule.PROFILE_FACT,e.header().id().handle(),l.provenance(),"typed simple literal and unique operand identity required");
+            });
+            for(var read:a.conditionReads()) CallAdmission.reference(read,e.header(),operands,c);
+            c.require(a.selection().isPresent() || a.conditionOrigin().exact(),Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"unmodeled WHEN has exact source origin");
             arm(e,a.control(),a.statements(),members,c);
         }
         arm(e,e.otherArm(),e.otherStatements(),members,c);
         c.require(members.equals(expected),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"all direct EVALUATE members are assigned to exactly one arm");
-        c.require(e.normalContinuation().availability()!=ContinuationAvailability.NONE
+        if(c.input.controlTopology().isEmpty())c.require(e.normalContinuation().availability()!=ContinuationAvailability.NONE
                 && e.normalContinuation().statement().filter(members::contains).isEmpty()
                 && !e.normalContinuation().statement().equals(Optional.of(e.header().id())),Rule.STRUCTURE,e.header().id().handle(),e.header().provenance(),"normal continuation is outside arms");
     }
@@ -39,18 +43,13 @@ final class EvaluateAdmission {
             c.touch(); var member=c.lookup(id);
             c.require(all.add(id) && member!=null && member.header().containment().equals(new Containment(Optional.of(e.header().id()),Branch.EVALUATE_ARM)),Rule.STRUCTURE,id.handle(),arm.provenance(),"arm members are distinct and owned");
             if(member!=null) { var next=PartialProgramAdmission.next(member);
-                if(next!=null) c.require(next.statement().isEmpty() || next.statement().filter(local::contains).isPresent()
+                if(next!=null&&c.input.controlTopology().isEmpty()) c.require(next.statement().isEmpty() || next.statement().filter(local::contains).isPresent()
                         || next.statement().equals(e.normalContinuation().statement()),Rule.STRUCTURE,id.handle(),arm.provenance(),"normal arm completion cannot enter a sibling arm");
             }
         }
     }
-    static boolean structured(EvaluateFact e) { return structured(e,false); }
-    static boolean structured(EvaluateFact e,boolean completion) {
-        return e.header().provenance().exact() && (e.normalContinuation().statement().isPresent() || completion)
-                && e.arms().stream().allMatch(a -> a.control().entry().statement().isPresent()
-                    && a.control().contentAvailability()==Availability.KNOWN && a.control().provenance().exact() && a.selection().provenance().exact())
-                && (e.otherArm().presence()==ClausePresence.ABSENT
-                    || e.otherArm().presence()==ClausePresence.PRESENT && e.otherArm().entry().statement().isPresent()
-                        && e.otherArm().contentAvailability()==Availability.KNOWN && e.otherArm().provenance().exact());
+    static boolean structured(EvaluateFact e) {
+        return e.header().provenance().exact() && !e.arms().isEmpty()
+            && e.arms().stream().allMatch(a -> a.control().provenance().exact() && a.conditionOrigin().exact());
     }
 }

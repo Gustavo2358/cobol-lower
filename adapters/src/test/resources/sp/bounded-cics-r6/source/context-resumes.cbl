@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. BOUNDED.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 TARGET-NAME PIC X(8).
+       01 RESPONSE-CODE PIC S9(8) COMP.
+       01 DATA-AREA PIC X(80).
+       PROCEDURE DIVISION.
+           PERFORM P
+           CALL 'FIRST001'
+           PERFORM P
+           CALL 'SECOND01'
+           GOBACK.
+       P.
+           EXEC CICS XCTL PROGRAM('DEST0001') NOHANDLE END-EXEC.
+       TAIL-P.
+           CALL 'DEAD0001'
+           GOBACK.

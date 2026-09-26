@@ -16,7 +16,7 @@ Objetos e armazenamento vazios neste output derivam do perfil sem DATA admitido.
 
 ## Pré-condições para expansão
 
-`assign` exige cópia sem conversão e `sameDomain`; padding/truncamento precisam de normalização explícita sustentada. `unknown_type` não é wildcard. `branch` exige predicado booleano com garantias compatíveis de avaliação; uma ConditionSurface nominal não basta. `invoke` exige target/argumentos/effects/outcomes/assinatura materializados de modo coerente. `ObservedStatement` não vira nop; fallback opaco exige envelopes válidos e checkpoint próprio.
+`assign` exige cópia sem conversão e `sameDomain`; padding/truncamento precisam de normalização explícita sustentada. `unknown_type` não é wildcard. `branch` exige predicado booleano com garantias compatíveis de avaliação; uma ConditionSurface nominal não basta. `invoke` exige target/argumentos/effects/outcomes/assinatura materializados de modo coerente. Um aspecto fonte fora da abstração pode ser omitido com cobertura; as partes suportadas permanecem. `Nop` não afirma pureza na fonte. Uma operação AIR prometida e não executável continua erro; fallback opaco exige envelopes coerentes com efeitos efetivamente modelados.
 
 Essas restrições guiam o backlog. Não implementar outro frontend no lowerer para satisfazê-las.
 

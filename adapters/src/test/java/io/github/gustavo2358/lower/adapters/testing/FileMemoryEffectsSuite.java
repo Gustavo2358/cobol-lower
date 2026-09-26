@@ -72,6 +72,21 @@ public final class FileMemoryEffectsSuite {
         check(new CobolLowerer().lower(withPlan(input,unsafe),CobolLower.OPTIONS).publication().isEmpty(),"memory port rejects verb-based buffer MUST");
         System.out.println("FileMemoryEffectsSuite: admission PASS (wire negatives and memory MUST counterexample)");
         var air=new CobolLowerer().lower(input,CobolLower.OPTIONS).publication().orElseThrow();
+        var profileGap=new FileFacts.EffectPlan(SpInput.Availability.PARTIAL,plan.ioReads(),plan.before(),plan.outcomes(),
+            plan.unknownReadBound(),plan.unknownWriteBound(),List.of("FILE_EFFECT_PROFILE_NOT_PROVEN"));
+        var profileInput=withPlan(input,profileGap);var profileInventory=profileInput.fileInventory();var profileUses=new ArrayList<>(profileInventory.operations().uses());
+        var originalUse=profileUses.getFirst();profileUses.set(0,new FileFacts.Use(originalUse.statement(),originalUse.ordinal(),originalUse.command(),originalUse.mode(),
+            FileFacts.SyntaxProfile.UNSUPPORTED,originalUse.bindingStatus(),originalUse.candidates(),originalUse.provenance(),
+            List.of("FILE_SYNTAX_OUTSIDE_N_LR"),originalUse.surface(),originalUse.effects()));
+        var profileOperations=new FileFacts.Operations(profileInventory.operations().availability(),profileUses,profileInventory.operations().gapCodes());
+        var profileFact=new SpInput(profileInput.unit(),profileInput.policy(),profileInput.dataDeclarations(),profileInput.statements(),profileInput.structure(),
+            profileInput.gaps(),profileInput.coverage(),profileInput.entryInventory(),profileInput.storageIndependence(),profileInput.compositional(),profileInput.storage(),
+            new FileFacts.Inventory(profileInventory.availability(),profileInventory.declarations(),profileInventory.gapCodes(),profileOperations));
+        var profileResult=new CobolLowerer().lower(profileFact,CobolLower.OPTIONS);
+        check(profileResult.publication().isPresent(),"orthogonal FILE profile diagnostic preserves admitted conditional effects: "+profileResult.status()+" "+profileResult.admission().diagnostics()+" "+profileResult.validation());
+        check(profileResult.publication().orElseThrow().units().getFirst().sequences().stream().flatMap(s->s.instructions().stream())
+            .filter(io.github.gustavo2358.air.model.Operations.HavocMust.class::isInstance).count()==5,
+            "profile gap cannot downgrade four FILE STATUS and one success-only INTO MUST");
         var read=air.units().getFirst().sequences().stream().map(io.github.gustavo2358.air.model.Sequence::terminator)
             .filter(io.github.gustavo2358.air.model.Operations.Invoke.class::isInstance).map(io.github.gustavo2358.air.model.Operations.Invoke.class::cast)
             .filter(i->i.action().equals("read")).findFirst().orElseThrow();
@@ -79,7 +94,10 @@ public final class FileMemoryEffectsSuite {
         var sequences=air.units().getFirst().sequences();
         for(var sequence:sequences)if(sequence.terminator() instanceof io.github.gustavo2358.air.model.Operations.Opaque o&&o.observedKind().equals("file-outcome-continuation")) {
             var control=o.envelope().control().remainder();
-            check(control instanceof io.github.gustavo2358.air.model.Scopes.WithinControl c&&c.scope() instanceof io.github.gustavo2358.air.model.Scopes.ControlUnion,"open source continuation must not jump into internal memory phases");
+            check(control instanceof io.github.gustavo2358.air.model.Scopes.NoControl
+                    ||control instanceof io.github.gustavo2358.air.model.Scopes.WithinControl c
+                        &&c.scope() instanceof io.github.gustavo2358.air.model.Scopes.LabelsControl labels&&labels.labels().isEmpty(),
+                "missing handler interpretation adds no control destination to conditional FILE effects");
         }
         check(read.results().isEmpty(),"INTO address must not be evaluated as a pre-invoke result place");
         check(sequences.stream().filter(s->s.terminator() instanceof io.github.gustavo2358.air.model.Operations.Branch).count()>=3,"four conditional outcomes use explicit general AIR branches");
@@ -87,6 +105,22 @@ public final class FileMemoryEffectsSuite {
         check(strong.size()==5,"four primary status updates and success-only INTO; no buffer MUST");
         var fromInput=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes("from-effects"))).input();
         var fromAir=new CobolLowerer().lower(fromInput,CobolLower.OPTIONS).publication().orElseThrow();
+        var inventory=fromInput.fileInventory();var declaration=inventory.declarations().getFirst();
+        var sourceName=declaration.assignment();
+        var missingName=new FileFacts.Assignment(SpInput.Availability.PARTIAL,sourceName.profile(),sourceName.original(),
+            FileFacts.NameSource.UNSUPPORTED,Optional.empty(),List.of("FILE_ASSIGNMENT_NAME_UNMODELED"));
+        var unresolvedDeclaration=io.github.gustavo2358.lower.testing.IfInputs.with(declaration,"assignment",missingName);
+        var unresolvedInventory=new FileFacts.Inventory(inventory.availability(),List.of(unresolvedDeclaration),inventory.gapCodes(),inventory.operations());
+        var unresolvedInput=new SpInput(fromInput.unit(),fromInput.policy(),fromInput.dataDeclarations(),fromInput.statements(),fromInput.structure(),
+            fromInput.gaps(),fromInput.coverage(),fromInput.entryInventory(),fromInput.storageIndependence(),fromInput.compositional(),fromInput.storage(),unresolvedInventory);
+        var unresolvedAir=new CobolLowerer().lower(unresolvedInput,CobolLower.OPTIONS).publication().orElseThrow();
+        check(unresolvedAir.units().getFirst().sequences().stream().map(io.github.gustavo2358.air.model.Sequence::terminator)
+            .anyMatch(t->t instanceof io.github.gustavo2358.air.model.Operations.Opaque o&&o.observedKind().equals("source-file-target-unavailable/rewrite")
+                &&o.envelope().memory().otherReads() instanceof io.github.gustavo2358.air.model.Scopes.WithinMemory),
+            "missing assignment name keeps the real REWRITE buffer read without a fabricated runtime target");
+        check(unresolvedAir.units().getFirst().sequences().stream().flatMap(s->s.instructions().stream())
+            .anyMatch(io.github.gustavo2358.air.model.Operations.CopyBytes.class::isInstance),
+            "missing file name does not erase the supported FROM transfer");
         var copySequence=fromAir.units().getFirst().sequences().stream().filter(s->s.instructions().stream().anyMatch(i->i instanceof io.github.gustavo2358.air.model.Operations.CopyBytes)).findFirst().orElseThrow();
         check(copySequence.terminator() instanceof io.github.gustavo2358.air.model.Operations.Jump,"FROM copy precedes a transfer to I/O");
         var afterCopy=((io.github.gustavo2358.air.model.Operations.Jump)copySequence.terminator()).destination();

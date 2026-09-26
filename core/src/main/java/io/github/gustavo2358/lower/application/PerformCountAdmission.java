@@ -21,7 +21,6 @@ final class PerformCountAdmission {
             count.reference().ifPresent(r->need(p,c,r.role()==OperandRole.READ&&r.provenance().exact()
                 &&r.wholeItemAccess().filter(w->c.data(w.data())!=null&&integer(c.data(w.data()))).isPresent(),"count reads a proved complete integer item"));
         }
-        if(p.gapCodes().isEmpty())need(p,c,count.profile()!=PerformCountProfile.UNAVAILABLE,"closed repetition needs a proved count");
     }
     private static void need(ProcedurePerformFact p,EntryGobackAdmission.Context c,boolean value,String detail) {
         c.require(value,Rule.PROFILE_FACT,p.header().id().handle(),p.header().provenance(),detail);

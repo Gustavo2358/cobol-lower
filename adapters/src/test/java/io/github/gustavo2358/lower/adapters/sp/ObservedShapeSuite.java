@@ -98,41 +98,34 @@ public final class ObservedShapeSuite {
         var memory = opaque.envelope().memory();
         check(memory.knownReads().isEmpty() && memory.knownWrites().isEmpty() && memory.mustOverwrite().isEmpty(),
             "empty known references must not invent reads, writes, or overwrite effects");
-        check(memory.otherReads() instanceof Scopes.WithinMemory && memory.otherWrites() instanceof Scopes.WithinMemory,
-            "opaque memory effects must remain open");
-        var reads = (Scopes.WithinMemory) memory.otherReads();
-        var writes = (Scopes.WithinMemory) memory.otherWrites();
-        check(reads.scope() instanceof Scopes.AllMemory && writes.scope() instanceof Scopes.AllMemory,
-            "opaque memory bounds must retain all-memory uncertainty");
-        var readScope = (Scopes.AllMemory) reads.scope();
-        var writeScope = (Scopes.AllMemory) writes.scope();
+        check(memory.otherReads() == Scopes.NoMemory.INSTANCE && memory.otherWrites() == Scopes.NoMemory.INSTANCE,
+            "a missing summary cannot invent memory effects");
 
         var control = opaque.envelope().control();
         check(control.known().isEmpty() && control.remainder() instanceof Scopes.WithinControl,
             "unavailable continuation must not invent fallthrough or known control");
         var controlScope = (Scopes.WithinControl) control.remainder();
-        check(controlScope.scope() instanceof Scopes.UnitControl, "opaque control must retain the open unit bound");
-        var unit = (Scopes.UnitControl) controlScope.scope();
+        check(controlScope.scope() instanceof Scopes.LabelsControl labels && labels.labels().isEmpty(),
+            "unavailable continuation has no modeled destination");
 
         var dependencies = opaque.envelope().dependencies();
-        check(dependencies.known().isEmpty() && dependencies.remainder() == Scopes.AnyResource.INSTANCE,
-            "opaque dependencies must remain unknown and open");
+        check(dependencies.known().isEmpty() && dependencies.remainder() == Scopes.NoResources.INSTANCE,
+            "a missing summary cannot invent resources");
         check(opaque.knownOperands().isEmpty() && opaque.valueResults().isEmpty(),
             "empty known references must not invent operands or results");
         var precision = opaque.header().precision();
         var result = new SemanticEnvelope(opaque.header().coverage(),
             List.of(precision.control().status(), precision.storage().status(), precision.effects().status(),
                 precision.values().status(), precision.dependencies().status()),
-            true, true, readScope.includingEnvironment() && writeScope.includingEnvironment(),
-            control.known().size(), List.of(unit.labels(), unit.normalExit(), unit.exceptionalExit(), unit.halt(),
-                unit.diverge(), unit.externalControl()), dependencies.known().size(), true);
+            false, false, false,
+            control.known().size(), List.of(false, false, false, false, false, false), dependencies.known().size(), false);
         check(result.coverage() == Evidence.CoverageStatus.ABSTRACTED
-                && result.precision().equals(List.of(Evidence.PrecisionStatus.OPEN, Evidence.PrecisionStatus.OPEN,
-                    Evidence.PrecisionStatus.OPEN, Evidence.PrecisionStatus.OPEN, Evidence.PrecisionStatus.OPEN))
-                && result.readsAllMemory() && result.writesAllMemory() && result.includesEnvironment()
-                && result.knownControl() == 0 && result.openControl().equals(List.of(true, true, true, true, true, true))
-                && result.knownDependencies() == 0 && result.anyResource(),
-            "shape must leave control, storage, effects, values, dependencies, and memory conservatively open");
+                && result.precision().equals(List.of(Evidence.PrecisionStatus.OPEN, Evidence.PrecisionStatus.EXACT,
+                    Evidence.PrecisionStatus.EXACT, Evidence.PrecisionStatus.OPEN, Evidence.PrecisionStatus.EXACT))
+                && !result.readsAllMemory() && !result.writesAllMemory() && !result.includesEnvironment()
+                && result.knownControl() == 0 && result.openControl().equals(List.of(false, false, false, false, false, false))
+                && result.knownDependencies() == 0 && !result.anyResource(),
+            "shape affects diagnostics but adds no executable global effect");
         return result;
     }
 

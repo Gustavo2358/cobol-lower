@@ -96,7 +96,8 @@ public final class AirOutputSuite {
         for (var status : LoweringResult.Status.values()) {
             // PARTIAL is a publication-bearing outcome, exercised with real scoped
             // validation and CLI output by EvidencePreservingEntrySuite.
-            if (status == LoweringResult.Status.SUCCESS || status == LoweringResult.Status.PARTIAL) continue;
+            // BOUNDED_PUBLICATION has real AIR and is exercised by PositivePublicationSuite.
+            if (status == LoweringResult.Status.SUCCESS || status == LoweringResult.Status.PARTIAL || status == LoweringResult.Status.BOUNDED_PUBLICATION) continue;
             // Typed port failure fixture: every status is guarded, including future failures after admission.
             var result = new LoweringResult(status, valid.admission(), Optional.empty(), valid.validation(), List.of(), List.of(), List.of());
             for (boolean existing : List.of(false, true)) {

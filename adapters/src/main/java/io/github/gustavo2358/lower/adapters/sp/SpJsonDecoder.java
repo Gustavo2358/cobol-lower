@@ -30,6 +30,9 @@ public final class SpJsonDecoder {
         }
     }
     private record LogicalTextViewDocument(String node,String root,String start,String length) { }
+    private record LogicalExactViewDocument(String node,String representative,String length) { }
+    private record OrdinaryContinuationDocument(String statement,String destination,Wire.ProvenanceDocument provenance) { }
+    private record PendingLogical(String target,String value,int extent) { }
     public enum Code { INPUT_ERROR, UNSUPPORTED_CONTRACT, IMPLEMENTATION_LIMIT }
     public record Diagnostic(Code code, String phase, String location) {
         public Diagnostic { Objects.requireNonNull(code); Objects.requireNonNull(phase); Objects.requireNonNull(location); }
@@ -83,11 +86,170 @@ public final class SpJsonDecoder {
             if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
             JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
+            if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual())
+                return reject(Code.INPUT_ERROR, "$/schema or contractVersion");
+            if (!node.path("schema").textValue().equals("cobol-semantic-product"))
+                return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
+            String receivedVersion=node.path("contractVersion").textValue();
+            var profile=SpContractProfile.admitted(receivedVersion);
+            if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
+            for(var statement:node.path("statements")) {
+                String variant=statement.path("variant").asText();
+                if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
+                    throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
+                if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
+                    throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
+                if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
+            }
+            if(!profile.abend())for(var proof:node.path("controlTopology").path("proofs"))
+                if(proof.path("rule").asText().equals("cics-handle-abend-ordinary-return"))
+                    throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.42");
+            if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
+                if(proof.path("rule").asText().startsWith("cics-command-"))
+                    throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
+            if(!receivedVersion.equals("2.45.0")&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+                throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
+            if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
+                throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
+            boolean factContract=profile.factDependencies();
+            if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
+                throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42/2.43 and is mandatory there");
+            io.github.gustavo2358.lower.domain.FactDependencies factDependencies=null;
+            if(factContract) {
+                factDependencies=mapper.treeToValue(node.path("factDependencies"),io.github.gustavo2358.lower.domain.FactDependencies.class);
+                requirePhysical(factDependencies,"$/factDependencies",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("factDependencies");
+            }
+            boolean topologyContract=factContract||node.path("contractVersion").asText().equals("2.39.0");
+            if(topologyContract!=node.has("controlTopology") || topologyContract&&!node.path("controlTopology").isObject())
+                throw new PhysicalShape("$/controlTopology requires SP2.39 and is mandatory there");
+            io.github.gustavo2358.lower.domain.ControlTopology topology=null;
+            if(topologyContract) {
+                if(!node.path("controlTopology").has("exceptionalEvents"))((com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology")).putArray("exceptionalEvents");
+                topology=mapper.treeToValue(node.path("controlTopology"),io.github.gustavo2358.lower.domain.ControlTopology.class);
+                requirePhysical(topology,"$/controlTopology",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("controlTopology");
+            }
+            boolean partialSequenceContract=topologyContract||node.path("contractVersion").asText().equals("2.38.0");
+            boolean partialSequence=false;
+            for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("MOVE")) {
+                partialSequence|=statement.has("logicalTransfers");
+                if(statement.path("additionalTransfers").isArray()&&!statement.path("additionalTransfers").isEmpty()) {
+                    partialSequence|=statement.path("regionalMove").path("kind").asText().equals("UNAVAILABLE");
+                    for(var transfer:statement.path("additionalTransfers"))
+                        partialSequence|=transfer.path("effect").path("kind").asText().equals("UNAVAILABLE");
+                }
+            }
+            if(!topologyContract&&partialSequence!=partialSequenceContract)
+                throw new PhysicalShape("$/contractVersion partial MOVE sequence requires SP2.38");
+            var logicalTransfers=new java.util.LinkedHashMap<String,java.util.List<PendingLogical>>();
+            for(var statement:node.path("statements"))if(statement.has("logicalTransfers")) {
+                if(!partialSequenceContract||!statement.path("variant").asText().equals("MOVE")
+                        ||!statement.path("logicalTransfers").isArray()||statement.path("logicalTransfers").isEmpty())
+                    throw new PhysicalShape("$/statements/logicalTransfers requires SP2.38 MOVE");
+                var owner=statement.path("header").path("id").asText();
+                var facts=new java.util.ArrayList<PendingLogical>();
+                var seen=new java.util.HashSet<String>();
+                for(var transfer:statement.path("logicalTransfers")) {
+                    if(!transfer.isObject()||transfer.size()!=2||!transfer.path("target").isTextual()
+                            ||!transfer.path("value").isObject()||transfer.path("value").size()!=3
+                            ||!transfer.path("value").path("logicalDomain").asText().equals("TEXT")
+                            ||!transfer.path("value").path("value").isTextual()
+                            ||!transfer.path("value").path("logicalExtent").canConvertToInt())
+                        throw new PhysicalShape("$/statements/logicalTransfers shape");
+                    var id=transfer.path("target").asText();var value=transfer.path("value").path("value").asText();
+                    var extent=transfer.path("value").path("logicalExtent").asInt();
+                    if(!seen.add(id)||extent<=0||extent!=value.codePointCount(0,value.length()))
+                        throw new PhysicalShape("$/statements/logicalTransfers value or duplicate target");
+                    facts.add(new PendingLogical(id,value,extent));
+                }
+                logicalTransfers.put(owner,java.util.List.copyOf(facts));
+                ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("logicalTransfers");
+            }
+            boolean ordinaryContract=node.path("contractVersion").asText().equals("2.37.0")
+                ||partialSequenceContract&&node.has("ordinaryContinuations");
+            java.util.List<OrdinaryContinuationDocument> ordinaryRelations=java.util.List.of();
+            if(node.has("ordinaryContinuations") && !ordinaryContract)
+                throw new PhysicalShape("$/ordinaryContinuations requires SP2.37");
+            if(ordinaryContract) {
+                if(!node.path("ordinaryContinuations").isArray())throw new PhysicalShape("$/ordinaryContinuations");
+                ordinaryRelations=java.util.Arrays.asList(mapper.treeToValue(node.path("ordinaryContinuations"),OrdinaryContinuationDocument[].class));
+                requirePhysical(ordinaryRelations,"$/ordinaryContinuations",meter);
+                var ordinarySources=new java.util.HashSet<String>();
+                for(var relation:ordinaryRelations)if(!ordinarySources.add(relation.statement()))
+                    throw new PhysicalShape("$/ordinaryContinuations requires distinct sources and complete relations");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("ordinaryContinuations");
+                boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",hasStructural?"2.36.0":
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
+            if(partialSequenceContract&&!ordinaryContract) {
+                boolean hasStructural=false;for(var statement:node.path("statements"))hasStructural|=statement.has("publicationKind");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",hasStructural?"2.36.0":
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
+            // SP2.36 adds source structural PERFORM facts, not an executable specialization.
+            boolean structuralContract=node.path("contractVersion").asText().equals("2.36.0");
+            var structuralPerformIds=new java.util.HashSet<String>();
+            var structuralEntries=new java.util.HashMap<String,String>();
+            for(var statement:node.path("statements"))if(statement.has("publicationKind")) {
+                if(!structuralContract || !statement.path("variant").asText().equals("PERFORM_PROCEDURE")
+                        || !statement.path("publicationKind").asText().equals("STRUCTURAL_FACTS")
+                        || !structuralPerformIds.add(statement.path("header").path("id").asText()))
+                    throw new PhysicalShape("$/statements/publicationKind requires SP2.36 structural PERFORM");
+                if(statement.has("targetEntry")) {
+                    if(!statement.path("targetEntry").isTextual())throw new PhysicalShape("$/statements/targetEntry");
+                    structuralEntries.put(statement.path("header").path("id").asText(),statement.path("targetEntry").asText());
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("targetEntry");
+                }
+                ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("publicationKind");
+            }
+            if(structuralContract) {
+                if(structuralPerformIds.isEmpty())throw new PhysicalShape("$/statements missing structural PERFORM facts");
+                // The rest of 2.36 is the unchanged 2.33/2.35 typed contract.
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",
+                    node.path("storage").has("logicalExactViews")?"2.35.0":"2.33.0");
+            }
+            boolean localExact=java.util.Set.of("2.34.0","2.35.0").contains(node.path("contractVersion").asText());
+            java.util.List<LogicalExactViewDocument> logicalExactViews=java.util.List.of();
+            if(localExact) {
+                var storage=node.path("storage");
+                if(!storage.path("version").asText().equals(node.path("contractVersion").asText().equals("2.35.0")?"1.11.0":"1.10.0")
+                    ||!storage.path("logicalExactViews").isArray()||storage.path("logicalExactViews").isEmpty())
+                    throw new PhysicalShape("$/storage/logicalExactViews");
+                logicalExactViews=java.util.Arrays.asList(mapper.treeToValue(storage.path("logicalExactViews"),LogicalExactViewDocument[].class));
+                if(node.path("contractVersion").asText().equals("2.34.0")) {
+                    var counts=new java.util.HashMap<String,Integer>();
+                    var kinds=new java.util.HashMap<String,String>();
+                    for(var physical:storage.path("nodes"))kinds.put(physical.path("id").asText(),physical.path("kind").asText());
+                    for(var view:logicalExactViews) {
+                        counts.merge(view.representative(),1,Integer::sum);
+                        if(!"ELEMENTARY".equals(kinds.get(view.node())))throw new PhysicalShape("$/storage/logicalExactViews");
+                    }
+                    if(counts.values().stream().anyMatch(n->n<2))throw new PhysicalShape("$/storage/logicalExactViews");
+                }
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).remove("logicalExactViews");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)storage).put("version",storage.path("logicalTextViews").isArray()?"1.9.0":"1.8.0");
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion","2.33.0");
+            }
             io.github.gustavo2358.lower.domain.SourceFacts.Inventory sourceDependencies=null;
-            boolean preservation=node.path("contractVersion").asText().equals("2.32.0");
+            boolean structuredEvaluate=node.path("contractVersion").asText().equals("2.33.0");
+            for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("EVALUATE"))
+                for(var arm:statement.path("arms")) {
+                    boolean unmodeled=arm.path("selection").isNull();
+                    if(unmodeled && (!structuredEvaluate || !arm.path("conditionReads").isArray() || !arm.path("conditionOrigin").isObject()))
+                        throw new PhysicalShape("$/statements/EVALUATE/arms");
+                    if(!unmodeled && (arm.has("conditionReads") || arm.has("conditionOrigin")))
+                        throw new PhysicalShape("$/statements/EVALUATE/arms");
+                    if(!unmodeled && java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0","2.19.0","2.20.0","2.21.0","2.22.0","2.23.0","2.24.0","2.25.0","2.26.0","2.27.0","2.28.0","2.29.0","2.30.0","2.31.0","2.32.0","2.33.0").contains(node.path("contractVersion").asText())) {
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)arm).putNull("conditionReads");
+                        ((com.fasterxml.jackson.databind.node.ObjectNode)arm).putNull("conditionOrigin");
+                    }
+                }
+            boolean preservation=structuredEvaluate||node.path("contractVersion").asText().equals("2.32.0");
             if(!preservation)for(var statement:node.path("statements"))if(statement.path("copySemantics").asText().equals("POSSIBLE_TEXT"))throw new PhysicalShape("$/statements/copySemantics");
-            if(preservation&&!node.has("sourceDependencies"))((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",node.path("storage").path("version").asText().equals("1.9.0")?"2.29.0":"2.28.0");
-            if(java.util.Set.of("2.30.0","2.31.0","2.32.0").contains(node.path("contractVersion").asText())) {
+            if(preservation&&!node.path("sourceDependencies").isObject())((com.fasterxml.jackson.databind.node.ObjectNode)node).put("contractVersion",node.path("storage").path("version").asText().equals("1.9.0")?"2.29.0":"2.28.0");
+            if(java.util.Set.of("2.30.0","2.31.0","2.32.0","2.33.0").contains(node.path("contractVersion").asText())) {
                 if(!node.path("sourceDependencies").isObject())throw new PhysicalShape("$/sourceDependencies");
                 if(node.path("contractVersion").asText().equals("2.30.0"))for(var occurrence:node.path("sourceDependencies").path("occurrences")) {
                     if(occurrence.has("operation")||occurrence.has("access")||occurrence.path("kind").asText().equals("DB2_TABLE")||occurrence.path("resolution").asText().equals("NOT_APPLICABLE"))throw new PhysicalShape("$/sourceDependencies/occurrences");
@@ -325,7 +487,58 @@ public final class SpJsonDecoder {
                 var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),logical);
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
             }
+            if(localExact) {
+                var st=input.storage().orElseThrow();var unit=input.unit();
+                var exact=logicalExactViews.stream().map(v->new io.github.gustavo2358.lower.domain.StorageFacts.LogicalExactView(
+                    new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.node()),new io.github.gustavo2358.lower.domain.StorageFacts.NodeId(unit,v.representative()),
+                    new java.math.BigInteger(v.length()))).toList();
+                var inventory=new io.github.gustavo2358.lower.domain.StorageFacts.Inventory(st.profile(),st.profileId(),st.runtimeCodec(),st.nodes(),st.bases(),st.views(),st.gapCodes(),st.relations(),st.renames(),st.entryState(),st.logicalTextViews(),exact);
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),java.util.Optional.of(inventory),input.fileInventory());
+            }
             if(sourceDependencies!=null)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),sourceDependencies);
+            if(structuralContract) {
+                var statements=new java.util.ArrayList<SpInput.StatementFact>();
+                for(var fact:input.statements()) {
+                    if(structuralPerformIds.contains(fact.header().id().handle())) {
+                        if(!(fact instanceof SpInput.ProcedurePerformFact p))throw new PhysicalShape("$/statements/structural PERFORM");
+                        fact=new SpInput.ProcedurePerformFact(p.header(),p.start(),p.end(),p.procedures(),p.normalContinuation(),
+                            p.loop(),p.times(),p.varying(),p.gapCodes(),SpInput.PerformPublicationKind.STRUCTURAL_FACTS,
+                            java.util.Optional.ofNullable(structuralEntries.get(p.header().id().handle())).map(id->new SpInput.StatementId(p.header().id().unit(),id)));
+                    }
+                    statements.add(fact);
+                }
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies());
+            }
+            if(ordinaryContract) {
+                var relations=new java.util.LinkedHashMap<SpInput.StatementId,SpInput.NormalContinuation>();
+                for(var relation:ordinaryRelations)relations.put(new SpInput.StatementId(input.unit(),relation.statement()),
+                    new SpInput.NormalContinuation(SpInput.ContinuationAvailability.KNOWN,
+                        java.util.Optional.of(new SpInput.StatementId(input.unit(),relation.destination())),Materialize.provenance(relation.provenance(),input.unit())));
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),relations);
+            }
+            if(!logicalTransfers.isEmpty()) {
+                var statements=new java.util.ArrayList<SpInput.StatementFact>();
+                var matched=new java.util.HashSet<String>();
+                for(var fact:input.statements()) {
+                    var logicalPending=logicalTransfers.get(fact.header().id().handle());
+                    if(logicalPending!=null) {
+                        if(!(fact instanceof SpInput.MoveFact m))throw new PhysicalShape("$/statements/logicalTransfers non-MOVE");
+                        matched.add(fact.header().id().handle());
+                        var values=logicalPending.stream().map(t->new SpInput.LogicalTransfer(new SpInput.OperandId(m.header().id(),t.target()),
+                            new SpInput.LogicalValue(SpInput.LogicalDomain.TEXT,t.value(),t.extent()))).toList();
+                        fact=new SpInput.MoveFact(m.header(),m.source(),m.target(),m.copySemantics(),m.normalContinuation(),
+                            m.textAdjustment(),m.regionalMove(),m.additionalTransfers(),values);
+                    }
+                    statements.add(fact);
+                }
+                if(matched.size()!=logicalTransfers.size())throw new PhysicalShape("$/statements/logicalTransfers owner");
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
+                    input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
+            }
+            if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
+                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies));
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");
@@ -338,6 +551,8 @@ public final class SpJsonDecoder {
             return reject(Code.INPUT_ERROR,"$/statementEffects/"+ex.getMessage());
         } catch (PhysicalShape ex) {
             return reject(Code.INPUT_ERROR, ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            return reject(Code.INPUT_ERROR, "$/typed-contract: "+ex.getMessage());
         } catch (java.io.IOException ex) {
             return reject(Code.INPUT_ERROR, "$ bytes");
         }
@@ -694,6 +909,10 @@ public final class SpJsonDecoder {
                 }
             }
             if (statement instanceof Wire211.EvaluateDocument e) for (var a : e.arms()) {
+                if(a.selection()==null) {
+                    if(a.conditionReads()==null || a.conditionOrigin()==null)throw new PhysicalShape("$/statements/EVALUATE/arms/condition");
+                    continue;
+                }
                 if (!(a.selection() instanceof Wire211.LiteralDocument l) || l.kind()!=SpInput.LiteralKind.ALPHANUMERIC
                         || l.logicalValue()==null || !l.value().equals(l.logicalValue().value()))
                     throw new PhysicalShape("$/statements/EVALUATE/arms/selection");

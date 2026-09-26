@@ -51,7 +51,10 @@ public final class PerformFamilyIntegrationSuite {
         for(var name:List.of("incoming","escape","overlap","recursive","cycle")) {
             var adversarial=decode(fixture(name));
             var facts=adversarial.statements().stream().map(s->s instanceof SpInput.ProcedurePerformFact p2?IfInputs.with(p2,"gapCodes",List.of()):s).toList();
-            check(new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS).status()==LoweringResult.Status.INVALID_INPUT,"false closed activation rejected "+name);
+            var original=new CobolLowerer().lower(adversarial,CobolLower.OPTIONS);
+            var diagnosticOnly=new CobolLowerer().lower(IfInputs.with(adversarial,"statements",facts),CobolLower.OPTIONS);
+            check(original.publication().isPresent()&&diagnosticOnly.status()==original.status(),
+                "gap metadata cannot reject a published procedural structure "+name+" original="+original.status()+" changed="+diagnosticOnly.status());
         }
         var raw=(ObjectNode)JSON.readTree(fixture("t2"));raw.put("contractVersion","2.1.0");
         check(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(raw)) instanceof SpJsonDecoder.Rejected,"SP2.1 cannot reinterpret new range facts");

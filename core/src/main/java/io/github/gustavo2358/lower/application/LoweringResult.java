@@ -22,13 +22,24 @@ public record LoweringResult(Status status, Admission admission, Optional<Public
         Objects.requireNonNull(publication); Objects.requireNonNull(validation);
         data = List.copyOf(data); operands = List.copyOf(operands);
         entries = List.copyOf(entries); statements = List.copyOf(statements); limitations = List.copyOf(limitations);
-        if ((status == Status.SUCCESS || status == Status.PARTIAL) != publication.isPresent()) throw new IllegalArgumentException("atomic publication required");
+        if ((status == Status.SUCCESS || status == Status.PARTIAL || status == Status.BOUNDED_PUBLICATION) != publication.isPresent()) throw new IllegalArgumentException("atomic publication required");
         if (status == Status.SUCCESS && (admission.status() != Admission.Status.ADMITTED
                 || validation.isEmpty() || !validation.orElseThrow().isStructurallyValid()))
             throw new IllegalArgumentException("success requires admission and real validation report");
+        if((status==Status.SUCCESS||status==Status.PARTIAL)&&!admission.nonExecutableCapabilities().isEmpty())
+            throw new IllegalArgumentException("non-executable capabilities require explicit bounded publication");
+        if(status==Status.BOUNDED_PUBLICATION&&(admission.status()!=Admission.Status.ADMITTED
+                ||admission.nonExecutableCapabilities().isEmpty()||validation.isEmpty()
+                ||!(validation.get().isStructurallyValid()||validation.get().status()==ValidationResult.Status.INCOMPLETE_VALIDATION
+                    &&validation.get().unprovedOperationPreconditions().isPresent())))
+            throw new IllegalArgumentException("bounded publication requires validated AIR and explicit capabilities");
         if(status==Status.PARTIAL&&(admission.status()!=Admission.Status.ADMITTED||validation.isEmpty()||validation.get().status()!=ValidationResult.Status.INCOMPLETE_VALIDATION||validation.get().unprovedOperationPreconditions().isEmpty()))throw new IllegalArgumentException("partial output requires complete scoped preconditions without invalidity");
     }
-    public enum Status { SUCCESS, PARTIAL, INVALID_INPUT, BLOCKED_LOWERING, UNSUPPORTED_SLICE, IMPLEMENTATION_LIMIT,
+    static Status publicationStatus(OutputAssessment assessment, Admission admission) {
+        return assessment.publication().isPresent()&&!admission.nonExecutableCapabilities().isEmpty()
+            ? Status.BOUNDED_PUBLICATION : assessment.status();
+    }
+    public enum Status { SUCCESS, PARTIAL, BOUNDED_PUBLICATION, INVALID_INPUT, BLOCKED_LOWERING, UNSUPPORTED_SLICE, IMPLEMENTATION_LIMIT,
         OUTPUT_INVALID, VALIDATION_INCOMPLETE }
     public enum LimitCode { COORDINATES_UNAVAILABLE, INCLUDE_SITE_UNAVAILABLE, IDENTITY_LIMIT }
     public record Limitation(LimitCode code, String subject, String requirement) {

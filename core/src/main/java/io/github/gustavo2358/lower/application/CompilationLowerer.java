@@ -9,16 +9,26 @@ public final class CompilationLowerer {
         var invalid=CompilationAdmission.validate(input);
         if(invalid.isPresent())return reject(Admission.Status.INVALID_INPUT,invalid.orElseThrow());
         var ordered=input.units().stream().sorted(Comparator.comparing(u->u.product().unit(),CompilationAdmission.ORDER)).toList();
+        // Executable-only requests retain their NOT_READY barrier.
+        for(var unit:ordered)if(options.publicationPolicy()==LowerInput.PublicationPolicy.EXECUTABLE_ONLY&&unit.product().statements().stream().anyMatch(s->
+                s instanceof SpInput.CicsHandlerFact||s instanceof SpInput.CicsAbendFact||s instanceof SpInput.CicsCommandFact))
+            return failure(new PartialProgramAdmission().plan(unit.product(),options.admission()).admission());
+
         var canonical=new SpCompilation(input.inventoryStatus(),input.unitInventory().stream().sorted(CompilationAdmission.ORDER).toList(),ordered);
         var revision=CanonicalRevision.compilation(canonical,options.maximumIdentityCharacters());
         if(revision.isEmpty())return reject(Admission.Status.IMPLEMENTATION_LIMIT,"publication identity budget below 32 characters");
         var publication=new PublicationId(revision.orElseThrow());var ids=new LocalIds();var context=new CompilationContext();
         var plans=new LinkedHashMap<SpInput.UnitKey,PartialProgramAdmission.Plan>();
         for(var product:ordered){
-            var plan=new PartialProgramAdmission().plan(product.product(),options.admission());
+            var plan=new PartialProgramAdmission().plan(product.product(),options.admission(),options.publicationPolicy());
             if(plan.admission().status()!=Admission.Status.ADMITTED)return failure(plan.admission());
             var key=product.product().unit();plans.put(key,plan);context.products.put(key,product);
             context.units.put(key,new UnitId(publication,ids.id("unit","compilation","compilation",key.toString())));
+        }
+        for(var product:ordered){
+            var used=RegionalDataTranslator.sourceText(plans.get(product.product().unit()).storage());
+            for(var capture:product.dataCaptures())if(used.contains(capture.localData()))
+                context.capturedLogicalText.computeIfAbsent(capture.sourceData().unit(),ignored->new LinkedHashSet<>()).add(capture.sourceData());
         }
         for(var product:ordered){var key=product.product().unit();var unit=context.units.get(key);
             context.fragments.put(key,PartialProgramLowerer.fragment(product.product(),plans.get(key),publication,unit,ids.activation(unit.localId()),context));}
@@ -47,8 +57,8 @@ public final class CompilationLowerer {
         }
         var output=new Publication(publication,SemanticVersion.AIR_2_0_0,new Capabilities.Manifest(List.copyOf(capabilities),List.of()),artifacts,units,storage,resources,List.of(),origins,new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL,new Scopes.PublicationScope(publication),items,gaps),uncertainties,premises);
         var assessment=logical?OutputAssessment.assessForPartialAnalysis(output,options.validation()):OutputAssessment.assess(output,options.validation());
-        var admission=new Admission(Admission.Status.ADMITTED,Optional.empty(),List.of(),new Admission.Statistics(ordered.size(),0,0),false);
-        return new LoweringResult(assessment.status(),admission,assessment.publication(),Optional.of(assessment.validation()),entries,statements,limitations,data,operands);
+        var admission=new Admission(Admission.Status.ADMITTED,Optional.empty(),List.of(),new Admission.Statistics(ordered.size(),0,0),false,Optional.empty(),plans.values().stream().flatMap(p->p.admission().nonExecutableCapabilities().stream()).toList());
+        return new LoweringResult(LoweringResult.publicationStatus(assessment,admission),admission,assessment.publication(),Optional.of(assessment.validation()),entries,statements,limitations,data,operands);
     }
     private static LoweringResult reject(Admission.Status status,String reason){return failure(new Admission(status,Optional.empty(),List.of(new Admission.Diagnostic(Admission.Rule.STRUCTURE,Admission.Phase.INPUT_VALIDATION,Admission.Severity.ERROR,Optional.empty(),"compilation",Optional.empty(),reason)),new Admission.Statistics(0,0,0),false));}
     private static LoweringResult failure(Admission a){return new LoweringResult(LoweringResult.Status.valueOf(a.status().name()),a,Optional.empty(),Optional.empty(),List.of(),List.of(),List.of());}

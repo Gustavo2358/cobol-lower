@@ -9,6 +9,29 @@ final class PartialIdentityFacts {
     private PartialIdentityFacts() { }
     static void write(Object fact,Consumer<String> field,Consumer<Object> value) {
         switch(fact) {
+            case SpInput.CicsHandlerFact r -> {field.accept("CicsHandlerFact");value.accept(r.header());value.accept(r.handlerKind());value.accept(r.action());value.accept(r.targetKind());value.accept(r.targetSyntax());value.accept(r.labelBindingStatus());value.accept(r.labelTarget());value.accept(r.targetEntry());value.accept(r.entryOrigin());value.accept(r.targetOrigin());value.accept(r.programTarget());value.accept(r.scope());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());}
+            case SpInput.CicsHandlerScope r -> {field.accept("CicsHandlerScope");value.accept(r.kind());value.accept(r.runtimeIdentity());value.accept(r.provenance());}
+            case SpInput.CicsHandlerLabelTarget r -> {field.accept("CicsHandlerLabelTarget");value.accept(r.id());value.accept(r.declarationOrigin());}
+            case SpInput.CicsAbendFact r -> {field.accept("CicsAbendFact");value.accept(r.header());value.accept(r.eventKind());value.accept(r.dispatchEligibility());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());}
+            case SpInput.CicsCommandFact r -> {field.accept("CicsCommandFact");value.accept(r.header());value.accept(r.commandKind());value.accept(r.syntaxStatus());value.accept(r.rawText());value.accept(r.options());value.accept(r.gapCodes());if(r.length().isPresent())value.accept(r.length());}
+            case SpInput.OperandExpression r -> {field.accept("OperandExpression");value.accept(r.kind());value.accept(r.integer());value.accept(r.reference());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies r -> {field.accept("FactDependencies");value.accept(r.authority());value.accept(r.inputs());value.accept(r.proofs());value.accept(r.regions());value.accept(r.facts());value.accept(r.bindings());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Input r -> {field.accept("FactDependencies.Input");value.accept(r.id());value.accept(r.kind());value.accept(r.available());value.accept(r.contextScopes());value.accept(r.closureScopes());value.accept(r.declarationScopes());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Proof r -> {field.accept("FactDependencies.Proof");value.accept(r.id());value.accept(r.kind());value.accept(r.scope());value.accept(r.subject());value.accept(r.localPremise());value.accept(r.dependencies());value.accept(r.inputs());value.accept(r.rule());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Region r -> {field.accept("FactDependencies.Region");value.accept(r.id());value.accept(r.members());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Fact r -> {field.accept("FactDependencies.Fact");value.accept(r.id());value.accept(r.kind());value.accept(r.subject());value.accept(r.region());value.accept(r.dependencies());}
+            case io.github.gustavo2358.lower.domain.FactDependencies.Binding r -> {field.accept("FactDependencies.Binding");value.accept(r.node());value.accept(r.region());value.accept(r.exactCell());value.accept(r.cells());value.accept(r.regions());value.accept(r.dependencies());}
+
+            case io.github.gustavo2358.lower.domain.ControlTopology r -> {field.accept("ControlTopology");value.accept(r.authority());value.accept(r.occurrences());value.accept(r.regions());value.accept(r.boundaries());value.accept(r.outcomes());value.accept(r.bindings());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Occurrence r -> {field.accept("ControlTopology.Occurrence");value.accept(r.statement());value.accept(r.region());value.accept(r.outcomes());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Region r -> {field.accept("ControlTopology.Region");value.accept(r.id());value.accept(r.kind());value.accept(r.parent());value.accept(r.entry());value.accept(r.members());value.accept(r.regions());value.accept(r.boundary());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Boundary r -> {field.accept("ControlTopology.Boundary");value.accept(r.id());value.accept(r.region());value.accept(r.ordinaryDefault());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Outcome r -> {field.accept("ControlTopology.Outcome");value.accept(r.id());value.accept(r.statement());value.accept(r.kind());value.accept(r.role());value.accept(r.target());value.accept(r.binding());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Binding r -> {field.accept("ControlTopology.Binding");value.accept(r.id());value.accept(r.caller());value.accept(r.region());value.accept(r.endpoint());value.accept(r.resume());value.accept(r.entryPhase());value.accept(r.completionPhase());value.accept(r.phases());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Target r -> {field.accept("ControlTopology.Target");value.accept(r.kind());value.accept(r.reference());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Phase r -> {field.accept("ControlTopology.Phase");value.accept(r.id());value.accept(r.kind());value.accept(r.operation());value.accept(r.edges());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.PhaseEdge r -> {field.accept("ControlTopology.PhaseEdge");value.accept(r.role());value.accept(r.target());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.Proof r -> {field.accept("ControlTopology.Proof");value.accept(r.id());value.accept(r.kind());value.accept(r.rule());value.accept(r.provenance());value.accept(r.dependencies());}
             case io.github.gustavo2358.lower.domain.SourceFacts.Inventory r -> {field.accept("SourceInventory");value.accept(r.availability());value.accept(r.occurrences());value.accept(r.gapCodes());}
             case io.github.gustavo2358.lower.domain.SourceFacts.Occurrence r -> {field.accept("SourceOccurrence");value.accept(r.id());value.accept(r.kind());value.accept(r.name());value.accept(r.qualification());value.accept(r.resolution());value.accept(r.artifact());value.accept(r.authority());value.accept(r.provenance());value.accept(r.operation());value.accept(r.access());}
             case SpInput.CicsFileFact r -> {field.accept("CicsFileFact");value.accept(r.header());value.accept(r.command());value.accept(r.rawText());value.accept(r.targetMode());value.accept(r.target());value.accept(r.options());value.accept(r.conditions());value.accept(r.localContinuation());value.accept(r.ordinaryContinuation());value.accept(r.nameProfile());value.accept(r.gapCodes());}
@@ -167,7 +190,7 @@ final class PartialIdentityFacts {
                 field.accept("PerformLoop"); value.accept(r.testMode()); value.accept(r.conditionShape()); value.accept(r.predicate()); value.accept(r.conditionReads()); value.accept(r.provenance());
             }
             case SpInput.ProcedurePerformFact r -> {
-                field.accept("ProcedurePerformFact"); value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
+                field.accept("ProcedurePerformFact"); if(r.publicationKind()!=SpInput.PerformPublicationKind.LEGACY_PROFILE){value.accept(r.publicationKind().name());value.accept(r.targetEntry());} value.accept(r.header()); value.accept(r.start()); value.accept(r.end()); value.accept(r.procedures()); value.accept(r.normalContinuation());
                 if(r.loop().isPresent()){field.accept("loop"); value.accept(r.loop());}
                 if(r.times().isPresent()){field.accept("times");value.accept(r.times());}
                 if(r.varying().isPresent()){field.accept("varying");value.accept(r.varying());}
@@ -254,6 +277,9 @@ final class PartialIdentityFacts {
             case SpInput.MoveTransfer r -> {
                 field.accept("MoveTransfer");field.accept("source");value.accept(r.source());field.accept("target");value.accept(r.target());field.accept("effect");value.accept(r.effect());
             }
+            case SpInput.LogicalTransfer r -> {
+                field.accept("LogicalTransfer");field.accept("target");value.accept(r.target());field.accept("value");value.accept(r.value());
+            }
             case SpInput.MoveFact r -> {
                 field.accept("MoveFact");
                 field.accept("header"); value.accept(r.header());
@@ -264,6 +290,7 @@ final class PartialIdentityFacts {
                 field.accept("textAdjustment"); value.accept(r.textAdjustment());
                 if(r.regionalMove().isPresent()){field.accept("regionalMove@1");value.accept(r.regionalMove().get());}
                 if(!r.additionalTransfers().isEmpty()){field.accept("additionalTransfers@1");value.accept(r.additionalTransfers());}
+                if(!r.logicalTransfers().isEmpty()){field.accept("logicalTransfers@2.38");value.accept(r.logicalTransfers());}
             }
             case SpInput.LiteralCallTarget r -> {
                 field.accept("LiteralCallTarget");

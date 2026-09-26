@@ -16,7 +16,7 @@ import static io.github.gustavo2358.lower.testing.CallOracle.check;
 public final class EvaluateIntegrationSuite {
     private static final ObjectMapper JSON=new ObjectMapper();
     public static final List<String> NAMES=List.of("e1","e2","e3","e4","e5","strong","closed","unknown",
-        "partial-body","three-arms","also","empty","perform","goback","compose-1","compose-2","compose-5","compose-40");
+        "partial-body","three-arms","also","empty","perform","goback","condition","compose-1","compose-2","compose-5","compose-40");
     private static byte[] fixture(String name) throws Exception {
         try(var in=EvaluateIntegrationSuite.class.getResourceAsStream("/sp/evaluate/"+name+".json")) {
             return Objects.requireNonNull(in,name).readAllBytes();
@@ -41,7 +41,16 @@ public final class EvaluateIntegrationSuite {
                 == input.statements().stream().filter(SpInput.CallFact.class::isInstance).count(),"one dependency site per source CALL "+name);
             for(var fact:input.statements()) if(fact instanceof SpInput.EvaluateFact e) {
                 var links=r.statements().stream().filter(l->l.source().equals(e.header().id())).toList();
-                if(name.equals("empty")) { check(links.size()==1 && sequences.get(links.getFirst().label()).terminator() instanceof Operations.Opaque,"empty arm retains open control"); continue; }
+                if(name.equals("empty")) {
+                    var branches=links.stream().map(l->sequences.get(l.label()).terminator()).filter(Operations.Branch.class::isInstance).map(Operations.Branch.class::cast).toList();
+                    check(branches.size()==e.arms().size(),"partial arm entry does not erase known ordered choices");
+                    for(int i=0;i<e.arms().size();i++) {
+                        var entry=e.arms().get(i).control().entry().statement();var target=branches.get(i).trueDestination();
+                        if(entry.isPresent())check(r.statements().stream().anyMatch(l->l.source().equals(entry.orElseThrow())&&l.label().equals(target)),"known sibling entry survives");
+                        else check(sequences.get(target).terminator() instanceof Operations.Opaque o && o.envelope().control().known().isEmpty(),"missing entry has local boundary, no completion bypass");
+                    }
+                    continue;
+                }
                 check(links.size()==e.arms().size(),"one branch per ordered WHEN "+name);
                 for(int i=0;i<links.size();i++) {
                     var op=(Operations.Branch)sequences.get(links.get(i).label()).terminator();
@@ -55,6 +64,18 @@ public final class EvaluateIntegrationSuite {
                 }
             }
             if(name.startsWith("compose-"))check(input.statements().stream().filter(SpInput.EvaluateFact.class::isInstance).count()==Integer.parseInt(name.substring(8)),"multiplicity "+name);
+            if(name.equals("condition")) {
+                check(input.statements().stream().filter(SpInput.EvaluateFact.class::isInstance).map(SpInput.EvaluateFact.class::cast)
+                    .flatMap(e -> e.arms().stream()).anyMatch(a -> a.selection().isEmpty() && !a.conditionReads().isEmpty()),
+                    "unmodeled condition retains source reads and arm structure");
+                check(unit.sequences().stream().noneMatch(s -> s.terminator() instanceof Operations.Opaque),
+                    "EVALUATE condition gap adds no opaque control");
+                var branch=(Operations.Branch)unit.sequences().stream().map(Sequence::terminator)
+                    .filter(Operations.Branch.class::isInstance).findFirst().orElseThrow();
+                check(branch.predicate() instanceof Expressions.Unknown u && u.dependencies().stream().anyMatch(Expressions.Read.class::isInstance)
+                    && u.remainingReads()==Scopes.NoMemory.INSTANCE,
+                    "known condition read remains while unimplemented predicate has no AllMemory");
+            }
             if(name.equals("perform"))check(unit.sequences().stream().flatMap(s->s.instructions().stream()).filter(Operations.Assign.class::isInstance).count()==2,"BASIC body retains precise MOVE under EVALUATE");
             var bytes=codec.encode(p); check(Arrays.equals(bytes,codec.encode(codec.decode(bytes))),"AIR canonical round-trip "+name);
             var reordered=(ObjectNode)JSON.readTree(raw); reverseArray((ArrayNode)reordered.get("statements"));

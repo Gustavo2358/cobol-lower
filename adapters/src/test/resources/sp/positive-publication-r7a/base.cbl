@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. POSPUB.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+           COPY LOCAL.
+       01 RC PIC S9(8) COMP.
+       01 RC2 PIC S9(8) COMP.
+       01 POST-PGM PIC X(8).
+       PROCEDURE DIVISION.
+           CALL 'BEFORE'.
+           MOVE 'AFTER' TO POST-PGM.
+           CALL POST-PGM.
+           GOBACK.

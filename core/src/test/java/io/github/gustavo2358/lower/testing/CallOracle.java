@@ -28,14 +28,13 @@ public final class CallOracle {
         var invoke = (Operations.Invoke) first.terminator();
         check(invoke.action().equals("call"), "call action");
         check(invoke.outcomes().known().equals(List.of(new Control.Normal(next.label()))), "explicit normal destination");
-        check(invoke.outcomes().remainder().equals(new Scopes.WithinControl(new Scopes.UnitControl(publication.units().getFirst().id(),false,true,true,true,true,true))), "open nonlocal CALL remainder");
+        check(invoke.outcomes().remainder() == Scopes.NoControl.INSTANCE, "omitted foreign outcomes do not expand control");
         check(invoke.arguments().isEmpty() && invoke.results().isEmpty() && invoke.effectOperands().isEmpty(), "zero operands, no invented target effect operand");
         check(invoke.signature() instanceof Interactions.ExternalSignature, "external signature");
         var signature = ((Interactions.ExternalSignature) invoke.signature()).signature();
         check(signature.parameters().known().isEmpty() && signature.results().known().isEmpty()
             && signature.parameters().remainder() == Interactions.NoRemainder.INSTANCE && signature.results().remainder() == Interactions.NoRemainder.INSTANCE, "known empty signature");
-        var memory = new Scopes.WithinMemory(new Scopes.AllMemory(publication.id(), true));
-        check(invoke.effectBound().otherwise().reads().equals(memory) && invoke.effectBound().otherwise().writes().equals(memory), "conservative memory effects");
+        check(invoke.effectBound().otherwise().reads() == Scopes.NoMemory.INSTANCE && invoke.effectBound().otherwise().writes() == Scopes.NoMemory.INSTANCE, "omitted foreign body does not manufacture effects");
         check(invoke.effectBound().otherwise().mustOverwrite().isEmpty() && invoke.effectBound().perOutcome().isEmpty(), "no must-write claim");
         check(invoke.contract() instanceof Interactions.UnknownContract, "unknown contract");
         var origins = new HashMap<OriginId, Origins.Origin>(); publication.origins().forEach(o -> origins.put(o.id(), o));
@@ -61,9 +60,9 @@ public final class CallOracle {
         }
         check(policy instanceof Interactions.UnknownName, "unknown runtime name policy, no canonicalization");
         check(!targetOrigin.equals(invoke.header().origin()), "separate invoke/target origin");
-        check(invoke.header().precision().control().status() == Evidence.PrecisionStatus.OPEN
-            && invoke.header().precision().effects().status() == Evidence.PrecisionStatus.OPEN
-            && invoke.header().precision().dependencies().status() == Evidence.PrecisionStatus.OPEN, "open dimensional claims");
+        check(invoke.header().precision().control().status() == Evidence.PrecisionStatus.EXACT
+            && invoke.header().precision().effects().status() == Evidence.PrecisionStatus.EXACT
+            && invoke.header().precision().dependencies().status() == Evidence.PrecisionStatus.OPEN, "supported effects/control exact; runtime name policy remains open");
         check(publication.uncertainties().stream().filter(u -> invoke.header().uncertainties().contains(u.id())).count() >= 5, "separate explicit uncertainties");
         check(result.statements().size() == input.statements().size(), "no lost statement correlation");
         check(result.statements().stream().anyMatch(l -> l.source().equals(call.header().id()) && l.target().equals(invoke.header().id()) && l.label().equals(first.label()) && l.origin().equals(invoke.header().origin())), "CALL StatementLink");

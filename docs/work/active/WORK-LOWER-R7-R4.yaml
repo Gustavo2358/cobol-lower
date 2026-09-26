@@ -1,0 +1,7 @@
+id: WORK-LOWER-R7-R4
+title: Local CICS handler state and nonexecutable dispatch assessment
+status: IN_PROGRESS
+scope:
+  - Lower-owned analysis over validated ControlTopology and typed SP2.42
+  - Preserve factual validation and executable NOT_READY barrier
+  - Review on existing draft PR34; no merge or downstream contract change

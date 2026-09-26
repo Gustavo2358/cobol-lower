@@ -9,12 +9,21 @@ import java.util.*;
 /** Project explicit source bases once; never derive offsets, extents or independence from names. */
 final class RegionalDataTranslator {
     private RegionalDataTranslator() { }
-    private static Set<SpInput.DataId> sourceText(RegionalStorageAdmission.Index source) {
+    static Set<SpInput.DataId> sourceText(RegionalStorageAdmission.Index source) {
         var result=new HashSet<SpInput.DataId>();
         for(var statement:source.owner().statements())if(statement instanceof SpInput.MoveFact move) {
             if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)move.target().logicalWholeItem().ifPresent(result::add);
+            if(move.source() instanceof SpInput.DataReference read)read.logicalWholeItem().ifPresent(result::add);
             if(move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent()
                     &&move.source() instanceof SpInput.DataReference read)read.logicalWholeItem().ifPresent(result::add);
+        }
+        for(var statement:source.owner().statements()) {
+            if(statement instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
+            if(statement instanceof SpInput.CicsFact cics&&cics.target().orElse(null) instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
+            if(statement instanceof SpInput.CicsFileFact cics&&cics.target().orElse(null) instanceof SpInput.DataCallTarget target)
+                target.reference().logicalWholeItem().ifPresent(result::add);
         }
         source.owner().storage().filter(s->s.entryState().possibilityDomain()==StorageFacts.PossibilityDomain.LOGICAL_SOURCE)
             .ifPresent(s->s.entryState().conditions().stream()
@@ -24,7 +33,7 @@ final class RegionalDataTranslator {
     }
     static boolean textual(RegionalStorageAdmission.Index source,SpInput.DataId data) {
         var view=source.byData().get(data);
-        return view!=null&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
+        return view!=null&&(source.facts()==null||source.facts().declarations.contains(view.node().handle()))&&view.codec().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent()
             &&source.bases().get(view.base()).extent().value().isPresent();
     }
     static boolean encodableLiteral(RegionalStorageAdmission.Index source,SpInput.MoveFact move) {
@@ -36,11 +45,24 @@ final class RegionalDataTranslator {
             view.extent().value().orElseThrow()).status()==MemoryCodecs.Status.EXACT;
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
+            Set<SpInput.DataId> requiredData,Set<SpInput.DataId> capturedLogicalText,Set<SpInput.DataId> captureLocals,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var sourceText=sourceText(source);
+        var factDependencies=source.facts();
+        if(factDependencies!=null)for(var fact:factDependencies.graph.facts())
+            if(fact.kind()==io.github.gustavo2358.lower.domain.FactDependencies.FactKind.LOGICAL_TEXT&&factDependencies.available(fact.dependencies()))
+                source.nodes().get(new StorageFacts.NodeId(source.owner().unit(),fact.subject())).data().ifPresent(sourceText::add);
+        sourceText.addAll(capturedLogicalText);
+        var exactByNode=new HashMap<StorageFacts.NodeId,StorageFacts.LogicalExactView>();
+        source.owner().storage().ifPresent(st->st.logicalExactViews().forEach(v->
+            { exactByNode.put(v.node(),v);source.nodes().get(v.node()).data().ifPresent(sourceText::add); }));
         var aliasData=new HashSet<SpInput.DataId>();
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
-        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->!textual(source,d.id())&&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
+        if(factDependencies!=null)sourceText.removeIf(d->source.byData().containsKey(d)&&!factDependencies.declarations.contains(source.byData().get(d).node().handle()));
+        var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->factDependencies==null||source.byData().get(d.id())==null||(factDependencies.materializable(source.byData().get(d.id()).node().handle())&&factDependencies.declarations.contains(source.byData().get(d.id()).node().handle())))
+            .filter(d->!textual(source,d.id())
+            &&(source.byData().get(d.id())==null||!exactByNode.containsKey(source.byData().get(d.id()).node()))
+            &&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
         if(source.owner().storage().isEmpty())return legacy;
         var relationOrigins=new LinkedHashMap<StorageFacts.RelationId,OriginId>();
         var allocationEvidence=new HashMap<StorageFacts.BaseId,List<OriginId>>();
@@ -56,6 +78,8 @@ final class RegionalDataTranslator {
                 allocationEvidence.computeIfAbsent(source.views().get(r.owner()).base(),ignored->new ArrayList<>()).add(origin);
         }
         var objects=new ArrayList<>(legacy.objects());var storage=new ArrayList<>(legacy.storage());
+        var logicalCells=new HashMap<String,StorageId>();
+        var provedCells=FactDependencyStorage.cells(factDependencies,source,legacy,storage,unit,ids,origins);
         var nominal=new LinkedHashMap<>(legacy.nominal());
         var index=new LinkedHashMap<>(legacy.index());var bindings=new LinkedHashMap<SpInput.DataId,Memory.ViewBinding>();
         var physical=new LinkedHashMap<StorageFacts.BaseId,StorageId>();var baseOrigins=new HashMap<StorageFacts.BaseId,OriginId>();
@@ -74,7 +98,11 @@ final class RegionalDataTranslator {
             }
             baseOrigins.put(base.id(),origin);
             if(physical.containsKey(base.id()))continue;
-            boolean privateAllocation=base.allocation().proved();
+            boolean privateAllocation=base.allocation().proved()||factDependencies!=null&&factDependencies.allocated.contains(base.id().handle());
+            if(factDependencies!=null&&factDependencies.allocated.contains(base.id().handle())) {
+                var allocation=factDependencies.allocations.get(base.id().handle());
+                origin=FactDependencyStorage.proofOrigin(factDependencies,allocation.dependencies(),base.id().handle(),unit,ids,origins);
+            }
             // An unproved, unknown base does not establish ordinary persistent storage duration.
             // Retain a source gap rather than invent an AIR lifetime that the wire cannot express.
             if(!privateAllocation&&base.extent().value().isEmpty()) {
@@ -119,7 +147,9 @@ final class RegionalDataTranslator {
         for(var declaration:ScalarDataOrder.canonical(source.owner().dataDeclarations())) {
             if(index.containsKey(declaration.id()))continue;
             var logical=source.logical().byData.get(declaration.id());
-            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP) {
+            if(logical!=null&&source.logical().nodes.get(logical.node()).kind()==StorageFacts.Kind.GROUP
+                    &&(source.byData().get(declaration.id())==null
+                        ||!exactByNode.containsKey(source.byData().get(declaration.id()).node()))) {
                 var outputs=source.logical().leaves(logical).stream().map(v->source.logical().nodes.get(v.node()).data()).flatMap(Optional::stream)
                     .filter(index::containsKey).map(d->(Id)index.get(d).object()).toList();
                 items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),origins.source("data",declaration.id().handle(),declaration.provenance()),outputs));
@@ -127,6 +157,16 @@ final class RegionalDataTranslator {
             }
             var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
             var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
+            var publishedBinding=factDependencies==null||view==null?null:factDependencies.bindings.get(view.node().handle());
+            if(publishedBinding!=null&&!factDependencies.available(publishedBinding.dependencies())
+                    ||base==null&&!sourceText.contains(declaration.id())&&!requiredData.contains(declaration.id())) {
+                // The declaration identity remains in SP, but neither a logical
+                // value domain nor an executable physical view was published.
+                // A missing materialization does not create an AIR alias.
+                gap(declaration.id().handle(),dataOrigin,new Scopes.UnitScope(unit),List.of(),
+                    "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
+                continue;
+            }
             var object=new ObjectId(unit,ids.id("object","unknown-regional-view",unit.localId(),declaration.id().handle()));
             var inputs=new ArrayList<OriginId>();inputs.add(dataOrigin);
             if(view!=null) {inputs.add(origins.source("storage-view",view.node().handle(),view.provenance()));inputs.add(baseOrigins.get(view.base()));}
@@ -137,19 +177,45 @@ final class RegionalDataTranslator {
             Types.TypeRef type;
             if(sourceText.contains(declaration.id())) {
                 type=Types.known(Types.Builtin.TEXT);
-                index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
             } else {
                 var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
                 uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
                 type=new Types.UnknownType(typeReason);
             }
-            var binding=new Memory.UnknownBinding(base==null?new Scopes.AllMemory(unit.publication(),true):new Scopes.StorageMemory(List.of(base)),reason);
-            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,Memory.Visibility.UNKNOWN,objectOrigin,
+            // An absent physical base is a materialization gap, not evidence that
+            // this nominal object aliases every storage object in the publication.
+            Memory.Binding binding;
+            Memory.Visibility visibility=Memory.Visibility.UNKNOWN;
+            if(publishedBinding!=null) {
+                binding=FactDependencyStorage.binding(publishedBinding,provedCells,physical,source.owner().unit(),reason);
+                objectOrigin=FactDependencyStorage.proofOrigin(factDependencies,publishedBinding.dependencies(),"binding/"+view.node().handle(),unit,ids,origins);
+                var cell=publishedBinding.exactCell().isEmpty()?Optional.<StorageId>empty():Optional.of(provedCells.get(publishedBinding.exactCell()));
+                visibility=Memory.Visibility.PRIVATE;
+                if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
+            } else if(base==null&&sourceText.contains(declaration.id())&&!captureLocals.contains(declaration.id())&&source.localCellSafe(declaration.id())) {
+                var exact=exactByNode.get(view==null?null:view.node());
+                var key=exact==null?declaration.id().handle():exact.representative().handle();
+                var cell=logicalCells.get(key);
+                if(cell==null) {
+                    cell=new StorageId(unit.publication(),ids.id("storage","logical-source-cell",unit.localId(),key));
+                    logicalCells.put(key,cell);
+                    var cellOrigin=origins.derived(ids.id("origin","logical-source-cell",unit.localId(),key),List.of(dataOrigin),"storage@1/local-logical-value");
+                    storage.add(new Memory.Cell(new Memory.StorageHeader(cell,Optional.of(unit),Memory.Lifetime.PERSISTENT,Memory.Visibility.PRIVATE,cellOrigin),Types.known(Types.Builtin.TEXT)));
+                }
+                binding=new Memory.CellBinding(cell);visibility=Memory.Visibility.PRIVATE;
+                index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
+                items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),dataOrigin,List.of(object,cell)));
+            } else {
+                binding=new Memory.UnknownBinding(base==null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.StorageMemory(List.of(base)),reason);
+                if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
+            }
+            objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,visibility,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
         }
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
-        return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical),Map.copyOf(nominal));
+        return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical),Map.copyOf(nominal),declarations.stream()
+            .filter(d->d.scalarText().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarText().orElseThrow().logicalExtent())));
     }
     private static void renamesCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
             Map<StorageFacts.RelationId,OriginId> renamesOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
@@ -190,19 +256,6 @@ final class RegionalDataTranslator {
     }
     static List<Proofs.Premise> premises(RegionalStorageAdmission.Index source,ScalarDataTranslator.Result data,
             UnitId unit,LocalIds ids,SourceOrigins origins) {
-        var members=new ArrayList<StorageId>();var evidence=new ArrayList<OriginId>();
-        for(var base:source.bases().values().stream().sorted(Comparator.comparing(b->b.id().handle())).toList())
-            if(base.allocation().proved()&&data.physical().containsKey(base.id())) {
-                members.add(data.physical().get(base.id()));evidence.add(origins.source("storage-base",base.id().handle(),base.provenance()));
-            }
-        if(!source.logical().views.isEmpty()) {
-            for(var cell:data.storage())if(cell instanceof Memory.Cell&&!members.contains(cell.header().id())) {
-                members.add(cell.header().id());evidence.add(cell.header().origin());
-            }
-        }
-        if(members.size()<2)return List.of();
-        var origin=origins.derived(ids.id("origin","regional-independence",unit.localId(),"allocations"),evidence,"storage@1/independent-local-working-storage");
-        return List.of(new Proofs.Premise(new PremiseId(unit.publication(),ids.id("premise","regional-independence",unit.localId(),"allocations")),
-            source.logical().views.isEmpty()?StorageFacts.PROFILE_ID:"logical-text@1","Explicit disjoint source roots and elementary logical leaves",origin,new Proofs.DisjointStorage(members)));
+        return List.of(); // Distinct bases are independent; views retain positive shared-base relations.
     }
 }

@@ -8,7 +8,18 @@ final class CompilationContext {
     final Map<SpInput.UnitKey,SpCompilation.UnitProduct> products=new LinkedHashMap<>();
     final Map<SpInput.UnitKey,UnitId> units=new LinkedHashMap<>();
     final Map<SpInput.UnitKey,PartialProgramLowerer.Fragment> fragments=new LinkedHashMap<>();
+    final Map<SpInput.UnitKey,Set<SpInput.DataId>> capturedLogicalText=new HashMap<>();
     Optional<UnitId> parent(SpInput.UnitKey unit){return products.get(unit).parent().map(units::get);}
+    Set<SpInput.DataId> requiredData(SpInput input) {
+        var required=new LinkedHashSet<SpInput.DataId>(products.get(input.unit()).globalData());
+        for(var product:products.values())for(var capture:product.dataCaptures()) {
+            if(capture.localData().unit().equals(input.unit()))required.add(capture.localData());
+            if(capture.sourceData().unit().equals(input.unit()))required.add(capture.sourceData());
+        }
+        return Set.copyOf(required);
+    }
+    Set<SpInput.DataId> logicalText(SpInput input){return capturedLogicalText.getOrDefault(input.unit(),Set.of());}
+    Set<SpInput.DataId> captureLocals(SpInput input){return products.get(input.unit()).dataCaptures().stream().map(SpCompilation.DataCapture::localData).collect(java.util.stream.Collectors.toUnmodifiableSet());}
     List<ObjectId> visible(SpInput.UnitKey unit){
         var result=new LinkedHashSet<ObjectId>();
         for(var entry:products.entrySet())if(CompilationAdmission.ancestor(entry.getKey(),unit)){
@@ -37,6 +48,6 @@ final class CompilationContext {
                 var link=source.index().get(capture.sourceData());if(link!=null)index.put(capture.localData(),new LoweringResult.DataLink(capture.localData(),local,link.storage(),origin));
             }
         }
-        return new ScalarDataTranslator.Result(List.copyOf(objects),data.storage(),Collections.unmodifiableMap(index),data.views(),data.physical(),Collections.unmodifiableMap(nominal));
+        return new ScalarDataTranslator.Result(List.copyOf(objects),data.storage(),Collections.unmodifiableMap(index),data.views(),data.physical(),Collections.unmodifiableMap(nominal),data.logicalTextExtents());
     }
 }

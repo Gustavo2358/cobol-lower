@@ -112,7 +112,15 @@ final class CanonicalRevision {
         var canonical=new SpInput(input.unit(),input.policy(),ScalarDataOrder.canonical(input.dataDeclarations()),
             input.statements().stream().sorted(java.util.Comparator.comparingInt(s->s.header().programPoint())).toList(),
             input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage().map(StorageIdentityFacts::canonical),input.fileInventory(),input.sourceDependencies());
-        e.recordFact(canonical); return Optional.of(e.finish());
+        e.recordFact(canonical);
+        if(!input.ordinaryContinuations().isEmpty()) {
+            e.word("ordinary-continuations@SP2.37");
+            e.list(input.ordinaryContinuations().entrySet().stream()
+                .sorted(java.util.Comparator.comparing(r->r.getKey().handle())).toList(),r->{e.recordFact(r.getKey());e.recordFact(r.getValue());});
+        }
+        input.controlTopology().ifPresent(t->{e.word("control-topology@SP2.39");e.recordFact(t);});
+        input.factDependencies().ifPresent(t->{e.word("fact-dependencies@SP2.40");e.recordFact(t);});
+        return Optional.of(e.finish());
     }
     static Optional<String> compilation(io.github.gustavo2358.lower.domain.SpCompilation input,int maximum){
         if(maximum<32)return Optional.empty();var e=new CanonicalRevision();e.word("compilation@1/AIR2/xxh3-128-v1");e.symbol(input.inventoryStatus());e.list(input.unitInventory(),e::unit);

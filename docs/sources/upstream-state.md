@@ -58,3 +58,26 @@ not later administrative closeouts (air-java `9aec1e9bce30466f4a53d2033bf2a2a2fe
 Source lock includes SHA-256 for consumed contracts, writer, predicate/arm/completion/
 IndependentStorageSet public model and fixtures. Historical SP1.3 decoder keeps
 its exact meaning. AIR2 normative and JSON1.0 DRAFT pins remain unchanged.
+
+
+## POSITIVE_MEMORY_TOPOLOGY W1 — 2026-09-20
+
+Isolated permanent campaign branch starts from lower #32
+`f8e181f95929c650181c989318f8ba23d1e68a1a`; parent remains untouched and unmerged.
+Current exact pins: SP `cfcf0abf06a3b6186e157957bb301077fcb6f0bc`, AIR norm
+`b26465964fe75f944f6324df63330d69f33d77cd`, AIR Java
+`00373f638039c580bb833b9949df12cb8218e2fb`. The workflow checkout matches the
+AIR Java lock; source trees and consumed-file SHA-256 values were regenerated from
+those commits. Source contracts retain their wire versions. The existing AIR Nop
+kind gains codec support in the companion, without inventing a new instruction.
+
+[W1 contract and limits](../domain/positive-memory-topology.md) governs this semantic
+migration. `LOGICAL_ONLY` remains consumer default; physical execution requires
+explicit experimental opt-in. Final integrated evidence/PR state is recorded in the
+anchor analysis-cfg #45 campaign report. No W2/W3 or merge is started here.
+
+AIR harness reconciliation: pin `26016f10460336f237a33b2ed126a6a1427f0207` replaces `00373f638039c580bb833b9949df12cb8218e2fb`. Git diff confirms no AIR production sources or POM changes; the fixed module-policy gate reads the active lock rather than a historical literal. Existing semantic evidence remains equivalent; lower FAST is rerun for exact pin resolution.
+
+## R7 final source handler contract
+
+Current additional input contract: SP2.45 from frontend fbbf61d1840eb92dca804c53d8e9b6e60538318a. The strict pin is recorded in sources.lock.json. Exceptional source events, conditional handler selection and entry deactivation are analysis-only; AIR2.0, CFG and dependency-policy pins remain unchanged. Historical SP profiles and fixture bytes remain supported. See ../domain/cics-exceptional-handlers.md.

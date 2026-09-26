@@ -27,11 +27,14 @@ final class CicsFileAdmission {
             require(c,f,(o.reference().isPresent()?1:0)+(o.literal().isPresent()?1:0)+(o.integer().isPresent()?1:0)<=1,"one typed option value");
             require(c,f,o.role()==role(f,o.canonicalName(),names),"typed option role agrees with C-FC contract");
             o.reference().ifPresent(r->{CallAdmission.reference(r,h,seen,c);require(c,f,r.role()==(o.role()==CicsFileRole.WRITE?OperandRole.WRITE:OperandRole.READ),"host reference direction agrees");});
-            if(o.canonicalName().equals("FILE")&&f.targetMode()==CicsFileTargetMode.INPUT){require(c,f,o.reference().isEmpty(),"input FILE host belongs to target");if(f.target().orElse(null) instanceof LiteralCallTarget l)require(c,f,o.literal().filter(l.text()::equals).isPresent(),"FILE literal agrees with target");}
+            if(o.canonicalName().equals("FILE")&&f.targetMode()==CicsFileTargetMode.INPUT){
+                require(c,f,o.reference().isEmpty(),"input FILE host belongs to target");
+                if(o.literal().isPresent())require(c,f,f.target().orElse(null) instanceof LiteralCallTarget l&&o.literal().orElseThrow().equals(l.text()),"FILE literal requires its typed target");
+                if(f.target().orElse(null) instanceof LiteralCallTarget l)require(c,f,o.literal().filter(l.text()::equals).isPresent(),"FILE literal agrees with target");
+            }
         }
     }
     static boolean wellFormed(CicsFileFact f) {
-        if(!Set.of("CICS_FILE_OUTCOME_VALUES_UNKNOWN","CICS_FILE_HOST_BINDING_UNAVAILABLE","CICS_FILE_TARGET_UNKNOWN").containsAll(f.gapCodes()))return false;
         var names=new HashSet<String>();
         for(var o:f.options()) {
             if(!names.add(o.canonicalName())||o.role()==CicsFileRole.UNKNOWN)return false;

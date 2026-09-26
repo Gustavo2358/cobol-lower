@@ -1,5 +1,7 @@
 # EVALUATE first slice
 
+Current compositional control and SP2.37 ordinary continuations: [W7 contract](control-composition.md). Historical profile qualification below does not gate independent branch entries or predicate coverage.
+
 SP 2.0 adds a closed EVALUATE family and EVALUATE_ARM containment. Wire20 is a
 distinct decoder; 1.1–1.9 retain their existing wire and interpretation. The
 source rule is [IBM Enterprise COBOL 6.4 EVALUATE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-evaluate-statement),
@@ -41,3 +43,12 @@ partial body and IF/PERFORM composition. Contradictory ordinals and future field
 are rejected. Physical field/statement order and AIR codec round trips preserve
 bytes. Runtime targets remain partial under existing source/interpretation/control
 remainders; the known-subject fixture is intentionally not path-sensitive.
+
+## Positive topology W2 — SP 2.33.0
+
+An arm without a literal `selection` retains its ordinal, body, exact condition
+origin and any published `conditionReads`. The existing bool Unknown drives the
+Branch at that arm; false continues to the next ordered WHEN or to OTHER/normal
+continuation. The lower keeps modeled reads and emits coverage for the missing
+condition interpretation. This extension does not publish an AllControl or
+AllMemory compensation and does not change AIR or its wire format.

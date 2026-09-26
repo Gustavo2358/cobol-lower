@@ -43,7 +43,7 @@ final class GoToAdmission {
                 var entry=c.lookup(id);
                 need(g,c,d.target().isPresent()&&id.unit().equals(h.id().unit())&&entry!=null,"conditional destination is published in the same unit");
                 if(entry!=null)need(g,c,entry.header().containment().branch()==Branch.ROOT&&d.entryOrigin().filter(entry.header().provenance()::equals).isPresent(),"conditional entry provenance agrees with statement");
-                need(g,c,d.gapCodes().isEmpty()&&d.referenceOrigin().exact()&&d.procedureOrigin().filter(Provenance::exact).isPresent()
+                need(g,c,d.referenceOrigin().exact()&&d.procedureOrigin().filter(Provenance::exact).isPresent()
                     &&d.entryOrigin().filter(Provenance::exact).isPresent()&&h.provenance().exact(),"known destination requires exact local proof");
                 if(d.target().isPresent()&&d.procedureOrigin().isPresent()) {
                     var target=new CanonicalTarget(id,d.procedureOrigin().orElseThrow());var previous=targets.putIfAbsent(d.target().orElseThrow(),target);
@@ -58,16 +58,17 @@ final class GoToAdmission {
         need(g,c,!g.gapCodes().isEmpty()||precise(g),"complete conditional GO TO requires all control proofs");
     }
     static boolean precise(ConditionalGoToFact g) {
-        return g.gapCodes().isEmpty()&&g.selectorInteger()&&g.header().containment().branch()!=Branch.UNKNOWN
+        return g.header().containment().branch()!=Branch.UNKNOWN
             &&g.header().provenance().exact()&&g.selectorOrigin().exact()&&!g.destinations().isEmpty()
-            &&g.destinations().stream().allMatch(d->d.gapCodes().isEmpty()&&d.targetEntry().isPresent())
+            &&g.destinations().stream().allMatch(d->d.targetEntry().isPresent()&&d.referenceOrigin().exact()
+                &&d.procedureOrigin().filter(Provenance::exact).isPresent()&&d.entryOrigin().filter(Provenance::exact).isPresent())
             &&g.normalContinuation().statement().isPresent()&&g.normalContinuation().provenance().exact();
     }
     private static void need(ConditionalGoToFact g,EntryGobackAdmission.Context c,boolean value,String detail) {
         c.require(value,Rule.STRUCTURE,g.header().id().handle(),g.header().provenance(),detail);
     }
     static boolean precise(GoToFact g) {
-        return g.gapCodes().isEmpty() && g.header().containment().branch()!=Branch.UNKNOWN && g.header().provenance().exact()
+        return g.header().containment().branch()!=Branch.UNKNOWN && g.header().provenance().exact()
             && g.referenceOrigin().exact() && g.target().filter(t->t.paragraphOrigin().exact()).isPresent()
             && g.targetEntry().isPresent() && g.entryOrigin().filter(Provenance::exact).isPresent();
     }

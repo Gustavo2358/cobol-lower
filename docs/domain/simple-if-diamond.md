@@ -1,5 +1,7 @@
 # SP 1.4 simple IF diamond
 
+Current compositional control and SP2.37 ordinary continuations: [W7 contract](control-composition.md). Historical profile qualification below does not gate independent branch entries or predicate coverage.
+
 CP6 W2B consumes the [locked productive W2A/W2C authorities](../sources/sources.lock.json).
 Wire14 is closed and separate from Wire13. The core transports only public SP facts.
 No AST, source parsing, name-based join, runtime truth evaluation or CFG projection occurs.
@@ -16,10 +18,9 @@ whole slice. Availability cannot become empty code or implicit fallthrough.
 The algorithm indexes statements, declarations, references and branch relations once.
 It validates membership and joins successors by published identity. Each arm is visited
 once in canonical child order. ScalarDataTranslator supplies the object/cell map. The
-upstream IndependentStorageSet must cover every relevant mapped declaration; each
-published member maps through that existing map in its original order. Distinct IDs
-never prove separation. Authority is copied; justification is `SP rule: ` plus the
-published rule. Premise provenance is the upstream proof provenance.
+optional upstream IndependentStorageSet is validated if supplied, without requiring
+coverage of every declaration. Under the current positive-memory contract, distinct
+StorageIds separate model bases; no DisjointStorage premise is generated.
 
 Assembly allocates deterministic role/source labels before operations and returns an
 explicit entry label. The serialization inventory starts with Return, demonstrating
@@ -28,8 +29,8 @@ known BOOL type, ordered Read dependencies and NoMemory remaining reads. Its one
 predicate uncertainty is VALUES only, scoped to that predicate occurrence. THEN and
 present ELSE contain the real Assign operations and end in Jump to the shared CALL.
 Absent ELSE uses FALSE directly to that CALL, with no extra sequence, write or value.
-Invoke remains the W1C terminator with UnknownName, UnknownContract, open outcomes
-and conservative effects. GOBACK remains Return. No fallthrough edge is inferred.
+Invoke retains UnknownName and UnknownContract, the published normal continuation
+and no substitute effects for an unimplemented external body. GOBACK remains Return. No fallthrough edge is inferred.
 
 Source/derived origins retain IF, predicate/read occurrences, actual MOVEs and fitting
 inputs, arm completion, CALL and GOBACK, and storage evidence. The lower copies the
@@ -44,9 +45,9 @@ run in local qualification only.
 
 The independent consumer oracle observes public SP, public lower correlations and AIR.
 It checks explicit entry/destination relationships, exact MOVE order, origin artifacts and
-coordinates, all proof members (including unused extras), predicate dependencies and
+coordinates, optional-proof validity, predicate dependencies and
 uncertainty, and absence of invented state. It accepts arbitrary sequence inventory order.
-The real AIR Validator traverses the publication and retains I-09, I-59, I-56 and related
+The real AIR Validator traverses the publication and retains I-09, I-56 and related
 semantic obligations. STRUCTURALLY_VALID does not discharge them; global coverage
 remains PARTIAL. W2C codec preserves whole model equality and canonical byte re-encode.
 

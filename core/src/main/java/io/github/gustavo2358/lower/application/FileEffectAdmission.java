@@ -100,7 +100,7 @@ final class FileEffectAdmission {
         if(s.role()==MemoryRole.RECORD||s.role()==MemoryRole.FROM_RECORD)require(file==null||s.destination().data().isEmpty()||file.records().contains(s.destination().data().orElseThrow()),"record effect has wrong FILE owner");
         if(s.role()==MemoryRole.INTO)require(s.destination().reference().isPresent()&&use.surface().orElseThrow().operands().stream().anyMatch(o->o.role()==FileFacts.OperandRole.INTO&&o.references().contains(s.destination().reference().orElseThrow())),"INTO effect must retain receiving operand");
         if(s.kind()==MemoryKind.MAY_UNKNOWN)return;
-        require(use.profile()==SyntaxProfile.N_LR&&file!=null&&file.kind()==FileFacts.expectedKind(use)&&(FileFacts.local(use)||file.assignment().sourceKind()==NameSource.ASSIGNMENT_NAME),"strong native effect needs N-LR file facts");
+        require(file!=null&&file.kind()==FileFacts.expectedKind(use),"strong file effect needs a resolved record owner of the expected kind");
         require(s.gapCodes().isEmpty(),"strong effect cannot carry an unresolved proof gap");var destination=exact(s.destination(),c);
         if(s.kind()==MemoryKind.MUST_UNKNOWN) {
             require(s.role()==MemoryRole.FILE_STATUS||s.role()==MemoryRole.INTO,"MUST cannot be inferred from a file verb");

@@ -8,7 +8,7 @@ import java.util.*;
 /** Supported CP6 program publication assembly; no transport dependencies or universal statement framework. */
 final class PartialProgramLowerer implements LowerInput {
     @Override public LoweringResult lower(SpInput input, Options options) {
-        var plan = new PartialProgramAdmission().plan(input, options.admission()); var admission = plan.admission();
+        var plan = new PartialProgramAdmission().plan(input, options.admission(), options.publicationPolicy()); var admission = plan.admission();
         if (admission.status() != Admission.Status.ADMITTED) {
             var status = switch (admission.status()) {
                 case INVALID_INPUT -> LoweringResult.Status.INVALID_INPUT;
@@ -25,7 +25,7 @@ final class PartialProgramLowerer implements LowerInput {
         var publication = new PublicationId(revision.orElseThrow()); var unit = new UnitId(publication, "unit");
         var fragment=fragment(input,plan,publication,unit,new LocalIds(),null);
         var assessment=fragment.logicalCopy()?OutputAssessment.assessForPartialAnalysis(fragment.publication(),options.validation()):OutputAssessment.assess(fragment.publication(),options.validation());
-        return new LoweringResult(assessment.status(),admission,assessment.publication(),Optional.of(assessment.validation()),fragment.entries(),fragment.statements(),fragment.limitations(),fragment.data(),fragment.operands());
+        return new LoweringResult(LoweringResult.publicationStatus(assessment,admission),admission,assessment.publication(),Optional.of(assessment.validation()),fragment.entries(),fragment.statements(),fragment.limitations(),fragment.data(),fragment.operands());
     }
     record Fragment(Publication publication,List<LoweringResult.EntryLink> entries,List<LoweringResult.StatementLink> statements,List<LoweringResult.Limitation> limitations,List<LoweringResult.DataLink> data,List<LoweringResult.OperandLink> operands,boolean logicalCopy,ScalarDataTranslator.Result storage,FileResourceLowering files){}
     static Fragment fragment(SpInput input,PartialProgramAdmission.Plan plan,PublicationId publication,UnitId unit,LocalIds ids,CompilationContext context){
@@ -33,11 +33,18 @@ final class PartialProgramLowerer implements LowerInput {
         var statements = new ArrayList<LoweringResult.StatementLink>(); var operands = new ArrayList<LoweringResult.OperandLink>();
         var sourceEntry = input.entryInventory().entries().getFirst();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
-        var data = RegionalDataTranslator.translate(plan.data(), plan.storage(), unit, ids, origins, items, uncertainties);
+        var requiredData=new LinkedHashSet<SpInput.DataId>();
+        input.fileInventory().declarations().forEach(declaration->requiredData.addAll(declaration.records()));
+        if(context!=null)requiredData.addAll(context.requiredData(input));
+        var data = RegionalDataTranslator.translate(plan.data(), plan.storage(),
+            requiredData,context==null?Set.of():context.logicalText(input),context==null?Set.of():context.captureLocals(input),
+            unit, ids, origins, items, uncertainties);
         if(context!=null)data=context.captures(input,data,unit,ids,origins,items,uncertainties);
         var files=new FileResourceLowering(input,data,unit,ids,origins,uncertainties);
         if(context!=null)context.importFiles(input,files);
-        var assembly = PartialProgramAssembler.assemble(plan, data, unit, ids, origins, statements, operands, items, uncertainties,files);
+        var assembly = input.controlTopology().isPresent()
+            ? TopologyProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files)
+            : PartialProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files);
         var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
         Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
         if(sourceEntry.signature().availability()!=SpInput.Availability.KNOWN) {
@@ -60,11 +67,31 @@ final class PartialProgramLowerer implements LowerInput {
         }
         var gapTargets=new HashMap<SpInput.StatementId,List<Id>>();
         for(var link:statements)gapTargets.computeIfAbsent(link.source(),key->new ArrayList<>()).add(link.target());
+        var factsByHandle=new HashMap<String,SpInput.StatementFact>();input.statements().forEach(f->factsByHandle.put(f.header().id().handle(),f));
+        if(input.controlTopology().isPresent())for(var occurrence:input.controlTopology().orElseThrow().occurrences()) {
+            var source=factsByHandle.get(occurrence.statement());
+            if(gapTargets.containsKey(source.header().id()))continue;
+            var origin=origins.source("topology-inventory",occurrence.statement(),source.header().provenance());
+            var reason=new UncertaintyId(publication,ids.id("uncertainty","topology-inventory",unit.localId(),occurrence.statement()));
+            uncertainties.add(new Evidence.Uncertainty(reason,"TOPOLOGY_OCCURRENCE_NOT_IN_ENTRY_PROJECTION",List.of(Evidence.Dimension.CONTROL),new Scopes.UnitScope(unit),
+                "Inventoried source occurrence in "+occurrence.region()+" has no materialized occurrence in the selected entry projection; source unreachability is not claimed",origin));
+            gaps.add(reason);
+            items.add(new Evidence.CoverageItem("sp-topology-inventory@1/"+occurrence.statement(),origin,Evidence.CoverageStatus.ABSTRACTED,List.of(),List.of(reason),Optional.empty()));
+        }
+        for(var cap:plan.admission().nonExecutableCapabilities()) {
+            var origin=origins.source("non-executable-capability",cap.statement().handle(),cap.provenance());
+            var reason=new UncertaintyId(publication,ids.id("uncertainty","non-executable-capability",unit.localId(),cap.statement().handle()));
+            uncertainties.add(new Evidence.Uncertainty(reason,"EXECUTABLE_CAPABILITY_NOT_READY",List.of(Evidence.Dimension.CONTROL,Evidence.Dimension.EFFECTS),
+                new Scopes.UnitScope(unit),"Typed "+cap.kind()+" at "+cap.statement().handle()+" is inventoried; executable semantics NOT_READY. This coverage item does not license execution.",origin));
+            gaps.add(reason);
+            items.add(new Evidence.CoverageItem("sp-non-executable@1/"+cap.statement().handle(),origin,Evidence.CoverageStatus.UNSUPPORTED,
+                gapTargets.getOrDefault(cap.statement(),List.of()),List.of(reason),Optional.empty()));
+        }
         int gapIndex = 0;
         for (var gap : input.gaps()) {
             var key = Integer.toString(gapIndex++); var origin = origins.source("gap", key, gap.provenance());
             var id = new UncertaintyId(publication, ids.id("uncertainty", "scalar-sp-gap", unit.localId(), key)); gaps.add(id);
-            uncertainties.add(new Evidence.Uncertainty(id, "cobol-sp:" + gap.code(), List.of(Evidence.Dimension.values()), new Scopes.EntityScope(gapTargets.get(gap.statement())),
+            uncertainties.add(new Evidence.Uncertainty(id, "cobol-sp:" + gap.code(), List.of(Evidence.Dimension.values()), gapTargets.containsKey(gap.statement())?new Scopes.EntityScope(gapTargets.get(gap.statement())):new Scopes.UnitScope(unit),
                 gap.scope().name() + ": " + gap.detail(), origin));
         }
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
@@ -77,10 +104,16 @@ final class PartialProgramLowerer implements LowerInput {
             input.storage().orElseThrow().entryState().possibilityDomain()==io.github.gustavo2358.lower.domain.StorageFacts.PossibilityDomain.LOGICAL_SOURCE
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
-        if(input.statements().stream().anyMatch(SpInput.CicsFact.class::isInstance))required.add(CicsInvokeHandler.NAME);
+        if(assembly.sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast)
+                .anyMatch(i->i.target() instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.program")
+                    ||i.target() instanceof Interactions.ComputedTarget c&&c.namespace().equals("cics.program")))required.add(CicsInvokeHandler.NAME);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CicsFact||s instanceof SpInput.CicsFileFact))
             if(!required.contains(Capabilities.TARGET_POSSIBILITIES))required.add(Capabilities.TARGET_POSSIBILITIES);
-        if(input.statements().stream().anyMatch(SpInput.CicsFileFact.class::isInstance))required.add(CicsFileInvokeHandler.NAME);
+        if(assembly.sequences().stream().map(Sequence::terminator)
+                .anyMatch(t->t instanceof Operations.Invoke i
+                    &&(i.target() instanceof Interactions.LiteralTarget l&&l.namespace().equals("cics.file")
+                        ||i.target() instanceof Interactions.ComputedTarget c&&c.namespace().equals("cics.file"))))
+            required.add(CicsFileInvokeHandler.NAME);
         var resources=new ArrayList<>(files.resources());
         resources.addAll(SourceResourceLowering.resources(input,unit,ids,origins,unitOrigin));
         if(files.available()||input.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE)required.add(Capabilities.RESOURCE_BINDINGS);

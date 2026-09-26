@@ -14,7 +14,7 @@ public final class FileScopeSuite {
             var bytes=Objects.requireNonNull(FileScopeSuite.class.getResourceAsStream("/sp/file-scope/"+name+".json")).readAllBytes();
             var decoded=decoder.decode(bytes);check(decoded instanceof CompilationJsonDecoder.Compilation,"compilation decode "+decoded);
             var input=((CompilationJsonDecoder.Compilation)decoded).input();var result=new CompilationLowerer().lower(input,CobolLower.OPTIONS);
-            check(result.publication().isPresent(),"composition admitted and AIR validated: "+result.status()+" "+result.admission().diagnostics()+" "+result.validation());
+            check(result.publication().isPresent(),"composition admitted and AIR validated for "+name+": "+result.status()+" "+result.admission().diagnostics()+" "+result.validation());
             var p=result.publication().orElseThrow();check(p.units().size()==(name.equals("nested")?3:name.equals("qualified")?1:2),"all units covered");
             if(name.equals("nested")){
                 var parent=p.units().get(0);var child=p.units().get(1);var shadow=p.units().get(2);
@@ -22,6 +22,9 @@ public final class FileScopeSuite {
                 var shared=p.resources().stream().filter(r->r.declaration().orElseThrow().owner().equals(parent.id())&&r.declaration().orElseThrow().name().equals("SHARED-F")).findFirst().orElseThrow();
                 check(shared.declaration().orElseThrow().uses().size()==2&&shared.declaration().orElseThrow().uses().stream().allMatch(u->u.operation().unit().equals(child.id())),"GLOBAL uses belong only to child");
                 check(child.objects().stream().anyMatch(o->o.storage() instanceof Memory.AliasBinding a&&a.object().unit().equals(parent.id())),"captured DATA aliases original object");
+                var sourceName=parent.objects().stream().filter(o->o.displayName().equals(Optional.of("GLOBAL-NAME"))).findFirst().orElseThrow();
+                check(sourceName.storage() instanceof Memory.CellBinding,"captured logical CALL target has positive storage at its owner");
+                check(child.objects().stream().anyMatch(o->o.displayName().equals(Optional.of("GLOBAL-NAME"))&&o.storage() instanceof Memory.AliasBinding a&&a.object().equals(sourceName.id())),"captured logical view refers to the owner Cell");
                 check(p.resources().stream().filter(r->r.declaration().orElseThrow().owner().equals(shadow.id())).allMatch(r->r.declaration().orElseThrow().uses().stream().allMatch(u->u.operation().unit().equals(shadow.id()))),"shadow stays local");
                 for(var mutation:List.of("missing-unit","missing-parent","self-parent","missing-capture","private-capture","missing-record","foreign-file","unknown-field","version")){
                     var doc=mapper.readTree(bytes);var units=(com.fasterxml.jackson.databind.node.ArrayNode)doc.path("units");var c=(com.fasterxml.jackson.databind.node.ObjectNode)units.get(1);

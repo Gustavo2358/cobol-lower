@@ -192,6 +192,8 @@ public final class EntryGobackAdmission implements AdmitInput {
         long entities; long references; long components; boolean truncated;
         Phase phase = Phase.INPUT_VALIDATION;
         RegionalStorageAdmission.Index regionalStorage;
+        Optional<HandlerStateAnalysis> handlerState=Optional.empty();
+        List<NonExecutableCapability> nonExecutableCapabilities=List.of();
         Context(SpInput input, Limits limits) { this(input, limits, false); }
         Context(SpInput input, Limits limits, boolean unordered) { this.input = input; this.limits = limits; this.unordered = unordered; }
         DataFact data(DataId id) { references++; return data.get(id); }
@@ -227,7 +229,7 @@ public final class EntryGobackAdmission implements AdmitInput {
                 require(!frame.includingFile().isBlank() && !frame.includedFile().isBlank() && !frame.requestedName().isBlank() && frame.includeLine() >= 0, Rule.IDENTITY, "includeChain", provenance, "Published include frame preserved and well formed");
             }
         }
-        Admission result(Status status) { return new Admission(status, Optional.ofNullable(input), diagnostics, new Statistics(entities, references, components), truncated); }
+        Admission result(Status status) { return new Admission(status, Optional.ofNullable(input), diagnostics, new Statistics(entities, references, components), truncated, handlerState, nonExecutableCapabilities); }
     }
     static final class LimitReached extends RuntimeException { private static final long serialVersionUID = 1L; }
 }

@@ -9,9 +9,16 @@ final class LocalIds {
     private record Identity(String namespace, String role, String owner, String key) { }
     private final Map<String, Identity> registered;
     private final String context;
-    LocalIds() { this(new HashMap<>(), ""); }
-    private LocalIds(Map<String, Identity> registered, String context) { this.registered = registered; this.context = context; }
-    LocalIds activation(String callsite) { return new LocalIds(registered, callsite.length() + ":" + callsite); }
+    private final java.util.Set<String> activations;
+    LocalIds() { this(new HashMap<>(), "", java.util.Set.of()); }
+    private LocalIds(Map<String, Identity> registered, String context, java.util.Set<String> activations) {
+        this.registered = registered; this.context = context; this.activations = activations;
+    }
+    LocalIds activation(String callsite) {
+        var nested = new java.util.HashSet<>(activations); nested.add(callsite);
+        return new LocalIds(registered, (context.isEmpty() ? "" : context + "/") + callsite.length() + ":" + callsite, java.util.Set.copyOf(nested));
+    }
+    boolean containsActivation(String callsite) { return activations.contains(callsite); }
 
     String sourceKey(String key) { return context.isEmpty() ? key : context + "/" + key; }
 

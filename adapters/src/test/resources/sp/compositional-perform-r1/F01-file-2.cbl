@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. W6R1.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-TARGET PIC X(8).
+       01 WS-DUMMY PIC X(8).
+       01 WS-FLAG PIC X.
+       01 WS-COUNT PIC 9(4).
+       01 WS-RESP PIC S9(8) COMP.
+       PROCEDURE DIVISION.
+       MAIN.
+           MOVE 'PROGA001' TO WS-TARGET
+           PERFORM P
+           PERFORM P
+           GOBACK.
+       P.
+           EXEC CICS UNLOCK FILE(WS-TARGET) NOHANDLE
+           END-EXEC.

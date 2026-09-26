@@ -32,7 +32,7 @@ public final class IfStageProbe {
             var p=r.publication().orElseThrow();
             if(p.units().getFirst().sequences().stream().noneMatch(s -> s.terminator() instanceof io.github.gustavo2358.air.model.Operations.Branch))throw new AssertionError("probe prerequisite Branch absent");
             System.out.println("diamond sequences=" + p.units().getFirst().sequences().size() + " premises=" + p.premises().size());
-            if(p.premises().isEmpty())throw new AssertionError("DIAMOND_WITHOUT_STORAGE_PREMISE");
+            if(!p.premises().isEmpty())throw new AssertionError("GENERATED_NEGATIVE_STORAGE_PREMISE");
         } else throw new IllegalArgumentException("unknown stage");
     }
 }

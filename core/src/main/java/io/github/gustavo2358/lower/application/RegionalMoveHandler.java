@@ -12,21 +12,62 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
-        if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT)return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items));
-        if(storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
-        var result=new ArrayList<Instruction>();result.add(translate(move,fitted&&move.additionalTransfers().isEmpty(),data,unit,ids,origins,links,items,uncertainties));
-        for(var t:move.additionalTransfers()) {
-            var single=new SpInput.MoveFact(move.header(),t.source(),t.target(),SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(t.effect()));
-            result.add(translate(single,false,data,unit,ids,origins,links,items,uncertainties));
+        if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT) {
+            boolean available=move.target().logicalWholeItem().filter(data.index()::containsKey).isPresent()
+                &&(!(move.source() instanceof SpInput.DataReference r)||r.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(r::logicalWholeItem).filter(data.index()::containsKey).isPresent());
+            return List.of(available?MoveHandler.translate(move,data,unit,ids,origins,links,items):ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties));
+        }
+        if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
+        if(move.regionalMove().isEmpty())return List.of(translate(move,fitted,data,unit,ids,origins,links,items,uncertainties));
+        var result=new ArrayList<Instruction>();
+        var transfers=move.transfers();
+        for(int i=0;i<transfers.size();i++) {
+            var transfer=transfers.get(i);
+            var logical=move.logicalTransfers().stream().filter(t->t.target().equals(transfer.target().id())).findFirst();
+            if(logical.isPresent()) {
+                result.add(logical(move,transfer,logical.orElseThrow(),data,unit,ids,origins,links,items));
+            } else {
+                var single=i==0?move:new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),
+                    SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(transfer.effect()));
+                result.add(translate(single,fitted&&transfers.size()==1,data,unit,ids,origins,links,items,uncertainties));
+            }
         }
         return List.copyOf(result);
+    }
+    private static Instruction logical(SpInput.MoveFact move,SpInput.MoveTransfer transfer,SpInput.LogicalTransfer proof,
+            ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
+            List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items) {
+        var key=move.header().id().handle();
+        var operation=new OperationId(unit,ids.id("operation","logical-receiver-move",unit.localId(),key+"/"+proof.target().handle()));
+        var statement=origins.source("statement",key,move.header().provenance());
+        var source=origins.source("operand",transfer.source().id().handle(),transfer.source().provenance());
+        var target=origins.source("operand",transfer.target().id().handle(),transfer.target().provenance());
+        var origin=origins.derived(ids.id("origin","logical-receiver-move",unit.localId(),operation.localId()),
+            List.of(statement,source,target),"sp2.38/independent-logical-receiver");
+        var targetId=new OperandId(new OperationOwner(operation),ids.id("operand","logical-receiver-target",operation.localId(),proof.target().handle()));
+        var sourceId=new OperandId(new OperationOwner(operation),ids.id("operand","logical-receiver-literal",operation.localId(),transfer.source().id().handle()));
+        var object=data.index().get(transfer.target().logicalWholeItem().orElseThrow()).object();
+        var assign=new Operations.Assign(new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,
+            ScalarEvidence.assign(operation),List.of()),
+            new Places.ObjectPlace(new Operand.Header(targetId,Operand.Role.VALUE_WRITE,target),object),
+            new Expressions.Literal(new Operand.Header(sourceId,Operand.Role.VALUE_READ,source),new Values.TextValue(proof.value().value())));
+        correlate(transfer.source().id(),sourceId,source,links,items,unit,ids);
+        correlate(transfer.target().id(),targetId,target,links,items,unit,ids);
+        return assign;
     }
     static Instruction translate(SpInput.MoveFact move,boolean admittedFitting,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,
             List<Evidence.Uncertainty> uncertainties) {
-        if(move.regionalMove().isEmpty()||move.regionalMove().get().kind()==StorageFacts.MoveKind.UNAVAILABLE||admittedFitting)
+        if(move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.UNAVAILABLE).isPresent())
+            return ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties);
+        if(move.regionalMove().isEmpty()||admittedFitting)
             return MoveHandler.translate(move,data,unit,ids,origins,links,items);
-        var effect=move.regionalMove().get();var key=move.header().id().handle();
+        var effect=move.regionalMove().get();
+        // In the SP MOVE contract MUST_UNKNOWN denotes an unimplemented transform,
+        // not an external input. Retain the source occurrence without a substitute write.
+        if(effect.kind()==StorageFacts.MoveKind.MUST_UNKNOWN)
+            return ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties);
+        var key=move.header().id().handle();
         var operation=new OperationId(unit,ids.id("operation","regional-move",unit.localId(),key+"/"+move.target().id().handle()));
         var statement=origins.source("statement",key,move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
@@ -78,12 +119,7 @@ final class RegionalMoveHandler {
             correlate(move.source().id(),sourceId,sourceOrigin,links,items,unit,ids);
             return new Operations.Assign(header,place,new Expressions.Literal(new Operand.Header(sourceId,Operand.Role.VALUE_READ,sourceOrigin),new Values.BytesValue(effect.bytes())));
         }
-        var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","regional-move-value",operation.localId(),key));
-        var scope=new Scopes.EntityScope(List.of(operation));
-        uncertainties.add(new Evidence.Uncertainty(reason,"cobol-lower:REGIONAL_MOVE_VALUE_UNKNOWN",List.of(Evidence.Dimension.VALUES),scope,String.join(",",effect.gapCodes()),sourceOrigin));
-        var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
-        return new Operations.HavocMust(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,
-            new Evidence.Precision(exact,exact,exact,open,exact),List.of(reason)),place,reason);
+        throw new IllegalArgumentException("Unsupported promised regional MOVE: "+effect.kind());
     }
     private static Memory.ByteRange range(Memory.ViewBinding view,OperandId parent,OriginId origin,LocalIds ids) {
         return new Memory.ByteRange(view.region(),integer(view.offset(),parent,"offset",origin,ids),integer(view.extent(),parent,"extent",origin,ids));

@@ -5,7 +5,16 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Closed snapshot of the consumed SP surface; not a semantic validity certificate. */
-public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies) {
+public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology, Optional<FactDependencies> factDependencies) {
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,sourceDependencies,ordinaryContinuations,controlTopology,Optional.empty());
+    }
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies, java.util.Map<StatementId,NormalContinuation> ordinaryContinuations) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,sourceDependencies,ordinaryContinuations,Optional.empty());
+    }
+    public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure, List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence, boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory, SourceFacts.Inventory sourceDependencies) {
+        this(unit,policy,dataDeclarations,statements,structure,gaps,coverage,entryInventory,storageIndependence,compositional,storage,fileInventory,sourceDependencies,java.util.Map.of());
+    }
     public SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclarations, List<StatementFact> statements, Structure structure,
             List<Gap> gaps, Coverage coverage, EntryInventory entryInventory, Optional<IndependentStorageSet> storageIndependence,
             boolean compositional, Optional<StorageFacts.Inventory> storage, FileFacts.Inventory fileInventory) {
@@ -24,6 +33,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         this(unit, policy, dataDeclarations, statements, structure, gaps, coverage, entryInventory, Optional.empty());
     }
     public SpInput {
+        Objects.requireNonNull(factDependencies);
+        if(factDependencies.isPresent()) {
+            if(controlTopology.isEmpty()||storage.isEmpty())throw new IllegalArgumentException("fact dependencies require topology/storage contract");
+            FactDependencyContract.validate(factDependencies.get(),storage.orElseThrow());
+        }
+        Objects.requireNonNull(controlTopology);
+        ordinaryContinuations=java.util.Map.copyOf(ordinaryContinuations);
         Objects.requireNonNull(sourceDependencies);
         Objects.requireNonNull(fileInventory);
         Objects.requireNonNull(storage);
@@ -36,9 +52,10 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         gaps = List.copyOf(gaps);
         Objects.requireNonNull(coverage, "coverage");
         Objects.requireNonNull(entryInventory, "entryInventory");
+        CicsContract.validateEntries(unit, statements, dataDeclarations);
     }
     /** Typed consumed variants; unsupported occurrences remain explicit. */
-    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
+    public sealed interface StatementFact permits GobackFact, MoveFact, CallFact, CicsFact, CicsFileFact, CicsHandlerFact, CicsAbendFact, CicsCommandFact, IfFact, OtherStatement, PerformFact, EvaluateFact, GoToFact, ConditionalGoToFact, ProcedurePerformFact { StatementHeader header(); }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
     public enum CoverageStatus { MODELED, PARTIAL, UNSUPPORTED, INPUT_MISSING }
@@ -192,9 +209,21 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record PerformVarying(int levels,List<VaryingOperand> controls) {
         public PerformVarying { controls=List.copyOf(controls); }
     }
+    public enum PerformPublicationKind { LEGACY_PROFILE, STRUCTURAL_FACTS }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
-            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes) implements StatementFact {
-        public ProcedurePerformFact { Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
+            List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop, Optional<PerformCount> times,Optional<PerformVarying> varying,List<String> gapCodes,PerformPublicationKind publicationKind,Optional<StatementId> targetEntry) implements StatementFact {
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop,
+                Optional<PerformCount> times, Optional<PerformVarying> varying,List<String> gapCodes,PerformPublicationKind publicationKind) {
+            this(header,start,end,procedures,normalContinuation,loop,times,varying,gapCodes,publicationKind,
+                procedures.isEmpty()?Optional.empty():Optional.of(procedures.get(0).entry()));
+        }
+        public ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,
+                List<PerformParagraph> procedures, NormalContinuation normalContinuation, Optional<PerformLoop> loop,
+                Optional<PerformCount> times, Optional<PerformVarying> varying,List<String> gapCodes) {
+            this(header,start,end,procedures,normalContinuation,loop,times,varying,gapCodes,PerformPublicationKind.LEGACY_PROFILE);
+        }
+        public ProcedurePerformFact { Objects.requireNonNull(targetEntry); Objects.requireNonNull(publicationKind); Objects.requireNonNull(header); Objects.requireNonNull(start); Objects.requireNonNull(end);
             Objects.requireNonNull(normalContinuation); Objects.requireNonNull(loop);Objects.requireNonNull(times);Objects.requireNonNull(varying); procedures=List.copyOf(procedures); gapCodes=List.copyOf(gapCodes); }
         public ProcedurePerformFact(StatementHeader header,Optional<PerformTarget> start,Optional<PerformTarget> end,List<PerformParagraph> procedures,NormalContinuation normalContinuation,Optional<PerformLoop> loop,Optional<PerformCount> times,List<String> gapCodes) {
             this(header,start,end,procedures,normalContinuation,loop,times,Optional.empty(),gapCodes);
@@ -292,8 +321,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record MoveTransfer(MoveSource source,DataReference target,StorageFacts.Move effect) {
         public MoveTransfer { Objects.requireNonNull(source);Objects.requireNonNull(target);Objects.requireNonNull(effect); }
     }
+    public record LogicalTransfer(OperandId target,LogicalValue value) {
+        public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) implements StatementFact {
+        public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
+                NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,List.of());
+        }
         public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
                 NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,List.of());
@@ -308,9 +344,83 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
+    /** Input facts are preserved; no executable handler/event lowering is qualified. */
+    public enum ExecutableLowering { NOT_READY }
+    public enum CicsHandlerKind { ABEND }
+    public enum CicsHandlerAction { ACTIVATE, CANCEL, RESET, UNAVAILABLE }
+    public enum CicsHandlerTargetKind { LABEL, PROGRAM, NONE, UNAVAILABLE }
+    public enum CicsHandlerScopeKind { CURRENT_EXECUTION_LOGICAL_LEVEL }
+    public record CicsHandlerScope(CicsHandlerScopeKind kind, Availability runtimeIdentity, Provenance provenance) {
+        public CicsHandlerScope {
+            Objects.requireNonNull(kind); Objects.requireNonNull(provenance);
+            CicsContract.require(runtimeIdentity == Availability.UNAVAILABLE, "runtime scope identity unavailable");
+        }
+    }
+    public record CicsHandlerLabelTarget(ProcedureId id, Provenance declarationOrigin) {
+        public CicsHandlerLabelTarget { Objects.requireNonNull(id); Objects.requireNonNull(declarationOrigin); }
+    }
+    public record CicsHandlerFact(StatementHeader header, CicsHandlerKind handlerKind, CicsHandlerAction action,
+            CicsHandlerTargetKind targetKind, Optional<String> targetSyntax, Optional<ResolutionStatus> labelBindingStatus,
+            Optional<CicsHandlerLabelTarget> labelTarget, Optional<StatementId> targetEntry, Optional<Provenance> entryOrigin,
+            Optional<Provenance> targetOrigin, Optional<CallTarget> programTarget, CicsHandlerScope scope, String rawText,
+            List<CicsOption> options, List<String> gapCodes) implements StatementFact {
+        public CicsHandlerFact {
+            Objects.requireNonNull(header); Objects.requireNonNull(handlerKind); Objects.requireNonNull(action);
+            Objects.requireNonNull(targetKind); Objects.requireNonNull(targetSyntax); Objects.requireNonNull(labelBindingStatus);
+            Objects.requireNonNull(labelTarget); Objects.requireNonNull(targetEntry); Objects.requireNonNull(entryOrigin);
+            Objects.requireNonNull(targetOrigin); Objects.requireNonNull(programTarget); Objects.requireNonNull(scope);
+            Objects.requireNonNull(rawText); options=List.copyOf(options); gapCodes=List.copyOf(gapCodes);
+            CicsContract.handler(header,action,targetKind,targetSyntax,labelBindingStatus,labelTarget,targetEntry,
+                entryOrigin,targetOrigin,programTarget,rawText,options);
+        }
+        public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
+    }
+    public enum CicsAbendEventKind { ABEND }
+    public enum CicsAbendEligibility { HANDLER_ELIGIBLE, HANDLERS_BYPASSED, UNAVAILABLE }
+    public record CicsAbendFact(StatementHeader header, CicsAbendEventKind eventKind,
+            CicsAbendEligibility dispatchEligibility, String rawText, List<CicsOption> options,
+            List<String> gapCodes) implements StatementFact {
+        public CicsAbendFact {
+            Objects.requireNonNull(header); Objects.requireNonNull(eventKind); Objects.requireNonNull(dispatchEligibility);
+            Objects.requireNonNull(rawText); options=List.copyOf(options); gapCodes=List.copyOf(gapCodes);
+            CicsContract.event(dispatchEligibility,rawText,options,gapCodes);
+        }
+        public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
+    }
+
+    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL }
+    public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
+    /** Typed source expression. LENGTH_OF denotes declaration extent, not stored value. */
+    public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
+            Optional<DataReference> reference,Provenance provenance) {
+        public OperandExpression {
+            Objects.requireNonNull(kind);Objects.requireNonNull(integer);Objects.requireNonNull(reference);Objects.requireNonNull(provenance);
+            if(integer.isPresent()!=(kind==OperandExpressionKind.INTEGER)||reference.isPresent()!=(kind!=OperandExpressionKind.INTEGER))
+                throw new IllegalArgumentException("source expression shape");
+            if(reference.isPresent()&&reference.orElseThrow().role()!=OperandRole.READ)throw new IllegalArgumentException("expression operand role");
+        }
+    }
+    public enum CicsCommandSyntaxStatus { SUPPORTED, UNAVAILABLE }
+    /** Positive source facts, retained independently of executable lowering. */
+    public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
+            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length) implements StatementFact {
+        public CicsCommandFact {
+            Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);
+            Objects.requireNonNull(rawText);options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
+            Objects.requireNonNull(length);
+            CicsContract.command(header,commandKind,syntaxStatus,rawText,options,gapCodes);
+            boolean hasLength=options.stream().anyMatch(o->o.name().equals("LENGTH"));
+            if(length.isPresent()&&(commandKind!=CicsCommandKind.SEND_TERMINAL||!hasLength)
+                ||commandKind==CicsCommandKind.SEND_TERMINAL&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
+                throw new IllegalArgumentException("terminal LENGTH expression required exactly when published");
+            length.flatMap(OperandExpression::reference).ifPresent(r->{if(!r.id().statement().equals(header.id()))throw new IllegalArgumentException("expression owner");});
+        }
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty());}
+        public ExecutableLowering executableLowering(){return ExecutableLowering.NOT_READY;}
+    }
     public enum CicsCommand { LINK, XCTL }
     public enum CicsConditions { LOCAL_CONDITION, DEFAULT_ENTRY_PREFIX, UNKNOWN }
     public record CicsOption(String name,Optional<String> operand,int start,int end,Optional<DataReference> reference) {
@@ -404,8 +514,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             destinations=List.copyOf(destinations);Objects.requireNonNull(normalContinuation);gapCodes=List.copyOf(gapCodes); }
     }
 
-    public record EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
-        public EvaluateArm { Objects.requireNonNull(selection); statements=List.copyOf(statements); Objects.requireNonNull(control); }
+    public record EvaluateArm(int ordinal, Optional<LiteralSource> selection, List<DataReference> conditionReads,
+                              Provenance conditionOrigin, List<StatementId> statements, IfArm control) {
+        public EvaluateArm { Objects.requireNonNull(selection);conditionReads=List.copyOf(conditionReads);
+            Objects.requireNonNull(conditionOrigin);statements=List.copyOf(statements);Objects.requireNonNull(control); }
+        public EvaluateArm(int ordinal, LiteralSource selection, List<StatementId> statements, IfArm control) {
+            this(ordinal,Optional.of(selection),List.of(),selection.provenance(),statements,control);
+        }
     }
     public record EvaluateFact(StatementHeader header, Optional<DataReference> subject, List<EvaluateArm> arms,
             IfArm otherArm, List<StatementId> otherStatements, NormalContinuation normalContinuation,

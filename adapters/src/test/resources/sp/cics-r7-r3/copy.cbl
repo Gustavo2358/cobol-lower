@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TESTCOPY.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 PGM PIC X(8) VALUE "EXITPGM".
+       PROCEDURE DIVISION.
+       MAIN-P.
+           COPY HANDLER.
+           GOBACK.
+       ERR.
+           GOBACK.

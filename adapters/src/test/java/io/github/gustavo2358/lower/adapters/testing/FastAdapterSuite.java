@@ -7,7 +7,23 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        TopologyEntryAdmissionSuite.main(new String[0]);
+        QualifiedSourceSuite.main(new String[0]);
+        ExceptionalHandlerSuite.main(new String[0]);
+        CicsConsumerContractSuite.main(new String[0]);
+        ValidationBeforeReadinessSuite.main(new String[0]);
+        HandlerStateSuite.main(new String[0]);
+        CicsCommandContractSuite.main(new String[0]);
+        PositivePublicationSuite.main(new String[0]);
+        TerminalSendSuite.main(new String[0]);
+        ControlStorageDecouplingSuite.main(new String[0]);
+        FactDependencyWireSuite.main(new String[0]);
+        ControlTopologyWireSuite.main(new String[0]);
+        TypedOccurrenceControlSuite.main(new String[0]);
+        BoundedCicsControlSuite.main(new String[0]);
+        FileTopologyAuthoritySuite.main(new String[0]);
         DependencyPreservationSuite.main(new String[0]);
+        FileRecordGroundingSuite.main(new String[0]);
         SourceDependencySuite.main(new String[0]);
         LogicalTextStorageSuite.main(new String[0]);
         FileDeclarationSuite.main(new String[0]); FileScopeSuite.main(new String[0]);
@@ -16,6 +32,10 @@ public final class FastAdapterSuite {
         DisplayEffectsSuite.main(new String[0]); InitializeEffectsSuite.main(new String[0]);
         DeclarativeValueSuite.main(new String[0]);
         EvidencePreservingEntrySuite.main(new String[0]);
+        PartialStructuralFactsSuite.main(new String[0]);
+        CompositionalPerformSuite.main(new String[0]);
+        CompositionalPerformRevisionSuite.main(new String[0]);
+        ControlCompositionSuite.main(new String[0]);
         CicsProgramControlSuite.main(new String[0]); CicsFileControlSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {

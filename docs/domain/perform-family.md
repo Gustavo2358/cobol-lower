@@ -70,3 +70,20 @@ and iteration must-writes to the control item, count-independent multiplicity,
 FROM reads, negative increments, AFTER exit bypassing the increment, and cumulative
 byte/order/control regressions. SP 2.4 and older must reject the new wire fields
 and predicate profile; their historical meaning is unchanged.
+
+## Positive Memory Topology W5
+
+Whole-profile qualification is separate from positive structural facts. Partial
+BASIC now publishes target, independent entry, range membership, conditional normal
+completion frontiers and callsite resume under SP 2.36. Historical range facts keep
+their prior meaning and consumer admission. Nested nonrecursive facts are in scope;
+compositional return execution is handed off to W6.
+See [campaign contract](positive-memory-topology.md#w5--partial-structural-facts).
+
+## Positive Memory Topology W6
+
+The [compositional PERFORM contract](compositional-perform.md) adds activation
+specialization for positive ONCE structure that the legacy whole-profile route
+does not admit. It composes nested nonrecursive return, conditional frontiers and
+partial bodies while retaining shared memory and separate callsite resumes.
+Admitted legacy repetition and BASIC/range routes remain available unchanged.

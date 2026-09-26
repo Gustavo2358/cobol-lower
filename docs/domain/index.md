@@ -1,5 +1,7 @@
 # Domínio do lowering
 
+[Topologia positiva e projeção de gaps](positive-memory-topology.md): regra W1 vigente para memória, MOVE e CALL; substitui as exigências negativas antigas na fatia descrita.
+
 | Pergunta | Documento |
 | --- | --- |
 | O que a entrada realmente publica? | [Semantic Product](semantic-input-contract.md) |
@@ -20,3 +22,7 @@ Os documentos locais definem a política do lowerer; não substituem as especifi
 
 [Storage Semantics regional](regional-storage.md): campanha ST-W0–ST-W5,
 reader SP 2.7 e validação de fatos físicos; integração M1 em andamento.
+
+- [Frontend control topology / SP 2.39](control-topology.md): single new-contract authority, generic binding and explicit partial frontiers.
+
+- [R7 exceptional handler source semantics](cics-exceptional-handlers.md) — SP2.45, source-only selection and entry.

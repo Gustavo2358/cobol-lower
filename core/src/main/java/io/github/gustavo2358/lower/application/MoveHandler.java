@@ -29,7 +29,7 @@ final class MoveHandler {
         if (move.source() instanceof SpInput.DataReference read) {
             var placeId = new OperandId(owner, ids.id("operand", "scalar-read-place", operation.localId(), read.id().handle()));
             var place = new Places.ObjectPlace(new Operand.Header(placeId, Operand.Role.VALUE_READ, sourceOrigin),
-                data.index().get(read.wholeItemAccess().orElseThrow().data()).object());
+                data.index().get(read.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(() -> read.logicalWholeItem()).orElseThrow()).object());
             value = new Expressions.Read(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin), place);
         } else {
             var literal = (SpInput.LiteralSource) move.source();

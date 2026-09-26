@@ -1,0 +1,19 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. W6R1.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-TARGET PIC X(8).
+       01 WS-DUMMY PIC X(8).
+       01 WS-FLAG PIC X.
+       01 WS-COUNT PIC 9(4).
+       01 WS-RESP PIC S9(8) COMP.
+       PROCEDURE DIVISION.
+       MAIN.
+           MOVE 'PROGA001' TO WS-TARGET
+           PERFORM P-OUTER
+           CALL WS-TARGET
+           GOBACK.
+       P-OUTER.
+           PERFORM P-INNER 1 TIMES.
+       P-INNER.
+           MOVE 'PROGB001' TO WS-TARGET.

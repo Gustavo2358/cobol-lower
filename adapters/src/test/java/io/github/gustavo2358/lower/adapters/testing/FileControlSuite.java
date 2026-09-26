@@ -83,7 +83,10 @@ public final class FileControlSuite {
         var operations=result.publication().orElseThrow().units().getFirst().sequences().stream()
             .map(q->q.terminator()).filter(io.github.gustavo2358.air.model.Operations.Invoke.class::isInstance)
             .map(io.github.gustavo2358.air.model.Operations.Invoke.class::cast).toList();
-        check(operations.stream().filter(i->i.action().equals("write")).count()==1,"WRITE occurrence kept in performed paragraph");
+        check(operations.stream().filter(i->i.action().equals("write")).count()==2,"ordinary WRITE and distinct activated WRITE retain the same source occurrence");
+        var unit=result.publication().orElseThrow().units().getFirst();var reached=CompositionalPerformSuite.reachable(unit);
+        check(unit.sequences().stream().filter(s->reached.contains(s.label())&&s.terminator() instanceof io.github.gustavo2358.air.model.Operations.Invoke i&&i.action().equals("write")).count()==1,
+            "only the contextual WRITE is reachable from PERFORM; ordinary copy is not opened");
         check(operations.stream().filter(i->i.action().equals("call")).count()==1,"AFTER CALL occurrence kept");
         ((com.fasterxml.jackson.databind.node.ObjectNode)statement.path("normalContinuation"))
             .set("statement",use.path("control").path("continuation"));

@@ -1147,10 +1147,15 @@ final class Materialize {
                 new GoToTarget(new ProcedureId(unit,t.id()),provenance(t.paragraphOrigin(),unit))),provenance(v.referenceOrigin(),unit),
                 Optional.ofNullable(v.targetEntry()).map(id -> new StatementId(unit,id)),Optional.ofNullable(v.entryOrigin()).map(o -> provenance(o,unit)),v.gapCodes());
             case Wire211.EvaluateDocument v -> new EvaluateFact(h, Optional.ofNullable(v.subject()).map(s -> reference(s,h.id(),unit)),
-                v.arms().stream().map(a -> { var l=(Wire211.LiteralDocument)a.selection();
+                v.arms().stream().map(a -> {
+                    var members=a.statements().stream().map(id -> new StatementId(unit,id)).toList();
+                    if(a.selection()==null) return new EvaluateArm(a.ordinal(),Optional.empty(),
+                        a.conditionReads().stream().map(r -> reference(r,h.id(),unit)).toList(),
+                        provenance(a.conditionOrigin(),unit),members,arm(a.control(),unit));
+                    var l=(Wire211.LiteralDocument)a.selection();
                     return new EvaluateArm(a.ordinal(), new LiteralSource(new OperandId(h.id(),l.id()),l.kind(),
                         Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit)),
-                        a.statements().stream().map(id -> new StatementId(unit,id)).toList(), arm(a.control(),unit)); }).toList(),
+                        members, arm(a.control(),unit)); }).toList(),
                 arm(v.otherArm(),unit),v.otherStatements().stream().map(id -> new StatementId(unit,id)).toList(),
                 continuation(v.normalContinuation(),unit),v.gapCodes());
             case Wire211.ProcedurePerformDocument v -> new ProcedurePerformFact(h,
@@ -1176,6 +1181,26 @@ final class Materialize {
                         logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())),v.additionalTransfers().stream().map(t->new MoveTransfer(source211(t.source(),h.id(),unit),reference(t.target(),h.id(),unit),new StorageFacts.Move(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList());
             }
+            case Wire211.CicsHandlerDocument v -> new CicsHandlerFact(h,v.handlerKind(),v.action(),v.targetKind(),
+                Optional.ofNullable(v.targetSyntax()),Optional.ofNullable(v.labelBindingStatus()),
+                Optional.ofNullable(v.labelTarget()).map(t->new CicsHandlerLabelTarget(new ProcedureId(unit,t.id()),provenance(t.declarationOrigin(),unit))),
+                Optional.ofNullable(v.targetEntry()).map(id->new StatementId(unit,id)),
+                Optional.ofNullable(v.entryOrigin()).map(o->provenance(o,unit)),Optional.ofNullable(v.targetOrigin()).map(o->provenance(o,unit)),
+                Optional.ofNullable(v.programTarget()).map(t->switch(t) {
+                    case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));
+                    case Wire211.LiteralTargetDocument l -> new LiteralCallTarget(new OperandId(h.id(),l.id()),l.text(),l.writtenText(),
+                        Optional.ofNullable(l.logicalValue()).map(Materialize::logical),provenance(l.provenance(),unit));
+                }),new CicsHandlerScope(v.scope().kind(),v.scope().runtimeIdentity(),provenance(v.scope().provenance(),unit)),
+                v.rawText(),v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
+            case Wire211.CicsCommandDocument v -> new CicsCommandFact(h,v.commandKind(),v.syntaxStatus(),v.rawText(),
+                v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes(),
+                Optional.ofNullable(v.length()).map(e->new OperandExpression(e.kind(),Optional.ofNullable(e.integer()).map(java.math.BigInteger::new),
+                    Optional.ofNullable(e.reference()).map(r->reference(r,h.id(),unit)),provenance(e.provenance(),unit))));
+            case Wire211.CicsAbendDocument v -> new CicsAbendFact(h,v.eventKind(),v.dispatchEligibility(),v.rawText(),
+                v.options().stream().map(o->new CicsOption(o.name(),Optional.ofNullable(o.operand()),o.start(),o.end(),
+                    Optional.ofNullable(o.reference()).map(r->reference(r,h.id(),unit)))).toList(),v.gapCodes());
             case Wire211.CicsFileDocument v -> {
                 Optional<CallTarget> target=Optional.ofNullable(v.target()).map(t->switch(t) {
                     case Wire211.DataTargetDocument d -> new DataCallTarget(reference(d.reference(),h.id(),unit));
@@ -1518,7 +1543,7 @@ final class Materialize {
     private static IncludeFrame includeFrame(Wire.IncludeFrameDocument d, UnitKey unit) {
         return new IncludeFrame(d.includingFile(), d.requestedName(), d.includedFile(), d.includeLine());
     }
-    private static Provenance provenance(Wire.ProvenanceDocument d, UnitKey unit) {
+    static Provenance provenance(Wire.ProvenanceDocument d, UnitKey unit) {
         return new Provenance(location(d.expanded(), unit), location(d.original(), unit), d.includeChain().stream().map(v -> includeFrame(v, unit)).toList(), d.exact());
     }
     private static ReadinessClaim readinessClaim(Wire.ReadinessClaimDocument d, UnitKey unit) {

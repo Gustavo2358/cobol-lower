@@ -57,14 +57,53 @@ public final class CicsProgramControlSuite {
         var publication=new CobolLowerer().lower(input,CobolLower.OPTIONS).publication().orElseThrow();
         var invoke=publication.units().getFirst().sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast)
             .filter(i->i.target() instanceof Interactions.LiteralTarget t&&t.namespace().equals("cics.program")).findFirst().orElseThrow();
-        if(!invoke.outcomes().known().isEmpty()||!(((Scopes.WithinControl)invoke.outcomes().remainder()).scope() instanceof Scopes.UnitControl u&&u.labels()))
-            throw new AssertionError("unavailable LINK return must retain local control even with DEFAULT_ENTRY_PREFIX");
+        if(!invoke.outcomes().known().isEmpty()||!(((Scopes.WithinControl)invoke.outcomes().remainder()).scope() instanceof Scopes.LabelsControl labels&&labels.labels().isEmpty()))
+            throw new AssertionError("unavailable LINK return cannot invent a control destination");
         System.out.println("CICS_LINK_UNAVAILABLE_RETURN_CONSERVATIVE");
+    }
+    private static void missingTargetIsCoverageRatherThanRuntimeName() throws Exception {
+        byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/variable.json")){raw=in.readAllBytes();}
+        var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var doc=mapper.readTree(raw);
+        for(var f:doc.path("statements"))if(f.path("variant").asText().equals("CICS_PROGRAM_CONTROL")) {
+            var c=(com.fasterxml.jackson.databind.node.ObjectNode)f;c.putNull("target");c.put("conditions","UNKNOWN");
+            ((com.fasterxml.jackson.databind.node.ArrayNode)c.path("gapCodes")).add("CICS_TARGET_UNKNOWN");
+        }
+        var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(mapper.writeValueAsBytes(doc));
+        if(!(decoded instanceof SpJsonDecoder.Decoded d))throw new AssertionError("target omission remains a valid partial SP: "+decoded);
+        var result=new CobolLowerer().lower(d.input(),CobolLower.OPTIONS);
+        if(result.publication().isEmpty())throw new AssertionError("partial CICS target gap must retain a publication: "+result.status()+" "+result.validation());
+        var publication=result.publication().orElseThrow();
+        var targetless=publication.units().getFirst().sequences().stream().map(Sequence::terminator)
+            .filter(t->t instanceof Operations.Opaque o&&o.observedKind().equals("cics-program-target-unavailable")).toList();
+        if(targetless.size()!=1)throw new AssertionError("target materialization gap must not publish runtime Unknown(TEXT)");
+        var envelope=((Operations.Opaque)targetless.getFirst()).envelope();
+        if(!(envelope.memory().otherReads() instanceof Scopes.NoMemory)||!(envelope.memory().otherWrites() instanceof Scopes.NoMemory))
+            throw new AssertionError("missing PROGRAM does not imply foreign memory effects");
+        if(envelope.memory().knownReads().isEmpty()||envelope.control().known().size()!=1)
+            throw new AssertionError("unmaterialized PROGRAM retains COMMAREA read and LINK continuation");
     }
     public static void main(String[] args) throws Exception {
         if(args.length>0&&args[0].equals("conditions")){contradictoryConditions();return;}
         contradictoryConditions();
         unavailableLinkReturn();
+        missingTargetIsCoverageRatherThanRuntimeName();
+        byte[] variableRaw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/variable.json")){variableRaw=in.readAllBytes();}
+        var variableInput=((SpJsonDecoder.Decoded)new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(variableRaw)).input();
+        var variableFact=variableInput.statements().stream().filter(io.github.gustavo2358.lower.domain.SpInput.CicsFact.class::isInstance)
+            .map(io.github.gustavo2358.lower.domain.SpInput.CicsFact.class::cast).findFirst().orElseThrow();
+        for(int count:List.of(1,50)) {
+            var diagnostics=new ArrayList<>(variableFact.gapCodes());
+            for(int n=0;n<count;n++)diagnostics.add("W3_OPTION_DIAGNOSTIC_"+n);
+            var changed=io.github.gustavo2358.lower.testing.IfInputs.with(variableFact,"gapCodes",diagnostics);
+            var candidate=io.github.gustavo2358.lower.testing.IfInputs.with(variableInput,"statements",variableInput.statements().stream().map(f->f==variableFact?changed:f).toList());
+            var publication=new CobolLowerer().lower(candidate,CobolLower.OPTIONS).publication().orElseThrow();
+            var invoke=publication.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator)
+                .filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast)
+                .filter(i->i.target() instanceof Interactions.ComputedTarget t&&t.namespace().equals("cics.program")).findFirst().orElseThrow();
+            if(!(((Interactions.ComputedTarget)invoke.target()).name() instanceof Expressions.Read)
+                ||invoke.outcomes().known().stream().noneMatch(Control.Normal.class::isInstance))
+                throw new AssertionError("CICS diagnostics cannot erase nominal target or LINK continuation "+count);
+        }
         int cases=0;var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);
         for(String name:List.of("variable","qualified","short","slice","overlay","group")) {
             byte[] raw;try(var in=CicsProgramControlSuite.class.getResourceAsStream("/sp/cics/"+name+".json")){if(in==null)throw new AssertionError(name);raw=in.readAllBytes();}

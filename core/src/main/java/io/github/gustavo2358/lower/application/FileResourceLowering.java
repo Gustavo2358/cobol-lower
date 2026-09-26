@@ -35,13 +35,15 @@ final class FileResourceLowering {
     void imports(List<FileFacts.Declaration> imported){for(var d:imported)declarations.put(new FileFacts.Candidate(d.id(),d.owner()),d);}
     Map<FileFacts.Candidate,List<Interactions.ResourceUse>> associations(){return associations;}
     ResourceId resourceId(String file){return new ResourceId(unit.publication(),ids.id("resource","file-declaration",unit.localId(),file));}
-    boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR);}
+    boolean handles(SpInput.StatementFact fact){var uses=byStatement.get(fact.header().id());return uses!=null&&!uses.isEmpty()&&uses.stream().allMatch(u->u.profile()==FileFacts.SyntaxProfile.N_LR
+        ||u.effects().filter(e->e.availability()==SpInput.Availability.KNOWN||e.availability()==SpInput.Availability.PARTIAL).isPresent());}
     void sourceEntry(LabelId label){sourceEntries.add(label);}
-    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
+    List<Sequence> complete(List<Sequence> sequences){return memory.restrictContinuations(input.controlTopology().isPresent()?sequences:sort.complete(control.complete(sequences)),List.copyOf(sourceEntries));}
     LabelId completion(SpInput.StatementId statement,LabelId ordinary){return sort.completion(statement,control.completion(statement,ordinary));}
-    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){
+    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){return sequences(fact,destination,local,null);}
+    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local,java.util.function.Function<String,LabelId> topology){
         var result=new ArrayList<Sequence>();var uses=byStatement.get(fact.header().id());
-        var layout=sort.layout(fact,uses,destination,local);layout.ifPresent(l->result.addAll(l.prefix()));
+        var layout=topology==null?sort.layout(fact,uses,destination,local):Optional.<FileSortLowering.Layout>empty();layout.ifPresent(l->result.addAll(l.prefix()));
         for(int n=0;n<uses.size();n++){
             var use=uses.get(n);var key=fact.header().id().handle()+"/"+use.ordinal();
             var op=new OperationId(unit,local.id("operation","file-use",unit.localId(),key));
@@ -66,8 +68,6 @@ final class FileResourceLowering {
                 dependency=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());
             }else{
                 var reason=gap("file-target",op,ref,List.of(Evidence.Dimension.DEPENDENCIES,Evidence.Dimension.VALUES),"FILE_TARGET_NOT_PROVEN");opGaps.add(reason);
-                var name=new Expressions.Unknown(new Operand.Header(new OperandId(new OperationOwner(op),"file-name"),Operand.Role.CALL_TARGET,ref),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,reason);
-                target=new Interactions.ComputedTarget("file","cobol.external-file-name",name,Interactions.ExactName.INSTANCE,ref);
                 dependency=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(reason));
             }
             var header=new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(open,open,open,open,dependency),opGaps);
@@ -77,18 +77,18 @@ final class FileResourceLowering {
             var memory=this.memory.withIds(local);
             var after=plan==null?next:memory.label(key+"/select/0");
             Terminator invoke;
-            if(localResource)invoke=new Operations.Opaque(header,"source-local-file-use",List.of(),List.of(),new Envelopes.Envelope(
-                new Envelopes.MemoryEnvelope(List.of(),plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),List.of(),plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),
-                new Control.ControlEnvelope(after==null?List.of():List.of(new Control.JumpAlternative(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,false,true,true,true,false))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+            if(localResource||target==null)invoke=new Operations.Opaque(header,localResource?"source-local-file-use":"source-file-target-unavailable/"+action(use.command()),List.of(),List.of(),new Envelopes.Envelope(
+                new Envelopes.MemoryEnvelope(List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(plan.ioReads(),plan.unknownReadBound()),List.of(),plan==null?Scopes.NoMemory.INSTANCE:memory.bound(List.of(),plan.unknownWriteBound()),List.of()),
+                new Control.ControlEnvelope(after==null?List.of():List.of(new Control.JumpAlternative(after)),after==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
             else invoke=new Operations.Invoke(header,action(use.command()),target,List.of(),List.of(),new Interactions.ExternalSignature(signature),List.of(),
-                new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(plan.ioReads(),plan.unknownReadBound()),
-                    plan==null?new Scopes.WithinMemory(new Scopes.VisibleMemory(unit,true)):memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
-                new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),new Scopes.WithinControl(new Scopes.UnitControl(unit,plan==null,true,true,true,true,true))),new Interactions.UnknownContract(contract));
+                new Interactions.EffectBound(new Interactions.ForeignEffects(plan==null?Scopes.NoMemory.INSTANCE:memory.bound(plan.ioReads(),plan.unknownReadBound()),
+                    plan==null?Scopes.NoMemory.INSTANCE:memory.bound(List.of(),plan.unknownWriteBound()),List.of()),List.of()),
+                new Control.InvocationOutcomes(after==null?List.of():List.of(new Control.Normal(after)),after==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Interactions.UnknownContract(contract));
             label=auxiliary.prefix(use,label,origin,local,result);
             var invokeLabel=plan!=null&&!plan.before().isEmpty()?memory.label(key+"/invoke"):label;
             if(plan!=null)result.addAll(memory.steps(key+"/before",plan.before(),label,invokeLabel,origin));
             result.add(new Sequence(invokeLabel,List.of(),invoke,origin));
-            if(plan!=null)result.addAll(use.control().filter(c->!c.routes().isEmpty()).isPresent()?control.after(key,use,plan,next,origin,local,memory):memory.after(key,plan,next,origin));
+            if(plan!=null)result.addAll(use.control().filter(c->!c.routes().isEmpty()).isPresent()?control.after(key,use,plan,next,origin,local,memory,topology):memory.after(key,plan,next,origin));
             if(declaration!=null)associations.computeIfAbsent(candidate,k->new ArrayList<>()).add(new Interactions.ResourceUse(op,role(use),origin));
         }
         return List.copyOf(result);

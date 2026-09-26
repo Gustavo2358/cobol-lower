@@ -12,13 +12,19 @@ public final class FileSortSuite {
     public static void main(String[] args)throws Exception{run();}
     public static void run()throws Exception {
         var calls=new HashMap<String,Integer>(Map.of("sort-multiparty",0,"merge-multiparty",0,"release-from",0,"return-into",2,"procedure-ranges",5,"section-procedure",1,"table-key",0,"table-no-key",0,"missing-procedure",0));
-        calls.put("same-file",0);calls.put("implicit-use",2);calls.put("perform-procedure",2);
+        calls.put("same-file",0);calls.put("implicit-use",2);calls.put("perform-procedure",3);
         for(var name:new TreeSet<>(calls.keySet())) {
             var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(bytes(name));check(decoded instanceof SpJsonDecoder.Decoded,"SP2.26 sort contract: "+name+" "+decoded);
             var input=((SpJsonDecoder.Decoded)decoded).input();var result=new CobolLowerer().lower(input,CobolLower.OPTIONS);
             check(result.publication().isPresent(),"sort admitted: "+name+" "+result.status()+" "+result.admission().diagnostics()+" "+result.validation().map(v->v.issues().stream().filter(i->i.kind()==io.github.gustavo2358.air.validation.ValidationIssue.Kind.INVALID_IR).toList()));var p=result.publication().orElseThrow();var u=p.units().getFirst();
             long actual=u.sequences().stream().map(Sequence::terminator).filter(t->t instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget target&&target.category().equals("program")).count();
-            check(actual==calls.get(name),"CALL body occurrences preserved once: "+name+" actual="+actual);
+            check(actual==calls.get(name),"CALL source inventory plus explicit activation occurrences: "+name+" actual="+actual);
+            if(name.equals("perform-procedure")) {
+                var reached=CompositionalPerformSuite.reachable(u);
+                check(u.sequences().stream().filter(q->reached.contains(q.label())&&q.terminator() instanceof Operations.Invoke i
+                    &&i.target() instanceof Interactions.LiteralTarget t&&t.name().equals("FILLPGM")).count()==1,
+                    "PERFORM reaches exactly one FILLPGM activation; ordinary occurrence remains distinct");
+            }
             check(u.sequences().stream().noneMatch(q->q.terminator() instanceof Operations.Invoke i&&i.target() instanceof Interactions.ComputedTarget t&&t.namespace().equals("cobol.external-file-name")),"known local SD never becomes unknown external filename");
             check(p.uncertainties().stream().noneMatch(g->g.code().equals("SOURCE_NONE_EFFECT")),"NO_OP cannot invent environmental effects");
             var resources=p.resources().stream().filter(r->r.declaration().isPresent()).toList();

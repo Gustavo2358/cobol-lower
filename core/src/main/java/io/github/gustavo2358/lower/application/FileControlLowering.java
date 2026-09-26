@@ -41,9 +41,11 @@ final class FileControlLowering {
         var header=unknown(op,origin,critical?"FILE_CRITICAL_ERROR_EXIT_NOT_PROVEN":"FILE_NORMAL_CONTINUATION_NOT_PROVEN");
         return new Operations.Opaque(header,"file-event-continuation",List.of(),List.of(),
             new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,true,true,true))),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
+                new Control.ControlEnvelope(next==null?List.of():List.of(new Control.JumpAlternative(next)),critical
+                    ?new Scopes.WithinControl(new Scopes.UnitControl(unit,false,true,true,false,false,false))
+                    :next==null?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE)));
     }
-    List<Sequence> after(String key,FileFacts.Use use,FileFacts.EffectPlan plan,LabelId next,OriginId origin,LocalIds local,FileMemoryLowering memory) {
+    List<Sequence> after(String key,FileFacts.Use use,FileFacts.EffectPlan plan,LabelId next,OriginId origin,LocalIds local,FileMemoryLowering memory,java.util.function.Function<String,LabelId> topology) {
         var control=use.control().orElseThrow();var routes=control.routes();var result=new ArrayList<Sequence>();
         if(routes.size()==1)result.add(new Sequence(memory.label(key+"/select/0"),List.of(),new Operations.Jump(exact(operation(local,key+"/select/0"),origin),memory.label(key+"/event/"+routes.getFirst().event())),origin));
         var effects=new EnumMap<FileFacts.EffectOutcome,List<FileFacts.MemoryStep>>(FileFacts.EffectOutcome.class);plan.outcomes().forEach(o->effects.put(o.outcome(),o.steps()));
@@ -61,7 +63,10 @@ final class FileControlLowering {
                 if(i+1<destinations.size())result.add(new Sequence(at,List.of(),choice(local,eventKey+"/dispatch/"+i,origin,selected,memory.label(eventKey+"/dispatch/"+(i+1))),origin));
                 else selected=at;
                 Terminator term;
-                if(d.kind()==FileFacts.DestinationKind.USE) {
+                if(topology!=null) {
+                    var target=topology.apply("file/"+use.ordinal()+"/"+route.event()+"/"+i);
+                    term=continuing(local,eventKey+"/topology/"+i,origin,target,route.criticalExit());
+                } else if(d.kind()==FileFacts.DestinationKind.USE) {
                     var declaration=declarations.get(d.declarative().orElseThrow());var target=declaration.entry().map(s->PartialProgramAssembler.label(s,unit,ids));
                     if(target.isPresent()) {
                         resumes.computeIfAbsent(declaration.id(),ignored->new LinkedHashSet<>()).add(resume);
@@ -75,7 +80,7 @@ final class FileControlLowering {
                 } else term=continuing(local,eventKey+"/continue/"+i,origin,resume,false);
                 result.add(new Sequence(selected,List.of(),term,origin));
             }
-            result.add(new Sequence(resume,List.of(),continuing(local,eventKey+"/resume",origin,next,route.criticalExit()),origin));
+            if(topology==null)result.add(new Sequence(resume,List.of(),continuing(local,eventKey+"/resume",origin,next,route.criticalExit()),origin));
         }
         return List.copyOf(result);
     }
@@ -86,7 +91,7 @@ final class FileControlLowering {
             var alternatives=resumes.getOrDefault(d.id(),Set.of()).stream().sorted(Comparator.comparing(LabelId::localId))
                 .<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
             var envelope=new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),Scopes.NoMemory.INSTANCE,List.of(),Scopes.NoMemory.INSTANCE,List.of()),
-                new Control.ControlEnvelope(alternatives,new Scopes.WithinControl(new Scopes.UnitControl(unit,false,false,true,false,false,false))),
+                new Control.ControlEnvelope(alternatives,alternatives.isEmpty()?new Scopes.WithinControl(new Scopes.LabelsControl(List.of())):Scopes.NoControl.INSTANCE),
                 new Envelopes.DependencyEnvelope(List.of(),Scopes.NoResources.INSTANCE));
             result.add(new Sequence(label(ids,key),List.of(),new Operations.Opaque(unknown(operation(ids,key),origin,"LOCAL_RETURN_CONTEXT_NOT_PROVEN"),"use-body-return",List.of(),List.of(),envelope),origin));
         }

@@ -73,6 +73,19 @@ public final class ConditionalGoToIntegrationSuite {
             for(var fact:input.statements())if(fact instanceof SpInput.ConditionalGoToFact c){operation(result,c);count++;}
             check(count==n,"finite multiplicity of source occurrences "+n);
         }
+        long diagnosticReferences=-1;
+        for(int diagnostics:new int[]{0,1,50}) {
+            var codes=java.util.stream.IntStream.range(0,diagnostics).mapToObj(i->"selector-gap-"+i).toList();
+            var partial=IfInputs.with(IfInputs.with(g,"selectorInteger",false),"gapCodes",codes);
+            var r=PartialIntegrationSuite.lower(replace(base,partial));var op=operation(r,partial);
+            check(op.envelope().control().remainder()==Scopes.NoControl.INSTANCE,
+                "selector diagnostics do not open the Unit");
+            check(op.envelope().control().known().size()==4 && op.envelope().memory().otherReads()==Scopes.NoMemory.INSTANCE,
+                "ordinal alternatives and source read are independent of diagnostic count");
+            long currentReferences=r.admission().statistics().referencesChecked();
+            if(diagnosticReferences<0)diagnosticReferences=currentReferences;
+            else check(currentReferences==diagnosticReferences,"diagnostic count does not change reference work");
+        }
         var ds=g.destinations();
         for(int ordinal:new int[]{-1,1,9}) {
             var changed=new ArrayList<>(ds);changed.set(0,IfInputs.with(ds.getFirst(),"ordinal",ordinal));

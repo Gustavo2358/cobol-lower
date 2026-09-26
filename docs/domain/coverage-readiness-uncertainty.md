@@ -4,7 +4,7 @@
 
 Inventory responde o que foi observado/inventariado. Coverage responde como cada ocorrência foi representada. Readiness descreve suficiência relativa a uma capability upstream. Precisão AIR descreve garantias nas dimensões do target. Não existe conversão global `SUFFICIENT → EXACT`.
 
-O mapeamento exige regra por dimensão, escopo e fatos concretos. Um `READY` publicado pelo frontend pode não satisfazer precondições da AIR, como os audits de CALL/IF já demonstraram. Um `BLOCKED` em effects não impede necessariamente o primeiro target de controle, mas também não autoriza anunciar efeitos vazios.
+O mapeamento exige regra por dimensão, escopo e fatos concretos. Um `READY` publicado pelo frontend pode não satisfazer precondições da AIR, como os audits de CALL/IF já demonstraram. Um `BLOCKED` em effects não impede necessariamente o primeiro target de controle, e não concede efeitos de compensação. A projeção pode omitir efeito fora da abstração com cobertura explícita.
 
 ## Entry inventory
 
@@ -19,7 +19,7 @@ A política inicial é publicar cobertura conservadora da Unit/publicação e um
 | Start conhecido | Entry aponta para label do statement publicado | Inventário de entries alternativas |
 | GOBACK tipado | Saída da ativação corrente, sem successor local | Runtime caller, contexto raiz/subprograma |
 | Assinatura zero conhecida | Nenhum parâmetro nem valor explícito de retorno no perfil | Assinaturas parciais de outras entradas |
-| Effects/dataflow BLOCKED | Nenhuma certificação de effects/dataflow herdada do frontend | Sem inventar no-op ou garantia física de memória |
+| Effects/dataflow BLOCKED | Nenhuma certificação de effects/dataflow herdada do frontend | Sem confundir omissão abstrata com pureza concreta ou garantia física de memória |
 | Provenance parcial | Correlacionar evidência disponível | Sem fabricar coordenadas |
 
 Cada claim EXACT/CONSERVATIVE/OPEN/UNAVAILABLE/NOT_APPLICABLE da AIR precisa de rationale. NOT_APPLICABLE significa de fato não aplicável à observação, não “não implementamos”. Um relatório deve preservar as claims upstream usadas e as rejeitadas como insuficientes.
@@ -33,3 +33,13 @@ Não misturar ausência JSON, null, coleção vazia, unknown e input missing. Ta
 ## Relatório versus fatos AIR
 
 O relatório de lowering preserva a rastreabilidade das decisões e diagnósticos, mas uma lacuna necessária à interpretação da AIR não pode existir **somente** no relatório. O consumidor que recebe apenas Publication precisa observar seus limites sem callback para o relatório ou frontend.
+
+## Dois canais vigentes — W1
+
+Coverage, Precision e Uncertainty descritivas não são instruções de transferência.
+Unknown de valor/efeito legítimo exige expressão/operação/bound semântico explícito;
+falta de implementação isolada não cria esses componentes. O lower mantém
+`ScalarEvidence.limited` como diagnóstico de certificação, sem inseri-lo no lattice.
+Alterar somente os diagnósticos preserva a projeção semântica e as consultas.
+Isso não promete monotonicidade de candidatos entre diferentes abstrações fonte.
+Ver [topologia positiva](positive-memory-topology.md) para escopo e limites W2.

@@ -10,9 +10,10 @@ final class ScalarDataTranslator {
     record Result(List<Memory.ObjectDeclaration> objects, List<Memory.Storage> storage,
                   Map<SpInput.DataId, LoweringResult.DataLink> index,
                   Map<SpInput.DataId,Memory.ViewBinding> views,
-                  Map<io.github.gustavo2358.lower.domain.StorageFacts.BaseId,StorageId> physical,Map<SpInput.DataId,ObjectId> nominal) {
+                  Map<io.github.gustavo2358.lower.domain.StorageFacts.BaseId,StorageId> physical,Map<SpInput.DataId,ObjectId> nominal,
+                  Map<SpInput.DataId,Integer> logicalTextExtents) {
         Result(List<Memory.ObjectDeclaration> objects,List<Memory.Storage> storage,Map<SpInput.DataId,LoweringResult.DataLink> index) {
-            this(objects,storage,index,Map.of(),Map.of(),index.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())));
+            this(objects,storage,index,Map.of(),Map.of(),index.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.of());
         }
     }
     static Result translate(List<SpInput.DataFact> data, UnitId unit, LocalIds ids, SourceOrigins origins,
@@ -33,6 +34,9 @@ final class ScalarDataTranslator {
             index.put(d.id(), new LoweringResult.DataLink(d.id(), object, cell, origin));
             items.add(ScalarEvidence.item(unit.publication(), "data", d.id().handle(), origin, List.of(object, cell)));
         }
-        return new Result(objects, cells, index);
+        var extents=new LinkedHashMap<SpInput.DataId,Integer>();
+        for(var declaration:data)declaration.scalarText().ifPresent(text->extents.put(declaration.id(),text.logicalExtent()));
+        return new Result(objects, cells, index,Map.of(),Map.of(),index.entrySet().stream()
+            .collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.copyOf(extents));
     }
 }
