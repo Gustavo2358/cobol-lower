@@ -70,3 +70,9 @@ and a procedure endpoint reached after an external GO TO and EXIT PARAGRAPH.
 Future-version rejection tests now use 2.49; they retain their original strict
 UNSUPPORTED_CONTRACT expectation. Existing semantic fixture expected values remain
 unchanged. Final gate/corpus results are reported in the Draft PR.
+
+A THRU endpoint naming a SECTION is ordered by its completion, after its last
+paragraph, not by the position of its header. A start paragraph may therefore be
+inside that ending section. RANGE entry is explicit; its final inventory element
+is the endpoint scope even when that scope encloses the start. An adversary asserts
+that earlier paragraphs and the following section remain unreachable.
