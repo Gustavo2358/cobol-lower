@@ -98,3 +98,9 @@ open read/write bounds describe unproved locations without removing known facts.
 The existing lower admission and MAY lowering suffice. Three frozen compilations,
 closed-omission negatives and seven new dependency adversaries cover the boundary.
 See [incomplete file effects](../work/incomplete-file-effects.md).
+
+
+## Structural DFH review — 2026-09-27
+
+SP2.49 producer `15a37dac4592ce1387907ea97bb9b04640e8432a` (Draft PR #64). The lock records exact tree/blob hashes.
+Admission and round-trip preserve explicit synthetic model assumptions; AIR pins remain unchanged.
