@@ -81,3 +81,11 @@ AIR harness reconciliation: pin `26016f10460336f237a33b2ed126a6a1427f0207` repla
 ## R7 final source handler contract
 
 Current additional input contract: SP2.45 from frontend fbbf61d1840eb92dca804c53d8e9b6e60538318a. The strict pin is recorded in sources.lock.json. Exceptional source events, conditional handler selection and entry deactivation are analysis-only; AIR2.0, CFG and dependency-policy pins remain unchanged. Historical SP profiles and fixture bytes remain supported. See ../domain/cics-exceptional-handlers.md.
+
+## Storage boundary fixes — 2026-09-27
+
+Producer `4da7d8b03941ee78acba0d001a7e6391c1f7d371` supplies negative relation fixes and complete logical RENAMES
+proofs within SP 2.48.0. The lock records its tree and selected file hashes.
+The lower preserves GLOBAL identities separately from allocation and admits
+FILLER/nonallocating RENAMES views. Uncertain I/O retains MAY effects.
+See [validation and limits](../work/storage-boundary-fixes.md). AIR/CFG pins unchanged.

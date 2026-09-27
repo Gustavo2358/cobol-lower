@@ -112,16 +112,19 @@ final class RegionalStorageAdmission {
             if(owner.parent().isEmpty())unboundedRelation=true;
             else uncertainBases.add(views.get(owner.id()).base());
         }
+        // RENAMES is an additional view, not an allocating physical child.
+        // Its own identity, endpoints and unknown ranges are validated separately.
+        var renamesOwners=storage.renames().stream().map(r->r.owner()).collect(java.util.stream.Collectors.toSet());
         var childNodes=new HashMap<NodeId,List<Node>>();
-        for(var node:nodes.values())node.parent().ifPresent(parent->childNodes.computeIfAbsent(parent,ignored->new ArrayList<>()).add(node));
+        for(var node:nodes.values())if(!renamesOwners.contains(node.id()))node.parent().ifPresent(parent->childNodes.computeIfAbsent(parent,ignored->new ArrayList<>()).add(node));
         var viewsByBase=new HashMap<BaseId,List<View>>();
-        for(var view:views.values())viewsByBase.computeIfAbsent(view.base(),ignored->new ArrayList<>()).add(view);
+        for(var view:views.values())if(!renamesOwners.contains(view.node()))viewsByBase.computeIfAbsent(view.base(),ignored->new ArrayList<>()).add(view);
         var exactByRepresentative=new HashMap<NodeId,List<LogicalExactView>>();
         for(var exact:storage.logicalExactViews()) {
             c.touch();var node=nodes.get(exact.node());var representative=nodes.get(exact.representative());
             require(node!=null&&representative!=null&&exact.length()!=null&&exact.length().signum()>0
                 &&node.kind()!=Kind.OPAQUE&&representative.kind()!=Kind.OPAQUE
-                &&node.data().isPresent()&&representative.data().isPresent()
+                &&(node.data().isPresent()||node.filler())&&representative.data().isPresent()
                 &&views.get(node.id()).base().equals(views.get(representative.id()).base()),"exact logical view requires supported sibling identity");
             exactByRepresentative.computeIfAbsent(exact.representative(),ignored->new ArrayList<>()).add(exact);
         }

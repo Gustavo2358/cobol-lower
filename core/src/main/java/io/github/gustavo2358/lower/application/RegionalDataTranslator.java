@@ -162,8 +162,9 @@ final class RegionalDataTranslator {
             var view=source.byData().get(declaration.id());var base=view==null?null:physical.get(view.base());
             var dataOrigin=origins.source("data",declaration.id().handle(),declaration.provenance());
             var publishedBinding=factDependencies==null||view==null?null:factDependencies.bindings.get(view.node().handle());
-            if(publishedBinding!=null&&!factDependencies.available(publishedBinding.dependencies())
-                    ||base==null&&!sourceText.contains(declaration.id())&&!requiredData.contains(declaration.id())) {
+            boolean bindingAvailable=publishedBinding!=null&&factDependencies.available(publishedBinding.dependencies());
+            if(!requiredData.contains(declaration.id())&&((publishedBinding!=null&&!bindingAvailable)
+                    ||base==null&&!sourceText.contains(declaration.id()))) {
                 // The declaration identity remains in SP, but neither a logical
                 // value domain nor an executable physical view was published.
                 // A missing materialization does not create an AIR alias.
@@ -186,17 +187,19 @@ final class RegionalDataTranslator {
                 uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(object)),"No source proof of AIR logical type",objectOrigin));
                 type=new Types.UnknownType(typeReason);
             }
+            // Required GLOBAL/capture identities survive unavailable storage proofs.
+            // Their unknown view cannot be promoted to a Cell or a positive binding.
             // An absent physical base is a materialization gap, not evidence that
             // this nominal object aliases every storage object in the publication.
             Memory.Binding binding;
             Memory.Visibility visibility=Memory.Visibility.UNKNOWN;
-            if(publishedBinding!=null) {
+            if(bindingAvailable) {
                 binding=FactDependencyStorage.binding(publishedBinding,provedCells,physical,source.owner().unit(),reason);
                 objectOrigin=FactDependencyStorage.proofOrigin(factDependencies,publishedBinding.dependencies(),"binding/"+view.node().handle(),unit,ids,origins);
                 var cell=publishedBinding.exactCell().isEmpty()?Optional.<StorageId>empty():Optional.of(provedCells.get(publishedBinding.exactCell()));
                 visibility=Memory.Visibility.PRIVATE;
                 if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
-            } else if(base==null&&sourceText.contains(declaration.id())&&!captureLocals.contains(declaration.id())&&source.localCellSafe(declaration.id())) {
+            } else if(publishedBinding==null&&base==null&&sourceText.contains(declaration.id())&&!captureLocals.contains(declaration.id())&&source.localCellSafe(declaration.id())) {
                 var exact=exactByNode.get(view==null?null:view.node());
                 var key=exact==null?declaration.id().handle():exact.representative().handle();
                 var cell=logicalCells.get(key);

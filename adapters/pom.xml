@@ -15,6 +15,8 @@
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.DecoderSuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution><execution><id>air-output-suite</id><phase>test</phase><goals><goal>java</goal></goals>
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass><classpathScope>test</classpathScope></configuration>
+    </execution><execution><id>storage-boundary-suite</id><phase>test</phase><goals><goal>java</goal></goals>
+      <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.StorageBoundarySuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution></executions>
   </plugin></plugins></build>
 </project>

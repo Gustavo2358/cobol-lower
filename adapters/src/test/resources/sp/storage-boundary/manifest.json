@@ -1,0 +1,65 @@
+[
+  {
+    "name": "global-fd-record-visibility",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/global-fd-record-visibility.cbl",
+    "sourceSha256": "31d35233bdc4151e17ddf154fb9341850b340c128318be4f864fc493e7d523a7",
+    "productSha256": "2a803f8a8745033878ba26d53de576455604c49f86edca6289c2e80383f71dd5"
+  },
+  {
+    "name": "global-subordinate-visibility",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/global-subordinate-visibility.cbl",
+    "sourceSha256": "69e4880515a4f6430921b13502c4ca8df2e5f9a5d13c632b12903f0a6e74219b",
+    "productSha256": "c1b58356ae91d6587a29a2894f3ad88f626033640faaefa2911ae90252b21b44"
+  },
+  {
+    "name": "nested-data-visibility",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/nested-data-visibility.cbl",
+    "sourceSha256": "fe2a90bbec2a3f9db2962b03677dd1ca4c1d4680c0f789f4f04eecc314d9be72",
+    "productSha256": "553173223e8db7ea7c3c1c1f5869d1a84d2711c697954282855e7904cba326d2"
+  },
+  {
+    "name": "nested-global-file",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/nested-global-file.cbl",
+    "sourceSha256": "3d8a531fe340faebd354759d614724bbadd85197b3b4e6d89c4026294a131c35",
+    "productSha256": "b500730b743089f18b7997a414df9a306fa6a093e8a482803fb0b8cfd6c5794a"
+  },
+  {
+    "name": "nested-global-through-local-data",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/nested-global-through-local-data.cbl",
+    "sourceSha256": "cf5d58f603036b45123a340fc236136b1f12a7a4b3c412aaa19aa257af13e76a",
+    "productSha256": "5147e11a50314b05e7346b9f7b1394b841085a56453132c100d5626e60507209"
+  },
+  {
+    "name": "nested-namespace-shadowing",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/nested-namespace-shadowing.cbl",
+    "sourceSha256": "515e0f39b9fa478f9797b789943ac62451b2583a1fb253e32c3ac1a0ee62dc95",
+    "productSha256": "988f5aa21008f0b4ff1a34c55bac46bf53671f759ea16b5fea4427ea1e9288ee"
+  },
+  {
+    "name": "nested-qualified-global",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/nested-qualified-global.cbl",
+    "sourceSha256": "b8a426fabea54308758fbb677453379901ebacb62b96a3b9ad2546902b133e0b",
+    "productSha256": "476e295a53222563f89d845501f728e7a354be83674363f67a8b17f19403d730"
+  },
+  {
+    "name": "filler-redefines-owner",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/filler-redefines-owner.cbl",
+    "sourceSha256": "9ff555857ca3c0b4c9ceeca39346326dfc2c5eff8042cc3cf0b7b235fb6e4c28",
+    "productSha256": "396a34ab223e0a08de80c085ba8d786758501ef3fe012a3e2e1a6a856cdee11e"
+  },
+  {
+    "name": "renames-structural-binding",
+    "producer": "f33fae3b13edc8e2ba044e948836875fe55cb7de",
+    "source": "src/test/resources/cobol/resolution/renames-structural-binding.cbl",
+    "sourceSha256": "22e42cdb2c3bf5c6da71db74ec254b7bbb56a65d90b7b31d795b6eb3d4b8b904",
+    "productSha256": "e536ac8c30b95fc26698b9d5347ab7be41f8797e425f718756c833849bc18bc5"
+  }
+]
