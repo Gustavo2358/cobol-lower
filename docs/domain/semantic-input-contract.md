@@ -77,3 +77,13 @@ graph. 2.40 requires it alongside R1 topology; <=2.39 retains historical meaning
 SP 2.48 adds scoped control completion and typed multi-level VARYING payloads.
 See [control topology](control-topology.md#sp-248-scoped-exits-section-and-varying-levels)
 for versioning, validation and AIR translation obligations.
+
+
+## SP 2.49 synthetic declaration assumptions
+
+The admitted `NOMINAL_TEXT_SOURCE_V2` authority requires a boolean `modelAssumed`
+on every symbol. Lower validates and transports it to qualified source evidence.
+V1 remains closed to that field and keeps its two-field symbol wire. V2 cannot
+be admitted under SP <=2.48; missing, null and nonboolean flags are input errors.
+No filename/name heuristic, reparsing, storage proof or AIR change is implied.
+The [model revision](../work/synthetic-dfh-structure.md) defines the evidence boundary.

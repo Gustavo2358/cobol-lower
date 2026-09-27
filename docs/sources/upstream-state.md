@@ -1,5 +1,20 @@
 # Estado upstream observado
 
+## Estado vigente — catálogo IBM estrutural
+
+Os pins atuais estão em [sources.lock.json](sources.lock.json): frontend SP 2.49 /
+NOMINAL_TEXT_SOURCE_V2, com modelAssumed e nove membros IBM; fallback sintético
+SQLCA autorizado somente por EXEC SQL INCLUDE. Arquivos reais mantêm precedência.
+O frontend #64 está mergeado em `22d37233373b9db691ba170d898b7523bfea5746`; a integração segue em
+cobol-lower #39 e analysis-cfg #49.
+Evidência executada e reuso estão em [CardDemo IBM](../work/carddemo-ibm-copybooks.md).
+
+As seções abaixo preservam a sequência histórica de checkpoints. Versões, pins,
+estados e pendências nelas registrados pertencem à época de cada observação;
+não substituem os campos atuais do lock nem descrevem o estado de merge atual.
+
+## Checkpoints históricos
+
 **Consulta:** 2026-09-06; apenas air-java revalidado em 2026-09-07. A baseline abaixo é fixa para preparar o trabalho; não garante que main não avançará. Atualizações posteriores seguem controle de mudanças.
 
 | Produto | Commit observado | Estado relevante |
@@ -98,3 +113,21 @@ open read/write bounds describe unproved locations without removing known facts.
 The existing lower admission and MAY lowering suffice. Three frozen compilations,
 closed-omission negatives and seven new dependency adversaries cover the boundary.
 See [incomplete file effects](../work/incomplete-file-effects.md).
+
+
+## Structural DFH review — 2026-09-27
+
+SP2.49 producer `15a37dac4592ce1387907ea97bb9b04640e8432a` (Draft PR #64). The lock records exact tree/blob hashes.
+Admission and round-trip preserve explicit synthetic model assumptions; AIR pins remain unchanged.
+
+Final Draft producer pin: `ec83262bd65752f785f7d4df37a1310732e23a7b`. Since 15a37da, only deterministic V1 key order, its test/oracle guard and qualification documentation changed. Final frontend FAST and all E2E/reuse evidence are recorded in the structural work item.
+
+
+## CardDemo IBM catalogue — 2026-09-27
+
+Producer `503e11f6b33daa504e6338cf84a11984acab82cf` extends the approved model authority to six MQ members and Db2 SQLCA.
+SP 2.49 and nominal V2 contracts are unchanged. All 73 CardDemo variants crossed
+this lower through the production CLI, preserving dependency evidence.
+[Qualification and reuse](../work/carddemo-ibm-copybooks.md).
+
+Final documentation-only producer pin: `f8170f513eef29adfff5a94f418e1c6481ee2365`. All selected producer blobs are identical to the FAST pin `503e11f6b33daa504e6338cf84a11984acab82cf`. The only intervening change corrects the runtime source label in the evidence report.
