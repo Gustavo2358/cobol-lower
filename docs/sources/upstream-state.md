@@ -106,3 +106,13 @@ SP2.49 producer `15a37dac4592ce1387907ea97bb9b04640e8432a` (Draft PR #64). The l
 Admission and round-trip preserve explicit synthetic model assumptions; AIR pins remain unchanged.
 
 Final Draft producer pin: `ec83262bd65752f785f7d4df37a1310732e23a7b`. Since 15a37da, only deterministic V1 key order, its test/oracle guard and qualification documentation changed. Final frontend FAST and all E2E/reuse evidence are recorded in the structural work item.
+
+
+## CardDemo IBM catalogue — 2026-09-27
+
+Producer `503e11f6b33daa504e6338cf84a11984acab82cf` extends the approved model authority to six MQ members and Db2 SQLCA.
+SP 2.49 and nominal V2 contracts are unchanged. All 73 CardDemo variants crossed
+this lower through the production CLI, preserving dependency evidence.
+[Qualification and reuse](../work/carddemo-ibm-copybooks.md).
+
+Final documentation-only producer pin: `f8170f513eef29adfff5a94f418e1c6481ee2365`. All selected producer blobs are identical to the FAST pin `503e11f6b33daa504e6338cf84a11984acab82cf`. The only intervening change corrects the runtime source label in the evidence report.
