@@ -11,7 +11,7 @@ import io.github.gustavo2358.air.model.*;
 import io.github.gustavo2358.air.json.AirJson;
 import static io.github.gustavo2358.lower.application.HandlerStateAnalysis.*;
 
-/** SP2.45 real frontend fixtures; source exceptional entry is not executable AIR. */
+/** SP2.45 real frontend fixtures; validated event authority qualifies executable control. */
 public final class ExceptionalHandlerSuite {
     static final ObjectMapper J=new ObjectMapper(); static int checks,mutations,metamorphics;
     static void need(boolean b,String m){checks++;if(!b)throw new AssertionError(m);}
@@ -21,7 +21,8 @@ public final class ExceptionalHandlerSuite {
     static Run run(ObjectNode wire)throws Exception{
         var d=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(wire));need(d instanceof SpJsonDecoder.Decoded,"decode "+d);
         var in=((SpJsonDecoder.Decoded)d).input();var r=new CobolLowerer().lower(in,CobolLower.POSITIVE_OPTIONS);
-        need(r.status()==LoweringResult.Status.BOUNDED_PUBLICATION,"bounded publication "+r.status()+" "+r.admission().diagnostics());
+        need(r.publication().isPresent(),"validated publication "+r.status()+" "+r.admission().diagnostics());
+        need((r.status()==LoweringResult.Status.BOUNDED_PUBLICATION)==!r.admission().nonExecutableCapabilities().isEmpty(),"bounded only for unqualified capabilities");
         need(r.admission().input().orElseThrow().equals(in),"no fact deletion");
         var a=r.admission().handlerState().orElseThrow();need(a.equals(HandlerStateScheduleProbe.reverse(in)),"worklist schedule independence");
         need(a.metrics().worklistPops()==a.nodes().size(),"finite facts, no histories");
@@ -41,7 +42,8 @@ public final class ExceptionalHandlerSuite {
             need(o.envelope().control().known().isEmpty(),"source ingress cannot become executable successor");
             need(o.envelope().memory().knownWrites().isEmpty(),"no fabricated effects");
         }
-        var old=new CobolLowerer().lower(in,CobolLower.OPTIONS);need(old.status()==LoweringResult.Status.IMPLEMENTATION_LIMIT&&old.publication().isEmpty(),"historical opt-in boundary");
+        var old=new CobolLowerer().lower(in,CobolLower.OPTIONS);if(!r.admission().nonExecutableCapabilities().isEmpty())need(old.status()==LoweringResult.Status.IMPLEMENTATION_LIMIT&&old.publication().isEmpty(),"unqualified facts still require opt-in");
+        else need(old.publication().isPresent(),"qualified events publish in executable profile");
         return new Run(in,r,a);
     }
     static List<Selection> entries(Run r){return r.a().selections().stream().filter(s->s.localEntry().isPresent()).toList();}
@@ -87,7 +89,7 @@ public final class ExceptionalHandlerSuite {
         }need(run(reordered).a().equals(def.a()),"topology inventory permutation");metamorphics++;
         var ev=(ObjectNode)wire("default").path("controlTopology").path("exceptionalEvents").get(0); // wire negatives separate from real fixtures
         for(var version:List.of("2.40.0","2.41.0","2.42.0","2.43.0","2.44.0")){var w=wire("default");w.put("contractVersion",version);reject(w,"old profile rejects exceptional authority");}
-        for(var version:List.of("2.50.0","9.99","unknown")){var w=wire("default");w.put("contractVersion",version);w.withObject("controlTopology").put("exceptionalEvents",false);var r=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(w));need(r instanceof SpJsonDecoder.Rejected x&&x.diagnostic().code()==SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"version before malformed semantic shape");mutations++;}
+        for(var version:List.of("2.51.0","9.99","unknown")){var w=wire("default");w.put("contractVersion",version);w.withObject("controlTopology").put("exceptionalEvents",false);var r=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(w));need(r instanceof SpJsonDecoder.Rejected x&&x.diagnostic().code()==SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"version before malformed semantic shape");mutations++;}
         for(var field:List.of("premises","scope","eligibility","statement","proofs")){
             var w=wire("default");var x=(ObjectNode)w.path("controlTopology").path("exceptionalEvents").get(0);
             if(field.equals("premises")||field.equals("proofs"))x.putArray(field);else x.put(field,"INVENTED");reject(w,"invalid event "+field);

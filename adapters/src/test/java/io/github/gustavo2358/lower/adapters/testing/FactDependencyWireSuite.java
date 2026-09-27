@@ -33,6 +33,15 @@ public final class FactDependencyWireSuite {
         var object=result.publication().orElseThrow().units().getFirst().objects().stream().filter(o->o.id().equals(link.object())).findFirst().orElseThrow();
         need(object.storage() instanceof Memory.CellBinding,"proved local TEXT cell survives absent physical profile");
         need(graph.equals(JSON.readValue(JSON.writeValueAsBytes(graph),FactDependencies.class)),"typed roundtrip");
+        var model=fixture("closed-copy");model.put("contractVersion","2.50.0");
+        ObjectNode modelInput=null;
+        for(var i:model.path("factDependencies").path("inputs"))if(i.path("kind").asText().equals("MISSING_COPY")){modelInput=(ObjectNode)i;break;}
+        need(modelInput!=null,"fixture has unavailable input");modelInput.put("kind","MODEL_STORAGE");
+        var modeled=decode(model);need(modeled.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==FactDependencies.InputKind.MODEL_STORAGE&&!i.available()),"model input confidence transported");
+        model.put("contractVersion","2.49.0");
+        need(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(model)) instanceof SpJsonDecoder.Rejected,"new model scope cannot masquerade as old contract");
+        model.put("contractVersion","2.50.0");modelInput.put("available",true);
+        need(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(model)) instanceof SpJsonDecoder.Rejected,"model input cannot certify physical memory");
         var old=tree.deepCopy();old.remove("factDependencies");old.put("contractVersion","2.39.0");
         var legacy=decode(old);need(legacy.factDependencies().isEmpty(),"old wire remains old interpretation");
         need(lower(legacy).status()==LoweringResult.Status.BLOCKED_LOWERING,"historical storage blocker is not retroactively reinterpreted");

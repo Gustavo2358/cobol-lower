@@ -1,5 +1,27 @@
 # IBM language authority (frozen before production patch)
 
+## Executable qualification (D5)
+
+The source analysis below remains an independent certificate. The D5 materializer
+now reuses its finite Support algebra and validated event selections to specialize
+executable contexts. It never copies source summary return edges into AIR.
+Explicit ABEND and guarded XCTL PGMIDERR can select a proved local LABEL. The exit
+starts DEACTIVATED, in a new ingress context; CANCEL/RESET/replacement remain
+correlated with their activation provenance. Nested PERFORM returns only to its
+own caller. Handler paragraph completion does not restore interrupted PERFORM.
+
+ABEND CANCEL publishes alternative halt; inactive exits retain outer propagation.
+Unavailable event authority remains NOT_READY. Unknown local exit identity stays
+an explicit open frontier; it does not license arbitrary local labels. Native
+CALL makes handler state unknown, as in the existing source model. Runtime event
+premises accompany exceptional AIR alternatives. Unknown effects stay MAY.
+
+Handler PROGRAM dispatch, other command-specific default conditions and restoration
+of an interrupted stack remain unavailable. See [campaign](../work/cics-control-completion.md)
+for the adversaries and corpus qualification. The historical source-only design
+below describes the certificate, not the current executable admission boundary.
+
+
 Primary sources queried 2026-09-25; raw search output: campaign evidence archive (finish-r7/ibm-search.json).
 
 - [XCTL](https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-xctl): successful transfer replaces the executing program at the same logical level. PGMIDERR has abnormal task termination as its default disposition. Resource/runtime failure itself is not statically known.

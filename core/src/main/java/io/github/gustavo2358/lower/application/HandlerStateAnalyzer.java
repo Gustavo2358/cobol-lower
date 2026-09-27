@@ -126,7 +126,7 @@ final class HandlerStateAnalyzer {
         selections.add(new Selection(event.id(),source,event.origin().name(),event.premises().stream().map(Enum::name).toList(),
             selected,entryState,localEntry,unknown,inactive,outer,bypass,event.proofs()));
     }
-    private Support transfer(CicsHandlerFact h,Support predecessor) {
+    Support transfer(CicsHandlerFact h,Support predecessor) {
         return switch(h.action()) {
             case ACTIVATE -> new Support(new State(Kind.ACTIVE,registrationTargets.get(h.header().id().handle()),Cause.NONE),Optional.of(h.header().id()));
             case CANCEL -> predecessor.state().target().isEmpty()
@@ -224,7 +224,7 @@ final class HandlerStateAnalyzer {
         var definite=!unknown&&!inactive&&!bypass&&list.size()==1?Optional.of(list.getFirst().target()):Optional.<String>empty();
         return new Event(event.header().id(),event.dispatchEligibility(),status,states,list,definite,unknown,inactive,outer,bypass);
     }
-    private static String supportKey(Support s) {return s.state().kind()+"/"+s.state().target()+"/"+s.state().cause()+"/"+s.activation().map(StatementId::handle).orElse("");}
+    static String supportKey(Support s) {return s.state().kind()+"/"+s.state().target()+"/"+s.state().cause()+"/"+s.activation().map(StatementId::handle).orElse("");}
     private static String nodeKey(Node n) {return n.context()+"/"+n.location()+"/"+supportKey(n.support());}
     private static String derivationKey(Derivation d) {return nodeKey(d.destination())+"/"+d.source().map(HandlerStateAnalyzer::nodeKey).orElse("")+"/"+d.callerPremise().map(HandlerStateAnalyzer::nodeKey).orElse("")+"/"+d.authority();}
     private static <T> List<T> ordered(Collection<T> values,java.util.function.Function<T,String> key) {return values.stream().sorted(Comparator.comparing(key)).toList();}

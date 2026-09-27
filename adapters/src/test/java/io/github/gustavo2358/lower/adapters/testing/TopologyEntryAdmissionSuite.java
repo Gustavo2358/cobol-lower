@@ -51,6 +51,53 @@ public final class TopologyEntryAdmissionSuite {
         var legacy=decode(fixture("/sp/entry-localization/procedure-unsafe.json"));
         need(legacy.controlTopology().isEmpty(),"legacy authority check is independent");
         need(new CobolLowerer().lower(legacy,CobolLower.OPTIONS).status()==LoweringResult.Status.BLOCKED_LOWERING,"legacy missing start remains blocked");
+        callFrontier();
         System.out.println("TOPOLOGY_ENTRY_ADMISSION_CHECKS="+checks);
     }
+    private static void callFrontier()throws Exception {
+        var raw=fixture("/sp/topology-entry/call-frontier.json");
+        var tree=(ObjectNode)JSON.readTree(raw);
+        var completion=tree.deepCopy();
+        var outcomes=completion.path("controlTopology").path("outcomes");
+        var outcome=(ObjectNode)java.util.stream.StreamSupport.stream(outcomes.spliterator(),false)
+            .filter(o->o.path("statement").asText().equals("statement:1")).findFirst().orElseThrow();
+        outcome.put("kind","NORMAL").put("role","normal");
+        ((ObjectNode)outcome.path("target")).put("kind","COMPLETE");
+        var completed=lower(completion);
+        need(completed.publication().isPresent(),"CALL with proved local completion and unknown enclosing boundary remains valid");
+        var invocations=completed.publication().orElseThrow().units().getFirst().sequences().stream()
+            .map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).count();
+        need(invocations==1,"a post-CALL unknown boundary cannot execute the CALL again");
+        for(var target:List.of("computed","literal")) {
+            var sample=tree.deepCopy();
+            var call=(ObjectNode)sample.path("statements").get(1);
+            if(target.equals("literal")) {
+                call.put("syntax","LITERAL_PROGRAM_NAME");
+                var reference=call.path("target").path("reference");
+                var literal=JSON.createObjectNode().put("kind","LITERAL").put("id",reference.path("id").asText())
+                    .put("text","KEEPPGM").put("writtenText","'KEEPPGM'");
+                literal.set("logicalValue",JSON.createObjectNode().put("logicalDomain","TEXT").put("logicalExtent",7).put("value","KEEPPGM"));
+                literal.set("provenance",reference.path("provenance").deepCopy());call.set("target",literal);
+            }
+            var result=lower(sample);need(result.publication().isPresent(),"bounded CALL publication survives");
+            need(result.validation().orElseThrow().isStructurallyValid(),"CALL frontier passes AIR validator");
+            var unit=result.publication().orElseThrow().units().getFirst();
+            var invokes=unit.sequences().stream().map(Sequence::terminator).filter(Operations.Invoke.class::isInstance)
+                .map(Operations.Invoke.class::cast).toList();
+            need(invokes.size()==1,"unavailable completion must retain the CALL target");
+            var invoke=invokes.getFirst();
+            if(target.equals("computed"))need(invoke.target() instanceof Interactions.ComputedTarget c&&c.name() instanceof Expressions.Read,"known target operand retained");
+            else need(invoke.target() instanceof Interactions.LiteralTarget,"literal target survives unavailable completion");
+            need(invoke.outcomes().known().isEmpty()&&invoke.outcomes().remainder() instanceof Scopes.WithinControl w
+                &&w.scope() instanceof Scopes.LabelsControl labels&&labels.labels().isEmpty(),"no handler, return or successor fabricated");
+            need(result.statements().stream().noneMatch(link->Set.of("statement:2","statement:3").contains(link.source().handle())),
+                "unlicensed handler and following GOBACK remain inventory only");
+            var reversed=sample.deepCopy();var statements=(com.fasterxml.jackson.databind.node.ArrayNode)reversed.path("statements");
+            var facts=new ArrayList<JsonNode>();statements.forEach(facts::add);Collections.reverse(facts);statements.removeAll();facts.forEach(statements::add);
+            var codec=new io.github.gustavo2358.air.json.AirJson();
+            need(Arrays.equals(codec.encode(result.publication().orElseThrow()),codec.encode(lower(reversed).publication().orElseThrow())),
+                "source array order cannot select frontier or continuation");
+        }
+    }
+
 }

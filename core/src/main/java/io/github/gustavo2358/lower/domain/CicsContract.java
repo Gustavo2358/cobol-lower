@@ -68,14 +68,16 @@ final class CicsContract {
     }
     static void command(StatementHeader header,CicsCommandKind kind,CicsCommandSyntaxStatus syntax,String raw,List<CicsOption> options,List<String> gaps) {
         var allowed=new HashSet<>(Set.of("RESP","RESP2","NOHANDLE"));
-        if(kind==CicsCommandKind.RETRIEVE)allowed.add("INTO");
+        if(kind==CicsCommandKind.SYNCPOINT_ROLLBACK)allowed.add("ROLLBACK");
+            if(kind==CicsCommandKind.RETURN)allowed.addAll(java.util.Set.of("TRANSID","COMMAREA","LENGTH","IMMEDIATE"));
+            if(kind==CicsCommandKind.RETRIEVE)allowed.add("INTO");
         if(kind==CicsCommandKind.SEND_TERMINAL)allowed.addAll(Set.of("FROM","LENGTH","ERASE"));
         if(kind==CicsCommandKind.SEND_MAP||kind==CicsCommandKind.RECEIVE_MAP)allowed.addAll(Set.of("MAP","MAPSET",kind==CicsCommandKind.SEND_MAP?"FROM":"INTO"));
         if(kind==CicsCommandKind.SEND_MAP)allowed.addAll(Set.of("CURSOR","ERASE","FREEKB"));
         var names=new HashSet<String>();int end=0;boolean shape=true;
         for(var o:options) {
             require(!o.name().isBlank()&&o.start()>=end&&o.end()>o.start()&&o.end()<=raw.length(),"command offsets/order");end=o.end();
-            boolean flag=Set.of("NOHANDLE","CURSOR","ERASE","FREEKB").contains(o.name());
+            boolean flag=Set.of("NOHANDLE","CURSOR","ERASE","FREEKB","ROLLBACK","IMMEDIATE").contains(o.name());
             shape&=names.add(o.name())&&allowed.contains(o.name())&&(flag?o.operand().isEmpty():o.operand().filter(v->!v.isBlank()).isPresent());
             require(o.reference().isEmpty()||o.operand().isPresent()&&!flag,"command reference has operand");
             o.reference().ifPresent(r->{require(r.id().statement().equals(header.id()),"command operand owner");
@@ -83,7 +85,8 @@ final class CicsContract {
         }
         require(header.coverage()!=CoverageStatus.MODELED,"command effects remain partial");
         if(syntax==CicsCommandSyntaxStatus.SUPPORTED) {
-            require(shape&&(kind==CicsCommandKind.SYNCPOINT||names.contains(kind==CicsCommandKind.RETRIEVE?"INTO":kind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command shape");
+                require(kind!=CicsCommandKind.RETURN||(!names.contains("LENGTH")||names.contains("COMMAREA"))&&(!names.contains("IMMEDIATE")||names.contains("TRANSID")),"RETURN option combination");
+            require(shape&&(kind==CicsCommandKind.RETURN||kind==CicsCommandKind.SYNCPOINT||kind==CicsCommandKind.SYNCPOINT_ROLLBACK&&names.contains("ROLLBACK")||names.contains(kind==CicsCommandKind.RETRIEVE?"INTO":kind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command shape");
             require(gaps.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"supported command syntax gaps");
         } else require(gaps.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"unavailable command cause");
     }
