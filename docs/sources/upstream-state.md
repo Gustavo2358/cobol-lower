@@ -104,3 +104,5 @@ See [incomplete file effects](../work/incomplete-file-effects.md).
 
 SP2.49 producer `15a37dac4592ce1387907ea97bb9b04640e8432a` (Draft PR #64). The lock records exact tree/blob hashes.
 Admission and round-trip preserve explicit synthetic model assumptions; AIR pins remain unchanged.
+
+Final Draft producer pin: `ec83262bd65752f785f7d4df37a1310732e23a7b`. Since 15a37da, only deterministic V1 key order, its test/oracle guard and qualification documentation changed. Final frontend FAST and all E2E/reuse evidence are recorded in the structural work item.
