@@ -151,3 +151,17 @@ The independent qualified-source schema was stale even against the merged IBM
 baseline (COACTUPC V2 fails its old V1 constant). It now mirrors the existing
 producer's closed V1/V2 shapes and D1 MODEL_STORAGE, with negative checks for
 missing or malformed modelAssumed. No corpus expectation was relaxed.
+
+## D5 corpus correction
+
+The full frontend matrix exposed a payload-preservation regression at an XCTL
+frontier without a qualified exceptional event, in a unit containing another
+ABEND event. State specialization disabled occurrence deduplication, which also
+inadvertently disabled typed target translation. Payload qualification is now
+independent of that deduplication choice. The literal target and its support are
+retained; the empty open control frontier and absence of local continuation stay
+unchanged. A new four-stage adversary checks support presence and dead successors.
+
+Lower full local qualification passed: semantic 205184 checks; performance run
+244391 checks including 39207 performance checks. These counts precede the narrow
+frontier correction; its final FAST and corpus revalidation are recorded below.

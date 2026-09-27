@@ -53,10 +53,8 @@ final class TopologyProgramAssembler {
         input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
         // A frontier with no licensed continuation cannot depend on a PERFORM
         // resume context. Reuse its source occurrence, never its target spelling.
-        for(var fact:input.statements())if(cicsState==null&&fact instanceof SpInput.CicsFact c
-                &&c.command()==SpInput.CicsCommand.XCTL&&plan.precise().contains(c.header().id())
-                &&topology.outcomes(c.header().id().handle()).stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL))
-            occurrenceFrontiers.add(c.header().id().handle());
+        for(var fact:input.statements())if(cicsState==null&&typedCicsFrontier(fact))
+            occurrenceFrontiers.add(fact.header().id().handle());
     }
     static PartialProgramAssembler.Assembly assemble(PartialProgramAdmission.Plan plan,ScalarDataTranslator.Result data,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.StatementLink> links,List<LoweringResult.OperandLink> operands,
@@ -260,11 +258,16 @@ final class TopologyProgramAssembler {
      * open set enumerates no licensed target in this model; it is neither a
      * return/diverge claim nor an upper-bound assertion about the entire source.
      * AIR 00.5, 05.6 and 06.1/3.2 require source incompleteness to remain explicit. */
+    private boolean typedCicsFrontier(SpInput.StatementFact fact) {
+        return fact instanceof SpInput.CicsFact c&&c.command()==SpInput.CicsCommand.XCTL
+            &&plan.precise().contains(c.header().id())
+            &&topology.outcomes(c.header().id().handle()).stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL);
+    }
     private Terminator frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
         // Payload admission is independent from outgoing-control completeness.
         // The existing CICS translator owns target/signature/effects; topology
         // still owns the control below, including the empty open frontier.
-        boolean typed=occurrenceFrontiers.contains(fact.header().id().handle());
+        boolean typed=typedCicsFrontier(fact);
         Terminator payload=typed
             ?CicsInvokeHandler.translate((SpInput.CicsFact)fact,data,null,unit,ids,origins,operands,items,uncertainties)
             :PartialProgramAssembler.opaque(fact,null,data,unit,ids,origins,uncertainties,operands,true,code);
