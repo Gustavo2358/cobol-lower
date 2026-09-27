@@ -165,3 +165,10 @@ unchanged. A new four-stage adversary checks support presence and dead successor
 Lower full local qualification passed: semantic 205184 checks; performance run
 244391 checks including 39207 performance checks. These counts precede the narrow
 frontier correction; its final FAST and corpus revalidation are recorded below.
+
+## Review handoff
+
+Implementation checkpoints D1–D5 are complete. Status stays IN_PROGRESS until
+review/merge; no merge is authorized by this work item. See the
+[qualification report](cics-control-qualification.md) for corpus results, the
+regression found and corrected, reused evidence and remaining limits.
