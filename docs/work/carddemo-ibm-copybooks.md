@@ -25,10 +25,36 @@ Evidence: frontend `docs/work/carddemo-ibm-validation.json` and local raw
 `.synthetic-dfh/carddemo-expansion/`. Synthetic input remains PARTIAL, without
 physical/initial-value proof. No new AIR/CFG edges and no merge.
 
-## Final gate and pin
+## Expansion gate and pin
 
 Lower FAST PASS, including 2481 core checks, admission/codec/integration and architecture.
 Final producer pin: `f8170f513eef29adfff5a94f418e1c6481ee2365`. The gate used `503e11f6b33daa504e6338cf84a11984acab82cf`; the only intervening producer
 change is the validation report. Every locked producer blob has the same SHA-256.
 Final pin/docs checks PASS; no semantic test evidence was invalidated. The rebuilt
 production classes equal the immutable lower runtime used in all 73 real runs.
+
+## Review follow-up — SQLCA scope and operational metadata
+
+Current producer pin: `e2d825b1551dd7a730ae79c4a1b7141586c23fc9`.
+Synthetic SQLCA is now admitted only by EXEC SQL INCLUDE. Real COPY SQLCA keeps
+normal library precedence; a missing COPY remains unresolved. The current lock
+states SP 2.49 / NOMINAL_TEXT_SOURCE_V2 and Drafts #64/#39, replacing stale
+SP 2.47/2.48 and merged-PR descriptions. Historical reference pins and wave
+checkpoints are retained and labeled; upstream-state starts with the current
+integration context.
+
+Validation newly executed for the review: frontend focal 28/28, FAST 603/603,
+package/docs; lower FAST PASS (core, contracts, integration, architecture).
+The frontend reran all 73 CardDemo, 21 structural adversaries, 39 PERFORM,
+48 Chaos, 14 aliases and 25 PERFORM adversaries. All 220 SP/compilation pairs
+are byte-identical. Downstream corpus/suite evidence is reused with unchanged
+inputs and immutable consumer binaries, including candidate supports/provenance.
+The lower production code is unchanged; its rebuilt classes match that runtime.
+
+The FAST used frontend implementation `3a4d9e9cbbce4d481eaf58db9e4ef8463e635914`.
+The final producer adds only the follow-up validation documentation. All 109
+locked frontend paths, tree, URLs and SHA-256 hashes were checked against the
+final commit. Final docs/pin checks pass. Raw results, logs and compiled runtime
+comparison: `.synthetic-dfh/carddemo-review-fixes/`; producer report:
+`docs/work/carddemo-ibm-review-validation.json`. Full qualification and the
+historical 310 matrix were not executed. Draft #39 remains open; no merge.

@@ -1,5 +1,19 @@
 # Estado upstream observado
 
+## Estado vigente — catálogo IBM estrutural
+
+Os pins atuais estão em [sources.lock.json](sources.lock.json): frontend SP 2.49 /
+NOMINAL_TEXT_SOURCE_V2, com modelAssumed e nove membros IBM; fallback sintético
+SQLCA autorizado somente por EXEC SQL INCLUDE. Arquivos reais mantêm precedência.
+A revisão atual está nos Drafts proleap-poc #64, cobol-lower #39 e analysis-cfg #49.
+Evidência executada e reuso estão em [CardDemo IBM](../work/carddemo-ibm-copybooks.md).
+
+As seções abaixo preservam a sequência histórica de checkpoints. Versões, pins,
+estados e pendências nelas registrados pertencem à época de cada observação;
+não substituem os campos atuais do lock nem descrevem o estado de merge atual.
+
+## Checkpoints históricos
+
 **Consulta:** 2026-09-06; apenas air-java revalidado em 2026-09-07. A baseline abaixo é fixa para preparar o trabalho; não garante que main não avançará. Atualizações posteriores seguem controle de mudanças.
 
 | Produto | Commit observado | Estado relevante |
