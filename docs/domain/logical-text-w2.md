@@ -105,3 +105,19 @@ narrower scalar refusal prevented emission. Once published-fact validation passe
 positive logical-family admission discharges only those scalar capability
 diagnostics, just as the existing regional translation does. Invalid facts still
 reject in Phase A. Literal-fit retains its independent truncation oracle.
+
+
+## Alias qualification closeout
+
+The alias correction is reviewed in [PR #37](https://github.com/Gustavo2358/cobol-lower/pull/37)
+and the consumer fixtures/pin in [CFG #48](https://github.com/Gustavo2358/analysis-cfg/pull/48).
+Local and remote FAST passed. Source adversaries are 14/14; PERFORM stays 39/39
+and its adversaries 25/25. CardDemo's 73 programs preserve all program/file/source
+relations and dependency support provenance.
+
+The subsequent chaos oracle audit gives 48/48 with unchanged product bytes:
+a dead CALL need not have an executable site, but must remain in source inventory
+without candidates. Six fixtures intentionally check current abstraction limits
+(ALTER, unmodeled logical INITIALIZE, and loop predicate correlation). Historical
+W2 product checks remain 23/24; the ACCEPT expectation and old all-Cell inventory
+assertion are preexisting limits, not newly qualified behavior.
