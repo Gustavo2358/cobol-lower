@@ -29,9 +29,10 @@ outcomes are all UNKNOWN_LOCAL. A modeled CALL followed by an unknown paragraph
 boundary retains exactly one Invoke and an Opaque completion frontier. This
 negative test prevents the repair from creating a new dependency site or call.
 
-## Review handoff
+## Closure
 
-Implementation and historical gate repair are complete for review. The work item
-remains IN_PROGRESS until merge. Final results, exact reuse boundaries, remaining
-opt-in skip and corpus deltas are in [campaign qualification](cics-control-qualification.md).
-No merge was performed. Current source locks identify the review commits.
+Implementation and historical gate repair are complete and approved. Git/PR merge
+and required checks establish DONE. Final results, exact reuse boundaries, the
+remaining opt-in skip and corpus deltas are in
+[campaign qualification](cics-control-qualification.md). Current consumer locks
+identify the actual merged upstream revisions during integration.
