@@ -91,3 +91,21 @@ Não implementa FitText, argumentos/resultados, tracing do MOVE anterior,
 PossibleValues, CFG ou produto de dependências. W1D/W2 permanecem não iniciados
 e não autorizados. O codec mantém seu limite operacional de saída independente;
 não há alegação de qualificação E2E geral de programas grandes.
+
+## Unknown topology completion
+
+The SP2.39+ topology path retains an admitted CALL as Invoke even when every
+published outcome is UNKNOWN_LOCAL. The target and source signature facts do not
+depend on knowing the return destination. InvokeHandler supplies the existing
+literal/computed/unknown target and external contract; topology supplies an empty
+open local frontier, with CONTROL_TOPOLOGY_REGION_UNAVAILABLE. No normal edge,
+handler entry, completion, extra memory write or successful-return claim follows.
+Source occurrences beyond that frontier retain inventory coverage and gaps.
+
+Historical qualification exposed the previous loss: the topology dispatcher
+replaced the entire CALL with Opaque before target translation. The general
+frontier payload dispatch now preserves CALL just as it already preserved XCTL.
+This is constant work per frontier plus the existing target translation; topology
+closure, activation identity and termination are unchanged. The real-source
+call-frontier fixture and literal-target/permutation adversaries reject loss of
+the target, invented successors, or executable handler/following occurrences.

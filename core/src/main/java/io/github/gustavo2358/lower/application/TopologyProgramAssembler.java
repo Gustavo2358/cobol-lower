@@ -265,11 +265,15 @@ final class TopologyProgramAssembler {
     }
     private Terminator frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
         // Payload admission is independent from outgoing-control completeness.
-        // The existing CICS translator owns target/signature/effects; topology
-        // still owns the control below, including the empty open frontier.
-        boolean typed=typedCicsFrontier(fact);
-        Terminator payload=typed
-            ?CicsInvokeHandler.translate((SpInput.CicsFact)fact,data,null,unit,ids,origins,operands,items,uncertainties)
+        // Existing interaction translators own target/signature/effects;
+        // topology still owns the empty open control frontier below.
+        boolean call=fact instanceof SpInput.CallFact&&plan.precise().contains(fact.header().id());
+        boolean typed=typedCicsFrontier(fact)||call;
+        Terminator payload=call
+            ?InvokeHandler.translate((SpInput.CallFact)fact,data.index(),null,
+                origins.source("unavailable-call-completion",fact.header().id().handle(),((SpInput.CallFact)fact).normalContinuation().provenance()),
+                unit,ids,origins,operands,items,uncertainties,plan.storage())
+            :typed?CicsInvokeHandler.translate((SpInput.CicsFact)fact,data,null,unit,ids,origins,operands,items,uncertainties)
             :PartialProgramAssembler.opaque(fact,null,data,unit,ids,origins,uncertainties,operands,true,code);
         var h=payload.header();var precision=h.precision();var scope=new Scopes.EntityScope(List.of(h.id()));
         var reason=new UncertaintyId(unit.publication(),ids.id("uncertainty","topology-region-unavailable",h.id().localId(),bound));
