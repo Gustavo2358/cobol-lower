@@ -14,11 +14,13 @@ final class ProcedurePerformAdmission {
         p.times().ifPresent(t->PerformCountAdmission.validate(p,t,c));
         var operands=new HashSet<OperandId>();
         p.varying().ifPresent(v->PerformVaryingAdmission.validate(p,v,operands,c));
-        p.loop().ifPresent(l->{
+        var loops=new ArrayList<PerformLoop>();p.loop().ifPresent(loops::add);
+        p.varying().ifPresent(v->loops.addAll(v.afterLoops()));
+        for(var l:loops) {
             c.provenance(l.provenance());c.provenance(l.predicate().provenance());
             for(var read:l.conditionReads())CallAdmission.reference(read,p.header(),operands,c);
             if(l.predicate().availability()==Availability.KNOWN)IfAdmission.admitPredicate(p.header(),l.conditionShape(),l.provenance(),l.predicate(),l.conditionReads(),c,p.varying().isPresent());
-        });
+        }
         for(var endpoint:List.of(p.start(),p.end()))endpoint.ifPresent(t->{
             c.identity(t.id().unit(),t.id().handle(),"procedure",t.paragraphOrigin());c.provenance(t.referenceOrigin());c.provenance(t.paragraphOrigin());
         });

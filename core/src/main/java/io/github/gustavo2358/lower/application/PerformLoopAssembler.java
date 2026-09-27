@@ -12,8 +12,10 @@ final class PerformLoopAssembler {
             List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var loop=p.loop().orElseThrow();
         var operation=new OperationId(unit,ids.id("operation","perform-loop-decision",unit.localId(),p.header().id().handle()));
-        var origin=origins.source("perform-loop-condition",p.header().id().handle(),loop.provenance());
-        var predicate=IfPredicate.translate(p.header().id(),loop.predicate(),loop.conditionReads(),"perform-loop",
+        int level=p.varying().map(v->v.controls().getFirst().level()).orElse(1);
+        String role=level==1?"perform-loop":"perform-loop-level-"+level;
+        var origin=origins.source(role+"-condition",p.header().id().handle(),loop.provenance());
+        var predicate=IfPredicate.translate(p.header().id(),loop.predicate(),loop.conditionReads(),role,
             "perform-loop@1/published-condition-read",operation,data,ids,origins,operands,items,uncertainties);
         var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
         var values=new Evidence.Claim(new Scopes.EntityScope(List.of(predicate.header().id())),Evidence.PrecisionStatus.OPEN,List.of(predicate.reason()));

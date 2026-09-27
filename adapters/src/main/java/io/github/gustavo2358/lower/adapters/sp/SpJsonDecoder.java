@@ -94,16 +94,16 @@ public final class SpJsonDecoder {
             var profile=SpContractProfile.admitted(receivedVersion);
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statementEffects/new embedded proof requires SP2.46");
             for(var condition:node.path("storage").path("entryState").path("conditions"))
-                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))
                     throw new PhysicalShape("$/storage/entryState/LOGICAL_TEXT requires SP2.46");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
                 var condition=variant.equals("IF")?statement.path("condition"):statement.path("loop").path("condition");
                 if(condition.isObject()) {
-                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
+                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
                     if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
                         ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
                 }
@@ -111,12 +111,12 @@ public final class SpJsonDecoder {
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
-                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/RETRIEVE requires SP2.46");
-                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/registrationEffects requires SP2.46");
                 if(variant.equals("CICS_HANDLER")&&!statement.has("registrationEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("registrationEffects");
-                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/hostEffects requires SP2.46");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("hostEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("hostEffects");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
@@ -127,16 +127,23 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
-            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0","2.48.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
             if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
             io.github.gustavo2358.lower.domain.NominalValues nominalValues=null;
             if(node.has("nominalValues")) {
-                if(!receivedVersion.equals("2.47.0"))throw new PhysicalShape("$/nominalValues requires SP2.47");
+                if(!java.util.Set.of("2.47.0","2.48.0").contains(receivedVersion))throw new PhysicalShape("$/nominalValues requires SP2.47");
                 nominalValues=mapper.treeToValue(node.get("nominalValues"),io.github.gustavo2358.lower.domain.NominalValues.class);
                 requirePhysical(nominalValues,"$/nominalValues",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("nominalValues");
+            }
+            for(var statement:node.path("statements"))if(statement.path("varying").isObject()) {
+                var varying=(com.fasterxml.jackson.databind.node.ObjectNode)statement.path("varying");
+                if(varying.has("afterLoops")&&!receivedVersion.equals("2.48.0"))throw new PhysicalShape("afterLoops requires SP2.48");
+                if(!varying.has("afterLoops")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)varying.putArray("afterLoops");
+                for(var loop:varying.path("afterLoops"))if(loop.path("condition").isObject()&&!loop.path("condition").has("textPredicate"))
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)loop.path("condition")).putNull("textPredicate");
             }
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
@@ -153,6 +160,12 @@ public final class SpJsonDecoder {
             io.github.gustavo2358.lower.domain.ControlTopology topology=null;
             if(topologyContract) {
                 if(!node.path("controlTopology").has("exceptionalEvents"))((com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology")).putArray("exceptionalEvents");
+                for(var region:node.path("controlTopology").path("regions"))if(region.path("kind").asText().equals("SECTION")&&!receivedVersion.equals("2.48.0"))throw new PhysicalShape("SECTION topology requires SP2.48");
+                for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("target").path("kind").asText().equals("ESCAPE")&&!receivedVersion.equals("2.48.0"))throw new PhysicalShape("ESCAPE topology requires SP2.48");
+                for(var binding:node.path("controlTopology").path("bindings"))for(var phase:binding.path("phases")) {
+                    if(phase.path("level").asInt()!=0&&!receivedVersion.equals("2.48.0"))throw new PhysicalShape("phase level requires SP2.48");
+                    if(!phase.hasNonNull("level"))((com.fasterxml.jackson.databind.node.ObjectNode)phase).put("level",0);
+                }
                 topology=mapper.treeToValue(node.path("controlTopology"),io.github.gustavo2358.lower.domain.ControlTopology.class);
                 requirePhysical(topology,"$/controlTopology",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("controlTopology");

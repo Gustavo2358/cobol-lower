@@ -146,3 +146,21 @@ return. Context resolution remains owned by this topology; source text and
 legacy continuation metadata are not routing authorities. See
 [CICS control](cics-program-control.md#r6--bounded-local-xctl-condition-control)
 for the rule, limits, complexity and tests.
+
+## SP 2.48: scoped exits, SECTION and VARYING levels
+
+See [PERFORM control completion](perform-control-completion.md). `ESCAPE` is admitted
+only as an explicit occurrence outcome to a lexical enclosing paragraph or inline
+body. Lowering unwinds intervening inline contexts to that scope and uses its own
+endpoint/resume binding. Handler summaries propagate the same escape until the
+owning context, without treating a called paragraph's EXIT PERFORM as a dynamic exit.
+`SECTION` entry and completion are ordinary published regions; no CFG changes are
+required. Positive phase levels select independent typed predicates and controls,
+with distinct operation identities and source origins for each level/reset.
+
+AIR retains existing jumps, branches, invocations and open numeric effects. The
+existing integer operand admission applies separately at each level; a missing or
+unsupported operand produces explicit partial effects with a proved continuation.
+The decoder rejects 2.48 fields under older contracts. Legacy phase level 0 keeps
+its existing interpretation. Historical paragraph-profile diagnostics do not
+replace the topology's control authority.

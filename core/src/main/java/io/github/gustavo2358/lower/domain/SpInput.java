@@ -212,8 +212,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record VaryingOperand(int level,VaryingOperandRole role,Optional<String> integer,List<DataReference> references,Provenance provenance) {
         public VaryingOperand { Objects.requireNonNull(role);Objects.requireNonNull(integer);references=List.copyOf(references);Objects.requireNonNull(provenance); }
     }
-    public record PerformVarying(int levels,List<VaryingOperand> controls) {
-        public PerformVarying { controls=List.copyOf(controls); }
+    public record PerformVarying(int levels,List<VaryingOperand> controls,List<PerformLoop> afterLoops) {
+        public PerformVarying(int levels,List<VaryingOperand> controls) {this(levels,controls,List.of());}
+        public PerformVarying { controls=List.copyOf(controls);afterLoops=List.copyOf(afterLoops); }
     }
     public enum PerformPublicationKind { LEGACY_PROFILE, STRUCTURAL_FACTS }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,

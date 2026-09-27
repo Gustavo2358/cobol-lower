@@ -11,24 +11,30 @@ final class PerformVaryingAdmission {
         catch(NumberFormatException ignored) { return false; }
     }
     static boolean integerReference(DataReference r,OperandRole role,EntryGobackAdmission.Context c) {
+        return integerReference(r,role,c::data);
+    }
+    static boolean integerReference(DataReference r,OperandRole role,java.util.function.Function<DataId,DataFact> lookup) {
         return r.role()==role && r.provenance().exact() && r.binding().status()==ResolutionStatus.RESOLVED
-            && r.binding().candidates().size()==1 && r.wholeItemAccess().filter(w->c.data(w.data())!=null
-                && PerformCountAdmission.integer(c.data(w.data())) && r.binding().selected().equals(Optional.of(w.data()))).isPresent();
+            && r.binding().candidates().size()==1 && r.wholeItemAccess().filter(w->lookup.apply(w.data())!=null
+                && PerformCountAdmission.integer(lookup.apply(w.data())) && r.binding().selected().equals(Optional.of(w.data()))).isPresent();
     }
     static boolean executable(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
         if(p.varying().isEmpty())return true;
         var v=p.varying().orElseThrow();
-        if(v.levels()!=1||v.controls().size()!=3)return false;
+        return v.levels()==1&&v.controls().stream().allMatch(o->o.level()==1)&&levelExecutable(v.controls(),c::data);
+    }
+    static boolean levelExecutable(List<VaryingOperand> controls,java.util.function.Function<DataId,DataFact> lookup) {
+        if(controls.size()!=3)return false;
         var byRole=new EnumMap<VaryingOperandRole,VaryingOperand>(VaryingOperandRole.class);
-        for(var o:v.controls())if(o.level()!=1||byRole.putIfAbsent(o.role(),o)!=null)return false;
+        for(var o:controls)if(byRole.putIfAbsent(o.role(),o)!=null)return false;
         if(byRole.size()!=3)return false;
         var variable=byRole.get(VaryingOperandRole.CONTROL_VARIABLE);
         var from=byRole.get(VaryingOperandRole.FROM);
         var by=byRole.get(VaryingOperandRole.BY);
         return variable.provenance().exact()&&variable.integer().isEmpty()&&variable.references().size()==1
-            &&integerReference(variable.references().getFirst(),OperandRole.WRITE,c)
+            &&integerReference(variable.references().getFirst(),OperandRole.WRITE,lookup)
             &&from.provenance().exact()&&(from.integer().filter(PerformVaryingAdmission::canonical).isPresent()
-                ||from.references().size()==1&&integerReference(from.references().getFirst(),OperandRole.READ,c))
+                ||from.references().size()==1&&integerReference(from.references().getFirst(),OperandRole.READ,lookup))
             &&by.provenance().exact()&&by.integer().filter(i->canonical(i)&&new java.math.BigInteger(i).signum()!=0).isPresent();
     }
     static void validate(ProcedurePerformFact p,PerformVarying v,Set<OperandId> seen,EntryGobackAdmission.Context c) {
