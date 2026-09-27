@@ -6,11 +6,11 @@ import static io.github.gustavo2358.lower.domain.SpInput.Provenance;
 /** Causal source proof graph. Physical layout and logical value identity are distinct facets. */
 public record FactDependencies(String authority,List<Input> inputs,List<Proof> proofs,
         List<Region> regions,List<Fact> facts,List<Binding> bindings) {
-    public enum InputKind { MISSING_COPY, OPAQUE_INCLUDE, UNLOCATED_INPUT, PHYSICAL_PROFILE }
+    public enum InputKind { MISSING_COPY, MODEL_STORAGE, OPAQUE_INCLUDE, UNLOCATED_INPUT, PHYSICAL_PROFILE }
     public enum ProofKind { SOURCE_SYNTAX, REGION_CONTEXT, DECLARATION_CONTEXT, REGION_BOUNDARY, REGION_CLOSURE, ALIAS_INVENTORY, ALIAS_CLOSURE, LOCAL_ALLOCATION, LOGICAL_TYPE, PROFILE, PHYSICAL_VIEW }
     public enum FactKind { SOURCE_IDENTITY, LOGICAL_TEXT, STORAGE_IDENTITY, LOCAL_CELL, PHYSICAL_VIEW }
     public record Input(String id,InputKind kind,boolean available,List<String> contextScopes,List<String> closureScopes,List<String> declarationScopes,Provenance provenance) {
-        public Input {text(id);Objects.requireNonNull(kind);contextScopes=sorted(contextScopes);closureScopes=sorted(closureScopes);declarationScopes=sorted(declarationScopes);Objects.requireNonNull(provenance);}
+        public Input {text(id);Objects.requireNonNull(kind);require(kind!=InputKind.MODEL_STORAGE||!available,"model storage is not physical proof");contextScopes=sorted(contextScopes);closureScopes=sorted(closureScopes);declarationScopes=sorted(declarationScopes);Objects.requireNonNull(provenance);}
     }
     public record Proof(String id,ProofKind kind,String scope,String subject,boolean localPremise,List<String> dependencies,List<String> inputs,String rule,Provenance provenance) {
         public Proof {text(id);Objects.requireNonNull(kind);text(scope);text(subject);dependencies=sorted(dependencies);inputs=sorted(inputs);text(rule);Objects.requireNonNull(provenance);}
