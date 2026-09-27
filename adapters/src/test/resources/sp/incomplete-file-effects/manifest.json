@@ -1,0 +1,23 @@
+[
+  {
+    "name": "file-namespace-shadowing",
+    "source": "src/test/resources/cobol/resolution/file-namespace-shadowing.cbl",
+    "sourceSha256": "bbd7005be6fee61a69986bb13534189ebc94fca21604ab765e69dd3ed3923f0e",
+    "productSha256": "06778ebbdd3e259782e3cb99a31a84d05d73f31a9d7928d0c500fa4ac40fe3f5",
+    "producer": "4802305d17e7b1684d1f749618aa76fe8e091e0f"
+  },
+  {
+    "name": "nested-global-through-local-file",
+    "source": "src/test/resources/cobol/resolution/nested-global-through-local-file.cbl",
+    "sourceSha256": "62384786270eb48778b6a2662bb19023c0c77607347516bf8e693d1fee1e0a92",
+    "productSha256": "42dba67f4e6c30ddd2a7e2687f54876f200b4dd7a446ceef7e680433c0965bcd",
+    "producer": "4802305d17e7b1684d1f749618aa76fe8e091e0f"
+  },
+  {
+    "name": "statements",
+    "source": "src/test/resources/cobol/semantic/statements.cbl",
+    "sourceSha256": "3f5ca7910f193ffe4d4ec2b5d2231ae8051e52b268d07b7d03a14c663b78ac12",
+    "productSha256": "e11246e785f1468143aa20f6a7723288b840e060141175792816a9686547ed43",
+    "producer": "4802305d17e7b1684d1f749618aa76fe8e091e0f"
+  }
+]

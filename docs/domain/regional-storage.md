@@ -184,3 +184,23 @@ da relação aberta. As duas contradições agora são rejeitadas em memória, s
 assumir que o produtor é confiável. Cinco SPs CLI reais atravessaram AIR com
 round-trip semântico e byte-exato; dez negativos JSON, onze negativos de memória,
 permutação e identidade por alvo de relação passaram nos testes focais.
+
+## Declaration identity at composition boundaries
+
+GLOBAL declarations and explicit capture sources/locals require nominal objects
+even when a published storage binding is unavailable. Materialize those identities
+with bounded UnknownBinding and uncertainty; do not promote missing binding proof
+to a Cell. Compilation captures alias the published owning object by DataId, with
+source and local provenance. Homonyms and input enumeration order do not select
+an owner. Existing positive Cell bindings remain authoritative when available.
+
+Admission of complete logical views recognizes anonymous FILLER nodes as physical
+identities. It counts allocating nodes when checking complete parent/child chains;
+explicit RENAMES owners are nonallocating views, whose endpoint/range contracts
+are still validated separately. Other anonymous nodes and extra physical children
+cannot use these exceptions to forge a complete value relation.
+
+A nominal object without a materialized location bound is insufficient for an
+executable I/O memory scope. A missing bound becomes a visible-memory MAY effect,
+never an empty effect or a must overwrite. Independently proved cell/region bounds
+remain narrow. See [storage boundary fixes](../work/storage-boundary-fixes.md).

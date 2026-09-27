@@ -53,7 +53,15 @@ final class FileMemoryLowering {
         var view=target.regional().map(a->views.get(a.view())).orElse(null);
         if(view!=null&&data.physical().containsKey(view.base()))return new Scopes.StorageMemory(List.of(data.physical().get(view.base())));
         var object=target.data().map(data.nominal()::get).orElse(null);
-        return object!=null?new Scopes.ObjectsMemory(List.of(object)):null;
+        var link=target.data().map(data.index()::get).orElse(null);
+        if(object!=null&&link!=null&&link.storage().isPresent())return new Scopes.ObjectsMemory(List.of(object));
+        if(object!=null)for(var declaration:data.objects())if(declaration.id().equals(object)
+                &&declaration.storage() instanceof Memory.UnknownBinding unknown
+                &&unknown.scope() instanceof Scopes.StorageMemory)return unknown.scope();
+        // Nominal identity is not an executable location proof. If its storage
+        // is unavailable (including a GLOBAL alias), retain a MAY effect over
+        // visible memory. Never turn an unresolved target into an empty effect.
+        return new Scopes.VisibleMemory(unit,true);
     }
     private Memory.ViewBinding exact(FileFacts.MemoryTarget target,boolean text) {
         if(target.wholeBase()||target.regional().isEmpty())return null;
