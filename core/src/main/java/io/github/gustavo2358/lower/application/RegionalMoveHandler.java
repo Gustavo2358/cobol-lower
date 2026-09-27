@@ -12,6 +12,9 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        // A whole-item copy classification does not make a named view independent.
+        // Update the proved logical family and its projections before scalar shortcuts.
+        if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
         // A logical Cell can use the whole-item proof without a byte codec.
         // Physical destinations retain their published byte transfer and codec obligations.
         if(move.copySemantics()==SpInput.CopySemantics.FULL_IDENTITY
@@ -25,7 +28,6 @@ final class RegionalMoveHandler {
                 &&(!(move.source() instanceof SpInput.DataReference r)||r.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(r::logicalWholeItem).filter(data.index()::containsKey).isPresent());
             return List.of(available?MoveHandler.translate(move,data,unit,ids,origins,links,items):ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties));
         }
-        if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
         if(move.regionalMove().isEmpty())return List.of(translate(move,fitted,data,unit,ids,origins,links,items,uncertainties));
         var result=new ArrayList<Instruction>();
         var transfers=move.transfers();

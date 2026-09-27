@@ -51,8 +51,29 @@ public final class LogicalTextStorageSuite {
             var fit=(Expressions.FitText)((Operations.Assign)instruction).value();
             check(extent(fit.value()).equals(fit.length()),"initialization covers the full root; unknown overlay tail must not become padding");
         }
+        nestedAliases(decoder);
         System.out.println("LOGICAL_TEXT_STORAGE=PASS noPhysicalProfile roundtrip=true negativeCases=7");
     }
+    private static void nestedAliases(SpJsonDecoder decoder) throws Exception {
+        for(var name:List.of("nested-overlay","nested-overlay-perform","literal-fit")) {
+            var bytes=Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/logical-alias-move/"+name+".json")).readAllBytes();
+            var input=((SpJsonDecoder.Decoded)decoder.decode(bytes)).input();
+            var publication=RegionalTranslationSuite.lower(input).publication().orElseThrow();
+            var unit=publication.units().getFirst();
+            var names=name.equals("literal-fit")?Set.of("WS-GROUP","WS-TARGET","WS-ALIAS"):Set.of("WS-UNION","WS-TARGET-A","WS-ALIAS");
+            var expected=unit.objects().stream().filter(o->o.displayName().filter(names::contains).isPresent()).map(Memory.ObjectDeclaration::id).toList();
+            check(expected.size()==3,"three named views of the same source family");
+            boolean projected=false;
+            for(var sequence:unit.sequences()) {
+                var state=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+                for(var instruction:sequence.instructions())if(instruction instanceof Operations.Assign assign)
+                    state.put(((Places.ObjectPlace)assign.destination()).object(),interpret(assign.value(),state));
+                if(expected.stream().allMatch(o->"PROGA001".equals(state.get(o))))projected=true;
+            }
+            check(projected,"MOVE updates root and all overlay views before continuation: "+name);
+        }
+    }
+
     private static java.math.BigInteger extent(Expression e) {
         if(e instanceof Expressions.FitText f)return f.length();
         if(e instanceof Expressions.SliceText t)return ((Values.IntValue)((Expressions.Literal)t.count()).value()).value();

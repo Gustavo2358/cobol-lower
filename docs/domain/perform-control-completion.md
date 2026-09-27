@@ -1,6 +1,7 @@
-# PERFORM control completion — design before implementation
+# PERFORM control completion
 
-Status: IN_PROGRESS; user authorized implementation and Draft PRs, no merge.
+Implementation and qualification complete. Integration is recorded in
+[PR #36](https://github.com/Gustavo2358/cobol-lower/pull/36); merge authorized by the user.
 
 ## Discovery and authority
 
@@ -69,10 +70,19 @@ permutation checks. It also checks partial operands without duplicate identities
 and a procedure endpoint reached after an external GO TO and EXIT PARAGRAPH.
 Future-version rejection tests now use 2.49; they retain their original strict
 UNSUPPORTED_CONTRACT expectation. Existing semantic fixture expected values remain
-unchanged. Final gate/corpus results are reported in the Draft PR.
+unchanged. Final gate/corpus results are recorded in the linked PR and the consumer qualification document.
 
 A THRU endpoint naming a SECTION is ordered by its completion, after its last
 paragraph, not by the position of its header. A start paragraph may therefore be
 inside that ending section. RANGE entry is explicit; its final inventory element
 is the endpoint scope even when that scope encloses the start. An adversary asserts
 that earlier paragraphs and the following section remain unreachable.
+
+## Qualification closeout
+
+The original PERFORM suite passes 39/39 and the source adversaries pass 25/25.
+The later alias MOVE correction retains both results and adds 14/14 alias
+adversaries. Required local and remote FAST gates passed. The 73-program CardDemo
+comparison retains 121 program, 271 file and 523 source relations and their
+supports; existing PARTIAL states and numeric/recursion limits remain explicit.
+The final documentation changes no production, contract, fixture or build input.

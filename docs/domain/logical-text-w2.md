@@ -68,3 +68,56 @@ overlapping longer leaf; fitting only the original eight characters would invent
 four spaces. The source fixture first exposed the false candidate EFGH (RED),
 then returned an open value with no invented target (GREEN). The lower FAST suite
 retains the independent full-initial-extent assertion and the real producer SP.
+
+## Alias MOVE follow-up — rule and oracle
+
+The current frontend still publishes a proved logical family for nested textual
+REDEFINES (same root, start and extent). An elementary MOVE can additionally have
+FULL_IDENTITY or POSSIBLE_TEXT. Those copy classifications do not supersede the
+published family: writing a named view must update that family and project its
+other views before continuing. IBM Enterprise COBOL 6.4, Language Reference,
+REDEFINES considerations (printed pp225–227), says all descriptions of the area
+remain in effect; MOVE through either name addresses the shared area.
+Primary source checked: https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf.
+
+Discovery: RegionalMoveHandler's scalar shortcuts run before LogicalTextMove,
+so an equal-width literal is assigned only to a projection Cell. Separate view
+Cells are intentional W2 representation; the missing root update and projections
+are the defect. SP, AIR expressions and CFG already express the required facts.
+
+Use the existing admitted logical-family translation before scalar shortcuts.
+Its admission requires published whole-item coordinates and a literal or a source
+in a different family. Preserve current refusal of overlapping DATA copies,
+physical-profile behavior, multi-receiver admission and open remainders. Cost
+remains one root expression and one projection per named view of the destination
+family; finite published views bound translation. No source parsing or new alias
+analysis belongs in lower.
+
+RED oracle: current real-producer SPs nested-overlay and nested-overlay-perform
+must assign PROGA001 to the root and both views in the MOVE sequence. Existing
+AIR validation/codec roundtrip and malformed coordinate tests apply. Source E2E
+must check forward/reverse alias writes, overwrite, copy capture, partial overlays,
+PERFORM continuation, branch correlation and absence of dead/foreign candidates.
+
+The literal-fitting adversary also exposed stale scalar-profile diagnostics in
+PartialProgramAdmission: logical fitting was recognized as eligible but the
+narrower scalar refusal prevented emission. Once published-fact validation passes,
+positive logical-family admission discharges only those scalar capability
+diagnostics, just as the existing regional translation does. Invalid facts still
+reject in Phase A. Literal-fit retains its independent truncation oracle.
+
+
+## Alias qualification closeout
+
+The alias correction is reviewed in [PR #37](https://github.com/Gustavo2358/cobol-lower/pull/37)
+and the consumer fixtures/pin in [CFG #48](https://github.com/Gustavo2358/analysis-cfg/pull/48).
+Local and remote FAST passed. Source adversaries are 14/14; PERFORM stays 39/39
+and its adversaries 25/25. CardDemo's 73 programs preserve all program/file/source
+relations and dependency support provenance.
+
+The subsequent chaos oracle audit gives 48/48 with unchanged product bytes:
+a dead CALL need not have an executable site, but must remain in source inventory
+without candidates. Six fixtures intentionally check current abstraction limits
+(ALTER, unmodeled logical INITIALIZE, and loop predicate correlation). Historical
+W2 product checks remain 23/24; the ACCEPT expectation and old all-Cell inventory
+assertion are preexisting limits, not newly qualified behavior.

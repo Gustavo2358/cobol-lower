@@ -104,7 +104,7 @@
         "docs/domain/perform-control-completion.md",
         "src/test/java/io/github/gustavo2358/cobolexplorer/PerformControlCompletionTest.java"
       ],
-      "evidence_level": "SP 2.48: scoped PERFORM completion, SECTION regions, typed VARYING levels. Frontend FAST 579 tests PASS; Draft review pending.",
+      "evidence_level": "SP 2.48: scoped PERFORM completion, SECTION regions, typed VARYING levels. Frontend FAST 579 tests PASS; Integration authorized; tracked in proleap-poc PR #62.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
         "https://github.com/Gustavo2358/proleap-poc/blob/c5f914cb6b7cea4995e4fa045644d77f4da283fd/docs/domain/cobol-semantic-product.md",
