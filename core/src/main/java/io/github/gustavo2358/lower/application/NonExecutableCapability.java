@@ -13,7 +13,10 @@ public record NonExecutableCapability(SpInput.StatementId statement, Kind kind,
     static Optional<NonExecutableCapability> of(SpInput.StatementFact fact,RegionalStorageAdmission.Index storage) {
         Kind kind = switch (fact) {
             case SpInput.CicsHandlerFact handler -> handler.registrationEffects().isPresent()&&storage!=null&&storage.owner().controlTopology().isPresent()?null:Kind.CICS_HANDLER;
-            case SpInput.CicsAbendFact ignored -> Kind.CICS_ABEND;
+            case SpInput.CicsAbendFact abend -> storage!=null&&storage.owner().controlTopology()
+                .map(t->t.exceptionalEvents().stream().anyMatch(e->e.statement().equals(abend.header().id().handle())
+                    &&e.origin()==io.github.gustavo2358.lower.domain.ControlTopology.EventOrigin.EXPLICIT_ABEND))
+                .orElse(false)?null:Kind.CICS_ABEND;
             case SpInput.CicsCommandFact command -> CicsCommandMemory.ready(command,storage)?null:Kind.CICS_COMMAND;
             default -> null;
         };
