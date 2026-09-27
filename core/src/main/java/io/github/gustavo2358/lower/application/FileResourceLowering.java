@@ -42,8 +42,11 @@ final class FileResourceLowering {
     LabelId completion(SpInput.StatementId statement,LabelId ordinary){return sort.completion(statement,control.completion(statement,ordinary));}
     List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local){return sequences(fact,destination,local,null);}
     List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local,java.util.function.Function<String,LabelId> topology){
+        return sequences(fact,destination,local,topology,Optional.empty());
+    }
+    List<Sequence> sequences(SpInput.StatementFact fact,LabelId destination,LocalIds local,java.util.function.Function<String,LabelId> topology,Optional<FileSortLowering.Layout> published){
         var result=new ArrayList<Sequence>();var uses=byStatement.get(fact.header().id());
-        var layout=topology==null?sort.layout(fact,uses,destination,local):Optional.<FileSortLowering.Layout>empty();layout.ifPresent(l->result.addAll(l.prefix()));
+        var layout=topology==null?sort.layout(fact,uses,destination,local):published;layout.ifPresent(l->result.addAll(l.prefix()));
         for(int n=0;n<uses.size();n++){
             var use=uses.get(n);var key=fact.header().id().handle()+"/"+use.ordinal();
             var op=new OperationId(unit,local.id("operation","file-use",unit.localId(),key));

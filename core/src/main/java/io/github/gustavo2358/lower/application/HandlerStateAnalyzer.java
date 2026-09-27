@@ -49,7 +49,8 @@ final class HandlerStateAnalyzer {
         binder.primaryEntry().ifPresent(e->route(root,e,initial,Optional.empty(),Optional.empty(),"PRIMARY_ENTRY",e.proofs()));
         while(!work.isEmpty()) {
             var node=reverse?work.removeLast():work.removeFirst();pops++;
-            if(node.location().startsWith("PHASE/")||node.location().startsWith("ESCAPE/"))phase(node);else occurrence(node);
+            if(node.location().startsWith("FILE_POINT/"))filePoint(node);
+            else if(node.location().startsWith("PHASE/")||node.location().startsWith("ESCAPE/"))phase(node);else occurrence(node);
         }
         var operations=new ArrayList<Operation>();var events=new ArrayList<Event>();
         for(var s:statements.values()) {
@@ -83,6 +84,11 @@ final class HandlerStateAnalyzer {
         for(var event:exceptionalEvents.getOrDefault(node.location(),List.of()))select(node,event,context);
         // ABEND is a query, never a completion/return, including unavailable eligibility.
         if(statement instanceof CicsAbendFact)return;
+        var flow=binder.fileFlow(node.location());
+        if(flow.isPresent()) {
+            var entry=flow.get().entry();route(context,binder.resolve(entry,context.binding(),!context.ingress().isEmpty()),
+                node.support(),Optional.of(node),Optional.empty(),node.location()+"/FILE_ENTRY",flow.get().proofs());return;
+        }
         for(var outcome:binder.outcomes(node.location())) {
             if(outcome.kind()==OutcomeKind.LOCAL_INVOKE) {invoke(node,outcome);continue;}
             var next=node.support();
@@ -96,6 +102,25 @@ final class HandlerStateAnalyzer {
             } else if(statement instanceof CallFact)next=unknown(Cause.CALL_EFFECT_UNAVAILABLE);
             var resolved=binder.resolve(outcome.target(),context.binding(),!context.ingress().isEmpty());
             route(context,resolved,next,Optional.of(node),Optional.empty(),outcome.id(),merge(outcome.proofs(),resolved.proofs()));
+        }
+    }
+    private void filePoint(Node node) {
+        var point=binder.filePoint(node.location().substring("FILE_POINT/".length()));
+        var context=contexts.get(node.context());
+        if(point.kind()==FilePointKind.USE) {
+            var owner=binder.filePointOwner(point.id());
+            var routes=binder.outcomes(owner).stream().filter(o->o.role().startsWith("file/"+point.ordinal()+"/")).toList();
+            if(!routes.isEmpty()) {
+                for(var outcome:routes) {
+                    var resolved=binder.resolve(outcome.target(),context.binding(),!context.ingress().isEmpty());
+                    route(context,resolved,node.support(),Optional.of(node),Optional.empty(),outcome.id(),merge(outcome.proofs(),resolved.proofs()));
+                }
+                return;
+            }
+        }
+        for(var target:point.targets()) {
+            var resolved=binder.resolve(target,context.binding(),!context.ingress().isEmpty());
+            route(context,resolved,node.support(),Optional.of(node),Optional.empty(),point.id(),merge(point.proofs(),resolved.proofs()));
         }
     }
     private void select(Node source,ExceptionalEvent event,Context sourceContext) {
@@ -187,6 +212,7 @@ final class HandlerStateAnalyzer {
                 } else if(context.binding()!=null)insert(new Node(context.id(),"ESCAPE/"+region.id(),support),source,caller,authority,proofs);
                 else source.ifPresent(n->frontiers.add(new Frontier(n,authority,target.reference(),proofs)));
             }
+            case FILE_POINT -> insert(new Node(context.id(),"FILE_POINT/"+target.reference(),support),source,caller,authority,proofs);
             case OCCURRENCE -> insert(new Node(context.id(),target.reference(),support),source,caller,authority,proofs);
             case COMPLETE -> insert(new Node(context.id(),"PHASE/"+Objects.requireNonNull(context.binding()).completionPhase(),support),source,caller,authority,proofs);
             case UNKNOWN_LOCAL -> source.ifPresent(n->frontiers.add(new Frontier(n,authority,target.reference(),proofs)));

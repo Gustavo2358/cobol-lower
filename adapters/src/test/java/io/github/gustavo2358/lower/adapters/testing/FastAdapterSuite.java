@@ -30,6 +30,7 @@ public final class FastAdapterSuite {
         ControlTopologyWireSuite.main(new String[0]);
         TypedOccurrenceControlSuite.main(new String[0]);
         BoundedCicsControlSuite.main(new String[0]);
+        FileCompositeFlowSuite.main(new String[0]);
         FileTopologyAuthoritySuite.main(new String[0]);
         DependencyPreservationSuite.main(new String[0]);
         FileRecordGroundingSuite.main(new String[0]);

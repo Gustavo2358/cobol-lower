@@ -125,6 +125,7 @@ final class TopologyProgramAssembler {
             if(context.support()!=null)work.addLast(context.at(r.reference()));
             return label(r.reference(),context.ids());
         }
+        if(r.kind()==TargetKind.FILE_POINT)return FileTopologyLowering.label(unit,context.ids(),r.reference());
         if(r.kind()==TargetKind.COMPLETE)return context.support()==null?Objects.requireNonNull(context.completion()):statePhaseLabel(context,context.binding().completionPhase());
         var at=new LabelId(unit,context.ids().id("label","topology-boundary",fact.header().id().handle(),role));
         if(synthetic.add(at)) {
@@ -195,7 +196,10 @@ final class TopologyProgramAssembler {
                 var targets=published.stream().map(o->destination(o.target(),context,fact,o.role())).distinct().<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
                 term=CicsCommandMemory.registration(handler,data,unit,ids,origins,operands,uncertainties,targets);
             } else if(files.handles(fact)) {
-                var chain=files.sequences(fact,normal,ids,role->outcome(role,context,fact)).stream()
+                var chain=files.sequences(fact,normal,ids,role->outcome(role,context,fact),
+                    topology.fileFlow(fact.header().id().handle()).map(flow->FileTopologyLowering.layout(flow,fact,unit,ids,
+                        target->destination(target,context,fact,"file-point/"+target.reference()),
+                        (key,proofs)->evidence(key,proofs,ids),uncertainties))).stream()
                     .map(s->new Sequence(s.label(),s.instructions(),explain(s.terminator(),fact,context),s.origin())).toList();
                 instructions.addAll(chain.getFirst().instructions());term=chain.getFirst().terminator();
                 for(int i=1;i<chain.size();i++)sequences.add(chain.get(i));
