@@ -57,6 +57,17 @@ public final class TopologyEntryAdmissionSuite {
     private static void callFrontier()throws Exception {
         var raw=fixture("/sp/topology-entry/call-frontier.json");
         var tree=(ObjectNode)JSON.readTree(raw);
+        var completion=tree.deepCopy();
+        var outcomes=completion.path("controlTopology").path("outcomes");
+        var outcome=(ObjectNode)java.util.stream.StreamSupport.stream(outcomes.spliterator(),false)
+            .filter(o->o.path("statement").asText().equals("statement:1")).findFirst().orElseThrow();
+        outcome.put("kind","NORMAL").put("role","normal");
+        ((ObjectNode)outcome.path("target")).put("kind","COMPLETE");
+        var completed=lower(completion);
+        need(completed.publication().isPresent(),"CALL with proved local completion and unknown enclosing boundary remains valid");
+        var invocations=completed.publication().orElseThrow().units().getFirst().sequences().stream()
+            .map(Sequence::terminator).filter(Operations.Invoke.class::isInstance).count();
+        need(invocations==1,"a post-CALL unknown boundary cannot execute the CALL again");
         for(var target:List.of("computed","literal")) {
             var sample=tree.deepCopy();
             var call=(ObjectNode)sample.path("statements").get(1);

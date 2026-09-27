@@ -22,3 +22,9 @@ literal-target mutation and statement-order permutation. The original assertion
 failed before the production change; the new target/absence-of-successor assertions
 pass after it. Final gates and corpus results are recorded in
 [campaign qualification](cics-control-qualification.md).
+
+A post-CALL boundary adversary first exposed duplicate invocation in the initial
+repair. Payload preservation is now limited to a source CALL whose published
+outcomes are all UNKNOWN_LOCAL. A modeled CALL followed by an unknown paragraph
+boundary retains exactly one Invoke and an Opaque completion frontier. This
+negative test prevents the repair from creating a new dependency site or call.

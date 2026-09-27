@@ -265,9 +265,12 @@ final class TopologyProgramAssembler {
     }
     private Terminator frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
         // Payload admission is independent from outgoing-control completeness.
+        // Only an occurrence frontier retains an interaction. A synthetic boundary
+        // after a modeled CALL must never invoke it a second time.
         // Existing interaction translators own target/signature/effects;
         // topology still owns the empty open control frontier below.
-        boolean call=fact instanceof SpInput.CallFact&&plan.precise().contains(fact.header().id());
+        boolean call=fact instanceof SpInput.CallFact&&plan.precise().contains(fact.header().id())
+            &&topology.outcomes(fact.header().id().handle()).stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL);
         boolean typed=typedCicsFrontier(fact)||call;
         Terminator payload=call
             ?InvokeHandler.translate((SpInput.CallFact)fact,data.index(),null,
