@@ -13,6 +13,12 @@ CALL source line. The oracle also checks provenance support and reachability.
 - `renames_nonallocating`: a level-66 view shares its record's value, and does not
   become a second physical child or an independent allocation.
 
+Seven incomplete file adversaries extend these laws: FD without SELECT (local
+and GLOBAL), SELECT without FD, FROM without owner/receiver/source, and missing
+INTO receiver. Every case requires the old target with unknown remainder after
+MAY, the new target after a proved MOVE, and the independent source candidate.
+They do not claim that incomplete inputs are valid COBOL programs.
+
 Run with a frozen runtime manifest (checkouts, source SHAs, per-stage main classes
 and classpaths, and artifact hashes), including the analysis-cfg dependency oracle:
 

@@ -89,3 +89,12 @@ proofs within SP 2.48.0. The lock records its tree and selected file hashes.
 The lower preserves GLOBAL identities separately from allocation and admits
 FILLER/nonallocating RENAMES views. Uncertain I/O retains MAY effects.
 See [validation and limits](../work/storage-boundary-fixes.md). AIR/CFG pins unchanged.
+
+## Incomplete native file effects follow-up (2026-09-27)
+
+Current producer pin: `4802305d17e7b1684d1f749618aa76fe8e091e0f` (SP 2.48 unchanged).
+Description/control identities and observed operands survive incomplete input;
+open read/write bounds describe unproved locations without removing known facts.
+The existing lower admission and MAY lowering suffice. Three frozen compilations,
+closed-omission negatives and seven new dependency adversaries cover the boundary.
+See [incomplete file effects](../work/incomplete-file-effects.md).

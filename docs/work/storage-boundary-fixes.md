@@ -52,3 +52,9 @@ oracle is unchanged (54/55 source oracles pass).
 RED/GREEN logs, runtime hashes and corpus comparisons are retained in the local
 E2E campaign `frontend-fixture-fixes-20260927`. Work remains IN_PROGRESS pending
 human review and merge. No ALTER implementation.
+
+## Authorized F04/F07 follow-up
+
+The user subsequently authorized correction of the three incomplete file-effect
+inputs. The previous exclusion records the first validation wave. Current work
+and tests are described in [incomplete file effects](incomplete-file-effects.md).

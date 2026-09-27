@@ -4,6 +4,18 @@
 OPTIONAL_EXTENSION / NOT_PART_OF_CORE, requer nova autorização.
 [Handoff final](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
 
+## Incomplete file effect plans
+
+SP partial effects retain independently known targets and use open bounds only
+for observed reads/writes whose location is unproved. Existing admission accepts
+those facts and still rejects a missing required buffer/FROM step with a closed
+bound. Existing lowering emits MAY effects for open locations and preserves
+source provenance; it does not turn them into a kill. No production admission or
+AIR/CFG change is needed. `IncompleteFileEffectsSuite` freezes the three original
+inputs and tests permutation, transport and forged closed omissions. Seven
+additional storage-boundary E2E cases verify candidates, supports, remainder and
+a later proved kill.
+
 ## Checkpoints históricos
 
 CORE N+C qualificado; closeout/merges autorizados. W10 DEFERRED / OPTIONAL_EXTENSION,

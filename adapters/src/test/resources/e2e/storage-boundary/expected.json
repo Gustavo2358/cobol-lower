@@ -199,6 +199,321 @@
           "reachable": true
         }
       }
+    },
+    {
+      "id": "fd_missing_select",
+      "source": "fd_missing_select.cbl",
+      "sha256": "688e4d1411d2ebfcafbfc8f7d0656b38ed4c2a0711ceb4ca04a23691c3739aa6",
+      "calls": {
+        "C1": {
+          "line": 14,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 16,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 17,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "select_missing_fd",
+      "source": "select_missing_fd.cbl",
+      "sha256": "de44b5a2c05e3ac4944eac77a5dd13e3f6dbda5d9710961a18e3db417c164cba",
+      "calls": {
+        "C1": {
+          "line": 16,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 18,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 19,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "from_missing_owner",
+      "source": "from_missing_owner.cbl",
+      "sha256": "cc7e74b0af94a35fd2fbb680ef6dd5ddb48c39eec21df3f82c4151533b2fefa4",
+      "calls": {
+        "C1": {
+          "line": 12,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 14,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 15,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "from_missing_receiver",
+      "source": "from_missing_receiver.cbl",
+      "sha256": "b6f18077d6cf48086c5c09e1825b88048692e1c0c1cf9be6e1791c2d989e8fdd",
+      "calls": {
+        "C1": {
+          "line": 11,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 13,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 14,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "from_missing_source",
+      "source": "from_missing_source.cbl",
+      "sha256": "7a5069ab16c0d036242d77cfed394d646cabc6ec5cc6f162e726dcecc2e41e1e",
+      "calls": {
+        "C1": {
+          "line": 18,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 20,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 21,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "into_missing_receiver",
+      "source": "into_missing_receiver.cbl",
+      "sha256": "f92315c3d03240170169848eec548e9fb8034ede6928fe9cd826ea3f04ceeecd",
+      "calls": {
+        "C1": {
+          "line": 18,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 20,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 21,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
+    },
+    {
+      "id": "global_fd_missing_select",
+      "source": "global_fd_missing_select.cbl",
+      "sha256": "bf455c75031b629a6c06c2b8e4f3bffb69d20a6b0e20a0ac6137c6c849cc3f2f",
+      "calls": {
+        "C1": {
+          "line": 20,
+          "required": [
+            "KEEP0001"
+          ],
+          "allowed": [
+            "KEEP0001"
+          ],
+          "forbidden": [
+            "NEXT0001"
+          ],
+          "reachable": true,
+          "requiresUnknownRemainder": true
+        },
+        "C2": {
+          "line": 22,
+          "required": [
+            "NEXT0001"
+          ],
+          "allowed": [
+            "NEXT0001"
+          ],
+          "forbidden": [
+            "KEEP0001"
+          ],
+          "reachable": true
+        },
+        "C3": {
+          "line": 23,
+          "required": [
+            "SAFE0001"
+          ],
+          "allowed": [
+            "SAFE0001"
+          ],
+          "forbidden": [],
+          "reachable": true
+        }
+      }
     }
   ]
 }

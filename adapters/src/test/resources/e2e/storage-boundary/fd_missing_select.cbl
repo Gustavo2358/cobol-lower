@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PARTIAL-IO.
+       DATA DIVISION.
+       FILE SECTION.
+       FD F.
+       01 REC PIC X(8).
+       WORKING-STORAGE SECTION.
+       01 TARGET-NAME PIC X(8).
+       01 SRC PIC X(8).
+       PROCEDURE DIVISION.
+       MOVE 'KEEP0001' TO REC.
+       MOVE 'SAFE0001' TO SRC.
+       READ F.
+       CALL REC.
+       MOVE 'NEXT0001' TO REC.
+       CALL REC.
+       CALL SRC.
+       GOBACK.
