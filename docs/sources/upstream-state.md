@@ -5,7 +5,8 @@
 Os pins atuais estão em [sources.lock.json](sources.lock.json): frontend SP 2.49 /
 NOMINAL_TEXT_SOURCE_V2, com modelAssumed e nove membros IBM; fallback sintético
 SQLCA autorizado somente por EXEC SQL INCLUDE. Arquivos reais mantêm precedência.
-A revisão atual está nos Drafts proleap-poc #64, cobol-lower #39 e analysis-cfg #49.
+O frontend #64 está mergeado em `22d37233373b9db691ba170d898b7523bfea5746`; a integração segue em
+cobol-lower #39 e analysis-cfg #49.
 Evidência executada e reuso estão em [CardDemo IBM](../work/carddemo-ibm-copybooks.md).
 
 As seções abaixo preservam a sequência histórica de checkpoints. Versões, pins,

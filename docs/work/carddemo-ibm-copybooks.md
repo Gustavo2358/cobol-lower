@@ -58,3 +58,14 @@ final commit. Final docs/pin checks pass. Raw results, logs and compiled runtime
 comparison: `.synthetic-dfh/carddemo-review-fixes/`; producer report:
 `docs/work/carddemo-ibm-review-validation.json`. Full qualification and the
 historical 310 matrix were not executed. Draft #39 remains open; no merge.
+
+## Integration — merged producer pin
+
+User authorized frontend #64 → lower #39 → CFG #49 integration.
+Frontend #64 merged at `22d37233373b9db691ba170d898b7523bfea5746`. SRC-SP now pins this actual
+merge commit on main; the entire tree and all 109 locked blobs equal the reviewed
+producer `e2d825b1551dd7a730ae79c4a1b7141586c23fc9`. SP 2.49 / nominal V2 unchanged.
+This commit changes consumer documentation/pins only; semantic/corpus evidence
+remains valid. The final main gate and actual merge status are recorded by Git/CI
+and the integration report. Earlier Draft/no-merge statements describe prior
+qualification checkpoints; this section supersedes their integration state.
