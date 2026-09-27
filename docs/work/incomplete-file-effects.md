@@ -1,6 +1,7 @@
 # Incomplete native file effects
 
-Status: IN_PROGRESS, awaiting review. Scope: F04/F07 follow-up to the storage fixes.
+Status: DONE upon merge of [PR #38](https://github.com/Gustavo2358/cobol-lower/pull/38); required technical gates passed.
+Scope: F04/F07 follow-up to the storage fixes.
 
 The producer previously discarded the entire file memory model without both FD
 and SELECT, then published false/false unknown bounds. Validated admission refused
@@ -27,7 +28,7 @@ provenance travels with each retained step through the existing SourceOrigins.
 
 ## Validation and pin
 
-Producer pin: `4802305d17e7b1684d1f749618aa76fe8e091e0f`; SP 2.48 unchanged.
+Producer pin: `7775c0407f6e5b60d73517b687f9768c878e59eb`; SP 2.48 unchanged.
 Producer FAST: 589 PASS. Lower focused incomplete-file and existing file-memory
 suites PASS. Integrated matrix: 310/310 complete. PERFORM 39/39, Chaos 48/48,
 PERFORM adversaries 25/25, aliases 14/14 and storage adversaries 13/13 PASS.
@@ -45,7 +46,23 @@ any downstream execution. Logs, binaries, source hashes and validation summaries
 are retained under the local incomplete-file-effects-20260927 E2E report.
 Repository FAST completion and remote CI are recorded in the review PR.
 
-The FILE family has 113/115 tests passing; two old SP-version assertions fail as
-on the untouched baseline. Unrelated full-qualification failures, W2 ACCEPT and
-copy-cycle limits remain; this follow-up does not fix them. Previous lower
-semantic/capacity gates are reused because lower production is unchanged.
+The producer FILE family now passes 115/115, without failures, errors or skips.
+Its two old version expectations now require SP 2.47 for nominalValues and SP
+2.48 for SECTION regions. All semantic assertions execute; producer FAST passes
+589 tests. The three historical PERFORM inventory oracles, the DLI oracle and
+one skipped discovery test remain pending. The full suite was not rerun and is
+not claimed green. W2 ACCEPT and copy-cycle also remain outside this delivery.
+Previous lower semantic/capacity gates are reused because lower production is
+unchanged in this follow-up.
+
+
+## Merge pin and closeout
+
+Frontend PR #63 merged at `7775c0407f6e5b60d73517b687f9768c878e59eb`. The source lock records that immutable commit,
+its tree and all 96 selected file hashes. Production, build inputs and source
+fixtures equal `4802305d17e7b1684d1f749618aa76fe8e091e0f`; the producer test/version
+and documentation corrections do not invalidate the integrated corpus evidence.
+Frozen test manifests retain the producer that actually generated their bytes.
+The user authorized merge of lower PR #38 after the producer. This final change
+updates only the pin and documentation; lower production and test inputs remain
+identical to `dbf590f83203b87ce4b1c0e89af01bad8a25c9fc`.

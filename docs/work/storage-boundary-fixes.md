@@ -1,7 +1,7 @@
 # Storage boundary fixes
 
 - id: STORAGE-BOUNDARY-FIXES
-- status: IN_PROGRESS
+- status: DONE upon merge of [PR #38](https://github.com/Gustavo2358/cobol-lower/pull/38); required technical gates passed.
 - scope: Nominal GLOBAL captures and admission of anonymous storage nodes / nonallocating RENAMES views.
 
 ## Rule and algorithm
@@ -19,6 +19,9 @@ Before implementation, reproduce the failures. Assert that invalid relations ret
 Run repository FAST and local qualification, the complete frontend fixture corpus, PERFORM, Chaos and CardDemo. Compare dependency relations and supports with the frozen baseline; keep existing PARTIAL and unrelated input limitations explicit. ALTER and incomplete file-effect findings F04/F07 are outside scope.
 
 ## Validation and pins (2026-09-27)
+
+This section records the initial storage wave. The [FILE follow-up](incomplete-file-effects.md)
+resolves the three remaining pipeline rejections and the two producer version expectations.
 
 Producer pin: `4da7d8b03941ee78acba0d001a7e6391c1f7d371` (SP 2.48.0 unchanged). AIR Java remains
 `d760b07b0fac42a106d09342ee9d5b8445ccf630`; AIR specification remains
@@ -50,8 +53,9 @@ version/PERFORM/DLI oracles were not weakened. The historical copy-cycle source
 oracle is unchanged (54/55 source oracles pass).
 
 RED/GREEN logs, runtime hashes and corpus comparisons are retained in the local
-E2E campaign `frontend-fixture-fixes-20260927`. Work remains IN_PROGRESS pending
-human review and merge. No ALTER implementation.
+E2E campaign `frontend-fixture-fixes-20260927`. The user authorized integration
+after review of the results; the merged PR closes this work under the lean policy.
+No ALTER implementation.
 
 ## Authorized F04/F07 follow-up
 

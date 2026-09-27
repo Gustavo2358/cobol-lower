@@ -92,7 +92,7 @@ See [validation and limits](../work/storage-boundary-fixes.md). AIR/CFG pins unc
 
 ## Incomplete native file effects follow-up (2026-09-27)
 
-Current producer pin: `4802305d17e7b1684d1f749618aa76fe8e091e0f` (SP 2.48 unchanged).
+Current producer pin: `7775c0407f6e5b60d73517b687f9768c878e59eb` (SP 2.48 unchanged).
 Description/control identities and observed operands survive incomplete input;
 open read/write bounds describe unproved locations without removing known facts.
 The existing lower admission and MAY lowering suffice. Three frozen compilations,
