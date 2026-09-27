@@ -107,6 +107,8 @@ public final class SpJsonDecoder {
                     if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
                         ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
                 }
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("SYNCPOINT_ROLLBACK")&&!receivedVersion.equals("2.50.0"))
+                    throw new PhysicalShape("SYNCPOINT_ROLLBACK requires SP2.50");
                 if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())

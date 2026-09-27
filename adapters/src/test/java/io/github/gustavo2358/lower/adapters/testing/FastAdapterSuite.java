@@ -20,6 +20,7 @@ public final class FastAdapterSuite {
         ControlStorageDecouplingSuite.main(new String[0]);
         FactDependencyWireSuite.main(new String[0]);
         RecallLocalitySuite.main(new String[0]);
+        CicsCompletionSuite.main(args);
         CicsHostEffectsSuite.main(new String[0]);
         DliEffectsSuite.main(new String[0]);
         ConditionRegistrationSuite.main(new String[0]);

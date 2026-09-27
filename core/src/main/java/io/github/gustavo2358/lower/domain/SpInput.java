@@ -410,7 +410,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
-    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
+    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
     public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
     /** Typed source expression. LENGTH_OF denotes declaration extent, not stored value. */
     public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,

@@ -48,3 +48,26 @@ SQLCA negative oracle still forbids an exact cell; only its input kind changed.
 
 Raw evidence: workspace .cics-completion/evidence/d1-*. This checkpoint has not
 run the final whole-corpus qualification.
+
+## D3 algorithm and oracle (before implementation)
+
+IBM SYNCPOINT ROLLBACK backs out recoverable resources and can complete normally.
+Publish SYNCPOINT_ROLLBACK as a distinct command kind with a required operand-free
+ROLLBACK option. Its application host footprint contains only explicit RESP/RESP2
+writes; external transactional state stays open. No host-memory rollback or kill
+is inferred. Ordinary source completion uses the existing contextual topology;
+unsuppressed INVREQ retains exceptional uncertainty. RESP/NOHANDLE permits local
+error completion, RESP2 alone does not suppress default processing. Closed option
+validation rejects duplicate/value-bearing ROLLBACK and unsupported options.
+This is a finite command classification and existing lowering, linear in options.
+SP 2.50 is required for the distinct kind, including unavailable syntax facts.
+
+## D3 checkpoint
+
+SYNCPOINT_ROLLBACK is a separate SP2.50 command. Closed syntax, source continuation
+and bounded MAY response writes are implemented. Producer red test reproduced the
+unsupported command; green CicsCompletionTest/CicsCommandContractTest/CicsHostEffectsTest
+passed. Four producer wire variants passed the new consumer suite. Four four-stage
+PERFORM/rollback cases passed with prior value and supports preserved. Historical
+unsupported-ROLLBACK tests now use ROLLBACK MYSTERY; the new positive/invalid-option
+tests explicitly cover the capability that changed. Final corpus is pending.
