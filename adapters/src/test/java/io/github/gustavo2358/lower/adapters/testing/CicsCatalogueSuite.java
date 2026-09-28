@@ -38,6 +38,13 @@ public final class CicsCatalogueSuite {
             }
             copy=j.deepCopy();command(copy).put("rawText"," ".repeat(command(copy).path("rawText").asText().length()));need(decode(copy) instanceof SpJsonDecoder.Decoded,"rawText is not authority");cases++;
         }
+        try(var stream=CicsCatalogueSuite.class.getResourceAsStream("/sp/cics-catalogue/catalogue-inquire-subscript.json")) {
+            var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(stream.readAllBytes());need(decoded instanceof SpJsonDecoder.Decoded,"indexed program query");
+            var input=((SpJsonDecoder.Decoded)decoded).input();var fact=input.statements().stream().filter(CicsCommandFact.class::isInstance).map(CicsCommandFact.class::cast).findFirst().orElseThrow();
+            var ref=fact.options().getFirst().reference().orElseThrow();need(ref.logicalWholeItem().isEmpty()&&ref.role()==OperandRole.READ,"subscript is not whole object");
+            var pub=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS).publication().orElseThrow();var reached=TerminalSendSuite.reached(pub);
+            need(pub.units().stream().flatMap(u->u.sequences().stream()).anyMatch(sq->reached.contains(sq.label())&&sq.terminator() instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget t&&t.name().equals("AFTERP")),"indexed query preserves PERFORM return");cases++;
+        }
         System.out.println("PASS CicsCatalogueSuite cases="+cases+" mutations="+mutations);
     }
 }
