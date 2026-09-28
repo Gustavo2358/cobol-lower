@@ -151,7 +151,7 @@ final class TopologyBinding {
             boolean valid;
             if(event.origin()==EventOrigin.EXPLICIT_ABEND)valid=fact instanceof SpInput.CicsAbendFact abend
                 &&abend.dispatchEligibility().name().equals(event.eligibility().name());
-            else valid=fact instanceof SpInput.CicsFact command&&command.command()==SpInput.CicsCommand.XCTL
+            else valid=fact instanceof SpInput.CicsFact command&&command.command()==(event.origin()==EventOrigin.LINK_PGMIDERR?SpInput.CicsCommand.LINK:SpInput.CicsCommand.XCTL)
                 &&command.options().stream().allMatch(o->Set.of("PROGRAM","COMMAREA","LENGTH","RESP2").contains(o.name()))
                 &&command.options().stream().filter(o->o.name().equals("PROGRAM")).count()==1
                 &&command.options().stream().map(SpInput.CicsOption::name).distinct().count()==command.options().size()
@@ -159,6 +159,25 @@ final class TopologyBinding {
             c.require(valid,Admission.Rule.STRUCTURE,event.statement(),null,"exceptional event agrees with typed source fact");
             if(fact!=null)for(var proof:event.proofs())c.require(binder.proof(proof).provenance().equals(fact.header().provenance()),
                 Admission.Rule.STRUCTURE,event.statement(),null,"exceptional event canonical source provenance");
+        }
+        for(var registration:topology.conditionRegistrations()) {
+            var fact=facts.get(registration.statement());
+            c.require(fact instanceof SpInput.OtherStatement observed&&observed.effects().map(e->e.proof()==SpInput.EffectProof.CICS_CONDITION_REGISTRATION).orElse(false),
+                Admission.Rule.STRUCTURE,registration.statement(),null,"condition registration has typed bounded effects");
+            if(fact!=null)for(var proof:registration.proofs())c.require(binder.proof(proof).provenance().equals(fact.header().provenance()),
+                Admission.Rule.STRUCTURE,registration.statement(),null,"condition registration canonical source provenance");
+        }
+        for(var event:topology.conditionEvents()) {
+            var fact=facts.get(event.statement());
+            boolean valid=fact instanceof SpInput.CicsFact command
+                &&command.options().stream().allMatch(o->Set.of("PROGRAM","COMMAREA","LENGTH","RESP","RESP2","NOHANDLE").contains(o.name()))
+                &&command.options().stream().filter(o->o.name().equals("PROGRAM")).count()==1
+                &&command.options().stream().map(SpInput.CicsOption::name).distinct().count()==command.options().size()
+                &&command.gapCodes().stream().allMatch(g->Set.of("CICS_EFFECTS_SIGNATURE_PARTIAL","CICS_HANDLER_STATE_UNKNOWN","CICS_HOST_BINDING_UNAVAILABLE","CICS_CONDITION_VALUES_UNKNOWN").contains(g))
+                &&(event.eligibility()==EventEligibility.HANDLERS_BYPASSED)==command.options().stream().anyMatch(o->Set.of("RESP","NOHANDLE").contains(o.name()));
+            c.require(valid,Admission.Rule.STRUCTURE,event.statement(),null,"condition event agrees with typed command and bypass options");
+            if(fact!=null)for(var proof:event.proofs())c.require(binder.proof(proof).provenance().equals(fact.header().provenance()),
+                Admission.Rule.STRUCTURE,event.statement(),null,"condition event canonical source provenance");
         }
         var uses=new HashMap<String,List<io.github.gustavo2358.lower.domain.FileFacts.Use>>();
         input.fileInventory().operations().uses().forEach(u->uses.computeIfAbsent(u.statement().handle(),k->new ArrayList<>()).add(u));

@@ -10,6 +10,7 @@ public final class FastAdapterSuite {
         MoveEffectSuite.main(args);
         SqlDispatchSuite.main(args);
         AlternateEntrySuite.main(args);
+        CicsConditionDispatchSuite.main(args);
         TopologyEntryAdmissionSuite.main(new String[0]);
         SourceTableSuite.main(args);
         NominalValueSuite.main(new String[0]);

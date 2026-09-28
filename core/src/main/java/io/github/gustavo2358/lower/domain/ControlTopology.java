@@ -7,7 +7,19 @@ import static io.github.gustavo2358.lower.domain.SpInput.Provenance;
  * pre-bound successor. This model contains no execution contexts or value facts. */
 public record ControlTopology(String authority, List<Occurrence> occurrences,
         List<Region> regions, List<Boundary> boundaries, List<Outcome> outcomes,
-        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows, List<SourceContinuation> sourceContinuations,List<EntryPoint> entryPoints) {
+        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows, List<SourceContinuation> sourceContinuations,List<EntryPoint> entryPoints,List<ConditionRegistration> conditionRegistrations,List<ConditionEvent> conditionEvents) {
+    public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events,List<FileFlow> fileFlows,List<SourceContinuation> sourceContinuations,List<EntryPoint> entryPoints) {
+        this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,fileFlows,sourceContinuations,entryPoints,List.of(),List.of());
+    }
+    public enum ConditionAction { LABEL, DEFAULT, IGNORE }
+    public record ConditionRegistration(String statement,String condition,ConditionAction action,List<Target> target,List<String> proofs) {
+        public ConditionRegistration {text(statement);text(condition);Objects.requireNonNull(action);target=List.copyOf(target);proofs=sorted(nonempty(proofs),x->x);require(action==ConditionAction.LABEL?target.size()==1:target.isEmpty(),"condition registration target");}
+        public String identity(){return statement+"/"+condition;}
+    }
+    /** Failure is a runtime alternative, not a proved occurrence of the condition. */
+    public record ConditionEvent(String id,String statement,String condition,EventEligibility eligibility,Target continuation,String defaultEvent,List<String> proofs) {
+        public ConditionEvent {text(id);text(statement);require(condition.equals("PGMIDERR"),"admitted condition event");Objects.requireNonNull(eligibility);Objects.requireNonNull(continuation);Objects.requireNonNull(defaultEvent);proofs=sorted(nonempty(proofs),x->x);require(eligibility==EventEligibility.HANDLERS_BYPASSED?defaultEvent.isEmpty():!defaultEvent.isEmpty(),"condition default event");}
+    }
     public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events,List<FileFlow> fileFlows,List<SourceContinuation> sourceContinuations) {
         this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,fileFlows,sourceContinuations,List.of());
     }
@@ -47,7 +59,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
     public record FileFlow(String statement,Target entry,List<FilePoint> points,List<String> proofs) {
         public FileFlow {text(statement);Objects.requireNonNull(entry);points=sorted(nonempty(points),FilePoint::id);proofs=sorted(nonempty(proofs),x->x);}
     }
-    public enum EventOrigin { EXPLICIT_ABEND, XCTL_PGMIDERR }
+    public enum EventOrigin { EXPLICIT_ABEND, XCTL_PGMIDERR, LINK_PGMIDERR }
     public enum EventEligibility { HANDLER_ELIGIBLE, HANDLERS_BYPASSED }
     public enum EventPremise { CONDITION_RAISED, DEFAULT_DISPOSITION_APPLIES }
     /** A conditional source relation, never a statically selected handler edge. */
@@ -116,13 +128,15 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         sourceContinuations=sorted(sourceContinuations==null?List.of():sourceContinuations,SourceContinuation::identity);
         index(sourceContinuations,SourceContinuation::identity);
         entryPoints=sorted(entryPoints==null?List.of():entryPoints,EntryPoint::entry);index(entryPoints,EntryPoint::entry);
+        conditionRegistrations=sorted(conditionRegistrations==null?List.of():conditionRegistrations,ConditionRegistration::identity);index(conditionRegistrations,ConditionRegistration::identity);
+        conditionEvents=sorted(conditionEvents==null?List.of():conditionEvents,ConditionEvent::id);index(conditionEvents,ConditionEvent::id);
         var fps=index(fileFlows.stream().flatMap(f->f.points().stream()).toList(),FilePoint::id);
         var owners=new HashMap<String,String>();fileFlows.forEach(f->f.points().forEach(p->owners.put(p.id(),f.statement())));
         var os=index(occurrences,Occurrence::statement);var rs=index(regions,Region::id);var bs=index(boundaries,Boundary::id);
         var es=index(outcomes,Outcome::id);var calls=index(bindings,Binding::id);var ps=index(proofs,Proof::id);
         for(var e:exceptionalEvents) {
             require(os.containsKey(e.statement()),"exceptional source occurrence");refs(e.proofs(),ps);
-            String rule=e.origin()==EventOrigin.EXPLICIT_ABEND?"cics-explicit-abend-event":"cics-xctl-pgmiderr-default-abend-event";
+            String rule=e.origin()==EventOrigin.EXPLICIT_ABEND?"cics-explicit-abend-event":e.origin()==EventOrigin.LINK_PGMIDERR?"cics-link-pgmiderr-default-abend-event":"cics-xctl-pgmiderr-default-abend-event";
             require(e.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.LOCAL_GRAMMAR&&ps.get(id).rule().equals(rule)),"exceptional event authority");
         }
         require(exceptionalEvents.stream().map(e->e.statement()+"/"+e.origin()).distinct().count()==exceptionalEvents.size(),"duplicate event source/origin");
@@ -135,6 +149,19 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
             case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN, PROGRAM_HALT -> require(rs.containsKey(t.reference()),"target region");
         }};
+        var exceptions=index(exceptionalEvents,ExceptionalEvent::id);
+        for(var registration:conditionRegistrations) {
+            require(os.containsKey(registration.statement()),"condition registration occurrence");refs(registration.proofs(),ps);registration.target().forEach(target);
+            require(registration.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.LOCAL_GRAMMAR&&ps.get(id).rule().equals("cics-condition-registration")),"condition registration authority");
+            require(registration.target().stream().allMatch(t->t.kind()==TargetKind.REGION_ENTRY),"condition label is a resolved procedure target");
+        }
+        for(var event:conditionEvents) {
+            require(os.containsKey(event.statement()),"condition event occurrence");refs(event.proofs(),ps);target.accept(event.continuation());
+            require(event.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.LOCAL_GRAMMAR&&ps.get(id).rule().equals("cics-pgmiderr-condition-event")),"condition event authority");
+            if(!event.defaultEvent().isEmpty()) {
+                var fallback=exceptions.get(event.defaultEvent());require(fallback!=null&&fallback.statement().equals(event.statement())&&fallback.origin()!=EventOrigin.EXPLICIT_ABEND,"condition default event correlation");
+            }
+        }
         for(var e:entryPoints) {
             require(os.containsKey(e.declaration()),"alternate entry declaration");refs(e.proofs(),ps);target.accept(e.target());
             require(Set.of(TargetKind.OCCURRENCE,TargetKind.UNKNOWN_LOCAL,TargetKind.PROGRAM_RETURN).contains(e.target().kind()),"alternate entry start shape");
@@ -147,7 +174,8 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             require(c.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.CONTROL_POSSIBILITY),"source continuation hypothesis");
             refs(c.prerequisites(),os);
             require(c.prerequisites().isEmpty()?os.get(c.statement()).outcomes().stream().allMatch(id->es.get(id).kind()==OutcomeKind.UNKNOWN_LOCAL)
-                :c.target().kind()==TargetKind.REGION_ENTRY&&os.get(c.statement()).outcomes().stream().anyMatch(id->es.get(id).kind()==OutcomeKind.EXPLICIT_TRANSFER),"source hypothesis requires unavailable completion or qualified transfer");
+                :c.target().kind()==TargetKind.REGION_ENTRY&&os.get(c.statement()).outcomes().stream().anyMatch(id->es.get(id).kind()==OutcomeKind.EXPLICIT_TRANSFER)
+                    ||!c.prerequisites().isEmpty()&&conditionEvents.stream().anyMatch(e->e.statement().equals(c.statement())&&e.eligibility()==EventEligibility.HANDLER_ELIGIBLE),"source hypothesis requires unavailable completion or qualified transfer");
         }
         // Hypothesis proofs may support source possibilities only, never executable authority.
         var hypothetical=new HashSet<String>();var dependents=new HashMap<String,List<String>>();var pendingProofs=new ArrayDeque<String>();
@@ -163,6 +191,8 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         for(var b:boundaries){executable.accept(b.proofs());executable.accept(b.ordinaryDefault().proofs());}
         for(var b:bindings){executable.accept(b.proofs());executable.accept(b.resume().proofs());for(var p:b.phases())executable.accept(p.proofs());}
         for(var e:entryPoints){executable.accept(e.proofs());executable.accept(e.target().proofs());}
+        for(var e:conditionRegistrations){executable.accept(e.proofs());e.target().forEach(t->executable.accept(t.proofs()));}
+        for(var e:conditionEvents){executable.accept(e.proofs());executable.accept(e.continuation().proofs());}
         for(var e:exceptionalEvents)executable.accept(e.proofs());
         for(var f:fileFlows){executable.accept(f.proofs());executable.accept(f.entry().proofs());for(var p:f.points()){executable.accept(p.proofs());for(var t:p.targets())executable.accept(t.proofs());}}
         for(var flow:fileFlows) {

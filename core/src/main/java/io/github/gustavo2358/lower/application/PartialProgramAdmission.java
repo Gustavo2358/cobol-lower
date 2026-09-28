@@ -20,7 +20,7 @@ final class PartialProgramAdmission {
             validateKnownFacts(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             // Source-only assessment follows factual validation, independently of AIR readiness.
-            if(input.controlTopology().isPresent()&&(!input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()
+            if(input.controlTopology().isPresent()&&(!input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()||!input.controlTopology().orElseThrow().conditionEvents().isEmpty()
                     ||input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)))
                 c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
             // Phase B: readiness gates all executable profile qualification and lowering.

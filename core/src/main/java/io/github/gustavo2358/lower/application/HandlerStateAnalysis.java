@@ -37,8 +37,14 @@ public record HandlerStateAnalysis(UnitKey unit, List<Target> targets, List<Oper
     }
     /** Single reaching definition, not an execution history. Joining two definitions
      * of the same target keeps one semantic target and distinct causal supports. */
-    public record Support(State state, Optional<StatementId> activation) {
-        public Support { Objects.requireNonNull(state);Objects.requireNonNull(activation);
+    public record ConditionState(String condition,StatementId registration,boolean uncertain,List<String> proofs) {
+        public ConditionState{Objects.requireNonNull(condition);Objects.requireNonNull(registration);proofs=List.copyOf(proofs);}
+    }
+    public record Support(State state, Optional<StatementId> activation,List<ConditionState> conditions) {
+        public Support(State state,Optional<StatementId> activation){this(state,activation,List.of());}
+        public Support withConditions(List<ConditionState> values){return new Support(state,activation,values);}
+        public Support { Objects.requireNonNull(state);Objects.requireNonNull(activation);conditions=conditions.stream().sorted(Comparator.comparing(ConditionState::condition)).toList();
+            if(conditions.stream().map(ConditionState::condition).distinct().count()!=conditions.size())throw new IllegalArgumentException("condition state keys");
             if(!state.target().isEmpty()!=activation.isPresent())throw new IllegalArgumentException("activation support"); }
     }
     public record Target(String id, TargetForm form, Optional<CicsHandlerLabelTarget> label,
