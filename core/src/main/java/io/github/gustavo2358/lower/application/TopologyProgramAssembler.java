@@ -178,7 +178,9 @@ final class TopologyProgramAssembler {
         } else if(invoke.isPresent()) {
             var call=topology.binding(invoke.get().binding());
             if(ids.containsActivation(call.id())) {
-                term=frontier(fact,ids,"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
+                term=call.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED
+                    ?undefinedReentry(fact,ids,call.region())
+                    :frontier(fact,ids,"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
             } else if(context.support()!=null) {
                 var child=new Context(context.base().activation(call.id()),call,null,"",null,context,context.support(),context.handler());
                 var origin=evidence(call.id(),call.proofs(),ids);
@@ -286,6 +288,18 @@ final class TopologyProgramAssembler {
         return fact instanceof SpInput.CicsFact c&&c.command()==SpInput.CicsCommand.XCTL
             &&plan.precise().contains(c.header().id())
             &&topology.outcomes(c.header().id().handle()).stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL);
+    }
+    /** Source-undefined activation grants neither a completion nor an effect bound. */
+    private Operations.Opaque undefinedReentry(SpInput.StatementFact fact,LocalIds ids,String bound) {
+        var opaque=(Operations.Opaque)frontier(fact,ids,"LOCAL_REENTRY_SOURCE_UNDEFINED",bound);
+        var h=opaque.header();var scope=new Scopes.EntityScope(List.of(h.id()));
+        var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,h.uncertainties());
+        var header=new Operations.Header(h.id(),h.origin(),h.coverage(),
+            new Evidence.Precision(h.precision().control(),open,open,open,open),h.uncertainties());
+        var memory=new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true));
+        return new Operations.Opaque(header,opaque.observedKind(),opaque.knownOperands(),List.of(),
+            new Envelopes.Envelope(new Envelopes.MemoryEnvelope(List.of(),memory,List.of(),memory,List.of()),
+                opaque.envelope().control(),new Envelopes.DependencyEnvelope(List.of(),Scopes.AnyResource.INSTANCE)));
     }
     private Terminator frontier(SpInput.StatementFact fact,LocalIds ids,String code,String bound) {
         // Payload admission is independent from outgoing-control completeness.

@@ -28,9 +28,17 @@ public final class TerminalSendSuite {
         while(!work.isEmpty()){var at=work.removeFirst();if(!seen.add(at))continue;var t=seqs.get(at).terminator();
             if(t instanceof Operations.Jump x)work.add(x.destination());
             else if(t instanceof Operations.Branch x){work.add(x.trueDestination());work.add(x.falseDestination());}
-            else if(t instanceof Operations.Invoke x)x.outcomes().known().forEach(o->{if(o instanceof Control.Normal n)work.add(n.label());});
-            else if(t instanceof Operations.Opaque x)x.envelope().control().known().forEach(o->{if(o instanceof Control.JumpAlternative n)work.add(n.label());});
+            else if(t instanceof Operations.Invoke x)knownDestinations(x.outcomes().known(),work);
+            else if(t instanceof Operations.Opaque x)knownDestinations(x.envelope().control().known(),work);
         }return seen;
+    }
+    static void knownDestinations(List<? extends Control.ControlAlternative> alternatives,Deque<io.github.gustavo2358.air.model.Ids.LabelId> work) {
+        for(var alternative:alternatives) {
+            if(alternative instanceof Control.Normal normal)work.add(normal.label());
+            else if(alternative instanceof Control.JumpAlternative jump)work.add(jump.label());
+            else if(alternative instanceof Control.Exceptional exception&&exception.destination() instanceof Control.Handler handler)work.add(handler.label());
+            else if(alternative instanceof Control.AnyException exception&&exception.destination() instanceof Control.Handler handler)work.add(handler.label());
+        }
     }
     static HandlerStateAnalysis state(ObjectNode j)throws Exception{return lower(j).admission().handlerState().orElseThrow();}
     static void reject(ObjectNode j,SpJsonDecoder.Code code)throws Exception{var x=decode(j);need(x instanceof SpJsonDecoder.Rejected r&&r.diagnostic().code()==code,"wire mutation expected "+code+" got "+x);mutations++;}
@@ -70,7 +78,7 @@ public final class TerminalSendSuite {
         var changed=standalone.deepCopy();command(changed).put("rawText"," ".repeat(fact.rawText().length()));need(command(input(changed)).length().equals(fact.length()),"no rawText reinterpretation");metamorphics++;
         changed=wire("real-derived");var values=new ArrayList<JsonNode>();changed.path("statements").forEach(values::add);Collections.reverse(values);((ArrayNode)changed.path("statements")).removeAll();values.forEach(((ArrayNode)changed.path("statements"))::add);need(state(changed).equals(state(wire("real-derived"))),"input order is not execution order");metamorphics++;
         for(var version:List.of("2.40.0","2.41.0","2.42.0","2.43.0")){var j=standalone.deepCopy();j.put("contractVersion",version);reject(j,SpJsonDecoder.Code.INPUT_ERROR);}
-        for(var version:List.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,Set.of("2.53.0","2.54.0","2.55.0","2.56.0").contains(version)?SpJsonDecoder.Code.INPUT_ERROR:SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
+        for(var version:List.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0").contains(version)?SpJsonDecoder.Code.INPUT_ERROR:SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
         var j=standalone.deepCopy();command(j).remove("length");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();((ObjectNode)command(j).path("length")).put("kind","INTEGER");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();command(j).put("commandKind","SEND_MAP");reject(j,SpJsonDecoder.Code.INPUT_ERROR);

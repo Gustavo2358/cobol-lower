@@ -1,13 +1,13 @@
 # Estado upstream observado
 
-## Estado vigente — W6, controle e memória
+## Estado vigente — W7/W8, reentrada e qualificação
 
-SP2.56 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
+SP2.57 e qualified-source-dependencies1.2 preservam candidatos condicionais sem
 acrescentar transições executáveis. Branch de revisão empilhada sobre FILE; sem merge.
 
-- proleap-poc: `7bbe184e6c71237ce9bc5b865ae94d006c7bafb2`.
+- proleap-poc: `afd29b423efa2be0fd896519ed548bfe424dc851`.
 
-Regra, testes e limites: [W6](../work/carddemo-control-w6.md).
+Regra: [W7](../work/carddemo-control-w7.md). Qualificação e limites: [W7/W8](../work/carddemo-control-w7-w8.md).
 Os campos e as seções históricas não substituem estes pins.
 
 ## Checkpoints históricos

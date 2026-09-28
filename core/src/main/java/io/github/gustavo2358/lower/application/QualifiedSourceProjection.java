@@ -17,7 +17,7 @@ public final class QualifiedSourceProjection {
         var topology=input.controlTopology();
         // Reuse the R7 engine for ordinary products where Admission did not need
         // to compute handler state. No syntax-based or executable reachability.
-        var state=topology.isEmpty()?Optional.<HandlerStateAnalysis>empty():Optional.of(topology.orElseThrow().sourceContinuations().isEmpty()?admission.handlerState().orElseGet(()->new HandlerStateAnalyzer(input).analyze()):new HandlerStateAnalyzer(input,false,true).analyze());
+        var state=topology.isEmpty()?Optional.<HandlerStateAnalysis>empty():Optional.of(topology.orElseThrow().sourceContinuations().isEmpty()&&topology.orElseThrow().bindings().stream().noneMatch(b->b.reentryPolicy()==io.github.gustavo2358.lower.domain.ControlTopology.ReentryPolicy.SOURCE_UNDEFINED)?admission.handlerState().orElseGet(()->new HandlerStateAnalyzer(input).analyze()):new HandlerStateAnalyzer(input,false,true).analyze());
         var nodes=new ArrayList<Node>();var derivations=new ArrayList<Derivation>();var selections=new ArrayList<Selection>();
         var targets=new ArrayList<Target>();var events=new ArrayList<Event>();var guards=new ArrayList<Guard>();var proofs=new ArrayList<Proof>();var frontiers=new ArrayList<Frontier>();
         var nodeIds=new HashMap<HandlerStateAnalysis.Node,String>();
@@ -34,6 +34,11 @@ public final class QualifiedSourceProjection {
         }
         if(state.isPresent()) {
             var a=state.orElseThrow();
+            var usedProofs=new HashSet<String>();a.derivations().forEach(d->usedProofs.addAll(d.proofs()));
+            for(var b:topology.orElseThrow().bindings())if(usedProofs.contains(HandlerStateAnalyzer.reentryProof(b.id()))) {
+                var caller=input.statements().stream().filter(s->s.header().id().handle().equals(b.caller())).findFirst().orElseThrow();
+                proofs.add(new Proof(HandlerStateAnalyzer.reentryProof(b.id()),"CONTROL_POSSIBILITY","undefined-active-reentry-may-complete",origin(caller.header().provenance()),b.proofs()));
+            }
             for(var n:a.nodes()){var id="node:"+nodes.size();nodeIds.put(n,id);nodes.add(new Node(id,n.context(),n.location(),support(n.support())));}
             for(var t:a.targets())targets.add(new Target(t.id(),t.form().name(),t.entry().stream().map(QualifiedSourceProjection::id).toList(),
                 t.registrations().stream().map(r->new Registration(id(r.statement()),origin(r.statementOrigin()),origin(r.operandOrigin()))).toList(),operands(t.program()),values(t.program())));

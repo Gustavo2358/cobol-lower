@@ -210,3 +210,40 @@ CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT 
 ## SP2.56 — sentenças, busca e término
 
 SENTENCE compõe uma fronteira do período e aceita ESCAPE lexical, usando a mesma pilha de contextos e caminho de handlers já usados por EXIT PARAGRAPH. SEARCH/SEARCH_ARM representam a decisão abstrata e seus corpos; SEARCH_INDEX_MAY conserva memória desconhecida sem MUST. PROGRAM_HALT materializa Opaque com HaltAlternative e NoControl, com memória/recursos de finalização abertos; não é Return. Versões anteriores não admitem as novas capabilities. [W6](../work/carddemo-control-w6.md).
+
+## SP 2.57: source reentry policy
+
+Binding.reentryPolicy is producer authority. When the same binding is already
+active, SOURCE_UNDEFINED yields `cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED`.
+The finite active-binding guard preserves an open frontier and existing effects;
+it does not emit a return, halt, divergence or kill. UNSPECIFIED retains the
+historical unsupported-recursion diagnostic. The decoder requires the field in
+2.57, rejects invalid/null values and rejects specified policy on older contracts.
+Sequential reuse after a completed activation is valid and retains its own resume.
+No paragraph-name or source-text inference is used. The AIR local-control extension
+cannot grant source semantics absent from the producer.
+
+Expansion still materializes contexts and may be exponential in distinct active
+bindings. This change does not implement recursion summaries or claim that all
+CFG nodes become reachable. [Decision and limits](../work/carddemo-control-w7.md).
+
+## Qualified source evidence 1.2
+
+The finite source tabulator detects cycles between invocation contexts. For an
+active binding whose published policy is SOURCE_UNDEFINED, it may derive a
+conditional completion summary. `SOURCE_REENTRY_UNDEFINED` is an unknown handler
+state cause, admitted in qualified-source-dependencies 1.2 only. The derived proof
+uses CONTROL_POSSIBILITY and references the source binding's proofs and caller
+provenance. Existing callerPremise conjunctions attach summaries to their own
+subscribers; summaries are never AIR or CFG edges. Absence of a known completion
+is not a non-return proof under undefined source semantics. Literal candidates
+retain source qualifications; computed candidates retain conditional value
+evidence and uncertainty. GOBACK/STOP/GO TO before a cycle grant no such summary.
+
+The executable analyzer still uses the original state tabulation. Only source
+qualification enables these hypotheses. The domain is finite (bindings, finite
+handler support, handler ingress and program points); insertion is monotonic.
+Each cycle check traverses the context dependency graph per callee, O(C(C+E))
+per saturation round. No recursion-depth cutoff, source-name dispatch or global
+return-to-all-callers graph is used. Materialized AIR context growth remains a
+separate limitation.
