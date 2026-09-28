@@ -101,12 +101,12 @@ public final class CicsFileControlSuite {
             var badFact=io.github.gustavo2358.lower.testing.IfInputs.with(fact,"options",fact.options().stream().map(o->o==option?noFile:o).toList());
             var badInput=io.github.gustavo2358.lower.testing.IfInputs.with(decoded.input(),"statements",decoded.input().statements().stream().map(f->f==fact?badFact:f).toList());
             check(new CobolLowerer().lower(badInput,CobolLower.OPTIONS).publication().isEmpty(),"DSNAME cannot stand in for canonical FILE identity");
-            var broadened=io.github.gustavo2358.lower.testing.IfInputs.with(fact,"command","READNEXT");
+            var broadened=io.github.gustavo2358.lower.testing.IfInputs.with(fact,"command","INQUIRE");
             broadened=io.github.gustavo2358.lower.testing.IfInputs.with(broadened,"options",fact.options().stream().map(o->o.canonicalName().equals("RIDFLD")?io.github.gustavo2358.lower.testing.IfInputs.with(o,"role",SpInput.CicsFileRole.READ_WRITE):o).toList());
             var finalBroadened=broadened;
             var broadenedInput=io.github.gustavo2358.lower.testing.IfInputs.with(decoded.input(),"statements",decoded.input().statements().stream().map(f->f==fact?finalBroadened:f).toList());
             var rejected=new CobolLowerer().lower(broadenedInput,CobolLower.OPTIONS);
-            check(rejected.publication().isEmpty()&&rejected.admission().diagnostics().stream().anyMatch(d->d.requirement().equals("aliases are command scoped")),"READNEXT DATASET remains outside the authorized alias contract");
+            check(rejected.publication().isEmpty()&&rejected.admission().diagnostics().stream().anyMatch(d->d.requirement().equals("aliases are command scoped")),"INQUIRE DATASET remains outside the documented alias contract (W2 API aliases covered by CicsFileAliasSuite)");
         }
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
         for(var mutation:List.of("old-version","wrong-role","wrong-mode","missing-context","unknown-field","false-local")) {

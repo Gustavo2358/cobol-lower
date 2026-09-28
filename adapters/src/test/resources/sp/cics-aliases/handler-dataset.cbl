@@ -1,0 +1,19 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 AREA-X PIC X(80).
+       01 RESP-CD PIC S9(9) COMP.
+       01 TRANS-ID PIC X(4).
+       01 FLAG-X PIC X.
+       PROCEDURE DIVISION.
+           EXEC CICS HANDLE CONDITION IOERR(ERR-P) END-EXEC
+           PERFORM IO-P
+           CALL 'AFTERIO'
+           GOBACK.
+       IO-P.
+           EXEC CICS WRITE DATASET('DDNAME')
+                FROM(AREA-X) RIDFLD(FLAG-X) END-EXEC.
+       ERR-P.
+           CALL 'HANDPGM'
+           GOBACK.

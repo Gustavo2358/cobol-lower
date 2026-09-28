@@ -1,13 +1,13 @@
 # Estado upstream observado
 
-## Estado vigente — W1, possibilidades fonte
+## Estado vigente — W2, comentários e aliases CICS
 
 SP2.52 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
 acrescentar transições executáveis. Branch de revisão empilhada sobre FILE; sem merge.
 
-- proleap-poc: `42d8873e3660acdc581794f5a9c206d4212990f3`.
+- proleap-poc: `0c86ca57711040337963f06213a987a1be0350d1`.
 
-Regra, testes e limites: [W1](../work/carddemo-control-w1.md).
+Regra, testes e limites: [W1](../work/carddemo-control-w2.md).
 Os campos e as seções históricas não substituem estes pins.
 
 ## Checkpoints históricos

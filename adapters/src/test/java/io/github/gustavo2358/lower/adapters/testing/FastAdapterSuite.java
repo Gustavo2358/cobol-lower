@@ -49,7 +49,7 @@ public final class FastAdapterSuite {
         CompositionalPerformSuite.main(new String[0]);
         CompositionalPerformRevisionSuite.main(new String[0]);
         ControlCompositionSuite.main(new String[0]);
-        CicsProgramControlSuite.main(new String[0]); CicsFileControlSuite.main(new String[0]);
+        CicsProgramControlSuite.main(new String[0]); CicsFileControlSuite.main(new String[0]); CicsFileAliasSuite.main(new String[0]);
         int cases = 0;
         for (String name : List.of("dynamic-x8", "literal")) {
             try (var stream = FastAdapterSuite.class.getResourceAsStream("/sp/cp6/" + name + ".json")) {
