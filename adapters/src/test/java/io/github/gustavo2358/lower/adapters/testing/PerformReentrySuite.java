@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.adapters.cli.CobolLower;
 import io.github.gustavo2358.lower.application.CobolLowerer;
+import io.github.gustavo2358.lower.application.QualifiedSourceProjection;
 import io.github.gustavo2358.lower.domain.ControlTopology;
 import io.github.gustavo2358.air.model.*;
 import io.github.gustavo2358.air.model.Ids.*;
@@ -32,6 +33,12 @@ public final class PerformReentrySuite {
             try {new ControlTopology.Binding(binding.id(),binding.caller(),binding.region(),binding.endpoint(),binding.resume(),binding.entryPhase(),binding.completionPhase(),binding.phases(),binding.proofs(),null);throw new AssertionError("null policy admitted");}catch(NullPointerException expected){}
             var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);var p=result.publication().orElseThrow();
             need(result.validation().orElseThrow().isStructurallyValid(),"valid AIR");new AirJson().decode(new AirJson().encode(p));
+            var qualified=QualifiedSourceProjection.project(input,result.admission());
+            if(name.startsWith("reentry-direct")||name.equals("reentry-mutual")) {
+                var after=input.statements().stream().filter(f->f instanceof io.github.gustavo2358.lower.domain.SpInput.CallFact).findFirst().orElseThrow().header().id().handle();
+                need(qualified.occurrences().stream().anyMatch(o->o.id().handle().equals(after)&&!o.qualifications().isEmpty()),"undefined reentry is no proof of impossible source continuation");
+                need(qualified.proofs().stream().anyMatch(proof->proof.kind().equals("CONTROL_POSSIBILITY")&&proof.rule().equals("undefined-active-reentry-may-complete")),"conditional proof identifies source-undefined reentry");
+            }
             var reached=TerminalSendSuite.reached(p);var seqs=new HashMap<LabelId,Sequence>();p.units().forEach(u->u.sequences().forEach(s->seqs.put(s.label(),s)));
             var reasons=new HashSet<UncertaintyId>();p.uncertainties().stream().filter(u->u.code().equals("cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED")).forEach(u->reasons.add(u.id()));
             int reachedFrontiers=0;var calls=new TreeSet<String>();
