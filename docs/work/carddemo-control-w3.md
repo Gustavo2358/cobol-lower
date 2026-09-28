@@ -1,6 +1,10 @@
 # CARDDEMO-CONTROL-W3 — controle e memória
 
-Status: IN_PROGRESS. Escopo W3.1–W3.4; recursão fora desta onda.
+Status: DONE — implementação deste repositório mergeada em 28/09/2026; [fechamento da integração](carddemo-control-integration.md).
+
+Escopo W3.1–W3.4; recursão fora desta onda.
+
+Os checkpoints abaixo registram a qualificação da onda na data em que foi executada. Seus estados de revisão e paradas são históricos; o estado vigente está no [fechamento da integração](carddemo-control-integration.md).
 
 ## Regra e autoridade
 

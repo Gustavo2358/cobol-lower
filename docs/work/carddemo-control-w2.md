@@ -1,5 +1,10 @@
 # CARDDEMO-CONTROL-W2 — aliases CICS
 
-Status: IN_PROGRESS. Escopo: admissão bilateral da extensão explícita FILE/DATASET do produtor. A autoridade IBM e as regras léxicas estão no work item W2 do frontend. READ, WRITE, REWRITE, DELETE, STARTBR, READNEXT, READPREV, RESETBR, ENDBR, UNLOCK e SET aceitam DATASET como FILE; INQUIRE não ganha esse alias. Nenhuma análise de texto é feita no lower.
+Status: DONE — implementação deste repositório mergeada em 28/09/2026; [fechamento da integração](carddemo-control-integration.md).
+
+Escopo: admissão bilateral da extensão explícita FILE/DATASET do produtor. A autoridade IBM e as regras léxicas estão no work item W2 do frontend. READ, WRITE, REWRITE, DELETE, STARTBR, READNEXT, READPREV, RESETBR, ENDBR, UNLOCK e SET aceitam DATASET como FILE; INQUIRE não ganha esse alias. Nenhuma análise de texto é feita no lower.
+
+Os checkpoints abaixo registram a qualificação da onda na data em que foi executada. Seus estados de revisão e paradas são históricos; o estado vigente está no [fechamento da integração](carddemo-control-integration.md).
+
 
 Algoritmo: conjunto fechado por command no contrato tipado; validar nome canônico, papel, valor e topology existentes. Custo linear nas opções. Sem mudança AIR ou versão estrutural SP. Rejeitar DSNAME como identidade FILE, INQUIRE/DATASET e papéis contraditórios. Testes: pares reais FILE/DATASET dos dez comandos API, RESP e PERFORM; par WRITE com HANDLE IOERR. Oracle independente requer invocação FILE e continuação AFTERIO; nos pares RESP; no par HANDLE CONDITION sem RESP, a admissão de controle FILE já era aberta e deve permanecer assim, sem executar artificialmente HANDPGM ou AFTERIO. Oráculo histórico READNEXT negativo será substituído pela regra autorizada W2, conservando negativo de família não autorizada.

@@ -1,6 +1,10 @@
 # CARDDEMO-CONTROL-W5 — SQL e DL/I
 
-Status: IN_PROGRESS. Escopo: CHKP/REPL/ISRT/DLET, SELECT INTO/UPDATE/INSERT/DELETE, DECLARE CURSOR/OPEN/FETCH/CLOSE. Recursão e ALTER executável fora da campanha.
+Status: DONE — implementação deste repositório mergeada em 28/09/2026; [fechamento da integração](carddemo-control-integration.md).
+
+Escopo: CHKP/REPL/ISRT/DLET, SELECT INTO/UPDATE/INSERT/DELETE, DECLARE CURSOR/OPEN/FETCH/CLOSE. Recursão e ALTER executável fora da campanha.
+
+Os checkpoints abaixo registram a qualificação da onda na data em que foi executada. Seus estados de revisão e paradas são históricos; o estado vigente está no [fechamento da integração](carddemo-control-integration.md).
 
 ## Semântica e fronteiras
 
