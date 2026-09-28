@@ -16,6 +16,7 @@ final class HandlerStateAnalyzer {
     private final ControlTopology topology;
     private final TopologyBinding binder;
     private final boolean reverse;
+    private final Map<String,List<ControlTopology.SourceContinuation>> sourceContinuations=new HashMap<>();
     private final Map<String,StatementFact> statements=new TreeMap<>();
     private final Map<String,HandlerStateAnalysis.Target> targets=new TreeMap<>();
     private final Map<String,String> registrationTargets=new HashMap<>();
@@ -32,14 +33,21 @@ final class HandlerStateAnalyzer {
     private final Map<String,List<ExceptionalEvent>> exceptionalEvents=new HashMap<>();
     private final Set<Selection> selections=new HashSet<>();
     private final Set<String> conditionallyReached=new HashSet<>();
+    private final Map<String,List<ControlTopology.SourceContinuation>> sourcePrerequisites=new HashMap<>();
+    private final Map<String,Set<Node>> sourceLocations=new HashMap<>();
     private long pops, joins, maxAtPoint;
 
     HandlerStateAnalyzer(SpInput input) { this(input,false); }
     // Package access solely to exercise worklist scheduling independence.
-    HandlerStateAnalyzer(SpInput input,boolean reverse) {
+    HandlerStateAnalyzer(SpInput input,boolean reverse) { this(input,reverse,false); }
+    HandlerStateAnalyzer(SpInput input,boolean reverse,boolean sourceOnly) {
         this.input=input;this.reverse=reverse;topology=input.controlTopology().orElseThrow();binder=new TopologyBinding(topology);
         topology.exceptionalEvents().forEach(e->exceptionalEvents.computeIfAbsent(e.statement(),k->new ArrayList<>()).add(e));
         input.statements().forEach(s->statements.put(s.header().id().handle(),s));
+        if(sourceOnly)for(var c:topology.sourceContinuations()) {
+            sourceContinuations.computeIfAbsent(c.statement(),k->new ArrayList<>()).add(c);
+            for(var prerequisite:c.prerequisites())sourcePrerequisites.computeIfAbsent(prerequisite,k->new ArrayList<>()).add(c);
+        }
         for(var s:statements.values())if(s instanceof CicsHandlerFact h&&h.action()==CicsHandlerAction.ACTIVATE)catalog(h);
         for(var b:topology.bindings()) {var map=new HashMap<String,ControlTopology.Phase>();b.phases().forEach(p->map.put(p.id(),p));phases.put(b.id(),map);}
     }
@@ -89,6 +97,15 @@ final class HandlerStateAnalyzer {
             var entry=flow.get().entry();route(context,binder.resolve(entry,context.binding(),!context.ingress().isEmpty()),
                 node.support(),Optional.of(node),Optional.empty(),node.location()+"/FILE_ENTRY",flow.get().proofs());return;
         }
+        if(!sourceContinuations.isEmpty()) {
+            sourceLocations.computeIfAbsent(node.location(),k->new HashSet<>()).add(node);
+            for(var possible:sourcePrerequisites.getOrDefault(node.location(),List.of()))
+                for(var transfer:List.copyOf(sourceLocations.getOrDefault(possible.statement(),Set.of())))sourcePossibility(transfer,possible,Optional.of(node));
+            for(var possible:sourceContinuations.getOrDefault(node.location(),List.of())) {
+                if(possible.prerequisites().isEmpty())sourcePossibility(node,possible,Optional.empty());
+                else for(var premise:List.copyOf(sourceLocations.getOrDefault(possible.prerequisites().getFirst(),Set.of())))sourcePossibility(node,possible,Optional.of(premise));
+            }
+        }
         for(var outcome:binder.outcomes(node.location())) {
             if(outcome.kind()==OutcomeKind.LOCAL_INVOKE) {invoke(node,outcome);continue;}
             var next=node.support();
@@ -103,6 +120,10 @@ final class HandlerStateAnalyzer {
             var resolved=binder.resolve(outcome.target(),context.binding(),!context.ingress().isEmpty());
             route(context,resolved,next,Optional.of(node),Optional.empty(),outcome.id(),merge(outcome.proofs(),resolved.proofs()));
         }
+    }
+    private void sourcePossibility(Node source,ControlTopology.SourceContinuation possible,Optional<Node> prerequisite) {
+        var context=contexts.get(source.context());var target=binder.resolve(possible.target(),context.binding(),!context.ingress().isEmpty());
+        route(context,target,source.support(),Optional.of(source),prerequisite,(possible.prerequisites().isEmpty()?possible.statement():possible.identity())+"/SOURCE_POSSIBILITY",merge(possible.proofs(),target.proofs()));
     }
     private void filePoint(Node node) {
         var point=binder.filePoint(node.location().substring("FILE_POINT/".length()));

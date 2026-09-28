@@ -7,7 +7,17 @@ import static io.github.gustavo2358.lower.domain.SpInput.Provenance;
  * pre-bound successor. This model contains no execution contexts or value facts. */
 public record ControlTopology(String authority, List<Occurrence> occurrences,
         List<Region> regions, List<Boundary> boundaries, List<Outcome> outcomes,
-        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows) {
+        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows, List<SourceContinuation> sourceContinuations) {
+    public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,
+            List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events,List<FileFlow> fileFlows) {
+        this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,fileFlows,List.of());
+    }
+    /** Non-executable source hypothesis; never an outcome of the executable topology. */
+    public record SourceContinuation(String statement,Target target,List<String> proofs,List<String> prerequisites) {
+        public SourceContinuation(String statement,Target target,List<String> proofs){this(statement,target,proofs,List.of());}
+        public SourceContinuation {text(statement);Objects.requireNonNull(target);proofs=sorted(nonempty(proofs),x->x);prerequisites=prerequisites==null?List.of():List.copyOf(prerequisites);require(prerequisites.size()<=1,"source prerequisite arity");}
+        public String identity(){return statement+"/"+target.kind()+"/"+target.reference()+"/"+String.join("/",prerequisites);}
+    }
     public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,
             List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events) {
         this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,List.of());
@@ -56,7 +66,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         public Phase(String id,PhaseKind kind,String operation,List<PhaseEdge> edges,List<String> proofs) {this(id,kind,operation,edges,proofs,0);}
         public Phase {require(level>=0,"nonnegative phase level");text(id);Objects.requireNonNull(kind);text(operation);edges=sorted(nonempty(edges),PhaseEdge::role);proofs=sorted(nonempty(proofs),x->x);}
     }
-    public enum ProofKind { LOCAL_GRAMMAR, RESOLVED_TARGET, EXPANDED_INCLUDE, INPUT_REGION_ISOLATION, PARTIAL_UNKNOWN }
+    public enum ProofKind { LOCAL_GRAMMAR, RESOLVED_TARGET, EXPANDED_INCLUDE, INPUT_REGION_ISOLATION, PARTIAL_UNKNOWN, CONTROL_POSSIBILITY }
     public record Target(TargetKind kind, String reference, List<String> proofs) {
         public Target { Objects.requireNonNull(kind); text(reference); proofs=sorted(nonempty(proofs),x->x); }
     }
@@ -91,6 +101,8 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         fileFlows=sorted(fileFlows==null?List.of():fileFlows,FileFlow::statement);
         require("FRONTEND_CONTROL_TOPOLOGY_R2".equals(authority)==!fileFlows.isEmpty(),"FILE flow authority/inventory");
         index(fileFlows,FileFlow::statement);
+        sourceContinuations=sorted(sourceContinuations==null?List.of():sourceContinuations,SourceContinuation::identity);
+        index(sourceContinuations,SourceContinuation::identity);
         var fps=index(fileFlows.stream().flatMap(f->f.points().stream()).toList(),FilePoint::id);
         var owners=new HashMap<String,String>();fileFlows.forEach(f->f.points().forEach(p->owners.put(p.id(),f.statement())));
         var os=index(occurrences,Occurrence::statement);var rs=index(regions,Region::id);var bs=index(boundaries,Boundary::id);
@@ -110,6 +122,30 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
             case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN -> require(rs.containsKey(t.reference()),"target region");
         }};
+        for(var c:sourceContinuations) {
+            require(os.containsKey(c.statement()),"source continuation occurrence");refs(c.proofs(),ps);target.accept(c.target());
+            require(c.target().kind()==TargetKind.OCCURRENCE||c.target().kind()==TargetKind.COMPLETE
+                ||c.target().kind()==TargetKind.REGION_ENTRY||c.target().kind()==TargetKind.UNKNOWN_LOCAL,"source continuation shape");
+            require(c.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.CONTROL_POSSIBILITY),"source continuation hypothesis");
+            refs(c.prerequisites(),os);
+            require(c.prerequisites().isEmpty()?os.get(c.statement()).outcomes().stream().allMatch(id->es.get(id).kind()==OutcomeKind.UNKNOWN_LOCAL)
+                :c.target().kind()==TargetKind.REGION_ENTRY&&os.get(c.statement()).outcomes().stream().anyMatch(id->es.get(id).kind()==OutcomeKind.EXPLICIT_TRANSFER),"source hypothesis requires unavailable completion or qualified transfer");
+        }
+        // Hypothesis proofs may support source possibilities only, never executable authority.
+        var hypothetical=new HashSet<String>();var dependents=new HashMap<String,List<String>>();var pendingProofs=new ArrayDeque<String>();
+        for(var p:proofs) {
+            if(p.kind()==ProofKind.CONTROL_POSSIBILITY){hypothetical.add(p.id());pendingProofs.add(p.id());}
+            for(var dependency:p.dependencies())dependents.computeIfAbsent(dependency,k->new ArrayList<>()).add(p.id());
+        }
+        while(!pendingProofs.isEmpty())for(var dependent:dependents.getOrDefault(pendingProofs.removeFirst(),List.of()))if(hypothetical.add(dependent))pendingProofs.add(dependent);
+        java.util.function.Consumer<List<String>> executable=ids->require(ids.stream().noneMatch(hypothetical::contains),"hypothesis cannot authorize executable control");
+        for(var o:occurrences)executable.accept(o.proofs());
+        for(var o:outcomes){executable.accept(o.proofs());executable.accept(o.target().proofs());}
+        for(var r:regions){executable.accept(r.proofs());executable.accept(r.entry().proofs());}
+        for(var b:boundaries){executable.accept(b.proofs());executable.accept(b.ordinaryDefault().proofs());}
+        for(var b:bindings){executable.accept(b.proofs());executable.accept(b.resume().proofs());for(var p:b.phases())executable.accept(p.proofs());}
+        for(var e:exceptionalEvents)executable.accept(e.proofs());
+        for(var f:fileFlows){executable.accept(f.proofs());executable.accept(f.entry().proofs());for(var p:f.points()){executable.accept(p.proofs());for(var t:p.targets())executable.accept(t.proofs());}}
         for(var flow:fileFlows) {
             require(os.containsKey(flow.statement()),"FILE flow owner");refs(flow.proofs(),ps);target.accept(flow.entry());
             require(flow.entry().kind()==TargetKind.FILE_POINT&&flow.statement().equals(owners.get(flow.entry().reference())),"FILE flow entry ownership");
