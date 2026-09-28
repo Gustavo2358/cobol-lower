@@ -18,7 +18,7 @@ public final class PerformReentrySuite {
         int cases=0,mutations=0;
         var names=List.of("reentry-direct","reentry-mutual","reentry-conditional","reentry-callers",
             "reentry-direct-callers","reentry-file-unconditional","reentry-range","reentry-section","reentry-values","reentry-file","sequential-callers",
-            "sequential-loop","terminal-before","halt-before","goto-before","reentry-direct-handler",
+            "reentry-handler-ingress","handler-terminal-before","sequential-loop","terminal-before","halt-before","goto-before","reentry-direct-handler",
             "reentry-conditional-handler","reentry-callers-handler","sequential-callers-handler","terminal-before-handler");
         for(var name:names) {
             ObjectNode j;try(var stream=PerformReentrySuite.class.getResourceAsStream("/sp/perform-reentry/"+name+".json")) {

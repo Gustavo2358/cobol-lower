@@ -28,9 +28,17 @@ public final class TerminalSendSuite {
         while(!work.isEmpty()){var at=work.removeFirst();if(!seen.add(at))continue;var t=seqs.get(at).terminator();
             if(t instanceof Operations.Jump x)work.add(x.destination());
             else if(t instanceof Operations.Branch x){work.add(x.trueDestination());work.add(x.falseDestination());}
-            else if(t instanceof Operations.Invoke x)x.outcomes().known().forEach(o->{if(o instanceof Control.Normal n)work.add(n.label());});
-            else if(t instanceof Operations.Opaque x)x.envelope().control().known().forEach(o->{if(o instanceof Control.JumpAlternative n)work.add(n.label());});
+            else if(t instanceof Operations.Invoke x)knownDestinations(x.outcomes().known(),work);
+            else if(t instanceof Operations.Opaque x)knownDestinations(x.envelope().control().known(),work);
         }return seen;
+    }
+    static void knownDestinations(List<? extends Control.ControlAlternative> alternatives,Deque<io.github.gustavo2358.air.model.Ids.LabelId> work) {
+        for(var alternative:alternatives) {
+            if(alternative instanceof Control.Normal normal)work.add(normal.label());
+            else if(alternative instanceof Control.JumpAlternative jump)work.add(jump.label());
+            else if(alternative instanceof Control.Exceptional exception&&exception.destination() instanceof Control.Handler handler)work.add(handler.label());
+            else if(alternative instanceof Control.AnyException exception&&exception.destination() instanceof Control.Handler handler)work.add(handler.label());
+        }
     }
     static HandlerStateAnalysis state(ObjectNode j)throws Exception{return lower(j).admission().handlerState().orElseThrow();}
     static void reject(ObjectNode j,SpJsonDecoder.Code code)throws Exception{var x=decode(j);need(x instanceof SpJsonDecoder.Rejected r&&r.diagnostic().code()==code,"wire mutation expected "+code+" got "+x);mutations++;}
