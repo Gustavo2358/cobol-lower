@@ -18,6 +18,7 @@ final class HandlerStateAnalyzer {
     private final boolean reverse;
     private final boolean sourceOnly;
     private final ConditionExecutionState conditions;
+    private final ConditionRestorationState restorations;
     private final Map<String,Set<String>> localCalls=new HashMap<>();
     private final Map<String,List<ControlTopology.SourceContinuation>> sourceContinuations=new HashMap<>();
     private final Map<String,StatementFact> statements=new TreeMap<>();
@@ -45,11 +46,12 @@ final class HandlerStateAnalyzer {
     HandlerStateAnalyzer(SpInput input,boolean reverse) { this(input,reverse,false); }
     HandlerStateAnalyzer(SpInput input,boolean reverse,boolean sourceOnly) {
         this.input=input;this.reverse=reverse;this.sourceOnly=sourceOnly;conditions=new ConditionExecutionState(input);topology=input.controlTopology().orElseThrow();binder=new TopologyBinding(topology);
+        restorations=new ConditionRestorationState(topology);
         topology.exceptionalEvents().forEach(e->exceptionalEvents.computeIfAbsent(e.statement(),k->new ArrayList<>()).add(e));
         input.statements().forEach(s->statements.put(s.header().id().handle(),s));
         if(sourceOnly)for(var c:topology.sourceContinuations()) {
             sourceContinuations.computeIfAbsent(c.statement(),k->new ArrayList<>()).add(c);
-            for(var prerequisite:c.prerequisites())sourcePrerequisites.computeIfAbsent(prerequisite,k->new ArrayList<>()).add(c);
+            if(!restorations.governs(c))for(var prerequisite:c.prerequisites())sourcePrerequisites.computeIfAbsent(prerequisite,k->new ArrayList<>()).add(c);
         }
         for(var s:statements.values())if(s instanceof CicsHandlerFact h&&h.action()==CicsHandlerAction.ACTIVATE)catalog(h);
         for(var b:topology.bindings()) {var map=new HashMap<String,ControlTopology.Phase>();b.phases().forEach(p->map.put(p.id(),p));phases.put(b.id(),map);}
@@ -115,7 +117,9 @@ final class HandlerStateAnalyzer {
             for(var possible:sourcePrerequisites.getOrDefault(node.location(),List.of()))
                 for(var transfer:List.copyOf(sourceLocations.getOrDefault(possible.statement(),Set.of())))sourcePossibility(transfer,possible,Optional.of(node));
             for(var possible:sourceContinuations.getOrDefault(node.location(),List.of())) {
-                if(possible.prerequisites().isEmpty())sourcePossibility(node,possible,Optional.empty());
+                if(restorations.governs(possible)) {
+                    if(restorations.available(possible,node.support()))sourcePossibility(node,possible,Optional.empty());
+                } else if(possible.prerequisites().isEmpty())sourcePossibility(node,possible,Optional.empty());
                 else for(var premise:List.copyOf(sourceLocations.getOrDefault(possible.prerequisites().getFirst(),Set.of())))sourcePossibility(node,possible,Optional.of(premise));
             }
         }
@@ -129,15 +133,19 @@ final class HandlerStateAnalyzer {
                 }
                 next=transfer(h,next);
                 after.computeIfAbsent(node.location(),k->new HashSet<>()).add(next);
-            } else if(statement instanceof CallFact)next=ConditionExecutionState.open(unknown(Cause.CALL_EFFECT_UNAVAILABLE).withConditions(node.support().conditions()));
-            if(outcome.kind()==OutcomeKind.NORMAL)next=conditions.update(node.location(),next);
+            } else if(statement instanceof CallFact)next=ConditionExecutionState.open(unknown(Cause.CALL_EFFECT_UNAVAILABLE).withConditions(node.support().conditions()).withRestorations(node.support().restorations()));
+            if(outcome.kind()==OutcomeKind.NORMAL) {
+                next=conditions.update(node.location(),next);
+                if(sourceOnly)next=restorations.complete(node.location(),next);
+            }
             var resolved=binder.resolve(outcome.target(),context.binding(),!context.ingress().isEmpty());
             route(context,resolved,next,Optional.of(node),Optional.empty(),outcome.id(),merge(outcome.proofs(),resolved.proofs()));
         }
     }
     private void sourcePossibility(Node source,ControlTopology.SourceContinuation possible,Optional<Node> prerequisite) {
         var context=contexts.get(source.context());var target=binder.resolve(possible.target(),context.binding(),!context.ingress().isEmpty());
-        route(context,target,possible.prerequisites().isEmpty()?ConditionExecutionState.open(source.support()):source.support(),Optional.of(source),prerequisite,(possible.prerequisites().isEmpty()?possible.statement():possible.identity())+"/SOURCE_POSSIBILITY",merge(possible.proofs(),target.proofs()));
+        var support=possible.prerequisites().isEmpty()?restorations.complete(source.location(),ConditionExecutionState.open(source.support())):source.support();
+        route(context,target,support,Optional.of(source),prerequisite,(possible.prerequisites().isEmpty()?possible.statement():possible.identity())+"/SOURCE_POSSIBILITY",merge(possible.proofs(),target.proofs()));
     }
     private void filePoint(Node node) {
         var point=binder.filePoint(node.location().substring("FILE_POINT/".length()));
@@ -166,7 +174,7 @@ final class HandlerStateAnalyzer {
             if(state.kind()==Kind.ACTIVE) {
                 var target=targets.get(state.target());
                 selected=Optional.of(target.id());
-                var deactivated=new Support(new State(Kind.DEACTIVATED,target.id(),Cause.NONE),source.support().activation(),source.support().conditions());
+                var deactivated=new Support(new State(Kind.DEACTIVATED,target.id(),Cause.NONE),source.support().activation(),source.support().conditions(),source.support().restorations());
                 entryState=Optional.of(deactivated);
                 unknown=target.form()==TargetForm.LABEL_UNRESOLVED||target.form()==TargetForm.PROGRAM_UNRESOLVED;
                 if(target.form()==TargetForm.LABEL_LOCAL&&target.entry().isPresent()) {
@@ -199,7 +207,7 @@ final class HandlerStateAnalyzer {
             };
             case UNAVAILABLE -> unknown(Cause.HANDLER_OPERATION_UNAVAILABLE);
         };
-        return result.withConditions(predecessor.conditions());
+        return result.withConditions(predecessor.conditions()).withRestorations(predecessor.restorations());
     }
     private static Support unknown(Cause cause) {return new Support(new State(Kind.UNKNOWN,"",cause),Optional.empty());}
     private void invoke(Node caller,Outcome outcome) {
@@ -226,7 +234,7 @@ final class HandlerStateAnalyzer {
                 if(!descendants.contains(subscriber.caller().context()))continue;
                 var entry=new Node(callee.id(),"PHASE/"+callee.binding().entryPhase(),subscriber.caller().support());
                 if(!reached.contains(entry))continue;
-                insert(new Node(callee.id(),"PHASE/RESUME",ConditionExecutionState.open(unknown(Cause.SOURCE_REENTRY_UNDEFINED).withConditions(subscriber.caller().support().conditions()))),
+                insert(new Node(callee.id(),"PHASE/RESUME",ConditionExecutionState.open(unknown(Cause.SOURCE_REENTRY_UNDEFINED).withConditions(subscriber.caller().support().conditions()).withRestorations(subscriber.caller().support().restorations()))),
                     Optional.of(subscriber.caller()),Optional.of(entry),callee.binding().id()+"/SOURCE_REENTRY_POSSIBILITY",
                     List.of(reentryProof(callee.binding().id())));
             }
@@ -307,7 +315,7 @@ final class HandlerStateAnalyzer {
         var definite=!unknown&&!inactive&&!bypass&&list.size()==1?Optional.of(list.getFirst().target()):Optional.<String>empty();
         return new Event(event.header().id(),event.dispatchEligibility(),status,states,list,definite,unknown,inactive,outer,bypass);
     }
-    static String supportKey(Support s) {return s.state().kind()+"/"+s.state().target()+"/"+s.state().cause()+"/"+s.activation().map(StatementId::handle).orElse("")+(s.conditions().isEmpty()?"":"/CONDITIONS/"+s.conditions().stream().map(c->c.condition()+"/"+c.registration().handle()+"/"+c.uncertain()).toList());}
+    static String supportKey(Support s) {return s.state().kind()+"/"+s.state().target()+"/"+s.state().cause()+"/"+s.activation().map(StatementId::handle).orElse("")+(s.conditions().isEmpty()?"":"/CONDITIONS/"+s.conditions().stream().map(c->c.condition()+"/"+c.registration().handle()+"/"+c.uncertain()).toList())+(s.restorations().isEmpty()?"":"/RESTORATIONS/"+s.restorations());}
     private static String nodeKey(Node n) {return n.context()+"/"+n.location()+"/"+supportKey(n.support());}
     private static String derivationKey(Derivation d) {return nodeKey(d.destination())+"/"+d.source().map(HandlerStateAnalyzer::nodeKey).orElse("")+"/"+d.callerPremise().map(HandlerStateAnalyzer::nodeKey).orElse("")+"/"+d.authority();}
     private static <T> List<T> ordered(Collection<T> values,java.util.function.Function<T,String> key) {return values.stream().sorted(Comparator.comparing(key)).toList();}

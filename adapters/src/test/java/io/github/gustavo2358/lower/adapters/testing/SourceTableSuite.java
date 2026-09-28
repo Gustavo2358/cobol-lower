@@ -11,7 +11,7 @@ import io.github.gustavo2358.lower.source.QualifiedSourceDependencies;
 public final class SourceTableSuite {
     public static void main(String[] args)throws Exception {
         var json=new ObjectMapper();var decoder=new SpJsonDecoder(CobolLower.INPUT_LIMITS);var codec=new QualifiedSourceJson();
-        for(var name:List.of("table-columns","table-write","table-group-write","table-alias-write","table-nested")) {
+        for(var name:List.of("table-columns","table-write","table-group-write","table-alias-write","table-nested","review-table-base","review-table-88","review-table-sibling-base","review-table-sibling-88","review-table-write-88")) {
             var tree=(ObjectNode)json.readTree(SourceTableSuite.class.getResourceAsStream("/sp/source-tables/"+name+".json"));
             var decoded=decoder.decode(json.writeValueAsBytes(tree));if(!(decoded instanceof SpJsonDecoder.Decoded d))throw new AssertionError(decoded);
             var facts=d.input().nominalValues().orElseThrow();if(!facts.authority().equals("NOMINAL_TEXT_SOURCE_V4")||facts.tableFields().isEmpty())throw new AssertionError("table facts lost");
@@ -28,7 +28,7 @@ public final class SourceTableSuite {
             var origin=tree.deepCopy();((ObjectNode)origin.path("nominalValues").path("tableFields").get(0).path("initial").get(0)).put("origin","foreign");reject(decoder,json,origin);
             try{new QualifiedSourceDependencies("qualified-source-dependencies","1.3.0","test",source.source(),List.of(),List.of(unit));throw new AssertionError("old envelope admitted table facts");}catch(IllegalArgumentException expected){}
         }
-        System.out.println("SOURCE_TABLES=PASS: 5 real products, round trips, AIR independence, version/identity forgeries");
+        System.out.println("SOURCE_TABLES=PASS: 10 real products, round trips, AIR independence, version/identity forgeries");
     }
     private static void reject(SpJsonDecoder decoder,ObjectMapper json,ObjectNode node)throws Exception{if(!(decoder.decode(json.writeValueAsBytes(node)) instanceof SpJsonDecoder.Rejected))throw new AssertionError("invalid table facts admitted");}
 }

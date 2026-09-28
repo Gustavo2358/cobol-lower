@@ -418,3 +418,42 @@ changed. AIR, CFG construction, UI and ALTER semantics are unchanged.
 - PGMIDERR on LINK/XCTL and ERROR fallback are admitted. Other CICS event families
   and exact PUSH/POP stack execution remain outside this capability. Unknown
   restoration preserves source candidates with assumptions, never fake AIR edges.
+
+## Review corrections — causal restoration and condition names (IN_PROGRESS)
+
+The review witnesses reproduce seven incorrect restored-handler candidates and
+three losses of table candidates on the reviewed heads. All fifteen probes parse
+without errors and complete all four stages; five controls already pass.
+
+IBM HANDLE CONDITION replaces the previous disposition for the same condition;
+POP can influence only subsequent execution in the same activation. We will
+keep the existing source-only hypothesis catalogue, but carry its eligibility
+forward as finite reaching facts inside the existing contextual state engine.
+The POP completion introduces a fact. A proved later specific disposition kills
+all hypotheses for that event condition; an ERROR update kills only restored
+ERROR targets, preserving possible specific dispositions. Joins keep alternatives,
+PERFORM passes facts through matched calls/returns, and alternate entries start
+independently. No exact stack or executable edge is introduced.
+
+The internal reaching facts identify existing published continuations. They are
+not a new source wire capability: the published derivation graph retains the
+causal path and CONTROL_POSSIBILITY proof. Their inclusion in context/state keys
+prevents merging different restoration histories. The finite domain has at most
+one bit per eligible published restoration relation; ordinary products have none.
+No change to ALTER or its separate prerequisite logic is authorized.
+
+Level 88 declares condition names without storage. The table geometry traversal
+and field inventory must both ignore these annotations, including when they are
+children of a sibling field. No 88 VALUE is an initializer of another declaration.
+IBM authority: [special level-numbers](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=relationships-special-level-numbers) and [condition-name VALUE](https://www.ibm.com/docs/en/cobol-zos/6.3?topic=vc-format-2).
+Existing bounded table geometry, weak updates and modelAssumed remain unchanged.
+
+New oracles: post-POP LABEL/IGNORE/DEFAULT and ERROR replacement, later POP,
+independent ENTRY, PERFORM kill and positive return, backward GO TO and branch
+join positives; direct/sibling 88 and weak writes. Existing restoration positives
+and wire/reachability oracles remain mandatory. FAST on affected repos plus the
+73-program CardDemo replay and neighboring PERFORM/Chaos/alias suites will check
+regressions; all deltas must be traced before updating the Drafts.
+
+Authority: [IBM HANDLE CONDITION](https://www.ibm.com/docs/en/cics-ts/5.6.0?topic=conditions-using-handle-condition-command)
+and [PUSH/POP HANDLE](https://www.ibm.com/docs/en/cics-ts/5.5.0?topic=conditions-using-push-handle-pop-handle-commands).

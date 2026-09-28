@@ -40,10 +40,13 @@ public record HandlerStateAnalysis(UnitKey unit, List<Target> targets, List<Oper
     public record ConditionState(String condition,StatementId registration,boolean uncertain,List<String> proofs) {
         public ConditionState{Objects.requireNonNull(condition);Objects.requireNonNull(registration);proofs=List.copyOf(proofs);}
     }
-    public record Support(State state, Optional<StatementId> activation,List<ConditionState> conditions) {
+    public record Support(State state, Optional<StatementId> activation,List<ConditionState> conditions,List<String> restorations) {
+        public Support(State state,Optional<StatementId> activation,List<ConditionState> conditions){this(state,activation,conditions,List.of());}
         public Support(State state,Optional<StatementId> activation){this(state,activation,List.of());}
-        public Support withConditions(List<ConditionState> values){return new Support(state,activation,values);}
+        public Support withConditions(List<ConditionState> values){return new Support(state,activation,values,restorations);}
+        public Support withRestorations(List<String> values){return new Support(state,activation,conditions,values);}
         public Support { Objects.requireNonNull(state);Objects.requireNonNull(activation);conditions=conditions.stream().sorted(Comparator.comparing(ConditionState::condition)).toList();
+            restorations=restorations.stream().distinct().sorted().toList();
             if(conditions.stream().map(ConditionState::condition).distinct().count()!=conditions.size())throw new IllegalArgumentException("condition state keys");
             if(!state.target().isEmpty()!=activation.isPresent())throw new IllegalArgumentException("activation support"); }
     }

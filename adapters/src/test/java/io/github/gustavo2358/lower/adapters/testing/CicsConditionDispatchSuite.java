@@ -32,6 +32,25 @@ public final class CicsConditionDispatchSuite {
             var expected=name.equals("condition-stack-dead")?Set.of("TARGET","HANDLER"):Set.<String>of();
             if(!reached.equals(expected))throw new AssertionError("source assumptions leaked into executable control: "+name+" "+reached);
         }
+        var review=wire("review-oracles");
+        for(var names=review.fieldNames();names.hasNext();) {
+            var name=names.next();var input=AlternateEntrySuite.input(wire(name));
+            var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);
+            if(result.publication().isEmpty())throw new AssertionError(name+" "+result.status());
+            var publication=result.publication().orElseThrow();var executable=new TreeSet<String>();
+            for(var entry:publication.units().getFirst().entries())executable.addAll(AlternateEntrySuite.names(publication,entry.initialLabel().orElseThrow()));
+            var expectedAir=new TreeSet<String>();review.path(name).path("executable").forEach(n->expectedAir.add(n.asText()));
+            if(!executable.equals(expectedAir))throw new AssertionError(name+" source assumption changed AIR: "+executable);
+            var source=QualifiedSourceProjection.project(input,result.admission());var values=new TreeSet<String>();
+            for(var occurrence:source.occurrences())if(!occurrence.qualifications().isEmpty())for(var value:occurrence.values())values.add(value.value());
+            var expected=new TreeSet<String>();review.path(name).path("source").forEach(n->expected.add(n.asText()));
+            if(!values.equals(expected))throw new AssertionError(name+" source candidates: "+values+" expected "+expected);
+            if(!HandlerStateScheduleProbe.sourceOrderInvariant(input))throw new AssertionError(name+" source worklist scheduling changed facts");
+            var envelope=new QualifiedSourceDependencies("qualified-source-dependencies","1.6.0","test",new QualifiedSourceDependencies.Document("cobol-semantic-product","2.62.0","0".repeat(64)),List.of(),List.of(source));
+            var codec=new io.github.gustavo2358.lower.adapters.source.QualifiedSourceJson();
+            if(!codec.decode(codec.encode(envelope)).equals(envelope))throw new AssertionError(name+" source roundtrip");
+            count++;
+        }
         for(var mode:List.of("old","missing-registration-proof","foreign-registration","wrong-disposition","wrong-command","missing-event-proof","foreign-event-proof","wrong-default-origin")) {
             var w=wire("condition-link");var t=(ObjectNode)w.path("controlTopology");var r=(ObjectNode)t.path("conditionRegistrations").get(0);var e=(ObjectNode)t.path("conditionEvents").get(0);
             switch(mode) {
