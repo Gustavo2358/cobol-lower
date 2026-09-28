@@ -7,11 +7,28 @@ import static io.github.gustavo2358.lower.domain.SpInput.Provenance;
  * pre-bound successor. This model contains no execution contexts or value facts. */
 public record ControlTopology(String authority, List<Occurrence> occurrences,
         List<Region> regions, List<Boundary> boundaries, List<Outcome> outcomes,
-        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents) {
+        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows) {
+    public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,
+            List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events) {
+        this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,List.of());
+    }
     /** Historical contracts have no event ingress authority. */
     public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,
             List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs) {
         this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,List.of());
+    }
+    public enum FilePointKind { USE, CHOICE }
+    /** USE's target is its ordinary continuation; event routes remain separate outcomes.
+     * CHOICE publishes a finite overapproximation of aggregate participant order/count. */
+    public record FilePoint(String id,FilePointKind kind,int ordinal,List<Target> targets,List<String> proofs) {
+        public FilePoint {
+            text(id);Objects.requireNonNull(kind);targets=List.copyOf(nonempty(targets));proofs=sorted(nonempty(proofs),x->x);
+            require(kind==FilePointKind.USE?ordinal>=0&&targets.size()==1:ordinal==-1,"FILE point payload");
+            require(targets.stream().map(t->t.kind()+"/"+t.reference()).distinct().count()==targets.size(),"duplicate FILE point target");
+        }
+    }
+    public record FileFlow(String statement,Target entry,List<FilePoint> points,List<String> proofs) {
+        public FileFlow {text(statement);Objects.requireNonNull(entry);points=sorted(nonempty(points),FilePoint::id);proofs=sorted(nonempty(proofs),x->x);}
     }
     public enum EventOrigin { EXPLICIT_ABEND, XCTL_PGMIDERR }
     public enum EventEligibility { HANDLER_ELIGIBLE, HANDLERS_BYPASSED }
@@ -31,7 +48,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         }
     }
     public enum RegionKind { PROCEDURE, SECTION, PARAGRAPH, RANGE, IF, IF_ARM, EVALUATE, EVALUATE_ARM, FILE, FILE_HANDLER, INLINE_BODY, DECLARATIVE }
-    public enum TargetKind { OCCURRENCE, REGION_ENTRY, COMPLETE, ESCAPE, PROGRAM_RETURN, UNKNOWN_LOCAL }
+    public enum TargetKind { FILE_POINT, OCCURRENCE, REGION_ENTRY, COMPLETE, ESCAPE, PROGRAM_RETURN, UNKNOWN_LOCAL }
     public enum OutcomeKind { NORMAL, BRANCH, EXPLICIT_TRANSFER, LOCAL_INVOKE, PROGRAM_RETURN, UNKNOWN_LOCAL }
     public enum PhaseKind { PREDICATE, EFFECT }
     public record PhaseEdge(String role,String target) { public PhaseEdge {text(role);text(target);} }
@@ -66,11 +83,16 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         public Proof {text(id);Objects.requireNonNull(kind);text(rule);Objects.requireNonNull(provenance);dependencies=sorted(dependencies,x->x);}
     }
     public ControlTopology {
-        if(!"FRONTEND_CONTROL_TOPOLOGY_R1".equals(authority))throw new IllegalArgumentException("control topology authority");
+        if(!Set.of("FRONTEND_CONTROL_TOPOLOGY_R1","FRONTEND_CONTROL_TOPOLOGY_R2").contains(authority))throw new IllegalArgumentException("control topology authority");
         occurrences=sorted(occurrences,Occurrence::statement);regions=sorted(regions,Region::id);boundaries=sorted(boundaries,Boundary::id);
         outcomes=sorted(outcomes,Outcome::id);bindings=sorted(bindings,Binding::id);proofs=sorted(proofs,Proof::id);
         exceptionalEvents=sorted(exceptionalEvents==null?List.of():exceptionalEvents,ExceptionalEvent::id);
         index(exceptionalEvents,ExceptionalEvent::id);
+        fileFlows=sorted(fileFlows==null?List.of():fileFlows,FileFlow::statement);
+        require("FRONTEND_CONTROL_TOPOLOGY_R2".equals(authority)==!fileFlows.isEmpty(),"FILE flow authority/inventory");
+        index(fileFlows,FileFlow::statement);
+        var fps=index(fileFlows.stream().flatMap(f->f.points().stream()).toList(),FilePoint::id);
+        var owners=new HashMap<String,String>();fileFlows.forEach(f->f.points().forEach(p->owners.put(p.id(),f.statement())));
         var os=index(occurrences,Occurrence::statement);var rs=index(regions,Region::id);var bs=index(boundaries,Boundary::id);
         var es=index(outcomes,Outcome::id);var calls=index(bindings,Binding::id);var ps=index(proofs,Proof::id);
         for(var e:exceptionalEvents) {
@@ -84,9 +106,28 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                 require(!dependency.equals(p.id()),"proof dependency cycle");pending.addLast(dependency);}}
         }
         java.util.function.Consumer<Target> target=t->{refs(t.proofs(),ps);switch(t.kind()) {
+            case FILE_POINT -> require(fps.containsKey(t.reference()),"target FILE point");
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
             case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN -> require(rs.containsKey(t.reference()),"target region");
         }};
+        for(var flow:fileFlows) {
+            require(os.containsKey(flow.statement()),"FILE flow owner");refs(flow.proofs(),ps);target.accept(flow.entry());
+            require(flow.entry().kind()==TargetKind.FILE_POINT&&flow.statement().equals(owners.get(flow.entry().reference())),"FILE flow entry ownership");
+            var ordinals=new HashSet<Integer>();
+            for(var point:flow.points()) {
+                refs(point.proofs(),ps);
+                if(point.kind()==FilePointKind.USE)require(ordinals.add(point.ordinal()),"duplicate FILE use ordinal");
+                for(var edge:point.targets()) {
+                    target.accept(edge);require(edge.kind()!=TargetKind.ESCAPE,"FILE point cannot escape a scope");
+                    if(edge.kind()==TargetKind.FILE_POINT)require(flow.statement().equals(owners.get(edge.reference())),"FILE point target ownership");
+                }
+            }
+            require(!ordinals.isEmpty(),"FILE flow needs uses");
+            var seen=new HashSet<String>();var pending=new ArrayDeque<String>();pending.add(flow.entry().reference());
+            while(!pending.isEmpty()) {var id=pending.removeFirst();if(!seen.add(id))continue;
+                for(var edge:fps.get(id).targets())if(edge.kind()==TargetKind.FILE_POINT)pending.addLast(edge.reference());}
+            require(seen.size()==flow.points().size(),"orphan FILE point");
+        }
         for(var o:occurrences){refs(o.proofs(),ps);require(rs.containsKey(o.region()),"occurrence region");refs(o.outcomes(),es);
             require(rs.get(o.region()).members().contains(o.statement()),"inventoried region member");
             // A role selects one published outcome; opaque IDs never break a tie.
@@ -95,12 +136,13 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                 var e=es.get(id);require(e.statement().equals(o.statement()),"outcome owner");
                 require(roles.add(e.role()),"duplicate outcome role: "+o.statement()+"/"+e.role());
             }}
-        for(var r:regions){refs(r.proofs(),ps);refs(r.members(),os);refs(r.regions(),rs);target.accept(r.entry());require(r.entry().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
+        for(var r:regions){refs(r.proofs(),ps);refs(r.members(),os);refs(r.regions(),rs);target.accept(r.entry());require(r.entry().kind()!=TargetKind.FILE_POINT,"FILE ingress belongs to its occurrence");require(r.entry().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
             for(var member:r.members())require(os.get(member).region().equals(r.id()),"member owner");
             require(r.parent().isEmpty()||rs.containsKey(r.parent()),"region parent");
             require(bs.containsKey(r.boundary())&&bs.get(r.boundary()).region().equals(r.id()),"region boundary");}
-        for(var b:boundaries){refs(b.proofs(),ps);require(rs.containsKey(b.region()),"boundary region");require(rs.get(b.region()).boundary().equals(b.id()),"single region boundary");target.accept(b.ordinaryDefault());require(b.ordinaryDefault().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");}
+        for(var b:boundaries){refs(b.proofs(),ps);require(rs.containsKey(b.region()),"boundary region");require(rs.get(b.region()).boundary().equals(b.id()),"single region boundary");target.accept(b.ordinaryDefault());require(b.ordinaryDefault().kind()!=TargetKind.FILE_POINT,"FILE ingress belongs to its occurrence");require(b.ordinaryDefault().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");}
         for(var e:outcomes){refs(e.proofs(),ps);require(os.containsKey(e.statement())&&os.get(e.statement()).outcomes().contains(e.id()),"inventoried outcome");target.accept(e.target());
+            if(e.target().kind()==TargetKind.FILE_POINT)require(e.statement().equals(owners.get(e.target().reference()))&&e.kind()==OutcomeKind.BRANCH&&e.role().startsWith("file/"),"FILE outcome target ownership");
             require(e.kind()==OutcomeKind.LOCAL_INVOKE?!e.binding().isEmpty()&&calls.containsKey(e.binding()):e.binding().isEmpty(),"outcome binding");
             if(e.kind()==OutcomeKind.LOCAL_INVOKE)require(calls.get(e.binding()).caller().equals(e.statement())
                 &&e.target().kind()==TargetKind.REGION_ENTRY&&e.target().reference().equals(calls.get(e.binding()).region()),"invocation target/binding agreement");
@@ -115,7 +157,14 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             if(e.kind()==OutcomeKind.PROGRAM_RETURN)require(e.target().kind()==TargetKind.PROGRAM_RETURN,"return target");
             if(e.kind()==OutcomeKind.UNKNOWN_LOCAL)require(e.target().kind()==TargetKind.UNKNOWN_LOCAL,"unknown target");
         }
-        for(var b:bindings){refs(b.proofs(),ps);require(os.containsKey(b.caller())&&rs.containsKey(b.region())&&bs.containsKey(b.endpoint()),"binding references");target.accept(b.resume());require(b.resume().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
+        var roleTargets=new HashMap<String,Target>();outcomes.forEach(e->roleTargets.put(e.statement()+"/"+e.role(),e.target()));
+        // Ordinary USE continuation and its success outcome are the same authority.
+        // A payload without an I/O event model uses the point continuation directly.
+        for(var flow:fileFlows)for(var point:flow.points())if(point.kind()==FilePointKind.USE) {
+            var success=roleTargets.get(flow.statement()+"/file/"+point.ordinal()+"/SUCCESS/0");
+            require(success==null||point.targets().get(0).equals(success),"FILE success/point continuation agreement");
+        }
+        for(var b:bindings){refs(b.proofs(),ps);require(os.containsKey(b.caller())&&rs.containsKey(b.region())&&bs.containsKey(b.endpoint()),"binding references");target.accept(b.resume());require(b.resume().kind()!=TargetKind.FILE_POINT,"FILE ingress belongs to its occurrence");require(b.resume().kind()!=TargetKind.ESCAPE,"escape only as an occurrence outcome");
             require(rs.get(b.region()).kind()==RegionKind.RANGE,"invoke region is range");
             require(!rs.get(b.region()).regions().isEmpty()&&rs.get(b.region()).regions().get(rs.get(b.region()).regions().size()-1).equals(bs.get(b.endpoint()).region()),"range endpoint");}
         for(var b:bindings) {

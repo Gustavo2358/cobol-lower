@@ -164,3 +164,35 @@ unsupported operand produces explicit partial effects with a proved continuation
 The decoder rejects 2.48 fields under older contracts. Legacy phase level 0 keeps
 its existing interpretation. Historical paragraph-profile diagnostics do not
 replace the topology's control authority.
+
+## FILE composite control — SP 2.51
+
+`FRONTEND_CONTROL_TOPOLOGY_R2` adds `fileFlows` and the `FILE_POINT` target.
+Other topology rules are inherited from R1. The writer selects 2.51 only when
+a nonempty composite flow is published; empty inventories are omitted for R1.
+Each flow owns an existing source occurrence and points keyed by opaque IDs.
+USE points bind fileInventory ordinals; CHOICE points publish finite aggregate
+alternatives. USE has one ordinary target. Event outcomes remain the authority
+for each result (including handler/UNKNOWN_LOCAL routes and critical exits).
+Only same-owner FILE outcomes/points can target a FILE_POINT. Regions, boundaries
+and invocation resumes cannot enter halfway through another statement.
+
+The consumer checks use inventory equality, ownership, proof provenance, entry,
+references and reachability of every point in the ordinary internal graph. These
+points never enlarge the COBOL occurrence inventory. It binds them with the
+current activation, including PERFORM endpoint and CICS state context. The
+handler-state analysis traverses the same published points, retaining derivations.
+
+OPEN/CLOSE chains visit successive operands before completing their statement.
+SORT/MERGE without procedure callbacks publish INPUT → WORK → OUTPUT; selection
+loops retain unknown participant order/count. Critical-error remainders and
+unknown USE/SORT callbacks remain explicit. No physical FILE metadata becomes
+an alternative source of executable destinations. Earlier contracts retain
+their historical routing. See [work item and oracles](../work/file-composite-control.md).
+
+The structural-only port may omit I/O event routes. Its USE point then supplies
+ordinary continuation directly. This does not admit memory effects or close error
+coverage. SP2.51 still requires a locality inventory: an unavailable physical-profile
+input and empty facts/bindings express absence of storage analysis explicitly.
+An unavailable FILE event plan with no continuation is not a contradictory claim.
+An explicit event continuation is still validated against structural completion.

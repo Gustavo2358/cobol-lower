@@ -40,7 +40,9 @@ final class FileControlAdmission {
                 // An intrinsic paragraph completion has no next statement; that absence
                 // does not contradict a separately published ordinary FILE continuation.
                 // A known intrinsic successor still constrains the outcome plan.
-                if(ordinary!=null&&ordinary.statement().isPresent())require(p.continuation().equals(ordinary.statement()),"file event continuation contradicts structural completion");
+                // An unavailable plan makes no completion claim; retain the structural topology.
+                if(ordinary!=null&&ordinary.statement().isPresent()&&(p.continuation().isPresent()
+                    ||p.availability()==Availability.KNOWN||p.availability()==Availability.PARTIAL))require(p.continuation().equals(ordinary.statement()),"file event continuation contradicts structural completion");
                 var handlers=new EnumMap<HandlerKind,Handler>(HandlerKind.class);
                 for(var h:use.surface().orElseThrow().handlers()) {
                     require(handlers.put(h.kind(),h)==null,"duplicate handler");

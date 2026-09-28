@@ -9,6 +9,9 @@ import static io.github.gustavo2358.lower.domain.ControlTopology.*;
  * paragraph discovery or language-specific completion rules. */
 final class TopologyBinding {
     record Resolved(TargetKind kind,String reference,List<String> proofs) { }
+    private final Map<String,FileFlow> fileFlows=new HashMap<>();
+    private final Map<String,String> filePointOwners=new HashMap<>();
+    private final Map<String,FilePoint> filePoints=new HashMap<>();
     private final Map<String,Occurrence> occurrences=new HashMap<>();
     private final Map<String,Region> regions=new HashMap<>();
     private final Map<String,Boundary> boundaries=new HashMap<>();
@@ -16,10 +19,14 @@ final class TopologyBinding {
     private final Map<String,Binding> bindings=new HashMap<>();
     private final Map<String,Proof> proofs=new HashMap<>();
     TopologyBinding(ControlTopology topology) {
+        topology.fileFlows().forEach(f->{fileFlows.put(f.statement(),f);f.points().forEach(p->{filePoints.put(p.id(),p);filePointOwners.put(p.id(),f.statement());});});
         topology.occurrences().forEach(x->occurrences.put(x.statement(),x));topology.regions().forEach(x->regions.put(x.id(),x));
         topology.boundaries().forEach(x->boundaries.put(x.id(),x));topology.outcomes().forEach(x->outcomes.put(x.id(),x));
         topology.bindings().forEach(x->bindings.put(x.id(),x));topology.proofs().forEach(x->proofs.put(x.id(),x));
     }
+    String filePointOwner(String id){return Objects.requireNonNull(filePointOwners.get(id));}
+    FilePoint filePoint(String id){return Objects.requireNonNull(filePoints.get(id));}
+    Optional<FileFlow> fileFlow(String statement){return Optional.ofNullable(fileFlows.get(statement));}
     Region region(String id) { return Objects.requireNonNull(regions.get(id)); }
     boolean inline(Binding binding) { return region(boundaries.get(binding.endpoint()).region()).kind()==RegionKind.INLINE_BODY; }
     boolean contains(Binding binding,String scope) {
@@ -61,13 +68,16 @@ final class TopologyBinding {
     /** Reference closure of exactly the outcomes consumed by the materializer.
      * Invocation completion is a scheduling bound, not a bypass edge. */
     Set<String> closure(String entry,Binding active) {
-        var seen=new LinkedHashSet<String>();var todo=new ArrayDeque<String>();todo.add(entry);
-        while(!todo.isEmpty()) {
-            String id=todo.removeFirst();if(!seen.add(id))continue;
-            for(var e:outcomes(id)) {
-                var target=e.kind()==OutcomeKind.LOCAL_INVOKE?binding(e.binding()).resume():e.target();
-                var resolved=resolve(target,active);
-                if(resolved.kind()==TargetKind.OCCURRENCE)todo.addLast(resolved.reference());
+        var seen=new LinkedHashSet<String>();var points=new HashSet<String>();
+        var occurrences=new ArrayDeque<String>();occurrences.add(entry);var targets=new ArrayDeque<Target>();
+        while(!occurrences.isEmpty()||!targets.isEmpty()) {
+            if(!occurrences.isEmpty()) {
+                String id=occurrences.removeFirst();if(!seen.add(id))continue;
+                for(var e:outcomes(id))targets.add(e.kind()==OutcomeKind.LOCAL_INVOKE?binding(e.binding()).resume():e.target());
+            } else {
+                var resolved=resolve(targets.removeFirst(),active);
+                if(resolved.kind()==TargetKind.OCCURRENCE)occurrences.addLast(resolved.reference());
+                else if(resolved.kind()==TargetKind.FILE_POINT&&points.add(resolved.reference()))targets.addAll(filePoints.get(resolved.reference()).targets());
             }
         }
         return Set.copyOf(seen);
@@ -80,14 +90,19 @@ final class TopologyBinding {
         var visited=new HashSet<String>();var gaps=new TreeSet<String>();
         while(!pending.isEmpty()) {
             var w=pending.removeFirst();String key=(w.active()==null?"ordinary":w.active().id())+"/"+w.entry();if(!visited.add(key))continue;
-            for(var occurrence:closure(w.entry(),w.active()))for(var outcome:outcomes(occurrence)) {
-                var resolved=resolve(outcome.target(),w.active());
-                if(resolved.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+resolved.reference());
-                if(outcome.kind()==OutcomeKind.LOCAL_INVOKE) {
-                    var b=binding(outcome.binding());var first=entry(b);
-                    if(first.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+first.reference());
-                    else if(first.kind()==TargetKind.OCCURRENCE)pending.addLast(new Work(first.reference(),b));
-                    var resume=resolve(b.resume(),w.active());if(resume.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+resume.reference());
+            for(var occurrence:closure(w.entry(),w.active())) {
+                fileFlow(occurrence).ifPresent(flow->{for(var point:flow.points())for(var edge:point.targets()) {
+                    var target=resolve(edge,w.active());if(target.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+target.reference());
+                }});
+                for(var outcome:outcomes(occurrence)) {
+                    var resolved=resolve(outcome.target(),w.active());
+                    if(resolved.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+resolved.reference());
+                    if(outcome.kind()==OutcomeKind.LOCAL_INVOKE) {
+                        var b=binding(outcome.binding());var first=entry(b);
+                        if(first.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+first.reference());
+                        else if(first.kind()==TargetKind.OCCURRENCE)pending.addLast(new Work(first.reference(),b));
+                        var resume=resolve(b.resume(),w.active());if(resume.kind()==TargetKind.UNKNOWN_LOCAL)gaps.add(occurrence+"/"+resume.reference());
+                    }
                 }
             }
         }
@@ -134,6 +149,20 @@ final class TopologyBinding {
             if(fact!=null)for(var proof:event.proofs())c.require(binder.proof(proof).provenance().equals(fact.header().provenance()),
                 Admission.Rule.STRUCTURE,event.statement(),null,"exceptional event canonical source provenance");
         }
+        var uses=new HashMap<String,List<io.github.gustavo2358.lower.domain.FileFacts.Use>>();
+        input.fileInventory().operations().uses().forEach(u->uses.computeIfAbsent(u.statement().handle(),k->new ArrayList<>()).add(u));
+        for(var flow:topology.fileFlows()) {
+            var inventory=uses.getOrDefault(flow.statement(),List.of());
+            var ordinals=new HashSet<Integer>();inventory.forEach(u->ordinals.add(u.ordinal()));
+            var suppliedOrdinals=new HashSet<Integer>();flow.points().stream().filter(p->p.kind()==FilePointKind.USE).forEach(p->suppliedOrdinals.add(p.ordinal()));
+            c.require(!inventory.isEmpty()&&ordinals.equals(suppliedOrdinals),Admission.Rule.STRUCTURE,flow.statement(),null,"FILE flow equals use inventory");
+            var fact=facts.get(flow.statement());
+            for(var point:flow.points())for(var proof:point.proofs())c.require(fact!=null&&binder.proof(proof).provenance().equals(fact.header().provenance()),
+                Admission.Rule.STRUCTURE,flow.statement(),null,"FILE point canonical source provenance");
+        }
+        if(topology.authority().equals("FRONTEND_CONTROL_TOPOLOGY_R2"))for(var group:uses.entrySet())
+            if(group.getValue().size()>1&&binder.outcomes(group.getKey()).stream().anyMatch(o->o.kind()!=OutcomeKind.UNKNOWN_LOCAL))
+                c.require(binder.fileFlow(group.getKey()).isPresent(),Admission.Rule.STRUCTURE,group.getKey(),null,"composite FILE flow required");
         for(var use:input.fileInventory().operations().uses())use.control().ifPresent(control->{
             for(var route:control.routes())for(int i=0;i<route.destinations().size();i++)
                 c.require(binder.outcome(use.statement().handle(),"file/"+use.ordinal()+"/"+route.event()+"/"+i).isPresent(),

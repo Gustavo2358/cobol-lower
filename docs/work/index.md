@@ -76,3 +76,9 @@ Current: [WORK-LOWER-012](active/WORK-LOWER-012.yaml) — IN_PROGRESS; [MOVE dat
 - [WORK-LOWER-014](active/WORK-LOWER-014.yaml): CP6 supported multi-CALL composition, IN_PROGRESS.
 
 [WORK-FD-HARNESS](active/WORK-FD-HARNESS.json): IN_PROGRESS; preparação para revisão, sem merge.
+
+## Composite FILE control — review
+
+[Scope and contract](file-composite-control.md); [qualification](file-composite-qualification.md).
+SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks.
+IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
