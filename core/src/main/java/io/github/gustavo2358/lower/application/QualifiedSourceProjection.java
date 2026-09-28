@@ -90,7 +90,7 @@ public final class QualifiedSourceProjection {
     private static Optional<NominalValueEvidence> nominal(SpInput input,List<Occurrence> occurrences,List<Derivation> derivations) {
         return input.nominalValues().map(raw->{
             var sinks=new HashSet<String>();for(var o:occurrences)if(o.targetKind().equals("COMPUTED"))sinks.add(o.id().handle());
-            var facts=new NominalValues(raw.authority(),raw.symbols(),raw.assignments(),raw.conditions(),raw.queries().stream().filter(q->sinks.contains(q.statement())).toList());
+            var facts=new NominalValues(raw.authority(),raw.symbols(),raw.assignments(),raw.conditions(),raw.queries().stream().filter(q->sinks.contains(q.statement())).toList(),raw.tableFields());
             var symbols=new HashSet<String>();facts.symbols().forEach(s->symbols.add(s.node()));
             var storage=input.storage().orElseThrow();
             var declarations=storage.nodes().stream().filter(n->symbols.contains(n.id().handle()))
