@@ -202,3 +202,7 @@ An explicit event continuation is still validated against structural completion.
 CICS_COMMAND admite `implicitArea` como DataReference opcional resolvida no produtor: RECEIVE_MAP WRITE, SEND_MAP READ, área inteira, owner do statement e provenance derivada (`exact=false`) do MAP literal. Exclui INTO/FROM/SET explícitos. Binding ausente/ambíguo não é publicado como selecionado. As opções escritas não são modificadas. O wire exige 2.53 para esse campo e conserva os perfis anteriores. SourceContinuations pode estar vazio quando a nova versão decorre apenas dessa capacidade.
 
 Destinos da ControlTopology independem de footprint físico. Lower conserva o efeito MAY aberto para referências não admitidas, nunca MUST; comandos sem destino provado continuam sem sucessor inventado. INITIAL concede existência de alocação, não seed forte. DECLARE TABLE reconhecido não aloca storage; INCLUDE desconhecido permanece input indisponível. [Regra e qualificação W3](../work/carddemo-control-w3.md).
+
+## SP 2.54 — catálogo CICS fechado
+
+CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT e WRITEQ_TD. Cada família conserva opções, direção host e LENGTH estrutural; nenhum efeito implícito dessas famílias autoriza hostEffects fechado. Conhecimento de controle permanece na topologia. NOHANDLE duplicado sem operando conserva opções e warning CICS_COMMAND_DUPLICATE_FLAG_IGNORED; a paridade warning/duplicação é validada e a capacidade exige SP2.54. [Regra, fontes e testes W4](../work/carddemo-control-w4.md).

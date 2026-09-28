@@ -5,7 +5,7 @@
 SP2.54 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
 acrescentar transições executáveis. Branch de revisão empilhada sobre FILE; sem merge.
 
-- proleap-poc: `8fff8840a2e43b93c89ca78c060e5e4600901cbf`.
+- proleap-poc: `c98b1480ae8aa0f7b5650d014f9e070ac3315f8f`.
 
 Regra, testes e limites: [W4](../work/carddemo-control-w4.md).
 Os campos e as seções históricas não substituem estes pins.
