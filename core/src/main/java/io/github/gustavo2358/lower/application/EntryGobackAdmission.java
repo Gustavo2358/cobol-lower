@@ -109,12 +109,15 @@ public final class EntryGobackAdmission implements AdmitInput {
         c.require(branchKeys.equals(expectedBranches.keySet()), Rule.STRUCTURE, "branches", null, "All IF branch inventories retained");
         coverage(input.coverage(), input.statements().size(), counts, weakest, c);
         var inventory = input.entryInventory();
-        c.require(inventory.status() != InventoryStatus.COMPLETE && !inventory.gapCodes().isEmpty() && inventory.gapCodes().contains("ALTERNATE_ENTRIES_NOT_PROJECTED"), Rule.ENTRY_INVENTORY, "entryInventory", null, "PRIMARY_ONLY cannot close or lose alternate-entry gap");
+        c.require(inventory.status() != InventoryStatus.COMPLETE && !inventory.gapCodes().isEmpty() && inventory.gapCodes().contains(inventory.scope()==EntryInventoryScope.PRIMARY_ONLY?"ALTERNATE_ENTRIES_NOT_PROJECTED":"ENTRY_RUNTIME_CONTRACT_OPEN"), Rule.ENTRY_INVENTORY, "entryInventory", null, "PRIMARY_ONLY cannot close or lose alternate-entry gap");
         for (String code : inventory.gapCodes()) { c.touch(); c.require(!code.isBlank(), Rule.ENTRY_INVENTORY, "entryInventory", null, "Nonblank inventory gap code"); }
         var entries = new HashSet<EntryId>(); var roles = new HashSet<EntryRole>();
         for (var entry : inventory.entries()) {
             c.touch(); c.identity(entry.id().unit(), entry.id().handle(), "entry", entry.provenance());
-            c.require(entries.add(entry.id()) && roles.add(entry.role()), Rule.DUPLICATE_ID, entry.id().handle(), entry.provenance(), "Unique entry identity and PRIMARY role");
+            c.require(entries.add(entry.id()) && (entry.role()!=EntryRole.PRIMARY||roles.add(entry.role())), Rule.DUPLICATE_ID, entry.id().handle(), entry.provenance(), "Unique entry identity and PRIMARY role");
+            c.require(entry.role()==EntryRole.PRIMARY?entry.externalName().isEmpty()&&entry.declaration().isEmpty():inventory.scope()==EntryInventoryScope.SOURCE_DECLARED&&entry.declaration().isPresent(),Rule.ENTRY_INVENTORY,entry.id().handle(),entry.provenance(),"entry declaration payload and scope");
+            entry.declaration().ifPresent(d->c.require(d.unit().equals(input.unit())&&c.lookup(d)!=null,Rule.ENTRY_INVENTORY,entry.id().handle(),entry.provenance(),"alternate declaration belongs to unit"));
+            c.require(entry.role()!=EntryRole.ALTERNATE||entry.availability()!=Availability.KNOWN||entry.externalName().filter(n->!n.isBlank()).isPresent(),Rule.ENTRY_INVENTORY,entry.id().handle(),entry.provenance(),"known alternate requires name");
             entry(entry, c);
         }
         if (c.diagnostics.isEmpty()) c.regionalStorage=RegionalStorageAdmission.validate(input,c);

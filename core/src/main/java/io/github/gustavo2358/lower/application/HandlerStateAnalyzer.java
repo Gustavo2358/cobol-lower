@@ -57,6 +57,10 @@ final class HandlerStateAnalyzer {
         var root=new Context("ROOT",null,"",false);contexts.put(root.id(),root);
         var initial=new Support(new State(Kind.ENTRY_UNKNOWN,"",Cause.NONE),Optional.empty());
         binder.primaryEntry().ifPresent(e->route(root,e,initial,Optional.empty(),Optional.empty(),"PRIMARY_ENTRY",e.proofs()));
+        for(var e:topology.entryPoints())if(e.target().kind()==TargetKind.OCCURRENCE) {
+            var alternate=new Context("ENTRY/"+e.entry(),null,"",false);contexts.put(alternate.id(),alternate);
+            route(alternate,binder.resolve(e.target(),null),initial,Optional.empty(),Optional.empty(),"ALTERNATE_ENTRY",merge(e.proofs(),e.target().proofs()));
+        }
         do {
         while(!work.isEmpty()) {
             var node=reverse?work.removeLast():work.removeFirst();pops++;

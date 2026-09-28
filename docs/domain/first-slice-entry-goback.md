@@ -58,3 +58,28 @@ Primeiro construir manualmente o shape AIR e validar. Depois consumir a fixture 
 ## Fora de escopo
 
 DATA, MOVE, IF, CALL, branches, storage/alias, resolução de target, opaque universal, CFG, RD/PV, writer AIR e CLI rica. O checkpoint posterior 2A compõe este mesmo slice com o codec compartilhado, writer físico e CLI mínima; o domínio e o perfil permanecem iguais. CFG JSON e E2E completo continuam futuros.
+
+## Declared alternate starts — SP 2.61
+
+`SOURCE_DECLARED` entry inventories retain the primary and observed alternate
+ENTRY declarations. Each alternate has a source declaration identity, an optional
+external name and its own signature availability. `controlTopology.entryPoints`
+is the authority for starts; entry/declaration/start identities must agree.
+The `alternate-entry-start` grammar proof licenses only the next executable
+statement after the declaration. Sequential ENTRY remains neutral. Nested
+programs, conflicting names and PROCEDURE DIVISION RETURNING do not acquire
+external roots. Invalid or unavailable starts retain explicit entry gaps.
+
+Each admitted root is a separate external activation. Its PERFORM completion
+binds within that activation; roots do not create edges to each other. USING
+parameters remain unknown. Absent RETURNING is independent of parameter
+uncertainty. A nominal LINKAGE name without a grounded location cannot license
+an executable read or a fabricated local Cell. Its computed target remains open.
+
+Qualified source 1.5 identifies ALTERNATE_ENTRY roots and retains the grammar
+proof; older envelopes cannot carry that authority. Runtime entry/signature
+coverage remains PARTIAL. A trailing ENTRY without an admitted executable start
+is inventoried but does not produce an AIR entry in this capability.
+
+Authority: [IBM Enterprise COBOL ENTRY](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-entry-statement).
+Oracles: AlternateEntryTest, AlternateEntrySuite, QualifiedSourceContractTest.

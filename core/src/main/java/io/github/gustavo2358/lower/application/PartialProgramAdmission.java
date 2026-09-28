@@ -49,7 +49,7 @@ final class PartialProgramAdmission {
             if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
             // Topology owns the executable start; legacy entry metadata still owns
             // identity/signature. An absent legacy start is not a contradiction.
-            c.require(input.entryInventory().entries().size()==1 && (input.controlTopology().isPresent()
+            c.require(input.entryInventory().entries().stream().filter(e->e.role()==EntryRole.PRIMARY).count()==1 && (input.controlTopology().isPresent()
                     || input.entryInventory().entries().getFirst().start().statement().isPresent()),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);

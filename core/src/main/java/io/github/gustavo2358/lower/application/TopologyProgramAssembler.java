@@ -63,10 +63,15 @@ final class TopologyProgramAssembler {
     }
     private PartialProgramAssembler.Assembly assemble(LocalIds ids) {
         occurrenceIds=ids;
-        var entry=facts.get(topology.primaryEntry().orElseThrow().reference()).header().id();
-        var root=cicsState==null?new Context(ids,null,null,entry.handle()):
-            new Context(ids,null,null,entry.handle(),null,null,CicsExecutionState.initial(),false);
-        var entryLabel=label(entry.handle(),root.ids());work.add(root);
+        var roots=new LinkedHashMap<SpInput.EntryId,Context>();
+        for(var source:input.entryInventory().entries()) {
+            var target=source.role()==SpInput.EntryRole.PRIMARY?topology.primaryEntry():input.controlTopology().orElseThrow().entryPoints().stream().filter(e->e.entry().equals(source.id().handle())).map(e->topology.resolve(e.target(),null)).findFirst();
+            if(target.isEmpty()||target.orElseThrow().kind()!=TargetKind.OCCURRENCE)continue;
+            var activation=source.role()==SpInput.EntryRole.PRIMARY?ids:ids.activation("external-entry:"+source.id().handle());
+            var root=cicsState==null?new Context(activation,null,null,target.orElseThrow().reference()):
+                new Context(activation,null,null,target.orElseThrow().reference(),null,null,CicsExecutionState.initial(),false);
+            roots.put(source.id(),root);work.addLast(root);
+        }
         while(!work.isEmpty()) {
             var context=work.removeFirst();
             if(cicsState!=null) {
@@ -74,16 +79,23 @@ final class TopologyProgramAssembler {
                 else append(facts.get(context.entry()),context);
             } else for(var statement:topology.closure(context.entry(),context.binding()).stream().sorted().toList())append(facts.get(statement),context);
         }
-        var initial=LogicalTextMove.initial(plan.storage().logical(),data,unit,ids,origins);
-        var sourceEntryLabel=entryLabel;
-        var origin=sequences.stream().filter(s->s.label().equals(sourceEntryLabel)).findFirst().orElseThrow().origin();
-        if(!initial.isEmpty()) {
-            var bootstrap=new LabelId(unit,ids.id("label","logical-root-entry",unit.localId(),"entry"));
-            origin=initial.getFirst().header().origin();
-            sequences.add(new Sequence(bootstrap,initial,PerformSequenceAssembler.jump("logical-root-entry",entry,entryLabel,origin,unit,ids),origin));
-            entryLabel=bootstrap;
+        var entries=new LinkedHashMap<SpInput.EntryId,PartialProgramAssembler.EntryAssembly>();
+        for(var root:roots.entrySet()) {
+            var context=root.getValue();var activation=context.base();var entry=facts.get(context.entry()).header().id();
+            var initial=LogicalTextMove.initial(plan.storage().logical(),data,unit,activation,origins);
+            var entryLabel=label(entry.handle(),context.ids());var sourceEntryLabel=entryLabel;
+            var origin=sequences.stream().filter(s->s.label().equals(sourceEntryLabel)).findFirst().orElseThrow().origin();
+            if(!initial.isEmpty()) {
+                var bootstrap=new LabelId(unit,activation.id("label","logical-root-entry",unit.localId(),"entry"));
+                origin=initial.getFirst().header().origin();
+                sequences.add(new Sequence(bootstrap,initial,PerformSequenceAssembler.jump("logical-root-entry",entry,entryLabel,origin,unit,activation),origin));
+                entryLabel=bootstrap;
+            }
+            entries.put(root.getKey(),new PartialProgramAssembler.EntryAssembly(entryLabel,origin));
         }
-        return new PartialProgramAssembler.Assembly(files.complete(sequences),entryLabel,origin);
+        var primary=input.entryInventory().entries().stream().filter(e->e.role()==SpInput.EntryRole.PRIMARY).findFirst().orElseThrow();
+        var first=entries.get(primary.id());
+        return new PartialProgramAssembler.Assembly(files.complete(sequences),first.label(),first.origin(),entries);
     }
     private LabelId label(String id,LocalIds ids){
         return PartialProgramAssembler.label(facts.get(id).header().id(),unit,occurrenceFrontiers.contains(id)?occurrenceIds:ids);

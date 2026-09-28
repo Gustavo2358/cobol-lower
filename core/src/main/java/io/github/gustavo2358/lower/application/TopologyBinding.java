@@ -117,9 +117,20 @@ final class TopologyBinding {
         var primary=binder.primaryEntry();
         c.require(input.statements().isEmpty()||primary.isPresent(),Admission.Rule.STRUCTURE,"controlTopology",null,"one topology procedure root required");
         if(primary.isPresent()&&primary.get().kind()==TargetKind.OCCURRENCE)
-            for(var entry:input.entryInventory().entries())entry.start().statement().ifPresent(start->
+            for(var entry:input.entryInventory().entries())if(entry.role()==SpInput.EntryRole.PRIMARY)entry.start().statement().ifPresent(start->
                 c.require(start.handle().equals(primary.get().reference()),Admission.Rule.STRUCTURE,"entry",null,
                     "entry metadata agrees with authoritative topology root"));
+        var entries=new HashMap<String,SpInput.EntryFact>();input.entryInventory().entries().forEach(e->entries.put(e.id().handle(),e));
+        var suppliedEntries=new HashSet<String>();
+        for(var point:topology.entryPoints()) {
+            var e=entries.get(point.entry());suppliedEntries.add(point.entry());
+            c.require(e!=null&&e.role()==SpInput.EntryRole.ALTERNATE&&e.availability()==SpInput.Availability.KNOWN,Admission.Rule.ENTRY_START,"entryPoints",null,"alternate root belongs to a known entry");
+            if(e==null)continue;
+            c.require(e.declaration().map(SpInput.StatementId::handle).orElse("").equals(point.declaration()),Admission.Rule.ENTRY_START,point.entry(),e.provenance(),"alternate declaration agrees");
+            c.require(point.target().kind()==TargetKind.OCCURRENCE?e.start().statement().map(SpInput.StatementId::handle).orElse("").equals(point.target().reference()):e.start().statement().isEmpty(),Admission.Rule.ENTRY_START,point.entry(),e.provenance(),"alternate start agrees with topology");
+        }
+        for(var e:entries.values())if(e.role()==SpInput.EntryRole.ALTERNATE&&e.availability()==SpInput.Availability.KNOWN)
+            c.require(suppliedEntries.contains(e.id().handle()),Admission.Rule.ENTRY_START,e.id().handle(),e.provenance(),"known alternate requires topology authority");
         for(var p:topology.proofs()){c.touch();c.provenance(p.provenance());}
         for(var e:topology.outcomes()){c.touch();binder.resolve(e.target(),null);}
         for(var b:topology.bindings()){c.touch();binder.resolve(b.resume(),null);binder.entry(b);}

@@ -68,8 +68,8 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum InventoryStatus { COMPLETE, PARTIAL, INPUT_MISSING }
     public enum ReadinessStatus { SUFFICIENT, PARTIAL, BLOCKED, NOT_APPLICABLE }
     public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, FILE_HANDLER, UNKNOWN }
-    public enum EntryRole { PRIMARY }
-    public enum EntryInventoryScope { PRIMARY_ONLY }
+    public enum EntryRole { PRIMARY, ALTERNATE }
+    public enum EntryInventoryScope { PRIMARY_ONLY, SOURCE_DECLARED }
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }
     public enum GobackExit { CURRENT_PROGRAM_INVOCATION }
     public enum LocalContinuation { NONE }
@@ -676,8 +676,10 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record EntryFact(EntryId id, EntryRole role, Availability availability, ExecutableStart start, EntrySignature signature, Provenance provenance, CoverageStatus coverage, Readiness readiness, List<EntryGap> gaps) {
+    public record EntryFact(EntryId id, EntryRole role, Availability availability, ExecutableStart start, EntrySignature signature, Provenance provenance, CoverageStatus coverage, Readiness readiness, List<EntryGap> gaps,Optional<String> externalName,Optional<StatementId> declaration) {
+        public EntryFact(EntryId id,EntryRole role,Availability availability,ExecutableStart start,EntrySignature signature,Provenance provenance,CoverageStatus coverage,Readiness readiness,List<EntryGap> gaps){this(id,role,availability,start,signature,provenance,coverage,readiness,gaps,Optional.empty(),Optional.empty());}
         public EntryFact {
+            Objects.requireNonNull(externalName);Objects.requireNonNull(declaration);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(role, "role");
             Objects.requireNonNull(availability, "availability");

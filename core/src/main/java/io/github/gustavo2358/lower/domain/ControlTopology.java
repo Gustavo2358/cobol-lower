@@ -7,7 +7,14 @@ import static io.github.gustavo2358.lower.domain.SpInput.Provenance;
  * pre-bound successor. This model contains no execution contexts or value facts. */
 public record ControlTopology(String authority, List<Occurrence> occurrences,
         List<Region> regions, List<Boundary> boundaries, List<Outcome> outcomes,
-        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows, List<SourceContinuation> sourceContinuations) {
+        List<Binding> bindings, List<Proof> proofs, List<ExceptionalEvent> exceptionalEvents, List<FileFlow> fileFlows, List<SourceContinuation> sourceContinuations,List<EntryPoint> entryPoints) {
+    public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events,List<FileFlow> fileFlows,List<SourceContinuation> sourceContinuations) {
+        this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,fileFlows,sourceContinuations,List.of());
+    }
+    /** An external activation, never a successor of the primary entry. */
+    public record EntryPoint(String entry,String declaration,Target target,List<String> proofs) {
+        public EntryPoint {text(entry);text(declaration);Objects.requireNonNull(target);proofs=sorted(nonempty(proofs),x->x);}
+    }
     public ControlTopology(String authority,List<Occurrence> occurrences,List<Region> regions,
             List<Boundary> boundaries,List<Outcome> outcomes,List<Binding> bindings,List<Proof> proofs,List<ExceptionalEvent> events,List<FileFlow> fileFlows) {
         this(authority,occurrences,regions,boundaries,outcomes,bindings,proofs,events,fileFlows,List.of());
@@ -108,6 +115,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         index(fileFlows,FileFlow::statement);
         sourceContinuations=sorted(sourceContinuations==null?List.of():sourceContinuations,SourceContinuation::identity);
         index(sourceContinuations,SourceContinuation::identity);
+        entryPoints=sorted(entryPoints==null?List.of():entryPoints,EntryPoint::entry);index(entryPoints,EntryPoint::entry);
         var fps=index(fileFlows.stream().flatMap(f->f.points().stream()).toList(),FilePoint::id);
         var owners=new HashMap<String,String>();fileFlows.forEach(f->f.points().forEach(p->owners.put(p.id(),f.statement())));
         var os=index(occurrences,Occurrence::statement);var rs=index(regions,Region::id);var bs=index(boundaries,Boundary::id);
@@ -127,6 +135,11 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
             case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN, PROGRAM_HALT -> require(rs.containsKey(t.reference()),"target region");
         }};
+        for(var e:entryPoints) {
+            require(os.containsKey(e.declaration()),"alternate entry declaration");refs(e.proofs(),ps);target.accept(e.target());
+            require(Set.of(TargetKind.OCCURRENCE,TargetKind.UNKNOWN_LOCAL,TargetKind.PROGRAM_RETURN).contains(e.target().kind()),"alternate entry start shape");
+            require(e.proofs().stream().anyMatch(id->ps.get(id).kind()==ProofKind.LOCAL_GRAMMAR&&ps.get(id).rule().equals("alternate-entry-start")),"alternate entry authority");
+        }
         for(var c:sourceContinuations) {
             require(os.containsKey(c.statement()),"source continuation occurrence");refs(c.proofs(),ps);target.accept(c.target());
             require(c.target().kind()==TargetKind.OCCURRENCE||c.target().kind()==TargetKind.COMPLETE
@@ -149,6 +162,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         for(var r:regions){executable.accept(r.proofs());executable.accept(r.entry().proofs());}
         for(var b:boundaries){executable.accept(b.proofs());executable.accept(b.ordinaryDefault().proofs());}
         for(var b:bindings){executable.accept(b.proofs());executable.accept(b.resume().proofs());for(var p:b.phases())executable.accept(p.proofs());}
+        for(var e:entryPoints){executable.accept(e.proofs());executable.accept(e.target().proofs());}
         for(var e:exceptionalEvents)executable.accept(e.proofs());
         for(var f:fileFlows){executable.accept(f.proofs());executable.accept(f.entry().proofs());for(var p:f.points()){executable.accept(p.proofs());for(var t:p.targets())executable.accept(t.proofs());}}
         for(var flow:fileFlows) {

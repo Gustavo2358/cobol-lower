@@ -93,46 +93,46 @@ public final class SpJsonDecoder {
             String receivedVersion=node.path("contractVersion").textValue();
             var profile=SpContractProfile.admitted(receivedVersion);
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
-            if(!java.util.Set.of("2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion)) {
+            if(!java.util.Set.of("2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion)) {
                 for(var effect:node.path("statementEffects"))if(effect.path("proof").asText().equals("SEARCH_INDEX_MAY"))throw new PhysicalShape("search index effects require SP2.56");
                 for(var region:node.path("controlTopology").path("regions"))if(java.util.Set.of("SENTENCE","SEARCH","SEARCH_ARM").contains(region.path("kind").asText()))throw new PhysicalShape("sentence/search regions require SP2.56");
                 for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("kind").asText().equals("PROGRAM_HALT")||outcome.path("target").path("kind").asText().equals("PROGRAM_HALT"))throw new PhysicalShape("program halt requires SP2.56");
             }
             for(var effect:node.path("statementEffects"))
-                if(effect.path("proof").asText().equals("MOVE_TARGETS")&&!java.util.Set.of("2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("MOVE footprint requires SP2.58");
+                if(effect.path("proof").asText().equals("MOVE_TARGETS")&&!java.util.Set.of("2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("MOVE footprint requires SP2.58");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statementEffects/new embedded proof requires SP2.46");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
+                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
             for(var condition:node.path("storage").path("entryState").path("conditions"))
-                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("$/storage/entryState/LOGICAL_TEXT requires SP2.46");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
                 var condition=variant.equals("IF")?statement.path("condition"):statement.path("loop").path("condition");
                 if(condition.isObject()) {
-                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
+                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
                     if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
                         ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
                 }
-                if(variant.equals("CICS_COMMAND")&&(java.util.Set.of("ASKTIME","FORMATTIME","ASSIGN","INQUIRE_PROGRAM","SEND_TEXT","WRITEQ_TD").contains(statement.path("commandKind").asText())||statement.path("gapCodes").toString().contains("CICS_COMMAND_DUPLICATE_FLAG_IGNORED"))&&!java.util.Set.of("2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&(java.util.Set.of("ASKTIME","FORMATTIME","ASSIGN","INQUIRE_PROGRAM","SEND_TEXT","WRITEQ_TD").contains(statement.path("commandKind").asText())||statement.path("gapCodes").toString().contains("CICS_COMMAND_DUPLICATE_FLAG_IGNORED"))&&!java.util.Set.of("2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("extended CICS catalogue requires SP2.54");
-                if(variant.equals("CICS_COMMAND")&&java.util.Set.of("SYNCPOINT_ROLLBACK","RETURN").contains(statement.path("commandKind").asText())&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&java.util.Set.of("SYNCPOINT_ROLLBACK","RETURN").contains(statement.path("commandKind").asText())&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("CICS completion commands require SP2.50");
                 if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
-                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/RETRIEVE requires SP2.46");
-                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/registrationEffects requires SP2.46");
                 if(variant.equals("CICS_HANDLER")&&!statement.has("registrationEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("registrationEffects");
-                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/hostEffects requires SP2.46");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("hostEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("hostEffects");
-                if(variant.equals("CICS_COMMAND")&&statement.has("implicitArea")&&!java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("implicitArea requires SP2.53");
+                if(variant.equals("CICS_COMMAND")&&statement.has("implicitArea")&&!java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("implicitArea requires SP2.53");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("implicitArea"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("implicitArea");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
             }
@@ -142,22 +142,22 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
-            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
             if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
             io.github.gustavo2358.lower.domain.NominalValues nominalValues=null;
             if(node.has("nominalValues")) {
-                if(!java.util.Set.of("2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("$/nominalValues requires SP2.47");
+                if(!java.util.Set.of("2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("$/nominalValues requires SP2.47");
                 var nominal=node.path("nominalValues");
                 boolean tableContract=nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V4");
-                if(tableContract&&(!receivedVersion.equals("2.60.0")||!nominal.path("tableFields").isArray()))throw new PhysicalShape("table fields require SP2.60 and array");
+                if(tableContract&&(!java.util.Set.of("2.60.0","2.61.0").contains(receivedVersion)||!nominal.path("tableFields").isArray()))throw new PhysicalShape("table fields require SP2.60 and array");
                 if(!tableContract&&nominal.has("tableFields"))throw new PhysicalShape("table fields require V4");
                 if(!tableContract)((com.fasterxml.jackson.databind.node.ObjectNode)nominal).putArray("tableFields");
                 boolean expressionContract=tableContract||nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V3");
-                if(expressionContract&&!java.util.Set.of("2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("nominal expressions require SP2.59");
+                if(expressionContract&&!java.util.Set.of("2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("nominal expressions require SP2.59");
                 boolean modelContract=expressionContract||nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V2");
-                if(modelContract&&!java.util.Set.of("2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("model assumptions require SP2.49");
+                if(modelContract&&!java.util.Set.of("2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("model assumptions require SP2.49");
                 for(var symbol:nominal.path("symbols")) {
                     if(!symbol.isObject())throw new PhysicalShape("nominal symbol must be an object");
                     if(modelContract&&!symbol.path("modelAssumed").isBoolean())throw new PhysicalShape("modelAssumed boolean required");
@@ -181,13 +181,13 @@ public final class SpJsonDecoder {
             }
             for(var statement:node.path("statements"))if(statement.path("varying").isObject()) {
                 var varying=(com.fasterxml.jackson.databind.node.ObjectNode)statement.path("varying");
-                if(varying.has("afterLoops")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("afterLoops requires SP2.48");
+                if(varying.has("afterLoops")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("afterLoops requires SP2.48");
                 if(!varying.has("afterLoops")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)varying.putArray("afterLoops");
                 for(var loop:varying.path("afterLoops"))if(loop.path("condition").isObject()&&!loop.path("condition").has("textPredicate"))
                     ((com.fasterxml.jackson.databind.node.ObjectNode)loop.path("condition")).putNull("textPredicate");
             }
             for(var input:node.path("factDependencies").path("inputs"))
-                if(input.path("kind").asText().equals("MODEL_STORAGE")&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))
+                if(input.path("kind").asText().equals("MODEL_STORAGE")&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))
                     throw new PhysicalShape("MODEL_STORAGE requires SP2.50");
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
@@ -198,16 +198,29 @@ public final class SpJsonDecoder {
                 requirePhysical(factDependencies,"$/factDependencies",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("factDependencies");
             }
+            boolean alternateContract=receivedVersion.equals("2.61.0");
+            if(node.path("entryInventory").path("scope").asText().equals("SOURCE_DECLARED")&&!alternateContract)
+                throw new PhysicalShape("alternate entry inventory requires SP2.61");
+            for(var entry:node.path("entryInventory").path("entries")) {
+                if(!alternateContract&&(entry.path("role").asText().equals("ALTERNATE")||entry.has("externalName")||entry.has("declaration")))
+                    throw new PhysicalShape("alternate entry metadata requires SP2.61");
+                var object=(com.fasterxml.jackson.databind.node.ObjectNode)entry;
+                if(!entry.has("externalName"))object.putNull("externalName");
+                if(!entry.has("declaration"))object.putNull("declaration");
+            }
             boolean topologyContract=factContract||node.path("contractVersion").asText().equals("2.39.0");
             if(topologyContract!=node.has("controlTopology") || topologyContract&&!node.path("controlTopology").isObject())
                 throw new PhysicalShape("$/controlTopology requires SP2.39 and is mandatory there");
             io.github.gustavo2358.lower.domain.ControlTopology topology=null;
             if(topologyContract) {
                 var topologyNode=(com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology");
-                boolean sourcePossibility=java.util.Set.of("2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion);
+                if(topologyNode.has("entryPoints")&&(!topologyNode.path("entryPoints").isArray()||!alternateContract&&!topologyNode.path("entryPoints").isEmpty()))
+                    throw new PhysicalShape("entryPoints requires SP2.61 array");
+                if(!topologyNode.has("entryPoints"))topologyNode.putArray("entryPoints");
+                boolean sourcePossibility=java.util.Set.of("2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion);
                 boolean hasSource=topologyNode.has("sourceContinuations");
                 if(receivedVersion.equals("2.52.0")&&(!topologyNode.path("sourceContinuations").isArray()||topologyNode.path("sourceContinuations").isEmpty())
-                    ||java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion)&&hasSource&&!topologyNode.path("sourceContinuations").isArray()
+                    ||java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion)&&hasSource&&!topologyNode.path("sourceContinuations").isArray()
                     ||!sourcePossibility&&hasSource&&(!topologyNode.path("sourceContinuations").isArray()||!topologyNode.path("sourceContinuations").isEmpty()))
                     throw new PhysicalShape("sourceContinuations requires SP2.52; optional empty inventory from SP2.53");
                 if(!hasSource)topologyNode.putArray("sourceContinuations");
@@ -223,18 +236,18 @@ public final class SpJsonDecoder {
                 for(var flow:topologyNode.path("fileFlows"))for(var point:flow.path("points"))
                     if(!point.has("ordinal")||!point.path("ordinal").isIntegralNumber())throw new PhysicalShape("FILE point ordinal required integer");
                 if(!node.path("controlTopology").has("exceptionalEvents"))((com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology")).putArray("exceptionalEvents");
-                for(var region:node.path("controlTopology").path("regions"))if(region.path("kind").asText().equals("SECTION")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("SECTION topology requires SP2.48");
-                for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("target").path("kind").asText().equals("ESCAPE")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("ESCAPE topology requires SP2.48");
+                for(var region:node.path("controlTopology").path("regions"))if(region.path("kind").asText().equals("SECTION")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("SECTION topology requires SP2.48");
+                for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("target").path("kind").asText().equals("ESCAPE")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("ESCAPE topology requires SP2.48");
                 for(var binding:node.path("controlTopology").path("bindings"))for(var phase:binding.path("phases")) {
-                    if(phase.path("level").asInt()!=0&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("phase level requires SP2.48");
+                    if(phase.path("level").asInt()!=0&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("phase level requires SP2.48");
                     if(!phase.hasNonNull("level"))((com.fasterxml.jackson.databind.node.ObjectNode)phase).put("level",0);
                 }
                 for(var binding:topologyNode.path("bindings")) {
                     if(binding.has("reentryPolicy")) {
                         if(!binding.path("reentryPolicy").isTextual())throw new PhysicalShape("binding reentryPolicy must be a string");
-                        if(!java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion)&&!binding.path("reentryPolicy").asText().equals("UNSPECIFIED"))throw new PhysicalShape("binding reentry policy requires SP2.57");
+                        if(!java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion)&&!binding.path("reentryPolicy").asText().equals("UNSPECIFIED"))throw new PhysicalShape("binding reentry policy requires SP2.57");
                     } else {
-                        if(java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("binding reentryPolicy required in SP2.57");
+                        if(java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("binding reentryPolicy required in SP2.57");
                         ((com.fasterxml.jackson.databind.node.ObjectNode)binding).put("reentryPolicy","UNSPECIFIED");
                     }
                 }
@@ -409,7 +422,7 @@ public final class SpJsonDecoder {
             if(java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0").contains(node.path("contractVersion").textValue()))
                 for(var ref:node.findParents("binding"))if(ref.has("role")&&ref.has("id"))((com.fasterxml.jackson.databind.node.ObjectNode)ref).putNull("logicalWholeItem");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
+                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
             for(var condition:node.path("storage").path("entryState").path("conditions")) {
                 if(logicalAccessContract&&!condition.has("logicalText"))throw new PhysicalShape("$/storage/entryState/conditions/logicalText");
                 if(!logicalAccessContract&&condition.has("logicalText"))return reject(Code.UNSUPPORTED_CONTRACT,"$/logicalText requires SP 2.19");

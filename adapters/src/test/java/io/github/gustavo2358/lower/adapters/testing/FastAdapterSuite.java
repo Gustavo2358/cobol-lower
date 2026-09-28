@@ -9,6 +9,7 @@ public final class FastAdapterSuite {
     public static void main(String[] args) throws Exception {
         MoveEffectSuite.main(args);
         SqlDispatchSuite.main(args);
+        AlternateEntrySuite.main(args);
         TopologyEntryAdmissionSuite.main(new String[0]);
         SourceTableSuite.main(args);
         NominalValueSuite.main(new String[0]);
