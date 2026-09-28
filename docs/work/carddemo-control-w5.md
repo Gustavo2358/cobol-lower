@@ -23,3 +23,13 @@ CHKP com área/literal; REPL/ISRT/DLET com PCB, buffers, múltiplos segmentos e 
 - [Db2 SELECT INTO](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=statements-select-into), [SQLCODE +100](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=codes-100).
 - [DECLARE CURSOR](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=statements-declare-cursor), [OPEN](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=statements-open), [FETCH](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=statements-fetch).
 - [WHENEVER](https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=statements-whenever): diretiva de escopo lexical; não assumir que erro implica sucesso/fallthrough quando a disposição não está provada.
+
+## Qualificação W5 — 28/09/2026
+
+Implementação pronta para revisão, sem merge. Runtime congelada `w5-development-01`: 73/73 CardDemo nas quatro etapas; 26/26 testemunhas reais (19 SQL + 7 DL/I) publicam normal e efeitos abertos. 66 SPs byte-idênticos à W4, sete alterados. Zero perda de candidato/support físico; 70 candidatos condicionais preservados, sem migração ou perda de evidência. Um candidato adicional `COTRTLIC` em `statement:295`: VALUE de LIT-THISPGM → MOVE para CDEMO-FROM-PROGRAM → MOVE para CDEMO-TO-PROGRAM; DECLARE CURSOR deixou de contaminar armazenamento independente.
+
+118 sondagens nas quatro etapas; seis fontes geradas ultrapassavam coluna 72 (INSERT/REPL/DLET), corrigidas e reexecutadas em outputs novos; evidência original preservada. 26 sondagens de banco verificam candidatos FIRST/SECOND, dois braços de status, retorno PERFORM e negativos terminais. `DatabaseControlSuite`: 24 fontes/SPs reais, 120 mutações wire/porta tipada; estados de memória ausente/modelada, branches e retorno. O helper de travessia AIR foi completado para Branch; não houve mudança de arestas para satisfazê-lo.
+
+Frontend FAST: 642 testes PASS (`w5-frontend-fast-02.log`). Lower FAST PASS (`w5-lower-fast-01.log`, 344 s); a suíte nova foi executada depois em teste focal (`w5-lower-database-02.log`), e será incluída no próximo FAST. Primeiro FAST frontend encontrou quatro expectativas históricas: unknown-control usa agora SQL dinâmico fora do subset, e REPL exige seus hosts reais; os negativos semânticos foram preservados. Regressão ampla PERFORM/Chaos/aliases e corpus de fixtures será reexecutada ao qualificar W6, que altera topologia compartilhada.
+
+Limites: sintaxe SQL fechada, sem SQL dinâmico/rowsets/dispatch WHENEVER; DL/I sem prova de posicionamento/ambiente correto ou status. SQLCA/DIB/PCB e efeitos implícitos continuam abertos. Gaps e PARTIAL permanecem; concluir execução não é afirmar análise completa. Evidência local em `.carddemo-control/evidence/w5-*`.
