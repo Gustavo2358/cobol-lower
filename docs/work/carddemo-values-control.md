@@ -165,3 +165,16 @@ oracle. Existing expected values were preserved. Lower fast focal suites passed
 round trips. CFG architecture FAST passed after refreshing the reviewed compiled
 API inventory (vc3-expression-cfg-fast-03.log). Final full/corpus and pin gates
 remain campaign obligations.
+
+VC4 SQL checkpoint: adjacent EXEC SQL blocks are separate AST statements;
+WHENEVER categories use lexical replacement and canonical procedure bindings.
+Dynamic PREPARE, EXECUTE and EXECUTE IMMEDIATE retain normal completion plus
+unknown outcomes, with open external effects. No runtime SQL string is analyzed.
+36 focused frontend tests passed. Seven real SP fixtures pass lower reachability
+oracles, and all seven pass four production stages, zero parser errors, strict
+qualified-source wire validation and program candidate oracles. Cases include
+lexically active but runtime-dead directives, canceled directives, dead SQL,
+unresolved labels and a performed paragraph. Evidence: vc4-sql-front-02.log,
+vc4-sql-lower.log, vc4-sql-probes-01/oracle.json. These tests use published
+statement identities; no ordinal is assumed from a statement's source position.
+Remaining VC4 CICS condition state and alternate entries are not yet implemented.

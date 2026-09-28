@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 SQL-TEXT PIC X(32).
+       PROCEDURE DIVISION.
+           EXEC SQL WHENEVER SQLERROR GO TO SQL-ERR END-EXEC.
+           PERFORM SQL-PARA.
+           CALL 'RESUMED'.
+           GOBACK.
+           SQL-PARA.
+           EXEC SQL DELETE FROM T END-EXEC.
+           SQL-ERR.
+           CALL 'ERRORPGM'.
+           GOBACK.
