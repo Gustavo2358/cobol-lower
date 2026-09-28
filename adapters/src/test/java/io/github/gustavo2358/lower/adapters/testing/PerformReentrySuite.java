@@ -17,7 +17,7 @@ public final class PerformReentrySuite {
     public static void main(String[] args)throws Exception {
         int cases=0,mutations=0;
         var names=List.of("reentry-direct","reentry-mutual","reentry-conditional","reentry-callers",
-            "reentry-range","reentry-section","reentry-values","reentry-file","sequential-callers",
+            "reentry-direct-callers","reentry-file-unconditional","reentry-range","reentry-section","reentry-values","reentry-file","sequential-callers",
             "sequential-loop","terminal-before","halt-before","goto-before","reentry-direct-handler",
             "reentry-conditional-handler","reentry-callers-handler","sequential-callers-handler","terminal-before-handler");
         for(var name:names) {
@@ -34,11 +34,18 @@ public final class PerformReentrySuite {
             var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);var p=result.publication().orElseThrow();
             need(result.validation().orElseThrow().isStructurallyValid(),"valid AIR");new AirJson().decode(new AirJson().encode(p));
             var qualified=QualifiedSourceProjection.project(input,result.admission());
+            need(io.github.gustavo2358.lower.application.HandlerStateScheduleProbe.sourceOrderInvariant(input),"source summary scheduling invariance "+name);
+            var sourceCodec=new io.github.gustavo2358.lower.adapters.source.QualifiedSourceJson();
+            var sourceDocument=new io.github.gustavo2358.lower.source.QualifiedSourceDependencies("qualified-source-dependencies",name.startsWith("reentry-")?"1.2.0":"1.1.0","test",
+                new io.github.gustavo2358.lower.source.QualifiedSourceDependencies.Document("cobol-semantic-product","2.57.0",HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(CobolControlSuite.J.writeValueAsBytes(j)))),List.of(),List.of(qualified));
+            need(sourceDocument.equals(sourceCodec.decode(sourceCodec.encode(sourceDocument))),"source evidence typed/wire roundtrip");
             if(name.startsWith("reentry-direct")||name.equals("reentry-mutual")) {
                 var after=input.statements().stream().filter(f->f instanceof io.github.gustavo2358.lower.domain.SpInput.CallFact).findFirst().orElseThrow().header().id().handle();
                 need(qualified.occurrences().stream().anyMatch(o->o.id().handle().equals(after)&&!o.qualifications().isEmpty()),"undefined reentry is no proof of impossible source continuation");
                 need(qualified.proofs().stream().anyMatch(proof->proof.kind().equals("CONTROL_POSSIBILITY")&&proof.rule().equals("undefined-active-reentry-may-complete")),"conditional proof identifies source-undefined reentry");
             }
+            if(!name.startsWith("reentry-"))need(qualified.proofs().stream().noneMatch(proof->proof.rule().equals("undefined-active-reentry-may-complete")),"no assumption for sequential or terminal contexts");
+            for(var d:qualified.derivations())if(d.authority().contains("/RESUME/"))need(!d.callerPremise().isEmpty(),"source summary keeps its caller prerequisite");
             var reached=TerminalSendSuite.reached(p);var seqs=new HashMap<LabelId,Sequence>();p.units().forEach(u->u.sequences().forEach(s->seqs.put(s.label(),s)));
             var reasons=new HashSet<UncertaintyId>();p.uncertainties().stream().filter(u->u.code().equals("cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED")).forEach(u->reasons.add(u.id()));
             int reachedFrontiers=0;var calls=new TreeSet<String>();

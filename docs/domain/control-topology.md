@@ -226,3 +226,24 @@ cannot grant source semantics absent from the producer.
 Expansion still materializes contexts and may be exponential in distinct active
 bindings. This change does not implement recursion summaries or claim that all
 CFG nodes become reachable. [Decision and limits](../work/carddemo-control-w7.md).
+
+## Qualified source evidence 1.2
+
+The finite source tabulator detects cycles between invocation contexts. For an
+active binding whose published policy is SOURCE_UNDEFINED, it may derive a
+conditional completion summary. `SOURCE_REENTRY_UNDEFINED` is an unknown handler
+state cause, admitted in qualified-source-dependencies 1.2 only. The derived proof
+uses CONTROL_POSSIBILITY and references the source binding's proofs and caller
+provenance. Existing callerPremise conjunctions attach summaries to their own
+subscribers; summaries are never AIR or CFG edges. Absence of a known completion
+is not a non-return proof under undefined source semantics. Literal candidates
+retain source qualifications; computed candidates retain conditional value
+evidence and uncertainty. GOBACK/STOP/GO TO before a cycle grant no such summary.
+
+The executable analyzer still uses the original state tabulation. Only source
+qualification enables these hypotheses. The domain is finite (bindings, finite
+handler support, handler ingress and program points); insertion is monotonic.
+Each cycle check traverses the context dependency graph per callee, O(C(C+E))
+per saturation round. No recursion-depth cutoff, source-name dispatch or global
+return-to-all-callers graph is used. Materialized AIR context growth remains a
+separate limitation.

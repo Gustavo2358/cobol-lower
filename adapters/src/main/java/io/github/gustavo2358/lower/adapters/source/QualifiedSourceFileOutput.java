@@ -18,7 +18,7 @@ public final class QualifiedSourceFileOutput {
         for(var input:lowered.sources())units.add(lowered.result().admission().input().filter(input::equals).isPresent()
             ?QualifiedSourceProjection.project(input,lowered.result().admission()):QualifiedSourceProjection.admitAndProject(input,options));
         units.sort(Comparator.comparing((UnitEvidence u)->u.unit().compilationUnitId()).thenComparing(u->u.unit().structuralPath().toString()));
-        var value=new QualifiedSourceDependencies("qualified-source-dependencies",units.stream().anyMatch(u->!u.nativeFiles().isEmpty()||u.proofs().stream().anyMatch(p->p.kind().equals("CONTROL_POSSIBILITY")))?"1.1.0":"1.0.0","cobol-lower/r7-source-state@1",
+        var value=new QualifiedSourceDependencies("qualified-source-dependencies",units.stream().anyMatch(u->u.nodes().stream().anyMatch(n->n.support().cause().equals("SOURCE_REENTRY_UNDEFINED")))?"1.2.0":units.stream().anyMatch(u->!u.nativeFiles().isEmpty()||u.proofs().stream().anyMatch(p->p.kind().equals("CONTROL_POSSIBILITY")))?"1.1.0":"1.0.0","cobol-lower/r7-source-state@1",
             new Document(document.path("schema").asText(),document.path("contractVersion").asText(),sha(bytes)),
             List.of(new AirCorrelation(lowered.result().publication().orElseThrow().id().localId(),sha(Files.readAllBytes(air)))),units);
         var encoded=new QualifiedSourceJson().encode(value);var absolute=destination.toAbsolutePath();

@@ -16,6 +16,8 @@ final class HandlerStateAnalyzer {
     private final ControlTopology topology;
     private final TopologyBinding binder;
     private final boolean reverse;
+    private final boolean sourceOnly;
+    private final Map<String,Set<String>> localCalls=new HashMap<>();
     private final Map<String,List<ControlTopology.SourceContinuation>> sourceContinuations=new HashMap<>();
     private final Map<String,StatementFact> statements=new TreeMap<>();
     private final Map<String,HandlerStateAnalysis.Target> targets=new TreeMap<>();
@@ -41,7 +43,7 @@ final class HandlerStateAnalyzer {
     // Package access solely to exercise worklist scheduling independence.
     HandlerStateAnalyzer(SpInput input,boolean reverse) { this(input,reverse,false); }
     HandlerStateAnalyzer(SpInput input,boolean reverse,boolean sourceOnly) {
-        this.input=input;this.reverse=reverse;topology=input.controlTopology().orElseThrow();binder=new TopologyBinding(topology);
+        this.input=input;this.reverse=reverse;this.sourceOnly=sourceOnly;topology=input.controlTopology().orElseThrow();binder=new TopologyBinding(topology);
         topology.exceptionalEvents().forEach(e->exceptionalEvents.computeIfAbsent(e.statement(),k->new ArrayList<>()).add(e));
         input.statements().forEach(s->statements.put(s.header().id().handle(),s));
         if(sourceOnly)for(var c:topology.sourceContinuations()) {
@@ -55,11 +57,13 @@ final class HandlerStateAnalyzer {
         var root=new Context("ROOT",null,"",false);contexts.put(root.id(),root);
         var initial=new Support(new State(Kind.ENTRY_UNKNOWN,"",Cause.NONE),Optional.empty());
         binder.primaryEntry().ifPresent(e->route(root,e,initial,Optional.empty(),Optional.empty(),"PRIMARY_ENTRY",e.proofs()));
+        do {
         while(!work.isEmpty()) {
             var node=reverse?work.removeLast():work.removeFirst();pops++;
             if(node.location().startsWith("FILE_POINT/"))filePoint(node);
             else if(node.location().startsWith("PHASE/")||node.location().startsWith("ESCAPE/"))phase(node);else occurrence(node);
         }
+        } while(sourceOnly&&undefinedReentrySummaries());
         var operations=new ArrayList<Operation>();var events=new ArrayList<Event>();
         for(var s:statements.values()) {
             var id=s.header().id();var states=ordered(before.getOrDefault(id.handle(),Set.of()),HandlerStateAnalyzer::supportKey);
@@ -192,10 +196,31 @@ final class HandlerStateAnalyzer {
         var parent=contexts.get(caller.context());
         String key=binding.id()+"|"+supportKey(caller.support())+(parent.ingress().isEmpty()?"":"|INGRESS/"+parent.ingress()+"/"+parent.conditional());
         var callee=contexts.computeIfAbsent(key,k->new Context(k,binding,parent.ingress(),parent.conditional()));
+        localCalls.computeIfAbsent(parent.id(),k->new HashSet<>()).add(key);
         var subscriber=new Subscriber(caller,outcome.id(),outcome.proofs());
         if(subscribers.computeIfAbsent(key,k->new HashSet<>()).add(subscriber))
             for(var exit:summaries.getOrDefault(key,Set.of()))resume(callee,exit,subscriber);
         insert(new Node(key,"PHASE/"+binding.entryPhase(),caller.support()),Optional.of(caller),Optional.empty(),outcome.id(),merge(outcome.proofs(),binding.proofs()));
+    }
+    static String reentryProof(String binding) {return "source-reentry/"+binding;}
+    /** A cycle in the finite source context dependency graph permits an unknown
+     * completion. This is source evidence only; executable state never calls it. */
+    private boolean undefinedReentrySummaries() {
+        for(var callee:List.copyOf(contexts.values())) {
+            if(callee.binding()==null||callee.binding().reentryPolicy()!=ReentryPolicy.SOURCE_UNDEFINED)continue;
+            var descendants=new HashSet<String>();var pending=new ArrayDeque<String>();pending.add(callee.id());
+            while(!pending.isEmpty()) {var at=pending.removeFirst();if(descendants.add(at))pending.addAll(localCalls.getOrDefault(at,Set.of()));}
+            for(var subscriber:List.copyOf(subscribers.getOrDefault(callee.id(),Set.of()))) {
+                // The subscriber itself provides the final edge of the cycle.
+                if(!descendants.contains(subscriber.caller().context()))continue;
+                var entry=new Node(callee.id(),"PHASE/"+callee.binding().entryPhase(),subscriber.caller().support());
+                if(!reached.contains(entry))continue;
+                insert(new Node(callee.id(),"PHASE/RESUME",unknown(Cause.SOURCE_REENTRY_UNDEFINED)),
+                    Optional.of(subscriber.caller()),Optional.of(entry),callee.binding().id()+"/SOURCE_REENTRY_POSSIBILITY",
+                    List.of(reentryProof(callee.binding().id())));
+            }
+        }
+        return !work.isEmpty();
     }
     private void phase(Node node) {
         var context=contexts.get(node.context());var binding=context.binding();var name=node.location().substring(6);

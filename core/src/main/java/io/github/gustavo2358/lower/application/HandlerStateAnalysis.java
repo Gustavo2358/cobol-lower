@@ -26,7 +26,7 @@ public record HandlerStateAnalysis(UnitKey unit, List<Target> targets, List<Oper
     }
     public enum Kind { ENTRY_UNKNOWN, ACTIVE, CANCELED, DEACTIVATED, CANCELED_UNKNOWN, UNKNOWN }
     public enum Cause { NONE, RESET_HISTORY_UNAVAILABLE, RESET_WITHOUT_CANCELED_EVIDENCE,
-        CALL_EFFECT_UNAVAILABLE, HANDLER_OPERATION_UNAVAILABLE }
+        CALL_EFFECT_UNAVAILABLE, HANDLER_OPERATION_UNAVAILABLE, SOURCE_REENTRY_UNDEFINED }
     public enum TargetForm { LABEL_LOCAL, LABEL_UNRESOLVED, PROGRAM_LITERAL, PROGRAM_DATA, PROGRAM_UNRESOLVED }
     public record State(Kind kind, String target, Cause cause) {
         public State {
