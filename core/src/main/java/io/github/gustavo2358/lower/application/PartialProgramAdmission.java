@@ -206,7 +206,11 @@ final class PartialProgramAdmission {
                     if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN,
                         Rule.PROFILE_FACT,o.header().id().handle(),null,"receiver value transform remains uninterpreted");
                     for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
-                    if(e.proof()==EffectProof.DLI_HOST_OPERANDS||e.proof()==EffectProof.CICS_CONDITION_REGISTRATION)c.require(
+                    if(e.proof()==EffectProof.SQL_HOST_OPERANDS||e.proof()==EffectProof.DLI_EXTERNAL_OPERANDS)c.require(
+                    e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.ALL
+                    &&e.unknownWriteBound()==EffectBound.ALL&&e.unknownExposureBound()==EffectBound.ALL
+                    &&e.environment()==EnvironmentEffect.UNKNOWN,Rule.PROFILE_FACT,o.header().id().handle(),null,"external command has an open footprint");
+                if(e.proof()==EffectProof.DLI_HOST_OPERANDS||e.proof()==EffectProof.CICS_CONDITION_REGISTRATION)c.require(
                         e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.NONE
                         &&e.unknownWriteBound()==EffectBound.NONE&&e.unknownExposureBound()==EffectBound.NONE
                         &&e.environment()==EnvironmentEffect.UNKNOWN,Rule.PROFILE_FACT,o.header().id().handle(),null,"embedded bounded footprint retains external environment");

@@ -1,13 +1,13 @@
 # Estado upstream observado
 
-## Estado vigente — W4, controle e memória
+## Estado vigente — W5, controle e memória
 
-SP2.54 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
+SP2.55 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
 acrescentar transições executáveis. Branch de revisão empilhada sobre FILE; sem merge.
 
-- proleap-poc: `c98b1480ae8aa0f7b5650d014f9e070ac3315f8f`.
+- proleap-poc: `46abc1f9b1e1c6e61c5251873339b20a246d11a2`.
 
-Regra, testes e limites: [W4](../work/carddemo-control-w4.md).
+Regra, testes e limites: [W5](../work/carddemo-control-w5.md).
 Os campos e as seções históricas não substituem estes pins.
 
 ## Checkpoints históricos
