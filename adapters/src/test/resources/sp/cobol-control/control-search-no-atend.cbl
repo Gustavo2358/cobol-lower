@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 G.
+        05 ROW-X OCCURS 3 ASCENDING KEY KEY-X
+            INDEXED BY IX.
+         10 KEY-X PIC X.
+       01 PGM PIC X(8).
+       PROCEDURE DIVISION.
+           SEARCH ALL ROW-X
+           WHEN KEY-X(IX) = 'A'
+             CALL 'MATCHED'
+           END-SEARCH
+           CALL 'AFTERIO'
+           GOBACK.

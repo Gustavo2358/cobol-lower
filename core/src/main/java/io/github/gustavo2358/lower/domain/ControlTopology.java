@@ -57,9 +57,9 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                     &&eligibility==EventEligibility.HANDLER_ELIGIBLE,"event guard/origin agreement");
         }
     }
-    public enum RegionKind { PROCEDURE, SECTION, PARAGRAPH, RANGE, IF, IF_ARM, EVALUATE, EVALUATE_ARM, FILE, FILE_HANDLER, INLINE_BODY, DECLARATIVE }
-    public enum TargetKind { FILE_POINT, OCCURRENCE, REGION_ENTRY, COMPLETE, ESCAPE, PROGRAM_RETURN, UNKNOWN_LOCAL }
-    public enum OutcomeKind { NORMAL, BRANCH, EXPLICIT_TRANSFER, LOCAL_INVOKE, PROGRAM_RETURN, UNKNOWN_LOCAL }
+    public enum RegionKind { PROCEDURE, SECTION, PARAGRAPH, RANGE, IF, IF_ARM, EVALUATE, EVALUATE_ARM, FILE, FILE_HANDLER, INLINE_BODY, DECLARATIVE, SENTENCE, SEARCH, SEARCH_ARM }
+    public enum TargetKind { FILE_POINT, OCCURRENCE, REGION_ENTRY, COMPLETE, ESCAPE, PROGRAM_RETURN, PROGRAM_HALT, UNKNOWN_LOCAL }
+    public enum OutcomeKind { NORMAL, BRANCH, EXPLICIT_TRANSFER, LOCAL_INVOKE, PROGRAM_RETURN, PROGRAM_HALT, UNKNOWN_LOCAL }
     public enum PhaseKind { PREDICATE, EFFECT }
     public record PhaseEdge(String role,String target) { public PhaseEdge {text(role);text(target);} }
     public record Phase(String id,PhaseKind kind,String operation,List<PhaseEdge> edges,List<String> proofs,int level) {
@@ -120,7 +120,7 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         java.util.function.Consumer<Target> target=t->{refs(t.proofs(),ps);switch(t.kind()) {
             case FILE_POINT -> require(fps.containsKey(t.reference()),"target FILE point");
             case OCCURRENCE -> require(os.containsKey(t.reference()),"target occurrence");
-            case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN -> require(rs.containsKey(t.reference()),"target region");
+            case REGION_ENTRY, COMPLETE, ESCAPE, UNKNOWN_LOCAL, PROGRAM_RETURN, PROGRAM_HALT -> require(rs.containsKey(t.reference()),"target region");
         }};
         for(var c:sourceContinuations) {
             require(os.containsKey(c.statement()),"source continuation occurrence");refs(c.proofs(),ps);target.accept(c.target());
@@ -185,11 +185,12 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
             if(e.target().kind()==TargetKind.ESCAPE) {
                 var scope=rs.get(e.target().reference());
                 require(e.kind()==OutcomeKind.EXPLICIT_TRANSFER
-                    &&Set.of(RegionKind.PARAGRAPH,RegionKind.INLINE_BODY).contains(scope.kind()),"typed scope escape");
+                    &&Set.of(RegionKind.PARAGRAPH,RegionKind.INLINE_BODY,RegionKind.SENTENCE).contains(scope.kind()),"typed scope escape");
                 String parent=os.get(e.statement()).region();var seen=new HashSet<String>();
                 while(!parent.isEmpty()&&!parent.equals(scope.id())&&seen.add(parent))parent=rs.get(parent).parent();
                 require(parent.equals(scope.id()),"escape target is a lexical enclosing scope");
             }
+            if(e.kind()==OutcomeKind.PROGRAM_HALT)require(e.target().kind()==TargetKind.PROGRAM_HALT,"halt target");
             if(e.kind()==OutcomeKind.PROGRAM_RETURN)require(e.target().kind()==TargetKind.PROGRAM_RETURN,"return target");
             if(e.kind()==OutcomeKind.UNKNOWN_LOCAL)require(e.target().kind()==TargetKind.UNKNOWN_LOCAL,"unknown target");
         }

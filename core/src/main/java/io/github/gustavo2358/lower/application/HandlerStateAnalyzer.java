@@ -237,7 +237,7 @@ final class HandlerStateAnalyzer {
             case OCCURRENCE -> insert(new Node(context.id(),target.reference(),support),source,caller,authority,proofs);
             case COMPLETE -> insert(new Node(context.id(),"PHASE/"+Objects.requireNonNull(context.binding()).completionPhase(),support),source,caller,authority,proofs);
             case UNKNOWN_LOCAL -> source.ifPresent(n->frontiers.add(new Frontier(n,authority,target.reference(),proofs)));
-            case PROGRAM_RETURN -> { /* program return is not a PERFORM completion */ }
+            case PROGRAM_RETURN, PROGRAM_HALT -> { /* program return is not a PERFORM completion */ }
             default -> throw new IllegalStateException("unresolved topology alias");
         }
     }

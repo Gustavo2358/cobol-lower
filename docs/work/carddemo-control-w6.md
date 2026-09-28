@@ -8,11 +8,11 @@ NEXT SENTENCE transfere para o ponto imediatamente após o próximo período sep
 
 SEARCH ALL possui uma decisão abstrata de busca, com alternativas mutuamente exclusivas WHEN e AT END (ou continuação na ausência de AT END). A iteração interna que calcula o índice fica resumida nessa operação; o corpo WHEN não é corpo de iteração e executa somente no match. Nenhuma comparação/ordenação/índice runtime é avaliada. Admitir a forma gramatical ALL sem VARYING com um WHEN; preservar efeitos desconhecidos de índice e possíveis falhas, sem MUST. Região SEARCH/SEARCH_ARM compõe corpos e continuidade com os mesmos contratos regionais.
 
-STOP RUN deve produzir PROGRAM_HALT → AIR Halt NORMAL, sem continuação ordinária nem retorno de PERFORM. EXIT PROGRAM retorna em programa contido. Em unidade externa, fonte/posição na compilação não prova se ela é main ou chamada: publicar alternativas de retorno e continuação com premissa contextual explícita. Nenhum perfil vigente informa o papel runtime; não inferir main do primeiro PROGRAM-ID. GOBACK/RETURN/XCTL mantêm contratos existentes.
+STOP RUN deve produzir PROGRAM_HALT → AIR Opaque com HaltAlternative e controle fechado, sem continuação ordinária nem retorno de PERFORM. EXIT PROGRAM retorna em programa contido. Em unidade externa, fonte/posição na compilação não prova se ela é main ou chamada: publicar alternativas de retorno e continuação com premissa contextual explícita. Nenhum perfil vigente informa o papel runtime; não inferir main do primeiro PROGRAM-ID. GOBACK/RETURN/XCTL mantêm contratos existentes.
 
 ENTRY alternativo é auditado contra a entrada principal já publicada. Não adicionar entrada artificial nem conectar trecho morto depois de término. Multi-entry exige outro desenho. Caso o ENTRY seja encontrado no fluxo sequencial, sua natureza declarativa permite continuar, sem materializar chamada externa.
 
-SP2.56: regiões SENTENCE/SEARCH/SEARCH_ARM, escape SENTENCE, PROGRAM_HALT. Porta tipada/wire verificam forma, escopo e versão. Lower consome destinos/provas e representa halt usando AIR existente. Sem alteração de AIR/CFG contratos. Algoritmo finito linear em nós/arestas da AST; não desenrolar tabela, banco ou recursão.
+SP2.56: regiões SENTENCE/SEARCH/SEARCH_ARM, escape SENTENCE, PROGRAM_HALT. Porta tipada/wire verificam forma, escopo e versão. Lower consome destinos/provas e representa halt pela alternativa AIR existente. Sem alteração de AIR/CFG contratos. Algoritmo finito linear em nós/arestas da AST; não desenrolar tabela, banco ou recursão.
 
 ## Oráculos RED
 
@@ -29,3 +29,7 @@ NEXT SENTENCE em IF/EVALUATE/SEARCH/inline PERFORM; pular irmãos até período,
 ## Validação prevista
 
 FAST dos repositórios alterados, corpus CardDemo 73 inteiro, PERFORM39/Chaos48/aliases14/PERFORM adversarial25, fixtures do frontend e contratos FILE/CICS aplicáveis. Comparar candidatos, supports e hipóteses, classificação das ausências legítimas e limites W7; nenhum delta inesperado aberto.
+
+### Ajuste após sondagem do codec
+
+A operação AIR Halt existe no modelo, mas está fora do perfil JSON vigente. O modelo já publica HaltAlternative em envelopes de controle. STOP RUN usa essa alternativa terminal fechada e preserva efeitos de finalização de memória/recursos como desconhecidos, sem MUST; não usa Return nem adiciona sucessor. Código de saída não é avaliado. SEARCH usa SEARCH_INDEX_MAY (READ/WRITE ALL, exposure NONE, ambiente NONE), pois o índice implícito ainda não tem célula provada.

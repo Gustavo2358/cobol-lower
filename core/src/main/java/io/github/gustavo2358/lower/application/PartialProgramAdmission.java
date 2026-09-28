@@ -206,7 +206,10 @@ final class PartialProgramAdmission {
                     if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)c.require(e.values()==EffectValueTransform.UNKNOWN,
                         Rule.PROFILE_FACT,o.header().id().handle(),null,"receiver value transform remains uninterpreted");
                     for(var id:e.knownReads())c.require(refs.containsKey(id)&&refs.get(id).role()==OperandRole.READ,Rule.PROFILE_FACT,o.header().id().handle(),null,"read role required");
-                    if(e.proof()==EffectProof.SQL_HOST_OPERANDS||e.proof()==EffectProof.DLI_EXTERNAL_OPERANDS)c.require(
+                    if(e.proof()==EffectProof.SEARCH_INDEX_MAY)c.require(e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
+                    &&e.unknownReadBound()==EffectBound.ALL&&e.unknownWriteBound()==EffectBound.ALL
+                    &&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE,Rule.PROFILE_FACT,o.header().id().handle(),null,"search index remains unknown MAY");
+                if(e.proof()==EffectProof.SQL_HOST_OPERANDS||e.proof()==EffectProof.DLI_EXTERNAL_OPERANDS)c.require(
                     e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.ALL
                     &&e.unknownWriteBound()==EffectBound.ALL&&e.unknownExposureBound()==EffectBound.ALL
                     &&e.environment()==EnvironmentEffect.UNKNOWN,Rule.PROFILE_FACT,o.header().id().handle(),null,"external command has an open footprint");

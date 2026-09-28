@@ -206,3 +206,7 @@ Destinos da ControlTopology independem de footprint físico. Lower conserva o ef
 ## SP 2.54 — catálogo CICS fechado
 
 CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT e WRITEQ_TD. Cada família conserva opções, direção host e LENGTH estrutural; nenhum efeito implícito dessas famílias autoriza hostEffects fechado. Conhecimento de controle permanece na topologia. NOHANDLE duplicado sem operando conserva opções e warning CICS_COMMAND_DUPLICATE_FLAG_IGNORED; a paridade warning/duplicação é validada e a capacidade exige SP2.54. [Regra, fontes e testes W4](../work/carddemo-control-w4.md).
+
+## SP2.56 — sentenças, busca e término
+
+SENTENCE compõe uma fronteira do período e aceita ESCAPE lexical, usando a mesma pilha de contextos e caminho de handlers já usados por EXIT PARAGRAPH. SEARCH/SEARCH_ARM representam a decisão abstrata e seus corpos; SEARCH_INDEX_MAY conserva memória desconhecida sem MUST. PROGRAM_HALT materializa Opaque com HaltAlternative e NoControl, com memória/recursos de finalização abertos; não é Return. Versões anteriores não admitem as novas capabilities. [W6](../work/carddemo-control-w6.md).
