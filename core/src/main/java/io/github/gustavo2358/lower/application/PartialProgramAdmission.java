@@ -180,6 +180,7 @@ final class PartialProgramAdmission {
             var n = next(s); if (n != null) CallAdmission.continuation(n,s.header(),c);
             if(s instanceof CicsCommandFact x) {
                 var operands=new HashSet<OperandId>();
+                x.implicitArea().ifPresent(ref->CallAdmission.reference(ref,x.header(),operands,c));
                 for(var o:x.options())o.reference().ifPresent(r->CallAdmission.reference(r,x.header(),operands,c));
                 x.length().ifPresent(e->{c.provenance(e.provenance());e.reference().ifPresent(r->CallAdmission.reference(r,x.header(),operands,c));});
             }

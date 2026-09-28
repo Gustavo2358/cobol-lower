@@ -196,3 +196,9 @@ coverage. SP2.51 still requires a locality inventory: an unavailable physical-pr
 input and empty facts/bindings express absence of storage analysis explicitly.
 An unavailable FILE event plan with no continuation is not a contradictory claim.
 An explicit event continuation is still validated against structural completion.
+
+## SP 2.53 — área BMS implícita e controle independente de memória
+
+CICS_COMMAND admite `implicitArea` como DataReference opcional resolvida no produtor: RECEIVE_MAP WRITE, SEND_MAP READ, área inteira, owner do statement e provenance derivada (`exact=false`) do MAP literal. Exclui INTO/FROM/SET explícitos. Binding ausente/ambíguo não é publicado como selecionado. As opções escritas não são modificadas. O wire exige 2.53 para esse campo e conserva os perfis anteriores. SourceContinuations pode estar vazio quando a nova versão decorre apenas dessa capacidade.
+
+Destinos da ControlTopology independem de footprint físico. Lower conserva o efeito MAY aberto para referências não admitidas, nunca MUST; comandos sem destino provado continuam sem sucessor inventado. INITIAL concede existência de alocação, não seed forte. DECLARE TABLE reconhecido não aloca storage; INCLUDE desconhecido permanece input indisponível. [Regra e qualificação W3](../work/carddemo-control-w3.md).

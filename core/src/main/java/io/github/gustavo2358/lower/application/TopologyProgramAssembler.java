@@ -157,7 +157,8 @@ final class TopologyProgramAssembler {
         boolean precise=plan.precise().contains(fact.header().id());
         if(cicsState!=null&&fact instanceof SpInput.CicsAbendFact&&!cicsState.events(fact.header().id().handle()).isEmpty()) {
             term=PartialProgramAssembler.opaque(fact,null,data,unit,ids,origins,uncertainties,operands,true,"CICS_ABEND_RUNTIME_EFFECTS_PARTIAL");
-        } else if(NonExecutableCapability.of(fact,plan.storage()).isPresent()) {
+        } else if(NonExecutableCapability.of(fact,plan.storage()).isPresent()
+                &&!(fact instanceof SpInput.CicsCommandFact command&&CicsCommandMemory.controlReady(command,input))) {
             term=frontier(fact,ids,"EXECUTABLE_CAPABILITY_NOT_READY",fact.header().id().handle());
         } else if(invoke.isPresent()) {
             var call=topology.binding(invoke.get().binding());
@@ -189,9 +190,9 @@ final class TopologyProgramAssembler {
             term=frontier(fact,ids,"TOPOLOGY_CONTROL_UNAVAILABLE",published.getFirst().target().reference());
         } else {
             var normal=topology.outcome(fact.header().id().handle(),"normal").map(o->destination(o.target(),context,fact,"normal")).orElse(null);
-            if(fact instanceof SpInput.CicsCommandFact command&&CicsCommandMemory.ready(command,plan.storage())) {
+            if(fact instanceof SpInput.CicsCommandFact command&&CicsCommandMemory.controlReady(command,input)) {
                 var targets=published.stream().map(o->destination(o.target(),context,fact,o.role())).distinct().<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
-                term=CicsCommandMemory.translate(command,data,unit,ids,origins,operands,uncertainties,targets);
+                term=CicsCommandMemory.translate(command,plan.storage(),data,unit,ids,origins,operands,uncertainties,targets);
             } else if(fact instanceof SpInput.CicsHandlerFact handler&&handler.registrationEffects().isPresent()) {
                 var targets=published.stream().map(o->destination(o.target(),context,fact,o.role())).distinct().<Control.ControlAlternative>map(Control.JumpAlternative::new).toList();
                 term=CicsCommandMemory.registration(handler,data,unit,ids,origins,operands,uncertainties,targets);

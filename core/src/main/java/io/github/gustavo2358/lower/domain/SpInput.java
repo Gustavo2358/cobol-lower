@@ -428,7 +428,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     }
     /** Positive source facts, retained independently of executable lowering. */
     public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length,Optional<CicsHostEffects> hostEffects) implements StatementFact {
+            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length,Optional<CicsHostEffects> hostEffects,Optional<DataReference> implicitArea) implements StatementFact {
         public CicsCommandFact {
             Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);
             Objects.requireNonNull(rawText);options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
@@ -439,12 +439,21 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
                 ||(commandKind==CicsCommandKind.SEND_TERMINAL||commandKind==CicsCommandKind.RETURN)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
                 throw new IllegalArgumentException("terminal LENGTH expression required exactly when published");
             length.flatMap(OperandExpression::reference).ifPresent(r->{if(!r.id().statement().equals(header.id()))throw new IllegalArgumentException("expression owner");});
+            Objects.requireNonNull(implicitArea);
+            if(implicitArea.isPresent()) {
+                var area=implicitArea.orElseThrow();var names=options.stream().map(CicsOption::name).collect(java.util.stream.Collectors.toSet());
+                CicsContract.require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&(commandKind==CicsCommandKind.RECEIVE_MAP||commandKind==CicsCommandKind.SEND_MAP),"implicit BMS command kind");
+                CicsContract.require(!names.contains("INTO")&&!names.contains("FROM")&&!names.contains("SET"),"implicit area excludes explicit area");
+                CicsContract.require(area.id().statement().equals(header.id())&&area.logicalWholeItem().isPresent()&&area.binding().selected().equals(area.logicalWholeItem()),"implicit area resolved whole identity");
+                CicsContract.require(area.role()==(commandKind==CicsCommandKind.RECEIVE_MAP?OperandRole.WRITE:OperandRole.READ)&&!area.provenance().exact(),"implicit direction and derived provenance");
+                CicsContract.require(options.stream().anyMatch(o->o.name().equals("MAP")&&o.reference().isEmpty()&&o.operand().isPresent()),"implicit MAP literal source");
+            }
             Objects.requireNonNull(hostEffects);
             if(hostEffects.isPresent()) {
                 CicsContract.require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED,"host effects require supported syntax");
                 var names=options.stream().map(CicsOption::name).collect(java.util.stream.Collectors.toSet());
-                CicsContract.require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO"),"RECEIVE host area must be explicit");
-                CicsContract.require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM"),"SEND host area must be explicit");
+                CicsContract.require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO")||implicitArea.isPresent(),"RECEIVE host area must be explicit");
+                CicsContract.require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM")||implicitArea.isPresent(),"SEND host area must be explicit");
                 var literals=new java.util.HashSet<>(hostEffects.orElseThrow().literalOptions());
                 for(var option:options) {
                     if(literals.remove(option.start()))CicsContract.require(java.util.Set.of("MAP","MAPSET","TRANSID").contains(option.name())&&option.reference().isEmpty(),"literal proof belongs to a name parameter");
@@ -454,6 +463,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             }
 
         }
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g,Optional<OperandExpression> l,Optional<CicsHostEffects> e){this(h,k,s,raw,o,g,l,e,Optional.empty());}
         public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g,Optional<OperandExpression> l){this(h,k,s,raw,o,g,l,Optional.empty());}
         public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty(),Optional.empty());}
         public ExecutableLowering executableLowering(){return hostEffects.isPresent()?ExecutableLowering.REQUIRES_STORAGE_ADMISSION:ExecutableLowering.NOT_READY;}

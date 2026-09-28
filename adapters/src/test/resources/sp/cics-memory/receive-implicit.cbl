@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 AREA-X PIC X(80).
+       01 RESP-CD PIC S9(9) COMP.
+       01 TRANS-ID PIC X(4).
+       01 FLAG-X PIC X.
+       01 MAPAI PIC X(80).
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE MAP('MAPA')
+                RESP(RESP-CD) END-EXEC
+           CALL 'AFTERIO'
+           GOBACK.
