@@ -1,5 +1,8 @@
 # Trabalho — navegação
 
+[CardDemo FILE e W0–W8 — DONE / MERGED](carddemo-control-integration.md): implementação qualificada e integrada; limites e campanhas futuras separados.
+
+
 [File Dependencies CORE N+C](../domain/file-dependencies.md): DONE / MERGED; main smoke PASS; W10 opcional/deferred.
 
 [FILE-DEPENDENCIES — CORE N+C](../domain/file-dependencies.md): W0–W7 qualificadas; [W8](active/FD-W8.yaml) em implementação. STOP após W11; W10 não autorizado.

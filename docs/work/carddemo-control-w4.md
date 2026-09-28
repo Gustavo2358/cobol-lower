@@ -1,6 +1,10 @@
 # CARDDEMO-CONTROL-W4 — famílias CICS
 
-Status: IN_PROGRESS. Escopo: ASKTIME, FORMATTIME, ASSIGN APPLID/SYSID, INQUIRE PROGRAM, SEND TEXT e WRITEQ TD; sem recursão, filas TS ou inferência de dependências pelo nome do comando.
+Status: DONE — implementação deste repositório mergeada em 28/09/2026; [fechamento da integração](carddemo-control-integration.md).
+
+Escopo: ASKTIME, FORMATTIME, ASSIGN APPLID/SYSID, INQUIRE PROGRAM, SEND TEXT e WRITEQ TD; sem recursão, filas TS ou inferência de dependências pelo nome do comando.
+
+Os checkpoints abaixo registram a qualificação da onda na data em que foi executada. Seus estados de revisão e paradas são históricos; o estado vigente está no [fechamento da integração](carddemo-control-integration.md).
 
 ## Regra, contrato e limites
 
