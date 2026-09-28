@@ -26,6 +26,7 @@ public final class FastAdapterSuite {
         CicsMemoryIndependenceSuite.main(new String[0]);
         CicsCatalogueSuite.main(new String[0]);
         DatabaseControlSuite.main(new String[0]);
+        CobolControlSuite.main(new String[0]);
         DliEffectsSuite.main(new String[0]);
         ConditionRegistrationSuite.main(new String[0]);
         TextPredicateSuite.main(new String[0]);

@@ -132,7 +132,8 @@ final class TopologyProgramAssembler {
             var origin=evidence(fact.header().id().handle()+"/"+role,r.proofs(),context.ids());
             var op=new OperationId(unit,context.ids().id("operation","topology-boundary",fact.header().id().handle(),role));
             Terminator term;
-            if(r.kind()==TargetKind.PROGRAM_RETURN)term=new Operations.Return(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),List.of());
+            if(r.kind()==TargetKind.PROGRAM_HALT)term=programHalt(op,origin);
+            else if(r.kind()==TargetKind.PROGRAM_RETURN)term=new Operations.Return(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),List.of());
             else {
                 term=frontier(fact,context.ids().activation("frontier:"+role),"TOPOLOGY_CONTROL_UNAVAILABLE",r.reference());
                 op=term.header().id();origin=term.header().origin();
@@ -140,6 +141,20 @@ final class TopologyProgramAssembler {
             sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
         }
         return at;
+    }
+    /** STOP RUN closes the run unit. Finalization effects are not a proof of writes or resource absence.
+     * The current AIR JSON profile admits halt alternatives, not the standalone Halt operation. */
+    private Operations.Opaque programHalt(OperationId op,OriginId origin) {
+        var scope=new Scopes.EntityScope(List.of(op));
+        var gap=new UncertaintyId(unit.publication(),op.localId()+"/finalization");
+        uncertainties.add(new Evidence.Uncertainty(gap,"STOP_RUN_FINALIZATION_EFFECTS_PARTIAL",List.of(Evidence.Dimension.STORAGE,Evidence.Dimension.EFFECTS,Evidence.Dimension.VALUES,Evidence.Dimension.DEPENDENCIES),scope,"Run-unit finalization, status and implicit resource effects remain unknown",origin));
+        var exact=new Evidence.Claim(scope,Evidence.PrecisionStatus.EXACT,List.of());var open=new Evidence.Claim(scope,Evidence.PrecisionStatus.OPEN,List.of(gap));
+        var header=new Operations.Header(op,origin,Evidence.CoverageStatus.ABSTRACTED,new Evidence.Precision(exact,open,open,open,open),List.of(gap));
+        var memory=new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true));
+        return new Operations.Opaque(header,"program-halt",List.of(),List.of(),new Envelopes.Envelope(
+            new Envelopes.MemoryEnvelope(List.of(),memory,List.of(),memory,List.of()),
+            new Control.ControlEnvelope(List.of(Control.HaltAlternative.INSTANCE),Scopes.NoControl.INSTANCE),
+            new Envelopes.DependencyEnvelope(List.of(),Scopes.AnyResource.INSTANCE)));
     }
     private LabelId outcome(String role,Context context,SpInput.StatementFact fact) {
         return destination(topology.outcome(fact.header().id().handle(),role).orElseThrow().target(),context,fact,role);
@@ -212,6 +227,10 @@ final class TopologyProgramAssembler {
                 var chain=EvaluateLowerer.chain(e,entries,outcome("other",context,fact),data,unit,ids,origins,operands,items,uncertainties).stream()
                     .map(s->new Sequence(s.label(),s.instructions(),explain(s.terminator(),fact,context),s.origin())).toList();
                 term=chain.getFirst().terminator();for(int i=1;i<chain.size();i++){sequences.add(chain.get(i));PartialProgramAssembler.link(fact.header().id(),chain.get(i).terminator(),chain.get(i).label(),links,items);}
+            } else if(published.size()==1&&published.getFirst().kind()==OutcomeKind.PROGRAM_HALT) {
+                var origin=evidence(published.getFirst().id(),published.getFirst().proofs(),ids);
+                var op=new OperationId(unit,ids.id("operation","topology-halt",unit.localId(),fact.header().id().handle()));
+                term=programHalt(op,origin);
             } else if(published.size()==1&&published.getFirst().kind()==OutcomeKind.PROGRAM_RETURN) {
                 var origin=evidence(published.getFirst().id(),published.getFirst().proofs(),ids);
                 var op=new OperationId(unit,ids.id("operation","topology-return",unit.localId(),fact.header().id().handle()));
