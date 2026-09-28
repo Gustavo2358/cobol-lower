@@ -25,3 +25,7 @@ Isso revisa W7.1–W7.4: recursão real passa a ser uma precondição de linguag
 ## Oráculos antes da implementação
 
 RED: publicação da política tipada/wire; versão nova; política ausente histórica; valores inválidos/downgrade rejeitados. Casos reais do produtor: recursão direta, mútua, condicional, dois chamadores, ranges/SECTION, handlers, repetição sequencial válida e término anterior à reentrada. Nenhum diagnóstico em repetição sequencial nem retorno cruzado. Fonte calculada/literal e FILE preservados na incerteza; GOBACK/STOP não ganham continuação. Comparação W6→W7 por candidatos/supports/provenance e topologia, seguida dos gates e W8.
+
+## Refinamento confirmado por RED
+
+O frontier antigo usa o footprint da operação PERFORM isolada e pode declarar memória/dependências vazias. Isso não é autoridade para os efeitos da reentrada indefinida. O teste `undefined source cannot close memory or prove kills` falhou antes do ajuste. SOURCE_UNDEFINED conserva leituras/escritas possíveis em toda a memória (incluindo ambiente), recursos abertos, zero MUST-overwrite e zero retorno conhecido. A política histórica UNSPECIFIED mantém a tradução anterior. Este delta de precisão exige nova qualificação dos produtos afetados; não é somente renomear o diagnóstico.

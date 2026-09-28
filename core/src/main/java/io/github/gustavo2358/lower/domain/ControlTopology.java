@@ -86,8 +86,13 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
         public Outcome {text(id);text(statement);Objects.requireNonNull(kind);text(role);Objects.requireNonNull(target);
             Objects.requireNonNull(binding);proofs=sorted(nonempty(proofs),x->x);}
     }
-    public record Binding(String id, String caller, String region, String endpoint, Target resume, String entryPhase, String completionPhase, List<Phase> phases, List<String> proofs) {
-        public Binding {text(id);text(caller);text(region);text(endpoint);Objects.requireNonNull(resume);text(entryPhase);text(completionPhase);phases=sorted(phases,Phase::id);proofs=sorted(nonempty(proofs),x->x);}
+    /** Policy for repeating this binding while its invocation remains active. */
+    public enum ReentryPolicy { UNSPECIFIED, SOURCE_UNDEFINED }
+    public record Binding(String id, String caller, String region, String endpoint, Target resume, String entryPhase, String completionPhase, List<Phase> phases, List<String> proofs, ReentryPolicy reentryPolicy) {
+        public Binding {Objects.requireNonNull(reentryPolicy);text(id);text(caller);text(region);text(endpoint);Objects.requireNonNull(resume);text(entryPhase);text(completionPhase);phases=sorted(phases,Phase::id);proofs=sorted(nonempty(proofs),x->x);}
+        public Binding(String id, String caller, String region, String endpoint, Target resume, String entryPhase, String completionPhase, List<Phase> phases, List<String> proofs) {
+            this(id, caller, region, endpoint, resume, entryPhase, completionPhase, phases, proofs, ReentryPolicy.UNSPECIFIED);
+        }
     }
     public record Proof(String id, ProofKind kind, String rule, Provenance provenance, List<String> dependencies) {
         public Proof {text(id);Objects.requireNonNull(kind);text(rule);Objects.requireNonNull(provenance);dependencies=sorted(dependencies,x->x);}

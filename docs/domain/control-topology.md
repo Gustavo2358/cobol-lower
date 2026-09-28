@@ -210,3 +210,19 @@ CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT 
 ## SP2.56 — sentenças, busca e término
 
 SENTENCE compõe uma fronteira do período e aceita ESCAPE lexical, usando a mesma pilha de contextos e caminho de handlers já usados por EXIT PARAGRAPH. SEARCH/SEARCH_ARM representam a decisão abstrata e seus corpos; SEARCH_INDEX_MAY conserva memória desconhecida sem MUST. PROGRAM_HALT materializa Opaque com HaltAlternative e NoControl, com memória/recursos de finalização abertos; não é Return. Versões anteriores não admitem as novas capabilities. [W6](../work/carddemo-control-w6.md).
+
+## SP 2.57: source reentry policy
+
+Binding.reentryPolicy is producer authority. When the same binding is already
+active, SOURCE_UNDEFINED yields `cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED`.
+The finite active-binding guard preserves an open frontier and existing effects;
+it does not emit a return, halt, divergence or kill. UNSPECIFIED retains the
+historical unsupported-recursion diagnostic. The decoder requires the field in
+2.57, rejects invalid/null values and rejects specified policy on older contracts.
+Sequential reuse after a completed activation is valid and retains its own resume.
+No paragraph-name or source-text inference is used. The AIR local-control extension
+cannot grant source semantics absent from the producer.
+
+Expansion still materializes contexts and may be exponential in distinct active
+bindings. This change does not implement recursion summaries or claim that all
+CFG nodes become reachable. [Decision and limits](../work/carddemo-control-w7.md).
