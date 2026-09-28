@@ -10,7 +10,7 @@ import io.github.gustavo2358.lower.application.*;
 import io.github.gustavo2358.lower.domain.*;
 import static io.github.gustavo2358.lower.domain.SpInput.*;
 
-/** Two independent authorities: source control may advance while executable AIR stops. */
+/** W3: proved command control advances with conservative MAY memory; unproved handler control stays bounded. */
 public final class ControlStorageDecouplingSuite {
     static int checks,metamorphics;
     static void need(boolean b,String why){checks++;if(!b)throw new AssertionError(why);}
@@ -33,9 +33,15 @@ public final class ControlStorageDecouplingSuite {
                 var seq=pub.units().stream().flatMap(u->u.sequences().stream()).filter(s->s.terminator().header().id().equals(link.target())).findFirst().orElseThrow();
                 need(seq.instructions().isEmpty(),"no fake executable SEND instruction");
                 need(seq.terminator() instanceof Operations.Opaque,"no executable SEND or dispatch");var o=(Operations.Opaque)seq.terminator();
-                need(o.envelope().control().known().isEmpty(),"source successor must not become AIR successor");
-                need(o.envelope().control().remainder() instanceof Scopes.WithinControl w&&w.scope() instanceof Scopes.LabelsControl ls&&ls.labels().isEmpty(),"no bounded executable destination or AllControl");
-                need(o.envelope().memory().knownReads().isEmpty()&&o.envelope().memory().knownWrites().isEmpty()&&o.envelope().memory().mustOverwrite().isEmpty(),"no invented storage/effects");
+                if(o.observedKind().startsWith("cics-host-command/")) {
+                    need(!o.envelope().control().known().isEmpty(),"W3 consumes proved command destinations despite missing host proof");
+                    need(o.envelope().memory().otherWrites() instanceof Scopes.WithinMemory,"unclosed host footprint remains MAY");
+                    need(o.envelope().memory().mustOverwrite().isEmpty(),"no kill from missing memory proof");
+                } else {
+                    need(o.envelope().control().known().isEmpty(),"unproved registration/dispatch remains a frontier");
+                    need(o.envelope().control().remainder() instanceof Scopes.WithinControl w&&w.scope() instanceof Scopes.LabelsControl ls&&ls.labels().isEmpty(),"no fabricated handler target");
+                    need(o.envelope().memory().knownReads().isEmpty()&&o.envelope().memory().knownWrites().isEmpty()&&o.envelope().memory().mustOverwrite().isEmpty(),"no invented frontier effects");
+                }
             }
         }
         need(pub.uncertainties().stream().anyMatch(u->u.code().equals("EXECUTABLE_CAPABILITY_NOT_READY")),"storage/effect frontier explicit");
@@ -75,7 +81,7 @@ public final class ControlStorageDecouplingSuite {
             var in=TerminalSendSuite.input(wire(name));need(control(in).stream().noneMatch(s->s.startsWith("NORMAL")),"unsupported SEND has no positive ordinary outcome");
         }
         var standalone=lower(wire("standalone"));bounded(standalone);var pub=standalone.publication().orElseThrow();var reached=TerminalSendSuite.reached(pub);
-        need(pub.units().stream().flatMap(u->u.sequences().stream()).noneMatch(s->s.terminator() instanceof Operations.Invoke&&reached.contains(s.label())),"AIR must not execute post-SEND CALL");
+        need(pub.units().stream().flatMap(u->u.sequences().stream()).anyMatch(s->s.terminator() instanceof Operations.Invoke&&reached.contains(s.label())),"W3 proved SEND completion reaches subsequent CALL");
         var bypass=lower(wire("abend-cancel")).admission().handlerState().orElseThrow().events().getFirst();need(bypass.status()==HandlerStateAnalysis.EventStatus.ASSESSED&&bypass.bypassed()&&bypass.candidates().isEmpty(),"ABEND CANCEL separate from local state");
         var unknown=lower(wire("cancel-entry")).admission().handlerState().orElseThrow().events().getFirst();need(unknown.candidates().isEmpty(),"unknown cannot invent dispatch");
         System.out.println("R7_R7B1_DIMENSION_CHECKS="+checks+" METAMORPHICS="+metamorphics);

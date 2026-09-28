@@ -97,7 +97,7 @@ final class Wire211 {
         @Nullable Wire.ProvenanceDocument targetOrigin,@Nullable TargetDocument programTarget,CicsHandlerScopeDocument scope,
         String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable CicsRegistrationEffects registrationEffects) implements StatementDocument { }
     record CicsCommandDocument(Wire.StatementHeaderDocument header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-        String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable OperandExpressionDocument length,@Nullable CicsHostEffectsDocument hostEffects) implements StatementDocument { }
+        String rawText,List<CicsOptionDocument> options,List<String> gapCodes,@Nullable OperandExpressionDocument length,@Nullable CicsHostEffectsDocument hostEffects,@Nullable ReferenceDocument implicitArea) implements StatementDocument { }
     record CicsHostEffectsDocument(List<Integer> literalOptions) { }
     record OperandExpressionDocument(OperandExpressionKind kind,@Nullable String integer,@Nullable ReferenceDocument reference,Wire.ProvenanceDocument provenance) { }
     record CicsAbendDocument(Wire.StatementHeaderDocument header,CicsAbendEventKind eventKind,CicsAbendEligibility dispatchEligibility,

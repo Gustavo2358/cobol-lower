@@ -52,7 +52,7 @@ public final class TerminalSendSuite {
         var length=fact.length().orElseThrow();need(length.kind()==OperandExpressionKind.LENGTH_OF,"structural LENGTH_OF");
         need(length.reference().orElseThrow().binding().selected().equals(from.binding().selected()),"same canonical data identity");
         need(!length.provenance().equals(fact.header().provenance()),"operand provenance not statement");
-        need(pub.units().stream().flatMap(u->u.sequences().stream()).noneMatch(s->s.terminator() instanceof Operations.Invoke&&reached(pub).contains(s.label())),"no post-frontier CALL execution");
+        need(pub.units().stream().flatMap(u->u.sequences().stream()).noneMatch(s->s.terminator() instanceof Operations.Invoke&&reached(pub).contains(s.label())),"historical topology has no proved SEND completion; W3 cannot invent one");
         need(pub.uncertainties().stream().anyMatch(u->u.code().equals("EXECUTABLE_CAPABILITY_NOT_READY")),"explicit capability metadata");
         new AirJson().decode(new AirJson().encode(pub));need(true,"strict roundtrip");
         for(var name:List.of("real-derived","cancel-entry","replace-cancel","reset-cancel","cancel-noop","noop-cancel","changed-handler","abend-cancel")) {
@@ -69,7 +69,7 @@ public final class TerminalSendSuite {
         var changed=standalone.deepCopy();command(changed).put("rawText"," ".repeat(fact.rawText().length()));need(command(input(changed)).length().equals(fact.length()),"no rawText reinterpretation");metamorphics++;
         changed=wire("real-derived");var values=new ArrayList<JsonNode>();changed.path("statements").forEach(values::add);Collections.reverse(values);((ArrayNode)changed.path("statements")).removeAll();values.forEach(((ArrayNode)changed.path("statements"))::add);need(state(changed).equals(state(wire("real-derived"))),"input order is not execution order");metamorphics++;
         for(var version:List.of("2.40.0","2.41.0","2.42.0","2.43.0")){var j=standalone.deepCopy();j.put("contractVersion",version);reject(j,SpJsonDecoder.Code.INPUT_ERROR);}
-        for(var version:List.of("2.53.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
+        for(var version:List.of("2.53.0","2.54.0","future","9.99")){var j=standalone.deepCopy();j.put("contractVersion",version);command(j).put("commandKind","BROKEN");reject(j,version.equals("2.53.0")?SpJsonDecoder.Code.INPUT_ERROR:SpJsonDecoder.Code.UNSUPPORTED_CONTRACT);}
         var j=standalone.deepCopy();command(j).remove("length");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();((ObjectNode)command(j).path("length")).put("kind","INTEGER");reject(j,SpJsonDecoder.Code.INPUT_ERROR);
         j=standalone.deepCopy();command(j).put("commandKind","SEND_MAP");reject(j,SpJsonDecoder.Code.INPUT_ERROR);

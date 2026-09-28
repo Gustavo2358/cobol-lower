@@ -12,7 +12,7 @@ import io.github.gustavo2358.lower.adapters.sp.*;
 import io.github.gustavo2358.lower.application.*;
 import io.github.gustavo2358.lower.domain.SpInput;
 
-/** Independent inventories survive bounded non-executable capabilities; no path crosses a projection frontier. */
+/** Independent inventories survive bounded effects; W3 preserves proved CICS control with open memory. */
 public final class PositivePublicationSuite {
     private static final ObjectMapper J=new ObjectMapper(); private static int checks,metamorphics;
     private static void need(boolean v,String message){checks++;if(!v)throw new AssertionError(message);}
@@ -45,10 +45,18 @@ public final class PositivePublicationSuite {
             for(var link:r.statements().stream().filter(l->l.source().equals(cap.statement())).toList()){
                 var term=p.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator).filter(t->t.header().id().equals(link.target())).findFirst().orElseThrow();
                 need(term instanceof Operations.Opaque,"frontier cannot dispatch/invoke");var o=(Operations.Opaque)term;
-                need(o.envelope().control().known().isEmpty(),"no invented successor, handler edge or fallthrough");
-                need(o.envelope().control().remainder() instanceof Scopes.WithinControl w&&w.scope() instanceof Scopes.LabelsControl ls&&ls.labels().isEmpty(),"finite empty projection frontier, no AllControl");
-                need(o.envelope().memory().knownWrites().isEmpty()&&o.envelope().memory().mustOverwrite().isEmpty(),"no invented effects");
-                need(o.header().precision().control().status()==Evidence.PrecisionStatus.UNAVAILABLE,"frontier explicitly unavailable");
+                var fact=facts.stream().filter(f->f.header().id().equals(cap.statement())).findFirst().orElseThrow();
+                boolean proved=fact instanceof SpInput.CicsCommandFact c&&c.syntaxStatus()==SpInput.CicsCommandSyntaxStatus.SUPPORTED;
+                if(proved&&o.observedKind().startsWith("cics-host-command/")) {
+                    need(!o.envelope().control().known().isEmpty(),"W3 consumes existing proved control");
+                    need(o.envelope().memory().otherWrites() instanceof Scopes.WithinMemory&&o.envelope().memory().mustOverwrite().isEmpty(),"missing footprint stays open MAY without kill");
+                    need(o.header().precision().control().status()==Evidence.PrecisionStatus.EXACT,"known destinations are explicitly qualified");
+                } else {
+                    need(o.envelope().control().known().isEmpty(),"no invented successor for unproved control");
+                    need(o.envelope().control().remainder() instanceof Scopes.WithinControl w&&w.scope() instanceof Scopes.LabelsControl ls&&ls.labels().isEmpty(),"finite empty projection frontier");
+                    need(o.envelope().memory().knownWrites().isEmpty()&&o.envelope().memory().mustOverwrite().isEmpty(),"no invented frontier effects");
+                    need(o.header().precision().control().status()==Evidence.PrecisionStatus.UNAVAILABLE,"frontier explicitly unavailable");
+                }
             }
         }
         need(p.uncertainties().stream().anyMatch(u->u.code().equals("EXECUTABLE_CAPABILITY_NOT_READY")),"explicit capability metadata in AIR");
@@ -67,7 +75,7 @@ public final class PositivePublicationSuite {
             var historical=new CobolLowerer().lower(in,CobolLower.OPTIONS);need(historical.status()==LoweringResult.Status.IMPLEMENTATION_LIMIT&&historical.publication().isEmpty(),"explicit old request retained");
             if(!name.equals("dead")){
                 var reach=reached(p);var after=p.units().getFirst().sequences().stream().filter(s->s.terminator() instanceof Operations.Invoke i&&i.target() instanceof Interactions.ComputedTarget).findFirst().orElseThrow();
-                need(!reach.contains(after.label()),"post-frontier runtime fact cannot execute "+name);
+                need(reach.contains(after.label()),"W3 known command completion reaches subsequent CALL "+name);
             }
             metamorphics++;
         }
