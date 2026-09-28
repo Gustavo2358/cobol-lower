@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 SRC PIC X(8).
+       01 REC-A.
+       05 A PIC X(8).
+       01 REC-B.
+       05 B PIC X(8).
+       PROCEDURE DIVISION.
+       MOVE 'PROGA001' TO SRC
+       MOVE SRC TO REC-A REC-B
+       CALL A
+       CALL B
+       GOBACK.

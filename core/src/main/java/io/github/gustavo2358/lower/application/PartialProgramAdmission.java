@@ -84,7 +84,7 @@ final class PartialProgramAdmission {
                     &&m.transfers().stream().anyMatch(t->t.effect().kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE))) {
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
                 }
-                if(s instanceof MoveFact m&&c.regionalStorage.logical().literalMove(m)) {
+                if(s instanceof MoveFact m&&c.regionalStorage.logical().sequence(m)) {
                     // The admitted family supplies fitting and projection semantics even
                     // when the narrower scalar-copy profile cannot admit this MOVE.
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;

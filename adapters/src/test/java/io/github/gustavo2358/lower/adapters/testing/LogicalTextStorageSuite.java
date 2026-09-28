@@ -52,6 +52,7 @@ public final class LogicalTextStorageSuite {
             check(extent(fit.value()).equals(fit.length()),"initialization covers the full root; unknown overlay tail must not become padding");
         }
         nestedAliases(decoder);
+        multiReceivers(decoder);
         System.out.println("LOGICAL_TEXT_STORAGE=PASS noPhysicalProfile roundtrip=true negativeCases=7");
     }
     private static void nestedAliases(SpJsonDecoder decoder) throws Exception {
@@ -71,6 +72,38 @@ public final class LogicalTextStorageSuite {
                 if(expected.stream().allMatch(o->"PROGA001".equals(state.get(o))))projected=true;
             }
             check(projected,"MOVE updates root and all overlay views before continuation: "+name);
+        }
+    }
+
+    private static void multiReceivers(SpJsonDecoder decoder) throws Exception {
+        for(var name:List.of("move-data-multi","move-spaces-multi","multi-groups","multi-alias-literal","multi-three")) {
+            var bytes=Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/logical-move-sequence/"+name+".json")).readAllBytes();
+            var decoded=decoder.decode(bytes);check(decoded instanceof SpJsonDecoder.Decoded,"multi receiver SP admission: "+name);
+            var unit=RegionalTranslationSuite.lower(((SpJsonDecoder.Decoded)decoded).input()).publication().orElseThrow().units().getFirst();
+            var expected=name.equals("multi-groups")?Set.of("REC-A","A","REC-B","B"):
+                name.equals("multi-alias-literal")?Set.of("RAW-A","VIEW-A","A","B"):
+                name.equals("multi-three")?Set.of("A","B","C"):Set.of("A","B");
+            var wanted=name.equals("move-spaces-multi")?"        ":name.equals("multi-alias-literal")?"PROGB001":name.equals("multi-three")?"PROGC001":"PROGA001";
+            var objects=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+            unit.objects().forEach(o->o.displayName().ifPresent(n->objects.put(o.id(),n)));
+            boolean found=false;
+            for(var seq:unit.sequences()) {
+                var state=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+                // This oracle supplies the sending snapshot explicitly; entry seeding
+                // and CALL effects are tested by their own integration suites.
+                objects.forEach((id,n)->{if(n.equals("SRC"))state.put(id,wanted);});
+                var order=new ArrayList<String>();
+                for(var instruction:seq.instructions())if(instruction instanceof Operations.Assign a&&a.destination() instanceof Places.ObjectPlace place) {
+                    state.put(place.object(),interpret(a.value(),state));
+                    if(expected.contains(objects.get(place.object())))order.add(objects.get(place.object()));
+                }
+                var names=new HashSet<String>();state.forEach((id,v)->{if(wanted.equals(v))names.add(objects.get(id));});
+                if(names.containsAll(expected)) {
+                    found=true;check(order.indexOf("A")<order.indexOf("B"),"receiving source order: "+name);
+                    if(expected.contains("C"))check(order.indexOf("B")<order.indexOf("C"),"third receiver follows second");
+                }
+            }
+            check(found,"same transfer sequence updates all receivers and alias views: "+name);
         }
     }
 

@@ -52,7 +52,7 @@ final class LogicalTextMove {
         var statement=origins.source("statement",move.header().id().handle(),move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
         var targetOrigin=origins.source("operand",move.target().id().handle(),move.target().provenance());
-        var operation=new OperationId(unit,ids.id("operation","logical-text-copy",unit.localId(),move.header().id().handle()));
+        var operation=new OperationId(unit,ids.id("operation","logical-text-copy",unit.localId(),move.header().id().handle()+"/"+move.target().id().handle()));
         var origin=origins.derived(ids.id("origin","logical-text-copy",unit.localId(),operation.localId()),List.of(statement,sourceOrigin,targetOrigin),"logical-text@2/capture-fit-update-root");
         var f=new ExpressionsFor(operation,origin);Expression source;
         if(move.source() instanceof SpInput.LiteralSource literal)source=f.literal(literal.logicalValue().orElseThrow().value());
@@ -69,7 +69,7 @@ final class LogicalTextMove {
         for(var view:logical.family(target)) {
             var node=logical.nodes.get(view.node());if(node.data().isEmpty()||view.node().equals(root.node()))continue;
             var object=data.index().get(node.data().orElseThrow());if(object==null)continue;
-            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),move.header().id().handle()+"/"+view.node().handle()));
+            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),move.header().id().handle()+"/"+move.target().id().handle()+"/"+view.node().handle()));
             var e=new ExpressionsFor(id,origin);
             var dest=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(id),"destination"),Operand.Role.VALUE_WRITE,targetOrigin),object.object());
             result.add(new Operations.Assign(new Operations.Header(id,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(id),List.of()),dest,e.slice(e.read(rootObject),view.start(),view.length())));

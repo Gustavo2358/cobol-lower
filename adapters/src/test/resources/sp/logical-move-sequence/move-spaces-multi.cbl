@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 A PIC X(8) VALUE 'PROGA001'.
+       01 B PIC X(8) VALUE 'PROGB001'.
+       PROCEDURE DIVISION.
+           MOVE SPACES TO A B
+           CALL A
+           CALL B
+           GOBACK.

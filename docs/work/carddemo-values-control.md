@@ -62,3 +62,35 @@ explicitly. Whole-corpus counts are telemetry, not a replacement for the oracle.
 Discovery records and raw products: workspace `.carddemo-values-control/evidence`.
 VC0 starts from the merged W8 mains; the baseline manifest and runtime are frozen
 in `.carddemo-values-control/baseline.json`.
+
+## VC1 checkpoint — logical receiver sequences
+
+The canonical storage analysis now prepares logical MOVE sequence facts. Data
+sources require all receivers to have a proved logical family distinct from the
+sending family. Literal text and SPACES may admit individual receivers. SPACES
+normalizes to the space character and fits each receiving extent; the explicit
+IBM1047 profile also receives its encoded bytes. LOW/HIGH and numeric conversion
+are not inferred from this text rule.
+
+Projection transports these facts and keeps the source logical identity on every
+transfer. Lowering updates each root and all its alias views before the following
+receiver. Operation IDs distinguish transfers. Undefined/unproved overlap keeps
+its existing conservative boundary. There is no new CFG rule.
+
+The proof pass is linear in the receiver count plus emitted fitted text. Lowering
+is linear in receivers times affected alias views, with ordinary finite AIR text
+expressions. The disjoint-family requirement is conservative: same-family data
+copies remain outside this extension even if their individual ranges might be
+disjoint.
+
+New evidence: five frontend semantic tests (including physical SPACE encoding),
+five real SP → AIR receiver/alias oracles integrated into LogicalTextStorageSuite,
+and five four-stage probes with expected candidates. All passed. Existing frontend
+FAST passed 648 tests before registering the new class; lower FAST including the
+new oracles passed. Final campaign gates/corpus are pending. RED evidence is
+`vc1-red-02.log`; GREEN focal evidence is `vc1-front-05.log`,
+`vc1-probes-01/`, and `vc1-lower-fast-02.log` in the campaign evidence directory.
+
+In the SPACES probe, prior program names disappear only after the now-executable
+full receiving write. This is a positive kill, not exclusion based on missing
+evidence. The campaign remains IN_PROGRESS; VC2–VC5 are not qualified yet.
