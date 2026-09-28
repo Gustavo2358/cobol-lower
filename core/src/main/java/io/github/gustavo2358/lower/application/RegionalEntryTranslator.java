@@ -54,7 +54,7 @@ final class RegionalEntryTranslator {
                 value=new Entries.ExternalUnknown(reason);
             }
             if(place!=null)conditions.add(new Entries.InitialCondition(place,value,origin,List.of()));
-            items.add(new Evidence.CoverageItem("storage@1/initial/"+key,origin,place!=null&&fact.kind()!=StorageFacts.InitialKind.UNKNOWN?Evidence.CoverageStatus.MODELED:Evidence.CoverageStatus.ABSTRACTED,
+            items.add(new Evidence.CoverageItem("storage@1/initial/"+key+(source.owner().entryInventory().entries().size()>1?"/"+entry.localId():""),origin,place!=null&&fact.kind()!=StorageFacts.InitialKind.UNKNOWN?Evidence.CoverageStatus.MODELED:Evidence.CoverageStatus.ABSTRACTED,
                 storage==null?List.of():List.of(storage),value instanceof Entries.ExternalUnknown v?List.of(v.reason()):value instanceof Entries.PossibleLiterals v?List.of(v.remainder()):List.of(),Optional.empty()));
         }
         return new Entries.EntryState(conditions,gaps);

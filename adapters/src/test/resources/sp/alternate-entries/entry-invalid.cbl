@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       
+       PROCEDURE DIVISION.
+       GOBACK.
+       ENTRY 'PROBE'.
+       CALL 'NOTROOT'.
+       GOBACK.

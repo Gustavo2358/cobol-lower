@@ -47,7 +47,7 @@ final class TopologyProgramAssembler {
             List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         this.plan=plan;this.input=plan.admission().input().orElseThrow();this.topology=new TopologyBinding(input.controlTopology().orElseThrow());
         this.data=data;this.unit=unit;this.origins=origins;this.links=links;this.operands=operands;this.items=items;this.uncertainties=uncertainties;this.files=files;
-        cicsState=input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()?null:
+        cicsState=input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()&&input.controlTopology().orElseThrow().conditionEvents().isEmpty()?null:
             new CicsExecutionState(input,plan.admission().handlerState().orElseThrow());
         input.statements().forEach(s->facts.put(s.header().id().handle(),s));
         input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
@@ -63,10 +63,15 @@ final class TopologyProgramAssembler {
     }
     private PartialProgramAssembler.Assembly assemble(LocalIds ids) {
         occurrenceIds=ids;
-        var entry=facts.get(topology.primaryEntry().orElseThrow().reference()).header().id();
-        var root=cicsState==null?new Context(ids,null,null,entry.handle()):
-            new Context(ids,null,null,entry.handle(),null,null,CicsExecutionState.initial(),false);
-        var entryLabel=label(entry.handle(),root.ids());work.add(root);
+        var roots=new LinkedHashMap<SpInput.EntryId,Context>();
+        for(var source:input.entryInventory().entries()) {
+            var target=source.role()==SpInput.EntryRole.PRIMARY?topology.primaryEntry():input.controlTopology().orElseThrow().entryPoints().stream().filter(e->e.entry().equals(source.id().handle())).map(e->topology.resolve(e.target(),null)).findFirst();
+            if(target.isEmpty()||target.orElseThrow().kind()!=TargetKind.OCCURRENCE)continue;
+            var activation=source.role()==SpInput.EntryRole.PRIMARY?ids:ids.activation("external-entry:"+source.id().handle());
+            var root=cicsState==null?new Context(activation,null,null,target.orElseThrow().reference()):
+                new Context(activation,null,null,target.orElseThrow().reference(),null,null,CicsExecutionState.initial(),false);
+            roots.put(source.id(),root);work.addLast(root);
+        }
         while(!work.isEmpty()) {
             var context=work.removeFirst();
             if(cicsState!=null) {
@@ -74,16 +79,23 @@ final class TopologyProgramAssembler {
                 else append(facts.get(context.entry()),context);
             } else for(var statement:topology.closure(context.entry(),context.binding()).stream().sorted().toList())append(facts.get(statement),context);
         }
-        var initial=LogicalTextMove.initial(plan.storage().logical(),data,unit,ids,origins);
-        var sourceEntryLabel=entryLabel;
-        var origin=sequences.stream().filter(s->s.label().equals(sourceEntryLabel)).findFirst().orElseThrow().origin();
-        if(!initial.isEmpty()) {
-            var bootstrap=new LabelId(unit,ids.id("label","logical-root-entry",unit.localId(),"entry"));
-            origin=initial.getFirst().header().origin();
-            sequences.add(new Sequence(bootstrap,initial,PerformSequenceAssembler.jump("logical-root-entry",entry,entryLabel,origin,unit,ids),origin));
-            entryLabel=bootstrap;
+        var entries=new LinkedHashMap<SpInput.EntryId,PartialProgramAssembler.EntryAssembly>();
+        for(var root:roots.entrySet()) {
+            var context=root.getValue();var activation=context.base();var entry=facts.get(context.entry()).header().id();
+            var initial=LogicalTextMove.initial(plan.storage().logical(),data,unit,activation,origins);
+            var entryLabel=label(entry.handle(),context.ids());var sourceEntryLabel=entryLabel;
+            var origin=sequences.stream().filter(s->s.label().equals(sourceEntryLabel)).findFirst().orElseThrow().origin();
+            if(!initial.isEmpty()) {
+                var bootstrap=new LabelId(unit,activation.id("label","logical-root-entry",unit.localId(),"entry"));
+                origin=initial.getFirst().header().origin();
+                sequences.add(new Sequence(bootstrap,initial,PerformSequenceAssembler.jump("logical-root-entry",entry,entryLabel,origin,unit,activation),origin));
+                entryLabel=bootstrap;
+            }
+            entries.put(root.getKey(),new PartialProgramAssembler.EntryAssembly(entryLabel,origin));
         }
-        return new PartialProgramAssembler.Assembly(files.complete(sequences),entryLabel,origin);
+        var primary=input.entryInventory().entries().stream().filter(e->e.role()==SpInput.EntryRole.PRIMARY).findFirst().orElseThrow();
+        var first=entries.get(primary.id());
+        return new PartialProgramAssembler.Assembly(files.complete(sequences),first.label(),first.origin(),entries);
     }
     private LabelId label(String id,LocalIds ids){
         return PartialProgramAssembler.label(facts.get(id).header().id(),unit,occurrenceFrontiers.contains(id)?occurrenceIds:ids);
@@ -201,7 +213,7 @@ final class TopologyProgramAssembler {
                 term=PerformSequenceAssembler.jump("topology-invoke",fact.header().id(),phases.get(call.entryPhase()),origin,unit,ids);
             }
         } else if(context.support()!=null&&fact instanceof SpInput.CicsFact c&&c.command()==SpInput.CicsCommand.XCTL
-                &&published.stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL)&&!cicsState.events(fact.header().id().handle()).isEmpty()) {
+                &&published.stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL)&&(!cicsState.events(fact.header().id().handle()).isEmpty()||!cicsState.conditions.events(fact.header().id().handle()).isEmpty())) {
             term=CicsInvokeHandler.translate(c,data,null,unit,ids,origins,operands,items,uncertainties);
         } else if(published.stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL)) {
             term=frontier(fact,ids,"TOPOLOGY_CONTROL_UNAVAILABLE",published.getFirst().target().reference());
@@ -241,7 +253,7 @@ final class TopologyProgramAssembler {
                 instructions.addAll(RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,plan.storage(),unit,ids,origins,operands,items,uncertainties));
                 term=PerformSequenceAssembler.jump("topology-normal",fact.header().id(),normal,evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids);
             } else if(precise&&fact instanceof SpInput.CicsFileFact c&&normal!=null)term=CicsFileInvokeHandler.translate(c,data,normal,unit,ids,origins,operands,items,uncertainties);
-            else if(precise&&fact instanceof SpInput.CicsFact c&&normal!=null) {
+            else if(fact instanceof SpInput.CicsFact c&&normal!=null&&(precise||context.support()!=null&&!cicsState.conditions.events(fact.header().id().handle()).isEmpty())) {
                 term=CicsInvokeHandler.translate(c,data,normal,unit,ids,origins,operands,items,uncertainties);
                 if(c.command()==SpInput.CicsCommand.XCTL)term=boundedCicsContinuation(term,normal);
             }
@@ -256,7 +268,7 @@ final class TopologyProgramAssembler {
                 term=new Operations.Opaque(opaque.header(),opaque.observedKind(),opaque.knownOperands(),opaque.valueResults(),new Envelopes.Envelope(opaque.envelope().memory(),new Control.ControlEnvelope(targets,Scopes.NoControl.INSTANCE),opaque.envelope().dependencies()));
             }
         }
-        if(context.support()!=null)term=exceptional(term,fact,context);
+        if(context.support()!=null)term=exceptional(conditioned(term,fact,context),fact,context);
         term=explain(term,fact,context);
         for(var op:instructions)PartialProgramAssembler.link(fact.header().id(),op,label,links,items);
         PartialProgramAssembler.link(fact.header().id(),term,label,links,items);
@@ -380,10 +392,32 @@ final class TopologyProgramAssembler {
             phase(fact,phase,labels,context);
         }
     }
+    private Terminator conditioned(Terminator payload,SpInput.StatementFact fact,Context context) {
+        var alternatives=new ArrayList<Control.InvocationAlternative>();var inputs=new LinkedHashSet<OriginId>();inputs.add(payload.header().origin());
+        for(var event:cicsState.conditions.events(fact.header().id().handle())) {
+            for(var choice:cicsState.conditions.select(event,context.support()).choices()) {
+                inputs.add(evidence(event.id()+"/condition-selection/"+choice.registration().map(r->r.registration().handle()+"/"+r.condition()).orElse("bypass"),choice.proofs(),context.ids()));
+                choice.registration().ifPresent(r->inputs.add(origins.source("condition-registration",r.registration().handle(),facts.get(r.registration().handle()).header().provenance())));
+                // A HANDLE CONDITION branch stays in the current COBOL activation.
+                // Its registration stays active and no interrupted return is fabricated.
+                var target=boundDestination(choice.target(),context,fact,event.id()+"/condition");
+                alternatives.add(new Control.Exceptional("CICS_CONDITION/"+event.condition()+"/"+choice.registration().map(r->r.registration().handle()+"/"+r.condition()).orElse("bypass"),new Control.Handler(target)));
+            }
+        }
+        if(alternatives.isEmpty())return payload;
+        var old=payload.header();var origin=origins.derived(context.ids().id("origin","cics-condition-dispatch",unit.localId(),old.id().localId()),List.copyOf(inputs),"CICS condition raised / possible current-activation branch");
+        var header=new Operations.Header(old.id(),origin,old.coverage(),old.precision(),old.uncertainties());
+        if(payload instanceof Operations.Invoke invoke) {
+            var known=new ArrayList<>(invoke.outcomes().known());known.addAll(alternatives);
+            return new Operations.Invoke(header,invoke.action(),invoke.target(),invoke.arguments(),invoke.results(),invoke.signature(),invoke.effectOperands(),invoke.effectBound(),new Control.InvocationOutcomes(known.stream().distinct().toList(),invoke.outcomes().remainder()),invoke.contract());
+        }
+        var opaque=(Operations.Opaque)payload;var known=new ArrayList<>(opaque.envelope().control().known());known.addAll(alternatives);
+        return new Operations.Opaque(header,opaque.observedKind(),opaque.knownOperands(),opaque.valueResults(),new Envelopes.Envelope(opaque.envelope().memory(),new Control.ControlEnvelope(known.stream().distinct().toList(),opaque.envelope().control().remainder()),opaque.envelope().dependencies()));
+    }
     /** Event guards license possible exceptional alternatives, not proof that an
      * error happened. Runtime premises and activation provenance accompany them. */
     private Terminator exceptional(Terminator payload,SpInput.StatementFact fact,Context context) {
-        var events=cicsState.events(fact.header().id().handle());if(events.isEmpty())return payload;
+        var events=cicsState.events(fact.header().id().handle()).stream().filter(e->cicsState.conditions.defaultPossible(e.id(),context.support())).toList();if(events.isEmpty())return payload;
         var alternatives=new ArrayList<Control.InvocationAlternative>();
         var inputs=new LinkedHashSet<OriginId>();inputs.add(payload.header().origin());
         var descriptions=new ArrayList<String>();boolean localUnknown=false;

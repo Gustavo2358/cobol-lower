@@ -20,7 +20,7 @@ final class PartialProgramAdmission {
             validateKnownFacts(input, c);
             if (!c.diagnostics.isEmpty()) return rejected(c, Status.INVALID_INPUT);
             // Source-only assessment follows factual validation, independently of AIR readiness.
-            if(input.controlTopology().isPresent()&&(!input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()
+            if(input.controlTopology().isPresent()&&(!input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()||!input.controlTopology().orElseThrow().conditionEvents().isEmpty()
                     ||input.statements().stream().anyMatch(s->s instanceof CicsHandlerFact||s instanceof CicsAbendFact)))
                 c.handlerState=Optional.of(new HandlerStateAnalyzer(input).analyze());
             // Phase B: readiness gates all executable profile qualification and lowering.
@@ -49,7 +49,7 @@ final class PartialProgramAdmission {
             if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
             // Topology owns the executable start; legacy entry metadata still owns
             // identity/signature. An absent legacy start is not a contradiction.
-            c.require(input.entryInventory().entries().size()==1 && (input.controlTopology().isPresent()
+            c.require(input.entryInventory().entries().stream().filter(e->e.role()==EntryRole.PRIMARY).count()==1 && (input.controlTopology().isPresent()
                     || input.entryInventory().entries().getFirst().start().statement().isPresent()),
                 Rule.ENTRY_START,"entry",null,"usable explicit primary entry required");
             if (!c.diagnostics.isEmpty()) return rejected(c,Status.BLOCKED_LOWERING);
@@ -84,7 +84,7 @@ final class PartialProgramAdmission {
                     &&m.transfers().stream().anyMatch(t->t.effect().kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE))) {
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
                 }
-                if(s instanceof MoveFact m&&c.regionalStorage.logical().literalMove(m)) {
+                if(s instanceof MoveFact m&&c.regionalStorage.logical().sequence(m)) {
                     // The admitted family supplies fitting and projection semantics even
                     // when the narrower scalar-copy profile cannot admit this MOVE.
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;

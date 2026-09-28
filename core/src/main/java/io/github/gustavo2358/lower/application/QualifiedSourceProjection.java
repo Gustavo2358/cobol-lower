@@ -90,7 +90,7 @@ public final class QualifiedSourceProjection {
     private static Optional<NominalValueEvidence> nominal(SpInput input,List<Occurrence> occurrences,List<Derivation> derivations) {
         return input.nominalValues().map(raw->{
             var sinks=new HashSet<String>();for(var o:occurrences)if(o.targetKind().equals("COMPUTED"))sinks.add(o.id().handle());
-            var facts=new NominalValues(raw.authority(),raw.symbols(),raw.assignments(),raw.conditions(),raw.queries().stream().filter(q->sinks.contains(q.statement())).toList());
+            var facts=new NominalValues(raw.authority(),raw.symbols(),raw.assignments(),raw.conditions(),raw.queries().stream().filter(q->sinks.contains(q.statement())).toList(),raw.tableFields());
             var symbols=new HashSet<String>();facts.symbols().forEach(s->symbols.add(s.node()));
             var storage=input.storage().orElseThrow();
             var declarations=storage.nodes().stream().filter(n->symbols.contains(n.id().handle()))
@@ -115,7 +115,7 @@ public final class QualifiedSourceProjection {
     }
     private static List<Operand> operands(Optional<SpInput.CallTarget> target){return target.stream().map(t->new Operand(new OperandId(id(t.id().statement()),t.id().handle()),origin(t.provenance()))).toList();}
     private static List<Value> values(Optional<SpInput.CallTarget> target){return target.filter(SpInput.LiteralCallTarget.class::isInstance).map(SpInput.LiteralCallTarget.class::cast).flatMap(SpInput.LiteralCallTarget::logicalValue).filter(v->v.logicalDomain()==SpInput.LogicalDomain.TEXT).stream().map(v->new Value(v.logicalDomain().name(),v.value(),v.logicalExtent())).toList();}
-    private static Support support(HandlerStateAnalysis.Support s){return new Support(s.state().kind().name(),s.state().target().isEmpty()?List.of():List.of(s.state().target()),s.activation().stream().map(QualifiedSourceProjection::id).toList(),s.state().cause().name());}
+    private static Support support(HandlerStateAnalysis.Support s){return new Support(s.state().kind().name(),s.state().target().isEmpty()?List.of():List.of(s.state().target()),s.activation().stream().map(QualifiedSourceProjection::id).toList(),s.state().cause().name(),s.conditions().stream().map(c->new ConditionState(c.condition(),id(c.registration()),c.uncertain(),c.proofs())).toList());}
     private static UnitId unit(SpInput.UnitKey u){return new UnitId(u.compilationUnitId(),u.structuralPath(),u.canonicalProgramName());}
     private static StatementId id(SpInput.StatementId s){return new StatementId(unit(s.unit()),s.handle());}
     private static Provenance origin(SpInput.Provenance p){return new Provenance(location(p.expanded()),location(p.original()),p.includeChain().stream().map(i->new Include(i.includingFile(),i.requestedName(),i.includedFile(),i.includeLine())).toList(),p.exact());}

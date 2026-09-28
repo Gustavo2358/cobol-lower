@@ -1581,7 +1581,7 @@ final class Materialize {
         return new EntrySignature(d.availability(), Optional.ofNullable(d.parameterCount()), d.returningClause());
     }
     private static EntryFact entryFact(Wire.EntryFactDocument d, UnitKey unit) {
-        return new EntryFact(new EntryId(unit, d.id()), d.role(), d.availability(), executableStart(d.start(), unit), entrySignature(d.signature(), unit), provenance(d.provenance(), unit), d.coverage(), readiness(d.readiness(), unit), d.gaps().stream().map(v -> entryGap(v, unit)).toList());
+        return new EntryFact(new EntryId(unit, d.id()), d.role(), d.availability(), executableStart(d.start(), unit), entrySignature(d.signature(), unit), provenance(d.provenance(), unit), d.coverage(), readiness(d.readiness(), unit), d.gaps().stream().map(v -> entryGap(v, unit)).toList(), Optional.ofNullable(d.externalName()), Optional.ofNullable(d.declaration()).map(id->new StatementId(unit,id)));
     }
     private static EntryInventory entryInventory(Wire.EntryInventoryDocument d, UnitKey unit) {
         return new EntryInventory(d.status(), d.scope(), d.entries().stream().map(v -> entryFact(v, unit)).toList(), d.gapCodes());

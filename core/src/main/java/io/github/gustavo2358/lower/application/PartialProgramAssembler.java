@@ -9,7 +9,11 @@ import java.util.*;
 final class PartialProgramAssembler {
     private record Task(List<SpInput.StatementFact> body, Map<SpInput.StatementId,LabelId> completions,
                         boolean intrinsic, LocalIds ids, SpInput.StatementId entry) { }
-    record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin) { }
+    record EntryAssembly(LabelId label,OriginId origin) { }
+    record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin,Map<SpInput.EntryId,EntryAssembly> entries) {
+        Assembly(List<Sequence> sequences,LabelId label,OriginId origin){this(sequences,label,origin,Map.of());}
+        Assembly{entries=Map.copyOf(entries);}
+    }
     static Assembly assemble(PartialProgramAdmission.Plan plan, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements,
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {

@@ -214,7 +214,10 @@ final class RegionalDataTranslator {
                 items.add(ScalarEvidence.item(unit.publication(),"data",declaration.id().handle(),dataOrigin,List.of(object,cell)));
             } else {
                 binding=new Memory.UnknownBinding(base==null?new Scopes.ObjectsMemory(List.of(object)):new Scopes.StorageMemory(List.of(base)),reason);
-                if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
+                // A nominal text type does not ground a LINKAGE/captured location.
+                // Retain the object inventory, but executable readers must use
+                // an unknown value until an independent storage bound exists.
+                if(base!=null&&sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,Optional.empty(),dataOrigin));
             }
             objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,visibility,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));

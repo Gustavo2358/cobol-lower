@@ -34,11 +34,13 @@ final class RegionalMoveHandler {
         for(int i=0;i<transfers.size();i++) {
             var transfer=transfers.get(i);
             var logical=move.logicalTransfers().stream().filter(t->t.target().equals(transfer.target().id())).findFirst();
-            if(logical.isPresent()) {
+            var single=transfers.size()==1?move:new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),
+                SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(transfer.effect()));
+            if(storage.logical().sequence(move)&&storage.logical().literalMove(single)) {
+                result.addAll(LogicalTextMove.translate(single,storage.logical(),data,unit,ids,origins,links,items));
+            } else if(logical.isPresent()) {
                 result.add(logical(move,transfer,logical.orElseThrow(),data,unit,ids,origins,links,items));
             } else {
-                var single=i==0?move:new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),
-                    SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(transfer.effect()));
                 result.add(translate(single,fitted&&transfers.size()==1,data,unit,ids,origins,links,items,uncertainties));
             }
         }

@@ -111,3 +111,36 @@ proved NOHANDLE local condition was superseded after explicit user review;
 historical raw evidence and its oracle remain unchanged. Unknown XCTL negatives
 remain valid. HANDLE ABEND, handler state/activation and value inference remain
 outside this change.
+
+## Runtime condition registrations — SP 2.62 / qualified source 1.6
+
+The canonical control product separates `conditionRegistrations` from
+`conditionEvents`. A registration identifies its source statement, condition,
+LABEL/DEFAULT/IGNORE disposition, optional resolved procedure target and grammar
+proof. An event identifies a possible PGMIDERR on LINK/XCTL, command-local bypass,
+error continuation and the separate default-abend event. All targets retain
+published identities and provenance. LINK successful return has its own ordinary
+proof, independent of the error disposition.
+
+Only event-relevant PGMIDERR/ERROR state is tabulated. Each reaching registration
+keeps its source identity and proofs. Successful replacement kills that condition's
+previous disposition; omitted labels request the system default and suppress
+ERROR fallback. IGNORE and RESP/NOHANDLE admit error continuation. A selected label
+branches in the current COBOL activation, stays registered, and cannot manufacture
+a PERFORM return. LINK callee state is outside the current activation. External
+COBOL calls open the current definitions without discarding their possible targets.
+
+PUSH/POP stacks and other event families remain unmodeled. A reachable unmodeled
+POP prevents exclusion of locally declared handler targets: explicitly conditional
+source relations retain these possibilities, including an error continuation.
+These CONTROL_POSSIBILITY facts cannot be executable AIR authority. Dead POP and
+bypassed events do not activate them. This can yield extra source candidates;
+it does not claim exact stack restoration or complete analysis.
+
+The lowerer validates registration effects, event command/options, version, proofs
+and canonical provenance at both wire and in-memory admission. Qualified source
+1.6 carries the condition state and LINK default-event provenance. The CFG still
+projects AIR transitions; its dependency consumer validates and transports the
+qualified source evidence without recognizing CICS syntax or catalog names.
+
+Authorities and independent adversaries: [campaign](../work/carddemo-values-control.md).

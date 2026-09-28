@@ -46,7 +46,7 @@ final class Wire {
     record EntryGapDocument(GapScope scope, String code, String detail, ProvenanceDocument provenance) { }
     record ExecutableStartDocument(Availability availability, @Nullable String statement) { }
     record EntrySignatureDocument(Availability availability, @Nullable Integer parameterCount, ReturningClause returningClause) { }
-    record EntryFactDocument(String id, EntryRole role, Availability availability, ExecutableStartDocument start, EntrySignatureDocument signature, ProvenanceDocument provenance, CoverageStatus coverage, ReadinessDocument readiness, List<EntryGapDocument> gaps) { }
+    record EntryFactDocument(String id, EntryRole role, Availability availability, ExecutableStartDocument start, EntrySignatureDocument signature, ProvenanceDocument provenance, CoverageStatus coverage, ReadinessDocument readiness, List<EntryGapDocument> gaps, @Nullable String externalName, @Nullable String declaration) { }
     record EntryInventoryDocument(InventoryStatus status, EntryInventoryScope scope, List<EntryFactDocument> entries, List<String> gapCodes) { }
     record BranchChildrenDocument(String parent, Branch branch, List<String> children) { }
     record StructureDocument(List<String> roots, List<BranchChildrenDocument> branches) { }

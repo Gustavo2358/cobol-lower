@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 RAW-A PIC X(8).
+       01 VIEW-A REDEFINES RAW-A.
+       05 A PIC X(8).
+       01 B PIC X(8).
+       PROCEDURE DIVISION.
+       MOVE 'PROGB001' TO A B
+       CALL RAW-A
+       CALL B
+       GOBACK.

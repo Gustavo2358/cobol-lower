@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       
+       PROCEDURE DIVISION.
+       PERFORM SHARED-P.
+       CALL 'MAINRET'.
+       GOBACK.
+       ENTRY 'ALTPOINT'.
+       PERFORM SHARED-P.
+       CALL 'ALTRET'.
+       GOBACK.
+       SHARED-P.
+       CALL 'SHARED'.
+       EXIT.

@@ -1,0 +1,100 @@
+{
+  "review-pop-overwritten": {
+    "source": [
+      "NEWPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-later": {
+    "source": [
+      "NEWPROG",
+      "TARGET"
+    ],
+    "executable": [
+      "NEWPROG",
+      "TARGET"
+    ]
+  },
+  "review-pop-other-entry": {
+    "source": [
+      "NEWPROG",
+      "TARGET"
+    ],
+    "executable": [
+      "NEWPROG",
+      "TARGET"
+    ]
+  },
+  "review-pop-ignore": {
+    "source": [
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-default": {
+    "source": [
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-error-overwritten": {
+    "source": [
+      "NEWPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-perform-kill": {
+    "source": [
+      "NEWPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-backward-positive": {
+    "source": [
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-branch-positive": {
+    "source": [
+      "NEWPROG",
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-perform-positive": {
+    "source": [
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-error-keeps-specific": {
+    "source": [
+      "NEWPROG",
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-shared-target": {
+    "source": [
+      "NEWPROG",
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  },
+  "review-pop-unrelated-condition": {
+    "source": [
+      "OLDPROG",
+      "TARGET"
+    ],
+    "executable": []
+  }
+}

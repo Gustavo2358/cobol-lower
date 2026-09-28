@@ -31,7 +31,7 @@ final class PartialProgramLowerer implements LowerInput {
     static Fragment fragment(SpInput input,PartialProgramAdmission.Plan plan,PublicationId publication,UnitId unit,LocalIds ids,CompilationContext context){
         var origins = new SourceOrigins(publication, ids); var items = new ArrayList<Evidence.CoverageItem>(); var uncertainties = new ArrayList<Evidence.Uncertainty>();
         var statements = new ArrayList<LoweringResult.StatementLink>(); var operands = new ArrayList<LoweringResult.OperandLink>();
-        var sourceEntry = input.entryInventory().entries().getFirst();
+        var sourceEntry = input.entryInventory().entries().stream().filter(e->e.role()==SpInput.EntryRole.PRIMARY).findFirst().orElseThrow();
         var entryOrigin = origins.source("entry", sourceEntry.id().handle(), sourceEntry.provenance());
         var requiredData=new LinkedHashSet<SpInput.DataId>();
         input.fileInventory().declarations().forEach(declaration->requiredData.addAll(declaration.records()));
@@ -47,25 +47,35 @@ final class PartialProgramLowerer implements LowerInput {
         var assembly = input.controlTopology().isPresent()
             ? TopologyProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files)
             : PartialProgramAssembler.assemble(plan,data,unit,ids,origins,statements,operands,items,uncertainties,files);
-        var entryId = new EntryId(unit, ids.id("entry", "primary-entry", unit.localId(), sourceEntry.id().handle()));
-        Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
-        if(sourceEntry.signature().availability()!=SpInput.Availability.KNOWN) {
-            var reason=new UncertaintyId(publication,ids.id("uncertainty","entry-signature",unit.localId(),sourceEntry.id().handle()));
-            uncertainties.add(new Evidence.Uncertainty(reason,"ENTRY_SIGNATURE_UNKNOWN",List.of(Evidence.Dimension.EFFECTS,Evidence.Dimension.CONTROL),
-                new Scopes.EntityScope(List.of(entryId)),"SP does not publish a precise entry signature.",entryOrigin));
-            signatureRemainder=new Interactions.UnknownRemainder(reason);
+        var entries=new ArrayList<Entries.Entry>();var entryLinks=new ArrayList<LoweringResult.EntryLink>();
+        var unrepresentedEntries=new ArrayList<UncertaintyId>();
+        for(var declared:input.entryInventory().entries()) {
+            var assembled=assembly.entries().get(declared.id());
+            if(assembled==null&&declared.role()==SpInput.EntryRole.PRIMARY)assembled=new PartialProgramAssembler.EntryAssembly(assembly.entryLabel(),assembly.entrySequenceOrigin());
+            var origin=origins.source("entry",declared.id().handle(),declared.provenance());
+            var entryId=new EntryId(unit,ids.id("entry",declared.role()==SpInput.EntryRole.PRIMARY?"primary-entry":"alternate-entry",unit.localId(),declared.id().handle()));
+            if(assembled==null) {
+                var gap=new UncertaintyId(publication,ids.id("uncertainty","alternate-entry-unavailable",unit.localId(),declared.id().handle()));unrepresentedEntries.add(gap);
+                uncertainties.add(new Evidence.Uncertainty(gap,"ALTERNATE_ENTRY_START_UNAVAILABLE",List.of(Evidence.Dimension.CONTROL),new Scopes.UnitScope(unit),"Declared external entry has no admitted executable start: "+declared.gaps().stream().map(SpInput.EntryGap::code).toList(),origin));
+                items.add(new Evidence.CoverageItem("sp-entry@1/"+declared.id().handle(),origin,Evidence.CoverageStatus.UNSUPPORTED,List.of(),List.of(gap),Optional.empty()));continue;
+            }
+            Interactions.UnknownBound signatureRemainder=Interactions.NoRemainder.INSTANCE;
+            if(declared.signature().availability()!=SpInput.Availability.KNOWN) {
+                var reason=new UncertaintyId(publication,ids.id("uncertainty","entry-signature",unit.localId(),declared.id().handle()));
+                uncertainties.add(new Evidence.Uncertainty(reason,"ENTRY_SIGNATURE_UNKNOWN",List.of(Evidence.Dimension.EFFECTS,Evidence.Dimension.CONTROL),new Scopes.EntityScope(List.of(entryId)),"SP does not publish precise runtime parameter bindings.",origin));
+                signatureRemainder=new Interactions.UnknownRemainder(reason);
+            }
+            var signature=new Interactions.Signature(new Interactions.ParameterInventory(List.of(),signatureRemainder),new Interactions.ResultInventory(List.of(),declared.signature().returningClause()==SpInput.ReturningClause.ABSENT?Interactions.NoRemainder.INSTANCE:signatureRemainder),origin);
+            entries.add(new Entries.Entry(entryId,Optional.of(assembled.label()),signature,RegionalEntryTranslator.translate(plan.storage(),data,entryId,ids,origins,items,uncertainties),origin));
+            entryLinks.add(new LoweringResult.EntryLink(declared.id(),entryId,assembled.label(),origin));
+            items.add(ScalarEvidence.item(publication,"entry",declared.id().handle(),origin,List.of(entryId)));
         }
-        var signature = new Interactions.Signature(new Interactions.ParameterInventory(List.of(), signatureRemainder),
-            new Interactions.ResultInventory(List.of(), signatureRemainder), entryOrigin);
-        var entry = new Entries.Entry(entryId, Optional.of(assembly.entryLabel()), signature, RegionalEntryTranslator.translate(plan.storage(),data,entryId,ids,origins,items,uncertainties), entryOrigin);
-        var entryLinks = List.of(new LoweringResult.EntryLink(sourceEntry.id(), entryId, assembly.entryLabel(), entryOrigin));
-        items.add(ScalarEvidence.item(publication, "entry", sourceEntry.id().handle(), entryOrigin, List.of(entryId)));
         var unitOrigin = origins.derived(context==null?"unit-origin":ids.id("origin","unit-origin",unit.localId(),"unit"), List.of(entryOrigin, assembly.entrySequenceOrigin()), "supported-cp6-program@1/selected-unit");
-        var gaps = new ArrayList<UncertaintyId>();
+        var gaps = new ArrayList<UncertaintyId>(unrepresentedEntries);
         for (var code : input.entryInventory().gapCodes()) {
             var gap = new UncertaintyId(publication, ids.id("uncertainty", "scalar-entry-inventory", unit.localId(), Integer.toString(gaps.size()))); gaps.add(gap);
             uncertainties.add(new Evidence.Uncertainty(gap, "cobol-lower:" + code, List.of(Evidence.Dimension.CONTROL), new Scopes.UnitScope(unit),
-                "SP PRIMARY_ONLY/PARTIAL preserves this entry inventory gap.", entryOrigin));
+                "SP partial entry inventory preserves this runtime contract gap.", entryOrigin));
         }
         var gapTargets=new HashMap<SpInput.StatementId,List<Id>>();
         for(var link:statements)gapTargets.computeIfAbsent(link.source(),key->new ArrayList<>()).add(link.target());
@@ -97,12 +107,12 @@ final class PartialProgramLowerer implements LowerInput {
                 gap.scope().name() + ": " + gap.detail(), origin));
         }
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
-        var body = new Unit(unit, context==null?Optional.empty():context.parent(input.unit()), data.objects(), context==null?List.of():context.visible(input.unit()), List.of(entry), assembly.sequences(), List.of(),
+        var body = new Unit(unit, context==null?Optional.empty():context.parent(input.unit()), data.objects(), context==null?List.of():context.visible(input.unit()), entries, assembly.sequences(), List.of(),
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
         var premises = new ArrayList<>(StoragePremise.available(input, data, unit, ids, origins));
         premises.addAll(RegionalDataTranslator.premises(plan.storage(),data,unit,ids,origins));
         var required=new ArrayList<>(RegionalDataTranslator.capabilities(data).required());
-        if(entry.state().conditions().stream().anyMatch(c->c.value() instanceof Entries.PossibleLiterals))required.add(
+        if(entries.stream().flatMap(e->e.state().conditions().stream()).anyMatch(c->c.value() instanceof Entries.PossibleLiterals))required.add(
             input.storage().orElseThrow().entryState().possibilityDomain()==io.github.gustavo2358.lower.domain.StorageFacts.PossibilityDomain.LOGICAL_SOURCE
                 ?Capabilities.ENTRY_POSSIBILITIES_V2:Capabilities.ENTRY_POSSIBILITIES);
         if(input.statements().stream().anyMatch(s->s instanceof SpInput.CallFact call&&call.target() instanceof SpInput.DataCallTarget d&&!d.reference().regionalAlternatives().isEmpty()))required.add(Capabilities.TARGET_POSSIBILITIES);
@@ -123,6 +133,6 @@ final class PartialProgramLowerer implements LowerInput {
             List.of(body), data.storage(), resources, List.of(), origins.origins(),
             new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.PublicationScope(publication), items, gaps), uncertainties, premises);
         boolean logicalCopy=input.statements().stream().anyMatch(s->s instanceof SpInput.MoveFact m&&m.regionalMove().filter(e->e.kind()==io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.LOGICAL_FIT_TEXT).isPresent());
-        return new Fragment(output,entryLinks,List.copyOf(statements),origins.limitations(),List.copyOf(data.index().values()),List.copyOf(operands),logicalCopy,data,files);
+        return new Fragment(output,List.copyOf(entryLinks),List.copyOf(statements),origins.limitations(),List.copyOf(data.index().values()),List.copyOf(operands),logicalCopy,data,files);
     }
 }

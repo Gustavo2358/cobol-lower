@@ -247,3 +247,28 @@ Each cycle check traverses the context dependency graph per callee, O(C(C+E))
 per saturation round. No recursion-depth cutoff, source-name dispatch or global
 return-to-all-callers graph is used. Materialized AIR context growth remains a
 separate limitation.
+
+## Causal source restoration hypotheses
+
+A condition-event SourceContinuation with a prerequisite is eligible only if
+that prerequisite's completion can reach this event with the relevant disposition
+still open. ConditionRestorationState carries finite hypothesis identities in the
+existing contextual Support; it does not search globally reached occurrences.
+A proved registration for the event condition removes every restored alternative
+for that event. An ERROR registration removes only restored ERROR alternatives,
+not specific handlers or a possible restored IGNORE continuation.
+
+The source-only pass introduces these facts on the hypothetical POP completion,
+propagates them through ordinary, branch and matched call/return transitions, and
+keeps them in summary input identities. Each external entry starts without them.
+A later POP can affect an earlier textual event only through a real backward path.
+The separate generic source-prerequisite behavior is unchanged.
+
+These are internal eligibility facts, not a new wire field or physical handler
+state. QualifiedSourceProjection retains the resulting causal derivations and
+CONTROL_POSSIBILITY proofs; it never exports a synthetic executable edge. FIFO
+and LIFO schedules must produce the same qualified facts. The fixed finite set
+of published hypotheses bounds the state domain; exact PUSH/POP stacks stay open.
+
+Regressions: CicsConditionDispatchSuite review-oracles.json, including positive
+branch joins, backward GO TO, PERFORM return and independent condition replacement.

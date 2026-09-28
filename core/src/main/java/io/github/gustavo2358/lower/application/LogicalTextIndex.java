@@ -74,6 +74,20 @@ final class LogicalTextIndex {
         }
         return false;
     }
+    boolean sequence(SpInput.MoveFact move) {
+        if(move.additionalTransfers().isEmpty())return literalMove(move);
+        // A partially admitted sequence must not reread a source after a receiver
+        // with unknown aliases. A literal has no such capture obligation.
+        boolean literal=move.source() instanceof SpInput.LiteralSource l&&l.logicalValue().isPresent();
+        boolean any=false;
+        for(var transfer:move.transfers()) {
+            var single=new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),
+                SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(transfer.effect()));
+            boolean supported=literalMove(single);any|=supported;
+            if(!literal&&!supported)return false;
+        }
+        return any;
+    }
     static BigInteger end(StorageFacts.LogicalTextView v){return v.start().add(v.length());}
     private static void require(boolean condition,String message){if(!condition)throw new RegionalStorageAdmission.Invalid(message);}
 }

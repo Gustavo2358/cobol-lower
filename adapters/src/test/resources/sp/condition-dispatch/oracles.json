@@ -1,0 +1,88 @@
+{
+  "condition-link": [
+    "AFTER",
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-xctl": [
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-registration-only": [
+    "AFTER"
+  ],
+  "condition-dead-registration": [
+    "AFTER",
+    "TARGET"
+  ],
+  "condition-replace": [
+    "AFTER",
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-default": [
+    "TARGET"
+  ],
+  "condition-error-fallback": [
+    "AFTER",
+    "GENERAL",
+    "TARGET"
+  ],
+  "condition-specific": [
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-ignore": [
+    "AFTER",
+    "TARGET"
+  ],
+  "condition-ignore-error": [
+    "AFTER",
+    "TARGET"
+  ],
+  "condition-resp": [
+    "AFTER",
+    "TARGET"
+  ],
+  "condition-nohandle": [
+    "AFTER",
+    "TARGET"
+  ],
+  "condition-perform": [
+    "HANDLER",
+    "RESUMED",
+    "TARGET"
+  ],
+  "condition-registration-perform": [
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-abend-suppressed": [
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-abend-default": [
+    "ABENDPGM",
+    "TARGET"
+  ],
+  "condition-unknown-call": [
+    "FOREIGN",
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-repeat": [
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-entry-isolation": [
+    "AFTER",
+    "HANDLER",
+    "TARGET"
+  ],
+  "condition-unknown-two": [
+    "FOREIGN",
+    "GENERAL",
+    "HANDLER",
+    "TARGET"
+  ]
+}

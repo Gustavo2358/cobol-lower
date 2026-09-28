@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       PROCEDURE DIVISION.
+           CALL 'PRIMARY'
+           GOBACK.
+           ENTRY 'ALTPOINT'.
+           CALL 'ALT-CALL'
+           GOBACK.

@@ -23,7 +23,10 @@ final class PartialIdentityFacts {
             case io.github.gustavo2358.lower.domain.FactDependencies.Fact r -> {field.accept("FactDependencies.Fact");value.accept(r.id());value.accept(r.kind());value.accept(r.subject());value.accept(r.region());value.accept(r.dependencies());}
             case io.github.gustavo2358.lower.domain.FactDependencies.Binding r -> {field.accept("FactDependencies.Binding");value.accept(r.node());value.accept(r.region());value.accept(r.exactCell());value.accept(r.cells());value.accept(r.regions());value.accept(r.dependencies());}
 
-            case io.github.gustavo2358.lower.domain.ControlTopology r -> {field.accept("ControlTopology");value.accept(r.authority());value.accept(r.occurrences());value.accept(r.regions());value.accept(r.boundaries());value.accept(r.outcomes());value.accept(r.bindings());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology r -> {field.accept("ControlTopology");value.accept(r.authority());value.accept(r.occurrences());value.accept(r.regions());value.accept(r.boundaries());value.accept(r.outcomes());value.accept(r.bindings());value.accept(r.proofs());if(!r.entryPoints().isEmpty()){field.accept("entryPoints");value.accept(r.entryPoints());}if(!r.conditionRegistrations().isEmpty()||!r.conditionEvents().isEmpty()){field.accept("condition-state");value.accept(r.conditionRegistrations());value.accept(r.conditionEvents());}}
+            case io.github.gustavo2358.lower.domain.ControlTopology.ConditionRegistration r -> {field.accept("ConditionRegistration");value.accept(r.statement());value.accept(r.condition());value.accept(r.action());value.accept(r.target());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.ConditionEvent r -> {field.accept("ConditionEvent");value.accept(r.id());value.accept(r.statement());value.accept(r.condition());value.accept(r.eligibility());value.accept(r.continuation());value.accept(r.defaultEvent());value.accept(r.proofs());}
+            case io.github.gustavo2358.lower.domain.ControlTopology.EntryPoint r -> {field.accept("ControlTopology.EntryPoint");value.accept(r.entry());value.accept(r.declaration());value.accept(r.target());value.accept(r.proofs());}
             case io.github.gustavo2358.lower.domain.ControlTopology.Occurrence r -> {field.accept("ControlTopology.Occurrence");value.accept(r.statement());value.accept(r.region());value.accept(r.outcomes());value.accept(r.proofs());}
             case io.github.gustavo2358.lower.domain.ControlTopology.Region r -> {field.accept("ControlTopology.Region");value.accept(r.id());value.accept(r.kind());value.accept(r.parent());value.accept(r.entry());value.accept(r.members());value.accept(r.regions());value.accept(r.boundary());value.accept(r.proofs());}
             case io.github.gustavo2358.lower.domain.ControlTopology.Boundary r -> {field.accept("ControlTopology.Boundary");value.accept(r.id());value.accept(r.region());value.accept(r.ordinaryDefault());value.accept(r.proofs());}
@@ -479,6 +482,7 @@ final class PartialIdentityFacts {
                 field.accept("coverage"); value.accept(r.coverage());
                 field.accept("readiness"); value.accept(r.readiness());
                 field.accept("gaps"); value.accept(r.gaps());
+                if(r.role()==SpInput.EntryRole.ALTERNATE){field.accept("externalName");value.accept(r.externalName());field.accept("declaration");value.accept(r.declaration());}
             }
             case SpInput.EntryInventory r -> {
                 field.accept("EntryInventory");

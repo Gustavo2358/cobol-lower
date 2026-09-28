@@ -68,8 +68,8 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum InventoryStatus { COMPLETE, PARTIAL, INPUT_MISSING }
     public enum ReadinessStatus { SUFFICIENT, PARTIAL, BLOCKED, NOT_APPLICABLE }
     public enum Branch { ROOT, THEN, ELSE, EVALUATE_ARM, FILE_HANDLER, UNKNOWN }
-    public enum EntryRole { PRIMARY }
-    public enum EntryInventoryScope { PRIMARY_ONLY }
+    public enum EntryRole { PRIMARY, ALTERNATE }
+    public enum EntryInventoryScope { PRIMARY_ONLY, SOURCE_DECLARED }
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }
     public enum GobackExit { CURRENT_PROGRAM_INVOCATION }
     public enum LocalContinuation { NONE }
@@ -604,7 +604,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum EffectBound { NONE, ALL }
     public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum EffectValueTransform { NONE, UNKNOWN }
-    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
+    public enum EffectProof { NO_OP, MOVE_TARGETS, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
     public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
             List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
             EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {
@@ -612,6 +612,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             knownReads=List.copyOf(knownReads);mayWrites=List.copyOf(mayWrites);mustOverwrite=List.copyOf(mustOverwrite);exposedRegions=List.copyOf(exposedRegions);
             Objects.requireNonNull(unknownReadBound);Objects.requireNonNull(unknownWriteBound);Objects.requireNonNull(unknownExposureBound);
             Objects.requireNonNull(environment);Objects.requireNonNull(values);Objects.requireNonNull(proof);
+            if(proof==EffectProof.MOVE_TARGETS&&(!mustOverwrite.isEmpty()||!exposedRegions.isEmpty()
+                    ||unknownExposureBound!=EffectBound.NONE||values!=EffectValueTransform.UNKNOWN))
+                throw new IllegalArgumentException("MOVE footprint is MAY-only without exposure or a value proof");
         }
     }
     public record OtherStatement(StatementHeader header, Variant variant, String observedKind,
@@ -673,8 +676,10 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record EntryFact(EntryId id, EntryRole role, Availability availability, ExecutableStart start, EntrySignature signature, Provenance provenance, CoverageStatus coverage, Readiness readiness, List<EntryGap> gaps) {
+    public record EntryFact(EntryId id, EntryRole role, Availability availability, ExecutableStart start, EntrySignature signature, Provenance provenance, CoverageStatus coverage, Readiness readiness, List<EntryGap> gaps,Optional<String> externalName,Optional<StatementId> declaration) {
+        public EntryFact(EntryId id,EntryRole role,Availability availability,ExecutableStart start,EntrySignature signature,Provenance provenance,CoverageStatus coverage,Readiness readiness,List<EntryGap> gaps){this(id,role,availability,start,signature,provenance,coverage,readiness,gaps,Optional.empty(),Optional.empty());}
         public EntryFact {
+            Objects.requireNonNull(externalName);Objects.requireNonNull(declaration);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(role, "role");
             Objects.requireNonNull(availability, "availability");
