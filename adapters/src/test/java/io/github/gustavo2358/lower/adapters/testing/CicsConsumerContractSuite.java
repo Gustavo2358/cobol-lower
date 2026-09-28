@@ -113,13 +113,15 @@ public final class CicsConsumerContractSuite {
         t=fixture("abend");t.put("contractVersion","2.41.0");reject(t,SpJsonDecoder.Code.INPUT_ERROR,"2.41 event prohibited");
         accept(fixture("combined"));accept(fixture("abend"));accept(fixture("label"));
         t=fixture("label");t.put("contractVersion","2.41.0");reject(t,SpJsonDecoder.Code.INPUT_ERROR,"2.41 ordinary proof prohibited");
-        for(var version:List.of("2.54.0","2.43","9.99","unknown-text"))for(var source:List.of("combined","literal","unsupported")) {
+        for(var version:List.of("2.55.0","2.43","9.99","unknown-text"))for(var source:List.of("combined","literal","unsupported")) {
             t=fixture(source);t.put("contractVersion",version);reject(t,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"unknown version wins before feature shapes");
             t.set("factDependencies",JSON.createArrayNode());t.set("controlTopology",JSON.createArrayNode());t.set("statements",JSON.createArrayNode().add(JSON.createObjectNode().put("variant","CICS_ABEND").put("target",true)));
             reject(t,SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"unknown version wins over malformed facts");
         }
         t=fixture("combined");t.put("contractVersion","2.53.0");t.set("controlTopology",JSON.createArrayNode());
         reject(t,SpJsonDecoder.Code.INPUT_ERROR,"SP2.53 is known but malformed topology remains rejected");
+        t=fixture("combined");t.put("contractVersion","2.54.0");t.set("controlTopology",JSON.createArrayNode());
+        reject(t,SpJsonDecoder.Code.INPUT_ERROR,"SP2.54 malformed topology remains rejected");
         for(String version:List.of("1.1.0","2.28.0","2.39.0")) {
             t=fixture("literal");t.put("contractVersion",version);reject(t,SpJsonDecoder.Code.INPUT_ERROR,"no old handler acceptance");
         }
@@ -145,7 +147,7 @@ public final class CicsConsumerContractSuite {
                     var r=result(t);if(r instanceof SpJsonDecoder.Decoded d)need(!ordinaryIsNext(d.input()),"M9 canonical-successor oracle detects forged target");
                     mutations++;continue;
                 }
-                case 10 -> t.put("contractVersion","2.54.0");
+                case 10 -> t.put("contractVersion","2.55.0");
                 case 11 -> {t.put("contractVersion","9.99");fact(t,"CICS_ABEND").put("dispatchEligibility","BROKEN").put("target",true);}
                 default -> throw new AssertionError();
             }

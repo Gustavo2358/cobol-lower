@@ -1,0 +1,23 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 AREA-X PIC X(80).
+       01 RESP-CD PIC S9(9) COMP.
+       01 TRANS-ID PIC X(4).
+       01 FLAG-X PIC X.
+       01 CLOCK-X PIC S9(15) COMP-3.
+       PROCEDURE DIVISION.
+           EXEC CICS HANDLE CONDITION ERROR(ERR-P) END-EXEC
+           PERFORM IO-P
+           CALL 'AFTERP'
+           GOBACK.
+       IO-P.
+           EXEC CICS SEND TEXT FROM(AREA-X)
+           LENGTH(LENGTH OF AREA-X)
+           ERASE FREEKB
+           NOHANDLE
+           NOHANDLE END-EXEC.
+       ERR-P.
+           CALL 'ERRORPGM'
+           GOBACK.
