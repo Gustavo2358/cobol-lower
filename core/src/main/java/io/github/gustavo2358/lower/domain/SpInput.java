@@ -410,7 +410,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public ExecutableLowering executableLowering() { return ExecutableLowering.NOT_READY; }
     }
 
-    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RETURN, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
+    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RETURN, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE, ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT, WRITEQ_TD }
     public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
     /** Typed source expression. LENGTH_OF denotes declaration extent, not stored value. */
     public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
@@ -435,8 +435,8 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             Objects.requireNonNull(length);
             CicsContract.command(header,commandKind,syntaxStatus,rawText,options,gapCodes);
             boolean hasLength=options.stream().anyMatch(o->o.name().equals("LENGTH"));
-            if(length.isPresent()&&(commandKind!=CicsCommandKind.SEND_TERMINAL&&commandKind!=CicsCommandKind.RETURN||!hasLength)
-                ||(commandKind==CicsCommandKind.SEND_TERMINAL||commandKind==CicsCommandKind.RETURN)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
+            if(length.isPresent()&&(!CicsCommandShape.length(commandKind)||!hasLength)
+                ||CicsCommandShape.length(commandKind)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&length.isPresent()!=hasLength)
                 throw new IllegalArgumentException("terminal LENGTH expression required exactly when published");
             length.flatMap(OperandExpression::reference).ifPresent(r->{if(!r.id().statement().equals(header.id()))throw new IllegalArgumentException("expression owner");});
             Objects.requireNonNull(implicitArea);
@@ -450,6 +450,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             }
             Objects.requireNonNull(hostEffects);
             if(hostEffects.isPresent()) {
+                CicsContract.require(!CicsCommandShape.extended(commandKind),"extended command implicit effects remain open");
                 CicsContract.require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED,"host effects require supported syntax");
                 var names=options.stream().map(CicsOption::name).collect(java.util.stream.Collectors.toSet());
                 CicsContract.require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO")||implicitArea.isPresent(),"RECEIVE host area must be explicit");

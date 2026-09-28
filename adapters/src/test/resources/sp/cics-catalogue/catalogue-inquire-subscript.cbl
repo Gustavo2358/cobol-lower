@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PROBE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 G.
+        05 ITEM-X PIC X(8) OCCURS 3.
+       01 IDX PIC 9.
+       PROCEDURE DIVISION.
+           PERFORM IO-P
+           CALL 'AFTERP'
+           GOBACK.
+       IO-P.
+           EXEC CICS INQUIRE PROGRAM(ITEM-X(IDX))
+                NOHANDLE END-EXEC.

@@ -24,6 +24,7 @@ public final class FastAdapterSuite {
         CicsCompletionSuite.main(args);
         CicsHostEffectsSuite.main(new String[0]);
         CicsMemoryIndependenceSuite.main(new String[0]);
+        CicsCatalogueSuite.main(new String[0]);
         DliEffectsSuite.main(new String[0]);
         ConditionRegistrationSuite.main(new String[0]);
         TextPredicateSuite.main(new String[0]);
