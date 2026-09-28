@@ -1,18 +1,14 @@
 # Estado upstream observado
 
-## Estado vigente — revisão FILE composite control
+## Estado vigente — W1, possibilidades fonte
 
-Os pins abaixo apontam para a branch de revisão `fix/file-composite-flow`, ainda
-sem merge. SP2.51 publica pontos internos de FILE; lower os materializa no contexto
-ativo. AIR, CFG e solver mantêm os contratos existentes. Os campos históricos do
-lock não substituem estes pins.
+SP2.52 e qualified-source-dependencies1.1 preservam candidatos condicionais sem
+acrescentar transições executáveis. Branch de revisão empilhada sobre FILE; sem merge.
 
-- proleap-poc: `8790072a64df8c5e5dcc85c9ac26c7a6d5435bb9`.
+- proleap-poc: `42d8873e3660acdc581794f5a9c206d4212990f3`.
 
-Qualificação e limites: [FILE composite control](../work/file-composite-qualification.md).
-O fluxo cobre OPEN/CLOSE e SORT/MERGE sem callbacks. Provas de memória, retornos
-indisponíveis e remainders de erro crítico não são fortalecidos por esta mudança.
-As seções seguintes preservam evidência histórica de suas respectivas campanhas.
+Regra, testes e limites: [W1](../work/carddemo-control-w1.md).
+Os campos e as seções históricas não substituem estes pins.
 
 ## Checkpoints históricos
 

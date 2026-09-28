@@ -17,7 +17,7 @@ public final class QualifiedSourceProjection {
         var topology=input.controlTopology();
         // Reuse the R7 engine for ordinary products where Admission did not need
         // to compute handler state. No syntax-based or executable reachability.
-        var state=topology.isEmpty()?Optional.<HandlerStateAnalysis>empty():Optional.of(admission.handlerState().orElseGet(()->new HandlerStateAnalyzer(input).analyze()));
+        var state=topology.isEmpty()?Optional.<HandlerStateAnalysis>empty():Optional.of(topology.orElseThrow().sourceContinuations().isEmpty()?admission.handlerState().orElseGet(()->new HandlerStateAnalyzer(input).analyze()):new HandlerStateAnalyzer(input,false,true).analyze());
         var nodes=new ArrayList<Node>();var derivations=new ArrayList<Derivation>();var selections=new ArrayList<Selection>();
         var targets=new ArrayList<Target>();var events=new ArrayList<Event>();var guards=new ArrayList<Guard>();var proofs=new ArrayList<Proof>();var frontiers=new ArrayList<Frontier>();
         var nodeIds=new HashMap<HandlerStateAnalysis.Node,String>();
@@ -57,7 +57,30 @@ public final class QualifiedSourceProjection {
             var values=values(target);
             occurrences.add(new Occurrence(id(s.header().id()),technology,command,namespace,profile,target.map(t->t instanceof SpInput.LiteralCallTarget?"LITERAL":"COMPUTED").orElse("UNAVAILABLE"),operands(target),values,values.isEmpty(),qualifications.getOrDefault(s.header().id().handle(),List.of())));
         }
-        return new UnitEvidence(unit(input.unit()),state.isPresent(),statements,occurrences,targets,nodes,derivations,selections,events,guards,proofs,frontiers,nominal(input,occurrences,derivations));
+        return new UnitEvidence(unit(input.unit()),state.isPresent(),statements,occurrences,targets,nodes,derivations,selections,events,guards,proofs,frontiers,nominal(input,occurrences,derivations),nativeFiles(input,qualifications));
+    }
+    private static List<NativeFileUse> nativeFiles(SpInput input,Map<String,List<String>> qualifications) {
+        var declarations=new HashMap<io.github.gustavo2358.lower.domain.FileFacts.Candidate,io.github.gustavo2358.lower.domain.FileFacts.Declaration>();
+        for(var d:input.fileInventory().declarations())declarations.put(new io.github.gustavo2358.lower.domain.FileFacts.Candidate(d.id(),d.owner()),d);
+        var result=new ArrayList<NativeFileUse>();
+        for(var use:input.fileInventory().operations().uses()) {
+            var names=new ArrayList<NativeFileName>();var gaps=new TreeSet<>(use.gapCodes());boolean local=false;
+            if(use.bindingStatus()==SpInput.ResolutionStatus.RESOLVED&&use.candidates().size()==1) {
+                var d=declarations.get(use.candidates().getFirst());
+                if(d!=null) {
+                    local=d.kind()==io.github.gustavo2358.lower.domain.FileFacts.Kind.SD&&io.github.gustavo2358.lower.domain.FileFacts.local(use);
+                    if(!local&&d.kind()!=io.github.gustavo2358.lower.domain.FileFacts.Kind.SD&&d.assignment().externalFileName().isPresent()&&!d.origins().isEmpty())
+                        names.add(new NativeFileName(d.id(),unit(d.owner()),d.logicalFile(),d.assignment().externalFileName().orElseThrow(),d.origins().stream().map(QualifiedSourceProjection::origin).toList()));
+                    gaps.addAll(d.gapCodes());gaps.addAll(d.assignment().gapCodes());
+                }
+            }
+            if(!local&&names.isEmpty())gaps.add("SOURCE_FILE_TARGET_UNAVAILABLE");
+            var location=input.controlTopology().stream().flatMap(t->t.fileFlows().stream()).filter(f->f.statement().equals(use.statement().handle()))
+                .flatMap(f->f.points().stream()).filter(p->p.kind()==io.github.gustavo2358.lower.domain.ControlTopology.FilePointKind.USE&&p.ordinal()==use.ordinal())
+                .map(p->"FILE_POINT/"+p.id()).findFirst().orElse(use.statement().handle());
+            result.add(new NativeFileUse(id(use.statement()),use.ordinal(),location,use.command().name(),local,names,origin(use.provenance()),qualifications.getOrDefault(location,List.of()),List.copyOf(gaps)));
+        }
+        return result.stream().sorted(Comparator.comparing((NativeFileUse f)->f.statement().handle()).thenComparingInt(NativeFileUse::ordinal)).toList();
     }
     private static Optional<NominalValueEvidence> nominal(SpInput input,List<Occurrence> occurrences,List<Derivation> derivations) {
         return input.nominalValues().map(raw->{

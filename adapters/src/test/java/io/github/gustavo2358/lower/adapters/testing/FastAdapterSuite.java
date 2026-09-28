@@ -10,6 +10,7 @@ public final class FastAdapterSuite {
         TopologyEntryAdmissionSuite.main(new String[0]);
         NominalValueSuite.main(new String[0]);
         QualifiedSourceSuite.main(new String[0]);
+        SourcePossibilitySuite.main(new String[0]);
         ExceptionalHandlerSuite.main(new String[0]);
         CicsConsumerContractSuite.main(new String[0]);
         ValidationBeforeReadinessSuite.main(new String[0]);
