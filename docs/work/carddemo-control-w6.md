@@ -33,3 +33,7 @@ FAST dos repositórios alterados, corpus CardDemo 73 inteiro, PERFORM39/Chaos48/
 ### Ajuste após sondagem do codec
 
 A operação AIR Halt existe no modelo, mas está fora do perfil JSON vigente. O modelo já publica HaltAlternative em envelopes de controle. STOP RUN usa essa alternativa terminal fechada e preserva efeitos de finalização de memória/recursos como desconhecidos, sem MUST; não usa Return nem adiciona sucessor. Código de saída não é avaliado. SEARCH usa SEARCH_INDEX_MAY (READ/WRITE ALL, exposure NONE, ambiente NONE), pois o índice implícito ainda não tem célula provada.
+
+## Checkpoint qualificado
+
+Implementação W6 concluída e qualificada; status IN_PROGRESS até revisão/merge. Resultado integrado, deltas e limites em [W1–W6](carddemo-control-w1-w6.md). Parada antes de W7.
