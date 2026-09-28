@@ -1,0 +1,31 @@
+# CARDDEMO-CONTROL-W6 — sentenças, busca e terminações
+
+Status: IN_PROGRESS. Escopo W6; parar antes de W7. Recursão/ALTER executável e UI permanecem fora.
+
+## Regra e desenho antes do código
+
+NEXT SENTENCE transfere para o ponto imediatamente após o próximo período separador, não para o statement após END-IF/END-SEARCH. A AST já possui Sentence e NextSentenceStatement. Criar uma região SENTENCE somente quando existe essa transferência na sentença; sua conclusão aponta para a sentença seguinte ou para a conclusão do paragraph/section. ESCAPE da sentença abandona ativações inline internas; a conclusão do paragraph continua ligada ao PERFORM correto. Não reinterpretar texto ou posição no lower.
+
+SEARCH ALL possui uma decisão abstrata de busca, com alternativas mutuamente exclusivas WHEN e AT END (ou continuação na ausência de AT END). A iteração interna que calcula o índice fica resumida nessa operação; o corpo WHEN não é corpo de iteração e executa somente no match. Nenhuma comparação/ordenação/índice runtime é avaliada. Admitir a forma gramatical ALL sem VARYING com um WHEN; preservar efeitos desconhecidos de índice e possíveis falhas, sem MUST. Região SEARCH/SEARCH_ARM compõe corpos e continuidade com os mesmos contratos regionais.
+
+STOP RUN deve produzir PROGRAM_HALT → AIR Halt NORMAL, sem continuação ordinária nem retorno de PERFORM. EXIT PROGRAM retorna em programa contido. Em unidade externa, fonte/posição na compilação não prova se ela é main ou chamada: publicar alternativas de retorno e continuação com premissa contextual explícita. Nenhum perfil vigente informa o papel runtime; não inferir main do primeiro PROGRAM-ID. GOBACK/RETURN/XCTL mantêm contratos existentes.
+
+ENTRY alternativo é auditado contra a entrada principal já publicada. Não adicionar entrada artificial nem conectar trecho morto depois de término. Multi-entry exige outro desenho. Caso o ENTRY seja encontrado no fluxo sequencial, sua natureza declarativa permite continuar, sem materializar chamada externa.
+
+SP2.56: regiões SENTENCE/SEARCH/SEARCH_ARM, escape SENTENCE, PROGRAM_HALT. Porta tipada/wire verificam forma, escopo e versão. Lower consome destinos/provas e representa halt usando AIR existente. Sem alteração de AIR/CFG contratos. Algoritmo finito linear em nós/arestas da AST; não desenrolar tabela, banco ou recursão.
+
+## Oráculos RED
+
+NEXT SENTENCE em IF/EVALUATE/SEARCH/inline PERFORM; pular irmãos até período, concluir paragraph/range correto, dois chamadores sem retorno cruzado. SEARCH match/miss, AT END ausente, corpo com transferência/terminal, índice desconhecido e continuidade. STOP RUN/GOBACK não alcançam instrução seguinte; EXIT PROGRAM externo mantém alternativa main, contido só retorna. ENTRY sem chamador permanece ausente da execução principal. Contratos antigos, versão futura rejeitada, escopo inválido, roundtrip AIR/CFG/dependencies, supports preservados.
+
+## Autoridades IBM verificadas
+
+- [SEARCH e NEXT SENTENCE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-search-statement).
+- [Referência COBOL 6.4, IF/NEXT SENTENCE](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf).
+- [Papel main/chamado depende de execução](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=subprograms-main-programs-calls).
+- [Terminações](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=subprograms-ending-reentering-main-programs), [STOP](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=statements-stop-statement).
+- [ENTRY](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-entry-statement).
+
+## Validação prevista
+
+FAST dos repositórios alterados, corpus CardDemo 73 inteiro, PERFORM39/Chaos48/aliases14/PERFORM adversarial25, fixtures do frontend e contratos FILE/CICS aplicáveis. Comparar candidatos, supports e hipóteses, classificação das ausências legítimas e limites W7; nenhum delta inesperado aberto.
