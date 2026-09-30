@@ -1,5 +1,16 @@
 # Estado upstream observado
 
+## Stage 5 review branch — 2026-09-30
+
+AIR `e0aef0e1928d88a74fe66b7a4d0af84556b84b19` (PR #23) transports existing
+`control.local@1`. Frontend remains merged `4c00dea2a6bad1ba21076e55681f6038b80f8a47`
+(SP 2.62). This lower branch adds proved body sharing and requires the matching
+consumer in analysis-cfg PR #57. These are review pins, not integrated main.
+
+[Current evidence and limits](../work/shared-routine-bodies.md). Later sections
+retain historical context and do not override the current source lock.
+
+
 ## Estado vigente — valores e controle após W8 integrados
 
 SP 2.62 e qualified-source-dependencies 1.6 estão integrados. Dependencies mantém

@@ -21,4 +21,48 @@ The real-SP adversaries pass 13 assertions: two invocations share one body and h
 
 Local full exposed a historical performance-oracle mismatch: SP2.61 normalizes two nullable Entry fields before the metered JSON shape walk. The independent original wire ledger remains 82+37N; the normalized walk is 84+37N. The decoder is byte-identical to baseline. Only that test ledger is corrected; DTO counts and exact decoded scale-input equality remain required.
 
-Final FAST/full/corpus qualification is in progress; no merge or complete-qualification claim at this checkpoint.
+That checkpoint preceded the qualification below; no merge was performed.
+
+## S5 qualification — ready for review, no merge
+
+- Lower FAST: PASS (`lower-fast-06.log`, 527.423 s). Full local wrapper: PASS (`lower-qualification-03.log`, exit 0), including semantics, 20,000-MOVE capacity, deterministic products, performance ledgers and architecture. The two historical input-node ledgers now include exactly two normalized nullable Entry fields; wire inputs, physical DTO ledger, source equality and production decoder are unchanged.
+- All **560** real four-stage pipelines pass: CardDemo 73, PERFORM 39, Chaos 48, aliases 14, PERFORM adversaries 25, general fixtures 331, final focal contracts 29, frontier payload 1. All 560 SP products are byte-identical to the baseline. Candidate losses/additions and lost supports/provenance: **0/0/0**.
+- PERFORM **39/39**, Chaos **48/48**, aliases **14/14**, PERFORM adversaries **25/25**. Chaos retains every manifest expectation, including caller-specific values. Its context oracle now executes frames independently because a shared body has one operation, rather than requiring one physical copy per caller. Context removal, value swapping and invented values are rejected.
+- New real-SP probes: same/different CICS handler states; caller A and B retain separate values at their continuations and union only at the shared site. The value probe passes with qualified source and through the executable AIR consumer alone.
+- CFG rule correlation: all 3,600 local rules across the 560 outputs agree with full AIR identities/destinations. Three compiled consumer mutations (skip body, use outer frame, join before replay) are rejected, with clean runs before/after. AIR transport has three additional compiled mutations from S1.
+
+### Measured representation
+
+All 73 CardDemo programs: CFG nodes **110,570 → 79,176** (−28.4%); ordinary
+transitions 124,356 → 84,504 plus 3,063 local rules. AIR JSON bytes
+1,338,048,740 → 1,122,289,870; CFG bytes 80,302,820 → 57,186,388.
+COACTUPC nodes 5,037 → 3,132; COTRTLIC 5,656 → 2,943; COTRTUPC 1,600 → 598.
+COACCT01 and CODATE01 retain their former sizes because their contexts do not meet
+the equivalence proof. There is no claim that every orphan disappears.
+
+Two alternating baseline/candidate runs on each of those five programs, identical
+SP input and 2 GiB Java heap, measured 242.57 → 221.28 summed process seconds and
+2,562,472 → 2,556,092 KiB maximum process RSS. These are observations under shared
+machine load, not a universal latency/memory guarantee. Solver context count can
+remain large even when serialized bodies shrink.
+
+### Integration and remaining limits
+
+Order: AIR #23 → lower #52 → CFG #57; repin to actual merge commits only after
+review authorization. Existing PARTIAL statuses, source hypotheses, modelAssumed,
+unknown control and proof-of-kill policy remain. Recursion, nonlocal escapes and
+state-changing/exceptional CICS closures keep existing specialization; the generic
+consumer refuses repeated simultaneously active local invocation instead of
+silently cutting the stack. Sharing is not an implementation of ALTER.
+
+CFG JSON v5 requires consumers to interpret local rules. The separate graph
+visualizer currently accepts only v1–4; its importer/traversal upgrade is an
+integration dependency outside these analyzer PRs. No UI compatibility claim or
+unconditional return edges were added to conceal that boundary.
+
+Raw commands, hashes, immutable runtime, 560 products, comparison and metrics:
+workspace `.shared-routine-bodies/evidence/` (`runtime-02`, `final-replay`,
+`final-qualification-02`, `focal-final-03`, `context-mutations`, `measurements`).
+Production source hashes are checked against the frozen runtime; later commits
+contain tests/docs/pins only. The work item remains IN_PROGRESS per repository
+policy until review and merge; implementation/qualification scope is complete.

@@ -106,7 +106,9 @@ public final class CapacitySuite {
             check(raw.length > 32 * 1024 * 1024 && nodes > 1_500_000, "corpus crosses BOTH old input gates");
             var first = verify(new SpFileInput(CobolLower.INPUT_LIMITS).read(path));
             var measured = new SpJsonDecoder(CobolLower.INPUT_LIMITS).decodeMeasured(raw);
-            check(measured.statistics().jsonNodesVisited() == nodes, "independent parser node ledger");
+            // Historical input has one Entry: normalization supplies two nullable SP2.61 fields.
+            check(measured.statistics().jsonNodesVisited() == nodes + 2,
+                    "independent parser ledger plus externalName and declaration normalization");
             var second = verify(measured.result());
             check(first.equals(second), "complete Publication equality from independent file/byte executions");
             System.out.println("CAPACITY_DETERMINISM=PASS complete Publication equality; no AIR codec override");
