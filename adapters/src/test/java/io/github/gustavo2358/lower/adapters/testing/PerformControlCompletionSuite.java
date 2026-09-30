@@ -120,9 +120,14 @@ public final class PerformControlCompletionSuite {
         }
         Operations.Branch test(LabelId label){need(terms.get(label) instanceof Operations.Branch,"UNTIL test");return (Operations.Branch)terms.get(label);}
         LabelId bodyCompletion(LabelId body) {
-            var call=((Operations.Jump)terms.get(body)).destination();need(terms.get(call) instanceof Operations.Invoke,"body CALL retained");
-            return ((Operations.Invoke)terms.get(call)).outcomes().known().stream().filter(Control.Normal.class::isInstance)
+            var invocation=terms.get(body) instanceof Operations.LocalInvoke local?local:null;
+            var entry=invocation==null?body:invocation.entry();
+            var call=((Operations.Jump)terms.get(entry)).destination();need(terms.get(call) instanceof Operations.Invoke,"body CALL retained");
+            var completion=((Operations.Invoke)terms.get(call)).outcomes().known().stream().filter(Control.Normal.class::isInstance)
                 .map(Control.Normal.class::cast).findFirst().orElseThrow().label();
+            if(invocation==null)return completion;
+            need(terms.get(completion) instanceof Operations.LocalResume,"shared body completes by matched return");
+            return invocation.resume();
         }
         void before() {
             var initI=((Operations.Jump)terms.get(start)).destination();var initJ=effect(initI,"initialization","I");
@@ -137,7 +142,7 @@ public final class PerformControlCompletionSuite {
         }
         void after() {
             var initI=((Operations.Jump)terms.get(start)).destination();var initJ=effect(initI,"initialization","I");var initK=effect(initJ,"initialization","J","I");var body=effect(initK,"initialization","K","J");
-            need(terms.get(body) instanceof Operations.Jump,"AFTER enters body without a predicate");
+            need(terms.get(body) instanceof Operations.Jump||terms.get(body) instanceof Operations.LocalInvoke,"AFTER enters body without a predicate");
             var tests=terms.entrySet().stream().filter(e->e.getValue() instanceof Operations.Branch).toList();need(tests.size()==3,"three separate predicates");
             var outer=tests.stream().map(e->(Operations.Branch)e.getValue()).filter(b->terms.get(b.trueDestination()) instanceof Operations.Invoke).findFirst().orElseThrow();
             need(effect(outer.falseDestination(),"increment","I","I").equals(initJ),"outer repeat reinitializes J then K");

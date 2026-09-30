@@ -81,8 +81,8 @@ public final class PerformReentrySuite {
             if(name.startsWith("sequential-callers")) {
                 need(calls.containsAll(Set.of("FIRST","SECOND","INP")),"sequential invocations both return");
                 var resumes=new ArrayList<Set<String>>();
-                for(var s:seqs.values())if(reached.contains(s.label())&&s.terminator() instanceof Operations.Invoke v&&v.target() instanceof Interactions.LiteralTarget lit&&lit.name().equals("INP"))
-                    for(var outcome:v.outcomes().known())if(outcome instanceof Control.Normal normal)resumes.add(CobolControlSuite.firstCalls(normal.label(),seqs));
+                for(var point:LocalControlOracle.reached(p))if(seqs.get(point.label()).terminator() instanceof Operations.Invoke v&&v.target() instanceof Interactions.LiteralTarget lit&&lit.name().equals("INP"))
+                    for(var next:LocalControlOracle.successors(point,seqs))resumes.add(LocalControlOracle.firstCalls(next,seqs));
                 need(resumes.size()==2&&resumes.contains(Set.of("FIRST"))&&resumes.contains(Set.of("SECOND")),"no crossed caller continuation "+name+resumes);
             }
             for(var mode:List.of("missing","null","invalid","downgrade","future")) {

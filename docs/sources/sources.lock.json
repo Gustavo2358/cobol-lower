@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_on": "2026-09-28",
+  "observed_on": "2026-09-30",
   "policy": "Pinned snapshots; update only via reviewed contract change, never floating main at build time.",
   "sources": [
     {
@@ -517,7 +517,7 @@
     {
       "id": "SRC-AIR-JAVA",
       "repository": "Gustavo2358/air-java",
-      "commit": "d760b07b0fac42a106d09342ee9d5b8445ccf630",
+      "commit": "e0aef0e1928d88a74fe66b7a4d0af84556b84b19",
       "canonical_ref": "feat/carddemo-predicate-transport",
       "role": "shared_model_validator_and_codec_not_normative_spec",
       "maven": {
@@ -554,7 +554,7 @@
         "air-model/src/main/java/io/github/gustavo2358/air/validation/ReferenceChecks.java",
         "air-model/src/test/java/io/github/gustavo2358/air/validation/BoundedBindingChecks.java"
       ],
-      "evidence_level": "POSITIVE_MEMORY_TOPOLOGY W1: positive memory identities, two-channel evidence, Nop transport and metadata-independent integrity; exact companion commit",
+      "evidence_level": "Stage 5 control.local@1 transport, AIR PR #23 at e0aef0e1928d88a74fe66b7a4d0af84556b84b19. Existing AIR 2.0 / JSON binding 1.0, no new IR semantics; legacy 560-product transport replay unchanged. Integration qualification is recorded in docs/work/shared-routine-bodies.md.",
       "runtime_conformance_executed_for_this_package": false,
       "repository_url": "https://github.com/Gustavo2358/air-java",
       "file_urls": [

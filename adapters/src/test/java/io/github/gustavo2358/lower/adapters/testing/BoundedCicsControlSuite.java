@@ -80,16 +80,33 @@ public final class BoundedCicsControlSuite {
         var result=lower(document);var p=result.publication().orElseThrow();
         var invokes=p.units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator)
             .filter(Operations.Invoke.class::isInstance).map(Operations.Invoke.class::cast).filter(i->i.action().equals("execute")).toList();
-        need(invokes.size()==expected,"bounded activation/source count "+name);
+        var seqs=LocalControlOracle.sequences(p);
+        var contexts=LocalControlOracle.reached(p,true).stream().filter(point->seqs.get(point.label()).terminator() instanceof Operations.Invoke i&&i.action().equals("execute")).toList();
+        need(contexts.size()==expected,"bounded activation/source count "+name);
         var actualSources=new HashSet<String>();var actualDestinations=new HashSet<LabelId>();
         for(var invoke:invokes) {
             var links=result.statements().stream().filter(l->l.target().equals(invoke.header().id())).toList();
             need(links.size()==1,"one identity link per internal operation");actualSources.add(links.getFirst().source().handle());
             need(invoke.outcomes().known().isEmpty(),"local condition is not normal successful return");
             var allowed=local(((Scopes.WithinControl)invoke.outcomes().remainder()).scope());
-            need(allowed.size()==1,"each activation has exactly its own resume");actualDestinations.addAll(allowed);
+            need(allowed.size()==1,"each body has exactly one local condition route");
         }
         var expectedDestinations=result.statements().stream().filter(l->destinations.contains(l.source().handle())).map(LoweringResult.StatementLink::label).collect(java.util.stream.Collectors.toSet());
+        for(var point:contexts) {
+            var pending=new ArrayDeque<LocalControlOracle.Point>();pending.addAll(LocalControlOracle.successors(point,seqs,true));
+            var visited=new HashSet<LocalControlOracle.Point>();var destinationsForContext=new HashSet<LabelId>();
+            while(!pending.isEmpty()) {
+                var next=pending.removeFirst();if(!visited.add(next))continue;
+                if(expectedDestinations.contains(next.label()))destinationsForContext.add(next.label());
+                else {
+                    var term=seqs.get(next.label()).terminator();
+                    need(term instanceof Operations.LocalResume||term instanceof Operations.Jump,"route contains only completion operations");
+                    pending.addAll(LocalControlOracle.successors(next,seqs));
+                }
+            }
+            need(destinationsForContext.size()==1,"each contextual condition route reaches exactly its own caller continuation");
+            actualDestinations.addAll(destinationsForContext);
+        }
         need(actualSources.equals(sources),"distinct source identities survive "+name);
         need(actualDestinations.equals(expectedDestinations)&&expectedDestinations.size()==2,"exact activation/source routes; no ordinary tail or cross-context expansion "+name);
     }

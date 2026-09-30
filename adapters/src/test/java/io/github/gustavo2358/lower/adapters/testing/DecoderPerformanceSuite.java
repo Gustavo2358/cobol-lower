@@ -33,7 +33,10 @@ public final class DecoderPerformanceSuite {
             var measured = decoder.decodeMeasured(bytes); long elapsed = System.nanoTime() - started;
             check(measured.result() instanceof SpJsonDecoder.Decoded, "decoder materializes full inventory");
             check(((SpJsonDecoder.Decoded)measured.result()).input().equals(ScaleInputs.create(n)), "decoded scale facts equal independently handwritten memory input");
-            check(measured.statistics().jsonNodesVisited() == expectedNodes, "measured JSON ledger 82+37N");
+            // The public decoder normalizes historical Entry records with two nullable
+            // SP2.61 fields before its shape walk. Wire bytes remain the original ledger.
+            check(measured.statistics().jsonNodesVisited() == expectedNodes + 2,
+                    "normalized JSON ledger 84+37N (externalName and declaration)");
             check(measured.statistics().physicalValuesVisited() == 82L + 35L * n, "measured non-null DTO ledger 82+35N");
             check(measured.statistics().bytesProcessed() == bytes.length, "bytes measured not characters");
             check(decoder.decode(bytes).equals(measured.result()), "measured and ordinary decoder are one implementation");
