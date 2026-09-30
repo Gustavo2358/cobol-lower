@@ -270,8 +270,8 @@
         "https://github.com/Gustavo2358/proleap-poc/blob/1ee71b74f391dfc174d018b92b35b84c34bc7290/src/main/java/io/github/gustavo2358/cobolexplorer/CicsConditionSyntax.java",
         "https://github.com/Gustavo2358/proleap-poc/blob/1ee71b74f391dfc174d018b92b35b84c34bc7290/src/main/java/io/github/gustavo2358/cobolexplorer/TableTextSemantics.java"
       ],
-      "observed_on": "2026-09-28",
-      "tree": "ffa288327dc4857e7926448fd26d810a69f5ee96",
+      "observed_on": "2026-09-30",
+      "tree": "2d51c78774e2b6a1341783245a644e6e5194a543",
       "blob_sha256": {
         "docs/domain/cobol-semantic-product.md": "7984688c5d53d502bbf8e1e4cc209f63562fbad9bfdd9a3d6f745c7f5c620385",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java": "1f1775f1c7e3a80ebbd401e9a2c58370cab802b1787618089d2ca3c6fa38e131",
@@ -394,7 +394,7 @@
         "docs/work/carddemo-control-w6.md": "f16b37d37798ab089362f65bdf0be2a74f04040e63c4ae59fc19237d6285cb2d",
         "docs/work/carddemo-control-w7.md": "c460fe01e3278f28ea608e0d785f81f5052ba20a0010a5d900cff21ad1add460"
       },
-      "canonical_ref": "main",
+      "canonical_ref": "fix/stage5-source-continuation",
       "logical_text_w1": "Optional SP 2.29/storage 1.9 proof; disabled mode remains SP 2.28/storage 1.8. Synthetic E2E and contract round-trip qualified.",
       "logical_text_w2": "Fixed textual aliases/ranges and existing AIR slice/concat contracts; local upstream FAST PASS; no corporate rerun.",
       "dependency_preservation": "Bounded nominal/value preservation; see docs/domain/dependency-preservation.md; AIR/IR unchanged.",
@@ -712,5 +712,6 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "Stage-5 review branch: shared PERFORM bodies using control.local@1 plus anonymous logical-root cells. SP 2.62, qualified source 1.6; strict review pins. No physical layout proof is added. See docs/work/shared-routine-bodies.md and docs/work/stage5-anonymous-logical-roots.md."
+  "implementation_state": "Stage-5 review branch: shared PERFORM bodies using control.local@1 plus anonymous logical-root cells. SP 2.62, qualified source 1.6; strict review pins. No physical layout proof is added. See docs/work/shared-routine-bodies.md and docs/work/stage5-anonymous-logical-roots.md.",
+  "metadata_scope": "Repository commits, trees, canonical_ref and evidence_level describe current pinned snapshots. Named earlier slices/campaigns remain historical evidence; review pins are not merged main."
 }
