@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "0f82608401e34b7e44b2efadd4cea7a79a4e5ead",
+      "commit": "7d4d6e93919bf65f2a9223551af7e592fdcf0ad9",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "2.62.0",
@@ -139,7 +139,7 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsConditionSyntax.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/TableTextSemantics.java"
       ],
-      "evidence_level": "Stage-5 frontend review branch: fixed-format complete operands and physical-margin quote continuation. SP 2.62 unchanged. Focused lexical/provenance tests and FAST PASS; campaign regression recorded in stage5-anonymous-logical-roots.md.",
+      "evidence_level": "Stage-5 frontend PR #77: fixed-format complete operands and column-72 quote continuation. SP 2.62 unchanged. Frontend FAST and qualification-local PASS (1264 Maven tests, 1 existing skip); CardDemo 73/73 unchanged. Final integration evidence is in analysis-cfg PR #57.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
         "https://github.com/Gustavo2358/proleap-poc/blob/4c00dea2a6bad1ba21076e55681f6038b80f8a47/docs/domain/cobol-semantic-product.md",

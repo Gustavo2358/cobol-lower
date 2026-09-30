@@ -66,3 +66,12 @@ workspace `.shared-routine-bodies/evidence/` (`runtime-02`, `final-replay`,
 Production source hashes are checked against the frozen runtime; later commits
 contain tests/docs/pins only. The work item remains IN_PROGRESS per repository
 policy until review and merge; implementation/qualification scope is complete.
+
+
+## Pre-existing failures found during review
+
+The same review campaign now includes the structural anonymous-root correction
+and frontend continuation PR #77. [Causes, tests and limits](stage5-anonymous-logical-roots.md)
+describe the additional scope; the original S5 measurements above remain the
+historical sharing comparison. The consumer PR #57 records the new comparison
+against that qualified stage-5 baseline.
