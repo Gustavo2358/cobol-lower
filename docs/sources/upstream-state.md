@@ -3,9 +3,11 @@
 ## Stage 5 review branch — 2026-09-30
 
 AIR `e0aef0e1928d88a74fe66b7a4d0af84556b84b19` (PR #23) transports existing
-`control.local@1`. Frontend review pin `1ee71b74f391dfc174d018b92b35b84c34bc7290` fixes fixed-format continuation and partial FILE route publication
+`control.local@1`. Frontend review pin `64904d0ca55c72435fb1ebb4ba4bbd97cd9ca939` also fixes ordinary SUPPRESS preprocessing, partial EVALUATE composition and CICS nominal-gap publication
 (SP 2.62 unchanged). This lower branch adds proved body sharing and requires the matching
 consumer in analysis-cfg PR #57. These are review pins, not integrated main.
+
+[Latest publication-fix qualification](../work/stage5-photo-publication-fixes.md).
 
 [Current evidence and limits](../work/shared-routine-bodies.md). Later sections
 retain historical context and do not override the current source lock.
