@@ -11,3 +11,15 @@ Only fixed PIC X/DISPLAY ordinary independent WORKING-STORAGE roots are eligible
 AIR wire/schema and air-java/analysis-ir are unchanged. The adapter retains legacy SP decoding and explicitly accepts the new extension; malformed coordinate proofs are rejected. The source-produced fixture tests projection and AIR JSON round-trip, with invalid proof mutations. Campaign design and empirical evidence live in artefatos-e2e/logical-text-w1-20260918.
 
 W2 needs a separate capture/alias/correlation design; this rule does not authorize child-to-child group copying. The downstream W1 pivot selects logical-only by default and isolates physical propagation behind explicit experimental opt-in. Corporate execution is not a blocking W1 acceptance gate by user decision on 2026-09-18. Synthetic source E2E and boundary tests qualify the new property; corporate ON/OFF observations are user-reported, not a new measured run. Ready for human review; lifecycle remains IN_PROGRESS until merge. The synthetic 10,000-group serializer exhaustion is NOT_MEASURED_FOR_ANALYSIS, not a requirement to optimize serialization here. No merge performed.
+
+### Anonymous structural roots
+
+A logical group root can be `01 FILLER`: its published Storage NodeId exists even
+though it has no nominal DataId. The lower allocates one internal TEXT object/cell
+per admitted anonymous group root, keyed by unit and NodeId and carrying its
+source provenance. It has no display name or DataLink and grants no physical
+byte allocation or layout proof. Named roots retain their established objects.
+Initialization composes named child values and reads the unknown root for unnamed
+fragments. MOVE updates the root and projects named views using the existing
+logical-family equations. Separate anonymous roots remain separate families;
+capture rebinding preserves this structural inventory without fabricating symbols.

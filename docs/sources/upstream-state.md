@@ -3,7 +3,7 @@
 ## Stage 5 review branch — 2026-09-30
 
 AIR `e0aef0e1928d88a74fe66b7a4d0af84556b84b19` (PR #23) transports existing
-`control.local@1`. Frontend remains merged `4c00dea2a6bad1ba21076e55681f6038b80f8a47`
+`control.local@1`. Frontend review pin `0f82608401e34b7e44b2efadd4cea7a79a4e5ead` fixes fixed-format continuation
 (SP 2.62). This lower branch adds proved body sharing and requires the matching
 consumer in analysis-cfg PR #57. These are review pins, not integrated main.
 

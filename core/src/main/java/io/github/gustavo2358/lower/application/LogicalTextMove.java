@@ -24,7 +24,7 @@ final class LogicalTextMove {
         var result=new ArrayList<Instruction>();
         for(var root:logical.views.values().stream().filter(v->v.node().equals(v.root())).sorted(Comparator.comparing(v->v.node().handle())).toList()) {
             if(logical.nodes.get(root.node()).kind()!=io.github.gustavo2358.lower.domain.StorageFacts.Kind.GROUP)continue;
-            var rootObject=data.index().get(logical.nodes.get(root.node()).data().orElseThrow()).object();
+            var rootObject=LogicalTextRoots.object(logical.nodes.get(root.node()),data);
             var id=new OperationId(unit,ids.id("operation","logical-initial-root",unit.localId(),root.node().handle()));
             var origin=origins.source("logical-initial-root",root.node().handle(),logical.nodes.get(root.node()).provenance());var f=new ExpressionsFor(id,origin);
             Expression value=null;BigInteger cursor=BigInteger.ZERO;
@@ -48,7 +48,7 @@ final class LogicalTextMove {
     static List<Instruction> translate(SpInput.MoveFact move,LogicalTextIndex logical,ScalarDataTranslator.Result data,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items) {
         var target=logical.byData.get(move.target().logicalWholeItem().orElseThrow());var root=logical.views.get(target.root());
-        var rootData=logical.nodes.get(root.node()).data().orElseThrow();var rootObject=data.index().get(rootData).object();
+        var rootObject=LogicalTextRoots.object(logical.nodes.get(root.node()),data);
         var statement=origins.source("statement",move.header().id().handle(),move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
         var targetOrigin=origins.source("operand",move.target().id().handle(),move.target().provenance());

@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "4c00dea2a6bad1ba21076e55681f6038b80f8a47",
+      "commit": "0f82608401e34b7e44b2efadd4cea7a79a4e5ead",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "2.62.0",
@@ -139,7 +139,7 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsConditionSyntax.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/TableTextSemantics.java"
       ],
-      "evidence_level": "Merged CardDemo values/control and review corrections. SP 2.62 / qualified source 1.6. Upstream pin is the actual merged main including documentation closure; production/tests/contracts are equivalent to the qualified review head. Qualification: 560 pipelines including CardDemo 73, PERFORM 39, Chaos 48, aliases 14, PERFORM adversaries 25; 18 new oracles in logical and IBM profiles. Zero candidate/support/provenance loss. Point 5 remains separate. See docs/work/carddemo-values-control.md.",
+      "evidence_level": "Stage-5 frontend review branch: fixed-format complete operands and physical-margin quote continuation. SP 2.62 unchanged. Focused lexical/provenance tests and FAST PASS; campaign regression recorded in stage5-anonymous-logical-roots.md.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
         "https://github.com/Gustavo2358/proleap-poc/blob/4c00dea2a6bad1ba21076e55681f6038b80f8a47/docs/domain/cobol-semantic-product.md",
@@ -712,5 +712,5 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "Merged CardDemo W0-W8 implementation. SP 2.57 admitted with historical profiles preserved; published FILE_POINT routes bind in the active context; source evidence 1.2 retains conditional reentry possibilities. modelAssumed and physical-memory limits remain unchanged. Current upstream main authority and integration evidence: docs/work/carddemo-control-integration.md."
+  "implementation_state": "Stage-5 review branch: shared PERFORM bodies using control.local@1 plus anonymous logical-root cells. SP 2.62, qualified source 1.6; strict review pins. No physical layout proof is added. See docs/work/shared-routine-bodies.md and docs/work/stage5-anonymous-logical-roots.md."
 }
