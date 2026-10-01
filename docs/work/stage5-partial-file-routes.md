@@ -1,6 +1,8 @@
 # STAGE5-PARTIAL-FILE-ROUTES
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Frontend PR #77 now preserves FILE destination roles as UNKNOWN_LOCAL when
 parser recovery did not prove normal control. This includes handlers whose

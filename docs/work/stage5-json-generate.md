@@ -1,6 +1,8 @@
 # STAGE5-JSON-GENERATE — checkpoint 4
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 This consumer only repins the frontend authority; production and wire contracts
 are unchanged. Frontend PR #77 admits the documented IBM JSON GENERATE grammar,

@@ -1,6 +1,8 @@
 # SHARED-ROUTINE-BODIES — stage 5 producer
 
-- status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+- status: DONE
 - scope: share proven equivalent PERFORM bodies using AIR local control; preserve specialized representations where context affects semantics. User authorized all checkpoints through completion without pauses, with separate PRs and no merge.
 
 ## Design fixed before implementation

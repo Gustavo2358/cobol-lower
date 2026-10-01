@@ -1,6 +1,8 @@
 # STAGE5-PHOTO-PUBLICATION-FIXES
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Draft #52 authority repin only; lower implementation and wire contracts unchanged.
 Frontend #77 now preserves SUPPRESS outside COPY, distinct WHEN groups under
