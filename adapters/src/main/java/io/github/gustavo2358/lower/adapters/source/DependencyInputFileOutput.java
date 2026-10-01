@@ -1,5 +1,7 @@
 package io.github.gustavo2358.lower.adapters.source;
 
+import io.github.gustavo2358.lower.adapters.transport.JsonFiles;
+
 import java.io.*;
 import java.nio.file.*;
 import java.security.*;
@@ -16,11 +18,12 @@ public final class DependencyInputFileOutput {
     public void write(FileLowering.Lowered lowered,LowerInput.Options options,Path destination)throws IOException {
         var directory=destination.getParent();var temporary=Files.createTempDirectory(directory,".dependency-input-");
         try {
-            var air=temporary.resolve("air.json");var source=temporary.resolve("source.json");var output=new AirFileOutput();var result=lowered.result();
+            var suffix=JsonFiles.compressed(destination)?".json.zst":".json";
+            var air=temporary.resolve("air"+suffix);var source=temporary.resolve("source"+suffix);var output=new AirFileOutput();var result=lowered.result();
             if(result.validation().orElseThrow().status()==io.github.gustavo2358.air.validation.ValidationResult.Status.INCOMPLETE_VALIDATION)output.writePartial(result.publication().orElseThrow(),air);
             else output.write(result.publication().orElseThrow(),air);
             new QualifiedSourceFileOutput().write(lowered,options,air,source);
-            var airBytes=Files.readAllBytes(air);var sourceBytes=Files.readAllBytes(source);var evidence=new QualifiedSourceJson().decode(sourceBytes);
+            var airBytes=JsonFiles.read(air);var sourceBytes=JsonFiles.read(source);var evidence=new QualifiedSourceJson().decode(sourceBytes);
             var occurrences=new HashSet<StatementId>();for(var unit:evidence.units())for(var occurrence:unit.occurrences())if(occurrence.namespace().equals("PROGRAM"))occurrences.add(occurrence.id());
             var links=new ArrayList<Map<String,Object>>();
             for(var link:result.statements()) {
@@ -29,14 +32,14 @@ public final class DependencyInputFileOutput {
                 if(occurrences.contains(statement))links.add(map("source",QualifiedSourceJson.value(statement),"operation",id(link.target()),"label",id(link.label()),"origin",id(link.origin())));
             }
             var mapper=new ObjectMapper();links.sort(Comparator.comparing(x->x.get("source").toString()+x.get("operation").toString()));
-            String airName="air-"+sha(airBytes)+".json",sourceName="source-"+sha(sourceBytes)+".json";
+            String airName="air-"+sha(airBytes)+suffix,sourceName="source-"+sha(sourceBytes)+suffix;
             var manifest=map("schema","dependency-input","version","1.0.0","air",map("path",airName,"sha256",sha(airBytes)),
                 "qualifiedSource",map("path",sourceName,"sha256",sha(sourceBytes)),"sourceSha256",evidence.source().sha256(),"correlations",links);
             if(destination.getFileName().toString().equals(airName)||destination.getFileName().toString().equals(sourceName))
                 throw new IllegalArgumentException("manifest conflicts with snapshot path");
             // Content-addressed snapshots are installed first; the manifest is the commit point.
             install(air,directory.resolve(airName));install(source,directory.resolve(sourceName));
-            var staged=temporary.resolve("manifest.json");Files.write(staged,mapper.writeValueAsBytes(manifest));
+            var staged=temporary.resolve("manifest.json");JsonFiles.write(staged,destination,mapper.writeValueAsBytes(manifest));
             Files.move(staged,destination,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);
         } finally {try(var files=Files.walk(temporary)){for(var path:files.sorted(Comparator.reverseOrder()).toList())Files.deleteIfExists(path);}}
     }

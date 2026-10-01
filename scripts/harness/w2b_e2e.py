@@ -14,7 +14,7 @@ from w1c_e2e import W1A
 ROOT=Path(__file__).resolve().parents[2]
 W2A='4ffabded1aad39316b8a6f337f732976fdb3ca3e'
 W2A_TREE='5880e174b33c85ba3f3cdbc70bd2d8dc7b1d567b'
-JARS=['org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar','org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar','ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar','ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar','com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar','com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar','com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar']
+JARS=['org/antlr/antlr4-runtime/4.13.2/antlr4-runtime-4.13.2.jar','org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar','ch/qos/logback/logback-core/1.6.3/logback-core-1.6.3.jar','ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar','com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar','com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar','com/github/luben/zstd-jni/1.5.7-20/zstd-jni-1.5.7-20.jar', 'com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar']
 
 
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -55,7 +55,7 @@ def main():
     for name in ('closed','open'):
         fixture=ROOT/'adapters/src/test/resources/sp/w2b'/(name+'.cbl');shutil.copyfile(fixture,execution/fixture.name);runs=[]
         for number in (1,2):
-            destination=out/(name+'-'+str(number));command=['java','-cp',producer_cp,'io.github.gustavo2358.cobolexplorer.ExplorerMain','--source',fixture.name,'--copybooks',str(w2/'corpus/cpy'),'--output',str(destination)]
+            destination=out/(name+'-'+str(number));command=['java','-cp',producer_cp,'io.github.gustavo2358.cobolexplorer.ExplorerMain','--json-compression', 'none', '--source',fixture.name,'--copybooks',str(w2/'corpus/cpy'),'--output',str(destination)]
             run=checked(command,execution,out/(name+'-'+str(number)+'-producer.log'));wire=destination/'cobol-semantic-product.json';raw=wire.read_bytes()
             if json.loads(raw)['contractVersion']!='1.4.0':raise RuntimeError('producer must publish real SP1.4')
             run['sp_sha256']=sha(raw)

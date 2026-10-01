@@ -1,5 +1,7 @@
 package io.github.gustavo2358.lower.adapters.sp;
 
+import io.github.gustavo2358.lower.adapters.transport.JsonFiles;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +17,7 @@ public final class SpFileInput {
     }
     public SpJsonDecoder.Result read(Path path) {
         if (path == null) return error();
-        try (var input = Files.newInputStream(path)) {
+        try (var input = JsonFiles.input(path)) {
             byte[] bytes = input.readAllBytes();
             return decoder.decode(bytes);
         } catch (IOException ex) { return error(); }
@@ -23,7 +25,7 @@ public final class SpFileInput {
     public CompilationJsonDecoder.Result decodeDocument(byte[] bytes){return documentDecoder.decode(bytes);}
     public CompilationJsonDecoder.Result readDocument(Path path){
         if(path==null)return new CompilationJsonDecoder.Rejected(error().diagnostic());
-        try(var input=Files.newInputStream(path)){return documentDecoder.decode(input.readAllBytes());}
+        try(var input=JsonFiles.input(path)){return documentDecoder.decode(input.readAllBytes());}
         catch(IOException e){return new CompilationJsonDecoder.Rejected(error().diagnostic());}
     }
     private static SpJsonDecoder.Rejected error() {

@@ -6,7 +6,7 @@
     {
       "id": "SRC-SP",
       "repository": "Gustavo2358/proleap-poc",
-      "commit": "cc1fb20a0e19284b8b97b44628403a74630bd466",
+      "commit": "e6d1fa7f54bee07469bdb7ebd4a98701ca68419b",
       "role": "input_contract",
       "contract_schema": "cobol-semantic-product",
       "contract_version": "2.62.0",
@@ -271,7 +271,7 @@
         "https://github.com/Gustavo2358/proleap-poc/blob/188300e78c792b8f39db0c4f04c03f4b1716273e/src/main/java/io/github/gustavo2358/cobolexplorer/TableTextSemantics.java"
       ],
       "observed_on": "2026-10-01",
-      "tree": "7016651d3186191e7c00dcbaf1b4b4b9c339014c",
+      "tree": "c5ee9ed915b373112b24f7eab25ff33e6d879400",
       "blob_sha256": {
         "docs/domain/cobol-semantic-product.md": "b8cf9ad2ca600f1730efb4ce3be44e28d2d8d57970ba8e25ba4ed7ad3a44ec80",
         "src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/transport/SemanticProductJsonWriter.java": "425f67a1ee4754a63380afafff2517bae18c19f7288465a3dde40db311cd657f",
@@ -407,7 +407,8 @@
       "dependency_preservation": "Bounded nominal/value preservation; see docs/domain/dependency-preservation.md; AIR/IR unchanged.",
       "partial_structural_facts_w5": "SP 2.36 structural PERFORM kind and independent target entry; decoder/preservation only, executable composition deferred to W6.",
       "control_composition_w7": "SP 2.37 publishes independently proved ordinary continuation relations; IF/EVALUATE arms and contextual completions remain independent. Historical wires retained.",
-      "cics_consumer_r7_r3": "Closed admission 2.40/2.41/2.42; CICS_HANDLER/CICS_ABEND typed input preservation; executable lowering NOT_READY; no state, replacement, dispatch or AIR change."
+      "cics_consumer_r7_r3": "Closed admission 2.40/2.41/2.42; CICS_HANDLER/CICS_ABEND typed input preservation; executable lowering NOT_READY; no state, replacement, dispatch or AIR change.",
+      "json_artifact_transport": "Zstandard .json.zst; JSON payload and SP contract version unchanged"
     },
     {
       "id": "SRC-HARNESS",

@@ -3,7 +3,7 @@ import subprocess
 
 
 def classpath(root, build):
-    jars = ["io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar",
+    jars = ["com/github/luben/zstd-jni/1.5.7-20/zstd-jni-1.5.7-20.jar", "io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar",
             "io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar",
             "com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar",
             "com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar",

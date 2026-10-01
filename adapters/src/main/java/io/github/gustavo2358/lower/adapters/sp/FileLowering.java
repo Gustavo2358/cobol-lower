@@ -1,5 +1,7 @@
 package io.github.gustavo2358.lower.adapters.sp;
 
+import io.github.gustavo2358.lower.adapters.transport.JsonFiles;
+
 import io.github.gustavo2358.lower.application.LowerInput;
 import io.github.gustavo2358.lower.application.LoweringResult;
 import java.nio.file.Path;
@@ -22,7 +24,7 @@ public final class FileLowering {
     }
     public Result lower(Path path, LowerInput.Options options, boolean evidence) {
         byte[] bytes=new byte[0];
-        if(evidence)try{bytes=java.nio.file.Files.readAllBytes(path);}catch(java.io.IOException ex){return new PhysicalFailure(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.INPUT_ERROR,"physical","$ file I/O"));}
+        if(evidence)try{bytes=JsonFiles.read(path);}catch(java.io.IOException ex){return new PhysicalFailure(new SpJsonDecoder.Diagnostic(SpJsonDecoder.Code.INPUT_ERROR,"physical","$ file I/O"));}
         final byte[] snapshot=bytes;
         return switch (evidence?reader.decodeDocument(snapshot):reader.readDocument(path)) {
             case CompilationJsonDecoder.Single decoded -> new Lowered(port.lower(decoded.input(), options),evidence?java.util.List.of(decoded.input()):java.util.List.of(),snapshot);
