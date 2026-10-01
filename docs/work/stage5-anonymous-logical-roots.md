@@ -1,6 +1,8 @@
 # STAGE5-ANONYMOUS-LOGICAL-ROOTS
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Scope: lower valid logical character families whose root has a structural NodeId
 and no nominal DataId (01 FILLER). Keep named roots and physical admission
