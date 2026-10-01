@@ -1,5 +1,18 @@
 # Estado upstream observado
 
+## Stage 5 review branch — 2026-09-30
+
+AIR `e0aef0e1928d88a74fe66b7a4d0af84556b84b19` (PR #23) transports existing
+`control.local@1`. Frontend review pin `188300e78c792b8f39db0c4f04c03f4b1716273e` also supports JSON GENERATE grammar/source alternatives after ordinary SUPPRESS, partial EVALUATE and CICS nominal-gap fixes
+(SP 2.62 unchanged). This lower branch adds proved body sharing and requires the matching
+consumer in analysis-cfg PR #57. These are review pins, not integrated main.
+
+[Latest JSON GENERATE qualification](../work/stage5-json-generate.md).
+
+[Current evidence and limits](../work/shared-routine-bodies.md). Later sections
+retain historical context and do not override the current source lock.
+
+
 ## Estado vigente — valores e controle após W8 integrados
 
 SP 2.62 e qualified-source-dependencies 1.6 estão integrados. Dependencies mantém

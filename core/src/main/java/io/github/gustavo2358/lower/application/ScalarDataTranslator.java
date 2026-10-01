@@ -11,9 +11,10 @@ final class ScalarDataTranslator {
                   Map<SpInput.DataId, LoweringResult.DataLink> index,
                   Map<SpInput.DataId,Memory.ViewBinding> views,
                   Map<io.github.gustavo2358.lower.domain.StorageFacts.BaseId,StorageId> physical,Map<SpInput.DataId,ObjectId> nominal,
-                  Map<SpInput.DataId,Integer> logicalTextExtents) {
+                  Map<SpInput.DataId,Integer> logicalTextExtents,
+                  Map<io.github.gustavo2358.lower.domain.StorageFacts.NodeId,ObjectId> anonymousLogicalRoots) {
         Result(List<Memory.ObjectDeclaration> objects,List<Memory.Storage> storage,Map<SpInput.DataId,LoweringResult.DataLink> index) {
-            this(objects,storage,index,Map.of(),Map.of(),index.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.of());
+            this(objects,storage,index,Map.of(),Map.of(),index.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.of(),Map.of());
         }
     }
     static Result translate(List<SpInput.DataFact> data, UnitId unit, LocalIds ids, SourceOrigins origins,
@@ -37,6 +38,6 @@ final class ScalarDataTranslator {
         var extents=new LinkedHashMap<SpInput.DataId,Integer>();
         for(var declaration:data)declaration.scalarText().ifPresent(text->extents.put(declaration.id(),text.logicalExtent()));
         return new Result(objects, cells, index,Map.of(),Map.of(),index.entrySet().stream()
-            .collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.copyOf(extents));
+            .collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey,e->e.getValue().object())),Map.copyOf(extents),Map.of());
     }
 }

@@ -19,8 +19,9 @@ public final class CicsFileAliasSuite {
             var p=result.publication().orElseThrow();
             var tree=JSON.readTree(new AirJson().encode(p)).path("publication").path("units").get(0);
             var terms=new HashMap<JsonNode,JsonNode>();for(var s:tree.path("sequences"))terms.put(s.path("label"),s.path("terminator"));
-            var todo=new ArrayDeque<JsonNode>();todo.add(tree.path("entries").get(0).path("initialLabel"));var seen=new HashSet<JsonNode>();var calls=new HashSet<String>();
-            while(!todo.isEmpty()) {var at=todo.removeFirst();if(!seen.add(at))continue;var t=terms.get(at);if(t.path("kind").asText().equals("invoke"))calls.add(t.path("target").path("name").asText());todo.addAll(FileCompositeFlowSuite.labels(t));}
+            var sequences=LocalControlOracle.sequences(p);var calls=new HashSet<String>();
+            for(var point:LocalControlOracle.reached(p))if(sequences.get(point.label()).terminator() instanceof Operations.Invoke invoke
+                &&invoke.target() instanceof Interactions.LiteralTarget target)calls.add(target.name());
             if(name.startsWith("handler")) {
                 need(calls.isEmpty(),"existing unqualified FILE condition remains an executable frontier "+name);
                 var source=((SpJsonDecoder.Decoded)decoded).input();

@@ -47,23 +47,36 @@ public final class FileCompositeFlowSuite {
                 }
             }
         }
+        record Flow(JsonNode label,List<JsonNode> returns) {Flow{returns=List.copyOf(returns);}}
+        List<Flow> successors(Flow point) {
+            var term=terms.get(point.label());var stack=point.returns();
+            if(term.path("kind").asText().equals("local.invoke")) {
+                var pushed=new ArrayList<>(stack);pushed.add(term.path("resume"));return List.of(new Flow(term.path("entry"),pushed));
+            }
+            if(term.path("kind").asText().equals("local.resume")) {
+                need(!stack.isEmpty(),"no unmatched body return on the ordinary fixture path");
+                return List.of(new Flow(stack.getLast(),stack.subList(0,stack.size()-1)));
+            }
+            need(!term.path("kind").asText().startsWith("local."),"oracle explicitly covers producer local operations");
+            return labels(term).stream().map(to->new Flow(to,stack)).toList();
+        }
         Set<JsonNode> reached(JsonNode entry,Set<JsonNode> forbidden) {
-            var seen=new HashSet<JsonNode>();var todo=new ArrayDeque<JsonNode>();todo.add(entry);
-            while(!todo.isEmpty()) {var at=todo.removeFirst();if(forbidden.contains(at)||critical.contains(at)||!seen.add(at))continue;todo.addAll(labels(terms.get(at)));}
-            return seen;
+            var seen=new HashSet<Flow>();var todo=new ArrayDeque<Flow>();todo.add(new Flow(entry,List.of()));
+            while(!todo.isEmpty()) {var at=todo.removeFirst();if(forbidden.contains(at.label())||critical.contains(at.label())||!seen.add(at))continue;todo.addAll(successors(at));}
+            return seen.stream().map(Flow::label).collect(java.util.stream.Collectors.toSet());
         }
         String call(JsonNode at) {
             var term=terms.get(at);if(!term.path("kind").asText().equals("invoke"))return "";
             return term.path("action").asText()+" "+term.path("target").path("name").asText();
         }
         void sequence(List<String> expected) {
-            record State(JsonNode label,int index) { }
-            var todo=new ArrayDeque<State>();todo.add(new State(start,0));var seen=new HashSet<State>();int exits=0;
+            record State(Flow point,int index) {JsonNode label(){return point.label();}}
+            var todo=new ArrayDeque<State>();todo.add(new State(new Flow(start,List.of()),0));var seen=new HashSet<State>();int exits=0;
             while(!todo.isEmpty()) {
                 var s=todo.removeFirst();if(critical.contains(s.label())||!seen.add(s))continue;var term=terms.get(s.label());int index=s.index();
                 var action=call(s.label());if(!action.isEmpty()) {need(index<expected.size()&&expected.get(index).equals(action),"success trace: expected "+expected+" index="+index+" got="+action);index++;}
                 if(term.path("kind").asText().equals("return")){need(index==expected.size(),"no early return/bypass");exits++;}
-                for(var to:labels(term))todo.addLast(new State(to,index));
+                for(var to:successors(s.point()))todo.addLast(new State(to,index));
             }
             need(exits>0,"ordinary completion exists");
         }

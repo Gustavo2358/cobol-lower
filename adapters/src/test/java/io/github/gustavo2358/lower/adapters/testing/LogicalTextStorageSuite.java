@@ -51,10 +51,61 @@ public final class LogicalTextStorageSuite {
             var fit=(Expressions.FitText)((Operations.Assign)instruction).value();
             check(extent(fit.value()).equals(fit.length()),"initialization covers the full root; unknown overlay tail must not become padding");
         }
+        anonymousRoots(decoder);
+        anonymousWrites(decoder);
         nestedAliases(decoder);
         multiReceivers(decoder);
         System.out.println("LOGICAL_TEXT_STORAGE=PASS noPhysicalProfile roundtrip=true negativeCases=7");
     }
+    private static void anonymousWrites(SpJsonDecoder decoder) throws Exception {
+        for(var name:List.of("two-roots","nested-alias","unknown-filler","multiple-receivers","perform-write")) {
+            var bytes=Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/anonymous-logical-root/"+name+".json")).readAllBytes();
+            var input=((SpJsonDecoder.Decoded)decoder.decode(bytes)).input();
+            var publication=RegionalTranslationSuite.lower(input).publication().orElseThrow();
+            var unit=publication.units().getFirst();
+            var roots=unit.objects().stream().filter(o->o.displayName().isEmpty()).map(Memory.ObjectDeclaration::id).toList();
+            check(roots.size()==(Set.of("two-roots","multiple-receivers").contains(name)?2:1),"anonymous family count: "+name);
+            check(new HashSet<>(roots).size()==roots.size(),"root identity cannot collide");
+            var values=new HashSet<String>();boolean updated=false;
+            for(var sequence:unit.sequences()) {
+                var state=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+                for(var instruction:sequence.instructions())if(instruction instanceof Operations.Assign assign) {
+                    var value=interpret(assign.value(),state);var object=((Places.ObjectPlace)assign.destination()).object();
+                    state.put(object,value);if(value!=null)values.add(value);
+                    if(roots.contains(object))updated=true;
+                }
+            }
+            check(updated,"anonymous root participates in initialization/write: "+name);
+            if(!name.equals("unknown-filler"))check(values.contains(name.equals("two-roots")?"PROGC001":"PROGB001"),"family assignment preserves new literal: "+name);
+        }
+    }
+
+    private static void anonymousRoots(SpJsonDecoder decoder) throws Exception {
+        for(var name:List.of("anonymous-root","named-root","anonymous-call","named-call")) {
+            var bytes=Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/anonymous-logical-root/"+name+".json")).readAllBytes();
+            var decoded=decoder.decode(bytes);
+            check(decoded instanceof SpJsonDecoder.Decoded,"anonymous logical SP admission");
+            var input=((SpJsonDecoder.Decoded)decoded).input();
+            var result=RegionalTranslationSuite.lower(input);
+            var publication=result.publication().orElseThrow();
+            var unit=publication.units().getFirst();
+            var anonymous=unit.objects().stream().filter(o->o.displayName().isEmpty()).toList();
+            check(anonymous.size()==(name.startsWith("anonymous")?1:0),"one internal object per unnamed group root");
+            check(anonymous.stream().allMatch(o->o.storage() instanceof Memory.CellBinding),"anonymous root is an abstract character cell, never a physical view");
+            check(unit.objects().stream().noneMatch(o->o.displayName().filter("FILLER"::equals).isPresent()),"FILLER is not a nominal symbol");
+            var entry=unit.entries().getFirst().initialLabel().orElseThrow();
+            var bootstrap=unit.sequences().stream().filter(seq->seq.label().equals(entry)).findFirst().orElseThrow();
+            var state=new HashMap<io.github.gustavo2358.air.model.Ids.ObjectId,String>();
+            for(var condition:unit.entries().getFirst().state().conditions())
+                if(condition.place() instanceof Places.ObjectPlace place && condition.value() instanceof Entries.LiteralInitial initial
+                        && initial.value().value() instanceof Values.TextValue text)state.put(place.object(),text.value());
+            for(var instruction:bootstrap.instructions())if(instruction instanceof Operations.Assign assign)
+                state.put(((Places.ObjectPlace)assign.destination()).object(),interpret(assign.value(),state));
+            var root=anonymous.isEmpty()?unit.objects().stream().filter(o->o.displayName().filter("MSG-GROUP"::equals).isPresent()).findFirst().orElseThrow():anonymous.getFirst();
+            check((name.endsWith("call")?"PROGA001":"TEST").equals(state.get(root.id())),"child initializer feeds structural root");
+        }
+    }
+
     private static void nestedAliases(SpJsonDecoder decoder) throws Exception {
         for(var name:List.of("nested-overlay","nested-overlay-perform","literal-fit")) {
             var bytes=Objects.requireNonNull(LogicalTextStorageSuite.class.getResourceAsStream("/sp/logical-alias-move/"+name+".json")).readAllBytes();

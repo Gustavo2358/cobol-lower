@@ -14,13 +14,11 @@ public final class AlternateEntrySuite {
     static ObjectNode wire(String name)throws Exception {try(var in=AlternateEntrySuite.class.getResourceAsStream("/sp/alternate-entries/"+name+".json")){return (ObjectNode)J.readTree(Objects.requireNonNull(in));}}
     static SpInput input(ObjectNode wire)throws Exception {var d=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(J.writeValueAsBytes(wire));if(!(d instanceof SpJsonDecoder.Decoded x))throw new AssertionError(d);return x.input();}
     static Set<String> names(Publication p,LabelId start) {
-        var sequences=new HashMap<LabelId,Sequence>();p.units().forEach(u->u.sequences().forEach(s->sequences.put(s.label(),s)));
-        var seen=new HashSet<LabelId>();var work=new ArrayDeque<LabelId>();work.add(start);var names=new TreeSet<String>();
-        while(!work.isEmpty()) {var id=work.removeFirst();if(!seen.add(id))continue;var t=sequences.get(id).terminator();
-            if(t instanceof Operations.Jump x)work.add(x.destination());
-            else if(t instanceof Operations.Branch x){work.add(x.trueDestination());work.add(x.falseDestination());}
-            else if(t instanceof Operations.Invoke x){if(x.target() instanceof Interactions.LiteralTarget target)names.add(target.name());TerminalSendSuite.knownDestinations(x.outcomes().known(),work);}
-            else if(t instanceof Operations.Opaque x)TerminalSendSuite.knownDestinations(x.envelope().control().known(),work);
+        var sequences=LocalControlOracle.sequences(p);var seen=new HashSet<LocalControlOracle.Point>();
+        var work=new ArrayDeque<LocalControlOracle.Point>();work.add(new LocalControlOracle.Point(start,List.of()));var names=new TreeSet<String>();
+        while(!work.isEmpty()) {var point=work.removeFirst();if(!seen.add(point))continue;
+            if(sequences.get(point.label()).terminator() instanceof Operations.Invoke call&&call.target() instanceof Interactions.LiteralTarget target)names.add(target.name());
+            work.addAll(LocalControlOracle.successors(point,sequences));
         }return names;
     }
     public static void main(String[] args)throws Exception {

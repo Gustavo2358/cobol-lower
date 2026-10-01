@@ -38,7 +38,10 @@ public final class CobolControlSuite {
                 need(calls.equals(Set.of("FIRST","SECOND")),"both invocations return");
                 var source=input.controlTopology().orElseThrow().outcomes().stream().filter(o->o.role().equals("next-sentence")).findFirst().orElseThrow().statement();
                 var firsts=new ArrayList<Set<String>>();
-                for(var link:result.statements())if(link.source().handle().equals(source)&&seqs.get(link.label()).terminator().header().id().equals(link.target())&&reached.contains(link.label()))firsts.add(firstCalls(link.label(),seqs));
+                var occurrences=new HashSet<LabelId>();
+                for(var link:result.statements())if(link.source().handle().equals(source)&&seqs.get(link.label()).terminator().header().id().equals(link.target())
+                    &&!(seqs.get(link.label()).terminator() instanceof Operations.LocalResume))occurrences.add(link.label());
+                for(var point:LocalControlOracle.reached(p))if(occurrences.contains(point.label()))firsts.add(LocalControlOracle.firstCalls(point,seqs));
                 need(firsts.size()==2&&firsts.contains(Set.of("FIRST"))&&firsts.contains(Set.of("SECOND")),"no cross return between PERFORM activations "+name+firsts);
             }
             if(name.startsWith("stop-perform"))need(seqs.values().stream().anyMatch(s->reached.contains(s.label())&&s.terminator() instanceof Operations.Opaque o&&o.envelope().control().known().equals(List.of(Control.HaltAlternative.INSTANCE))&&o.envelope().control().remainder() instanceof Scopes.NoControl),"closed terminal halt alternative");

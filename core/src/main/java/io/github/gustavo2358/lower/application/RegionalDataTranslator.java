@@ -222,10 +222,11 @@ final class RegionalDataTranslator {
             objects.add(new Memory.ObjectDeclaration(object,Optional.of(declaration.canonicalName()),type,binding,visibility,objectOrigin,
                 Evidence.CoverageStatus.ABSTRACTED,ScalarEvidence.limited(ids,unit.publication(),object,declaration.id().handle(),dataOrigin,Evidence.Dimension.STORAGE,uncertainties)));
         }
+        var anonymousRoots=LogicalTextRoots.allocate(source.logical(),objects,storage,unit,ids,origins,items,uncertainties);
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
         return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical),Map.copyOf(nominal),declarations.stream()
-            .filter(d->d.scalarText().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarText().orElseThrow().logicalExtent())));
+            .filter(d->d.scalarText().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarText().orElseThrow().logicalExtent())),anonymousRoots);
     }
     private static void renamesCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
             Map<StorageFacts.RelationId,OriginId> renamesOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {

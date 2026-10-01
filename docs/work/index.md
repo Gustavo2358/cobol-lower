@@ -87,3 +87,5 @@ Current: [WORK-LOWER-012](active/WORK-LOWER-012.yaml) — IN_PROGRESS; [MOVE dat
 [Scope and contract](file-composite-control.md); [qualification](file-composite-qualification.md).
 SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks.
 IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
+
+- [Stage5 JSON GENERATE — checkpoint4](stage5-json-generate.md): authority repin, source alternatives and qualification.

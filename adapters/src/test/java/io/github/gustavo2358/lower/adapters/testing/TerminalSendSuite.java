@@ -23,14 +23,7 @@ public final class TerminalSendSuite {
     static LoweringResult lower(ObjectNode j)throws Exception{return new CobolLowerer().lower(input(j),CobolLower.POSITIVE_OPTIONS);}
     static List<Operations.Opaque> sends(LoweringResult r){return r.publication().orElseThrow().units().stream().flatMap(u->u.sequences().stream()).map(Sequence::terminator).filter(Operations.Opaque.class::isInstance).map(Operations.Opaque.class::cast).filter(o->o.observedKind().equals("cics-terminal-send@1")).toList();}
     static Set<io.github.gustavo2358.air.model.Ids.LabelId> reached(Publication p) {
-        var seqs=new HashMap<io.github.gustavo2358.air.model.Ids.LabelId,Sequence>();p.units().forEach(u->u.sequences().forEach(s->seqs.put(s.label(),s)));
-        var seen=new HashSet<io.github.gustavo2358.air.model.Ids.LabelId>();var work=new ArrayDeque<io.github.gustavo2358.air.model.Ids.LabelId>();p.units().forEach(u->u.entries().forEach(e->e.initialLabel().ifPresent(work::add)));
-        while(!work.isEmpty()){var at=work.removeFirst();if(!seen.add(at))continue;var t=seqs.get(at).terminator();
-            if(t instanceof Operations.Jump x)work.add(x.destination());
-            else if(t instanceof Operations.Branch x){work.add(x.trueDestination());work.add(x.falseDestination());}
-            else if(t instanceof Operations.Invoke x)knownDestinations(x.outcomes().known(),work);
-            else if(t instanceof Operations.Opaque x)knownDestinations(x.envelope().control().known(),work);
-        }return seen;
+        return LocalControlOracle.reached(p).stream().map(LocalControlOracle.Point::label).collect(java.util.stream.Collectors.toSet());
     }
     static void knownDestinations(List<? extends Control.ControlAlternative> alternatives,Deque<io.github.gustavo2358.air.model.Ids.LabelId> work) {
         for(var alternative:alternatives) {
