@@ -469,7 +469,7 @@
     {
       "id": "SRC-AIR",
       "repository": "Gustavo2358/analysis-ir",
-      "commit": "2c7f31f19efbe3211a2aea5bbda90173a9666fe2",
+      "commit": "5cfa52b1b2cb98121fe7e124911a18fc77be6b52",
       "role": "normative_semantics",
       "semantic_version": "2.0.0",
       "paths": [
@@ -485,7 +485,7 @@
         "especificacao/12-codec-ibm1047.md",
         "especificacao/13-possibilidades-de-entrada.md"
       ],
-      "evidence_level": "POSITIVE_MEMORY_TOPOLOGY W1: positive memory identities, two-channel evidence, Nop transport and metadata-independent integrity; exact companion commit",
+      "evidence_level": "Local immutable compact-PERFORM checkpoint; guard contracts validated. Human merge review pending.",
       "json_binding": {
         "path": "bindings/json-v1.md",
         "version": "1.0.0",
@@ -525,7 +525,7 @@
     {
       "id": "SRC-AIR-JAVA",
       "repository": "Gustavo2358/air-java",
-      "commit": "6c4a6eb225fb4bb4fdc5871bc5232f03387ef099",
+      "commit": "268e22de7e3b6f74491414e43214b84763002e2d",
       "canonical_ref": "main",
       "role": "shared_model_validator_and_codec_not_normative_spec",
       "maven": {
@@ -562,7 +562,7 @@
         "air-model/src/main/java/io/github/gustavo2358/air/validation/ReferenceChecks.java",
         "air-model/src/test/java/io/github/gustavo2358/air/validation/BoundedBindingChecks.java"
       ],
-      "evidence_level": "Merged AIR #23/#24/#25: control.local@1, UTF-8 offset codec and CheckedPublication. Product content equals qualified 13518a709908eb3824ccd83d5c52d26cf83c1aac; AIR 2.0 / JSON 1.0 unchanged. Producer Fast and 560-case byte-preservation evidence reused; consumer repin receives its own Fast.",
+      "evidence_level": "Local immutable compact-PERFORM checkpoint; guard contracts validated. Human merge review pending.",
       "runtime_conformance_executed_for_this_package": false,
       "repository_url": "https://github.com/Gustavo2358/air-java",
       "file_urls": [

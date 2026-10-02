@@ -1,0 +1,25 @@
+{
+  "producer": "e6d1fa7f54bee07469bdb7ebd4a98701ca68419b",
+  "fixtures": {
+    "ctxboom-04": {
+      "sourceSha256": "f7369626a94a6aa667c9d0820d3a2acfebd7e623365621b6b45ccec1280cfc8d",
+      "spSha256": "172477403d40ada00743b8d0f3f667979ae3f5fe337451d07112e2175b9a59a7"
+    },
+    "ctxboom-08": {
+      "sourceSha256": "4020ef361b9ccec22428ead5d4ac4892b4e8981262e3a68a052c711f08fabab7",
+      "spSha256": "3a142f39f452141474ee8f15780e2b440b03e4b942e73058c0080ed999f8a59f"
+    },
+    "ctxboom-times": {
+      "sourceSha256": "60233f3d48c61cefe476464e954068099044edaab8987a397ef0442a87a60224",
+      "spSha256": "8f1375710683cf48d76dc5b5a660cd9046d4b8b3f92d829dce702399aa238da9"
+    },
+    "ctxboom-until": {
+      "sourceSha256": "ab3bf31800ce9d8f36a95c02e807c5bcc214cd31969e3b0067b3ed13c32f2c0b",
+      "spSha256": "93ce9d158a69c09e52409d4e2f179fe02046b987e88aa272c27075d69a1d5aaa"
+    },
+    "ctxboom-varying": {
+      "sourceSha256": "7bb6a9c1aaadcfeab012d14d2775d2b6e634514f538c5a2ab040d7ae37be643e",
+      "spSha256": "b37148f46767d5e059c162543e28c881134b199bbf1f1109c88acf482580c098"
+    }
+  }
+}

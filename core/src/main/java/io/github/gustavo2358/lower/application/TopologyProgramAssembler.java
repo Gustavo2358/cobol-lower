@@ -53,7 +53,7 @@ final class TopologyProgramAssembler {
         this.data=data;this.unit=unit;this.origins=origins;this.links=links;this.operands=operands;this.items=items;this.uncertainties=uncertainties;this.files=files;
         cicsState=input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()&&input.controlTopology().orElseThrow().conditionEvents().isEmpty()?null:
             new CicsExecutionState(input,plan.admission().handlerState().orElseThrow());
-        sharedBodies=new SharedRoutineBodies(input.controlTopology().orElseThrow(),topology,id->true);
+        sharedBodies=new SharedRoutineBodies(input.controlTopology().orElseThrow(),topology,id->true,cicsState==null);
         input.statements().forEach(s->facts.put(s.header().id().handle(),s));
         input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
         // A frontier with no licensed continuation cannot depend on a PERFORM
@@ -206,7 +206,8 @@ final class TopologyProgramAssembler {
                 var childIds=ids.activation(call.id());
                 var entry=topology.entry(call);
                 var resume=destination(call.resume(),context,fact,"resume");
-                var phases=new HashMap<String,LabelId>();phases.put("RESUME",resume);
+                boolean guarded=sharedBodies(context).guarded(call);
+                var phases=new HashMap<String,LabelId>();phases.put("RESUME",guarded?guardedCompletion(fact,call,ids):resume);
                 for(var phase:call.phases())phases.put(phase.id(),new LabelId(unit,ids.id("label","topology-phase",call.id(),phase.id())));
                 if(entry.kind()==TargetKind.OCCURRENCE) {
                     var share=sharedBodies(context).key(call);
@@ -220,6 +221,8 @@ final class TopologyProgramAssembler {
                 for(var phase:call.phases())phase(fact,phase,phases,context);
                 var origin=evidence(call.id(),call.proofs(),ids);
                 term=PerformSequenceAssembler.jump("topology-invoke",fact.header().id(),phases.get(call.entryPhase()),origin,unit,ids);
+                if(guarded)term=new Operations.LocalInvoke(term.header(),phases.get(call.entryPhase()),List.of(),resume,localFallback(),
+                    Optional.of(new Operations.ReentryGuard(occurrenceIds.id("activation","local-binding",unit.localId(),call.id()),reentryDestination(fact,call))));
             }
         } else if(context.support()!=null&&fact instanceof SpInput.CicsFact c&&c.command()==SpInput.CicsCommand.XCTL
                 &&published.stream().allMatch(o->o.kind()==OutcomeKind.UNKNOWN_LOCAL)&&(!cicsState.events(fact.header().id().handle()).isEmpty()||!cicsState.conditions.events(fact.header().id().handle()).isEmpty())) {
@@ -371,6 +374,7 @@ final class TopologyProgramAssembler {
         var header=new Operations.Header(h.id(),origin,h.coverage(),h.precision(),h.uncertainties());
         Terminator result=switch(term) {
             case Operations.Jump t -> new Operations.Jump(header,t.destination());
+            case Operations.LocalInvoke t -> new Operations.LocalInvoke(header,t.entry(),t.completionPorts(),t.resume(),t.fallback(),t.reentryGuard());
             case Operations.Branch t -> new Operations.Branch(header,t.predicate(),t.trueDestination(),t.falseDestination());
             case Operations.Opaque t -> new Operations.Opaque(header,t.observedKind(),t.knownOperands(),t.valueResults(),t.envelope());
             case Operations.Return t -> new Operations.Return(header,t.values());
@@ -411,6 +415,26 @@ final class TopologyProgramAssembler {
         var origin=evidence(call.id()+"/BODY",call.proofs(),parent.ids());
         var invoke=new Operations.LocalInvoke(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),entry,List.of(),resume,localFallback());
         sequences.add(new Sequence(at,List.of(),invoke,origin));PartialProgramAssembler.link(caller.header().id(),invoke,at,links,items);
+        return at;
+    }
+    /** The activation guard covers all PERFORM phases, including initialization and tests. */
+    private LabelId guardedCompletion(SpInput.StatementFact fact,Binding call,LocalIds ids) {
+        var at=new LabelId(unit,ids.id("label","guarded-completion",call.id(),"RESUME"));
+        if(synthetic.add(at)) {
+            var origin=evidence(call.id()+"/guarded-completion",call.proofs(),ids);
+            var op=new OperationId(unit,ids.id("operation","guarded-completion",call.id(),"RESUME"));
+            var term=new Operations.LocalResume(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),localFallback());
+            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
+        return at;
+    }
+    private LabelId reentryDestination(SpInput.StatementFact fact,Binding call) {
+        var ids=occurrenceIds.activation("reentry-guard:"+call.id());
+        var at=new LabelId(unit,ids.id("label","reentry-frontier",call.id(),"undefined"));
+        if(synthetic.add(at)) {
+            var term=undefinedReentry(fact,ids,call.region());
+            sequences.add(new Sequence(at,List.of(),term,term.header().origin()));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
         return at;
     }
     /** Required fallback stays conservative for consumers without local-control interpretation. */

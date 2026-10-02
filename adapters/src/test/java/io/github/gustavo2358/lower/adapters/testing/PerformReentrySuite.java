@@ -14,20 +14,6 @@ import java.util.*;
 /** Active binding identity, not a numeric depth limit or paragraph spelling. */
 public final class PerformReentrySuite {
     static void need(boolean b,String m){if(!b)throw new AssertionError(m);}
-    static Set<String> controlShape(Publication p) {
-        var shape=new TreeSet<String>();
-        for(var unit:p.units()) {
-            unit.entries().forEach(e->e.initialLabel().ifPresent(l->shape.add("entry/"+l.localId())));
-            for(var sequence:unit.sequences()) {
-                var term=sequence.terminator();var destinations=new ArrayDeque<LabelId>();
-                if(term instanceof Operations.Jump jump)destinations.add(jump.destination());
-                else if(term instanceof Operations.Branch branch){destinations.add(branch.trueDestination());destinations.add(branch.falseDestination());}
-                else if(term instanceof Operations.Opaque opaque)TerminalSendSuite.knownDestinations(opaque.envelope().control().known(),destinations);
-                else if(term instanceof Operations.Invoke invoke)TerminalSendSuite.knownDestinations(invoke.outcomes().known(),destinations);
-                shape.add(sequence.label().localId()+"/"+term.kind()+"/"+destinations.stream().map(LabelId::localId).toList());
-            }
-        }return shape;
-    }
     public static void main(String[] args)throws Exception {
         int cases=0,mutations=0;
         var names=List.of("reentry-direct","reentry-mutual","reentry-conditional","reentry-callers",
@@ -92,8 +78,9 @@ public final class PerformReentrySuite {
             }
             var old=j.deepCopy();old.put("contractVersion","2.56.0");old.path("controlTopology").path("bindings").forEach(b->((ObjectNode)b).remove("reentryPolicy"));
             var historic=(SpJsonDecoder.Decoded)CobolControlSuite.decode(old);need(historic.input().controlTopology().orElseThrow().bindings().stream().allMatch(b->b.reentryPolicy()==ControlTopology.ReentryPolicy.UNSPECIFIED),"historical missing policy stays unspecified");
-            var historical=new CobolLowerer().lower(historic.input(),CobolLower.POSITIVE_OPTIONS).publication().orElseThrow();
-            need(controlShape(p).equals(controlShape(historical)),"policy/source summaries do not invent executable edges "+name);
+            var historicalResult=new CobolLowerer().lower(historic.input(),CobolLower.POSITIVE_OPTIONS);
+            var historical=historicalResult.publication().orElseThrow();
+            ControlLanguageOracle.equivalent(result,historicalResult,name);
             need(historical.uncertainties().stream().noneMatch(u->u.code().equals("cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED")),"no source policy guessed for historical input");
             if(name.startsWith("reentry-"))need(historical.uncertainties().stream().anyMatch(u->u.code().equals("cobol-lower:TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE")),"historical limitation remains explicit");
             cases++;

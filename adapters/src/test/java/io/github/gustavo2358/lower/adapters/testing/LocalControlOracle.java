@@ -16,6 +16,12 @@ final class LocalControlOracle {
     static List<Point> successors(Point at,Map<LabelId,Sequence> seqs,boolean open) {
         var t=Objects.requireNonNull(seqs.get(at.label())).terminator();var stack=at.stack();
         if(t instanceof Operations.LocalInvoke i) {
+            if(i.reentryGuard().isPresent()) {
+                var guard=i.reentryGuard().orElseThrow();
+                for(var frame:stack)if(frame.header().id().unit().equals(i.header().id().unit())
+                        &&frame.reentryGuard().map(g->g.activationKey().equals(guard.activationKey())).orElse(false))
+                    return List.of(new Point(guard.destination(),stack));
+            }
             if(stack.stream().anyMatch(frame->frame.header().id().equals(i.header().id())))throw new AssertionError("producer emitted recursive shared control");
             var pushed=new ArrayList<>(stack);pushed.add(i);return List.of(new Point(i.entry(),pushed));
         }
