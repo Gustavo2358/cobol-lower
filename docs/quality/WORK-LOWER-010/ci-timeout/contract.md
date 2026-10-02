@@ -7,7 +7,7 @@ sem amend/rewrite e sem iniciar o checkpoint seguinte.
 Commit inicial: `989637a7fd840f43aaf04abce299c839b82fcb55`.
 [Certificado original](initial-certificate.json) preservado byte a byte e no commit.
 [Run 34633251413](https://github.com/Gustavo2358/cobol-lower/actions/runs/34633251413)
-atingiu o limite operacional de 30 minutos. [Log bruto](ci-timeout.log) e
+atingiu o limite operacional de 30 minutos. [Log bruto](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/ci-timeout/ci-timeout.log) e
 [recibo terminal](ci-timeout-run.json) são preservados sem editar a saída.
 Os grupos anteriores passaram, com restauração e segundo GREEN. O cancelamento
 ocorreu após CI BOOTSTRAP CHALLENGE e antes do resultado final de CALL CHALLENGE.

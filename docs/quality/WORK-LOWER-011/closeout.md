@@ -27,7 +27,7 @@ verified after merge. Protected maps include modes, object types and blob IDs.
 Full trees of the qualified product and reviewed documentation successor differ;
 their protected product blobs are identical. Relation: DOCUMENTATION_ONLY_SUCCESSOR.
 The receipt verifier reports `full_executed_on_current_head=false` for the review
-successor ([verification](closure/verify-review.log.gz)).
+successor ([verification](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-011/closure/verify-review.log.gz)).
 
 This administrative record is a documentation-only successor of the product merge.
 Its exact commit/tree and DOCS_ONLY remote receipt are recorded in the final task
@@ -42,7 +42,7 @@ exact upstream bootstrap, docs, full semantic regression, performance/capacity,
 architecture, complete harness, 76 historical challenges, 26 W2B challenges, real
 W2A producers, restoration/second GREEN and Git/certificate. No heavy gate was run
 in this closure, locally or remotely. [Original handoff](handoff.md),
-[bundle](local-qualification-bundle.json), [original archive](local-qualification.tar.gz).
+[bundle](local-qualification-bundle.json), [original archive](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-011/local-qualification.tar.gz).
 
 - Receipt SHA-256: `b962a4377f7eabc2cfa0de8f86884057456012db8bc7cb50f356dbfd8331dadd`.
 - Archive SHA-256: `3bc7919aaedd72479fce0d617ffeba53ea7a59facfa9354895ca5d7dffeb9180`.
@@ -56,7 +56,7 @@ event `push`, head and checkout `2b7fa3a5cee865eef5007d6d870618e032047e1e`.
 Classification CODE_OR_HARNESS_CHANGE against the former main is expected because
 the merge includes all W2B changes. FAST gate 108.879 seconds; job 17:20:46–17:22:43 UTC
 on 2026-09-12. `qualification_executed=false`. The only executed profile was FAST.
-[Bound receipt](closure/merge-receipt.json), [raw log](closure/merge.log.gz),
+[Bound receipt](closure/merge-receipt.json), [raw log](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-011/closure/merge.log.gz),
 [workflow run](closure/merge-run.json), [jobs](closure/merge-jobs.json),
 [checks](closure/merge-checks.json).
 

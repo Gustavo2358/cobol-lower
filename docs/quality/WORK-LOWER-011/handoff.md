@@ -43,7 +43,7 @@ outcomes, fitting and real statement origins remain intact.
 Both real W2A publications are STRUCTURALLY_VALID with no INVALID_IR findings and four
 semantic obligations each: I-59, I-09, I-56, I-23/I-56. These remain open; global coverage
 is PARTIAL. The shared W2C codec preserves whole Publication equality and byte-identical
-re-encode. [Read-only publication audit](final-publication-audit.log.gz).
+re-encode. [Read-only publication audit](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-011/final-publication-audit.log.gz).
 
 Product files: SpInput; EntryGobackAdmission; CallAdmission; CallLowerer;
 CallSequenceAssembler; CanonicalRevision; CobolLowerer; new IfAdmission, IfLowerer,
@@ -92,7 +92,7 @@ to historical W1C outputs ([hash comparison](w1-historical-air-comparison.json))
 W2A closed/open run twice through SP1.4, lower, CLI, independent AIR oracle and W2C codec;
 SP/AIR are deterministic. No analysis-cfg execution.
 
-[Local evidence archive](local-qualification.tar.gz) contains the original receipt and
+[Local evidence archive](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-011/local-qualification.tar.gz) contains the original receipt and
 761 raw evidence files; [bundle integrity](local-qualification-bundle.json) binds:
 
 - Receipt SHA-256: `b962a4377f7eabc2cfa0de8f86884057456012db8bc7cb50f356dbfd8331dadd`.
