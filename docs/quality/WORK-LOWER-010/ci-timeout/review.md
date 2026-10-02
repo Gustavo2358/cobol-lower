@@ -5,12 +5,12 @@ Delta desde `989637a7fd840f43aaf04abce299c839b82fcb55`: timeout do job 30 → 45
 minutos, comentário corrigido, PR11 nos metadados atuais e nova evidência do mesmo
 CP0. Não há alteração produtiva, de testes, comandos dos gates ou source lock.
 
-[Comparação estrutural YAML e bytes](workflow-check.log) prova que somente o valor
+[Comparação estrutural YAML e bytes](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/ci-timeout/workflow-check.log) prova que somente o valor
 operacional mudou no workflow. O limite remoto do contrato segue 3600s. O timeout
-observado é o contracaso operacional, preservado no [log](ci-timeout.log) e
+observado é o contracaso operacional, preservado no [log](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/ci-timeout/ci-timeout.log) e
 [recibo](ci-timeout-run.json); não se removeu teste nem se converteu timeout em PASS.
 
-O [full canônico reexecutado](full.log) passou, incluindo 175 testes do harness,
+O [full canônico reexecutado](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/ci-timeout/full.log) passou, incluindo 175 testes do harness,
 76 desafios restaurados e segundo GREEN, regressões semânticas/performance,
 arquitetura e Git. O desafio de política do workflow continua presente.
 SP/AIR E2E e Maven clean verify do primeiro candidato continuam aplicáveis porque

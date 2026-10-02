@@ -41,8 +41,8 @@ oracle; both independent runs produce publication `66cf27c9e8562a9a8d46624b2412d
 SP SHA-256: `202ce49d1a632ab2997bd8d9beb0300c4c81bfd6935e0cdfa64a564a844f3a3e`.
 [Measurements](measurements.json) include the single-string case (33,554,433
 characters preserved, 33,559,606 SP bytes) and heap telemetry. The exact raw RED
-and first GREEN are in [RED](logs/initial-red.log.gz) and
-[GREEN](logs/first-green.log.gz).
+and first GREEN are in [RED](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-007/logs/initial-red.log.gz) and
+[GREEN](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-007/logs/first-green.log.gz).
 
 [capacity_challenge.py](../../../scripts/harness/capacity_challenge.py) reintroduces
 file32MiB, decoder32MiB, nodes1.5M and visits250k separately. Each experiment must

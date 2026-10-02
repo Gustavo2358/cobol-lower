@@ -14,17 +14,17 @@ W1B real merge `2a37f5e980ba25fdc79614a66030a84d8bf5b8c9`, tree
 `8d248f4ccf207eb7b609aa9ff0cdbcd512e526c8`. PR9 MERGED confirmado antes da
 branch e reconsultado no recibo [remoto](w1b-remote-pr.json).
 [Tree](w1b-remote-merge.json), [baseline remota](lower-main-remote.json),
-[bootstrap](bootstrap.log) e [receipt dos JARs](air-provenance.json).
+[bootstrap](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/bootstrap.log) e [receipt dos JARs](air-provenance.json).
 O build usa Maven repo isolado, nunca aceita apenas o nome SNAPSHOT como prova.
 
-- RED1: [dinâmico](red1-dynamic-x8.log) e [literal](red1-literal.log), CLI baseline,
+- RED1: [dinâmico](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/red1-dynamic-x8.log) e [literal](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/red1-literal.log), CLI baseline,
   `UNSUPPORTED_CONTRACT`, exit3, sem AIR. Código lower é a baseline exata;
   foi compilado com os JARs W1B isolados. A rejeição é anterior à construção AIR;
   esse experimento não alega uso do antigo pin Maven CP5.
 - RED2: decoder 1.3 já materializa CallFact; lowering antigo retorna
-  `UNSUPPORTED_SLICE`, sem Publication: [literal](red-decoder-only-literal.log).
+  `UNSUPPORTED_SLICE`, sem Publication: [literal](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/red-decoder-only-literal.log).
 - RED3: o mesmo estágio X8 recusa FITTED_TEXT por exigir FULL_IDENTITY e
-  extensões idênticas: [log](red-decoder-only-dynamic-x8.log).
+  extensões idênticas: [log](https://github.com/Gustavo2358/cobol-lower/blob/6656f2a059dd14243223d1de16080835869b087a/docs/quality/WORK-LOWER-010/red-decoder-only-dynamic-x8.log).
   [Probe](DecoderOnlyRed.java.txt), [patch do estágio](decoder-only.patch),
   [Wire13 novo daquele estágio](decoder-only-Wire13.java.txt),
   [hash do ScalarMoveAdmission baseline](baseline-scalar-sha256.txt).
