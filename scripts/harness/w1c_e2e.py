@@ -34,9 +34,9 @@ def main():
             'ch/qos/logback/logback-classic/1.6.3/logback-classic-1.6.3.jar',
             'com/fasterxml/jackson/core/jackson-core/2.22.2/jackson-core-2.22.2.jar',
             'com/fasterxml/jackson/core/jackson-databind/2.22.2/jackson-databind-2.22.2.jar',
-            'com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar']
+            'com/github/luben/zstd-jni/1.5.7-20/zstd-jni-1.5.7-20.jar', 'com/fasterxml/jackson/core/jackson-annotations/2.22/jackson-annotations-2.22.jar']
     cp = ':'.join([str(producer/'target/classes')] + [str(args.m2.resolve()/j) for j in jars])
-    lower_jars = jars[-3:] + [
+    lower_jars = [j for j in jars if j.startswith(('com/fasterxml/', 'com/github/luben/'))] + [
         'io/github/gustavo2358/air-java/0.1.0-SNAPSHOT/air-java-0.1.0-SNAPSHOT.jar',
         'io/github/gustavo2358/air-json/0.1.0-SNAPSHOT/air-json-0.1.0-SNAPSHOT.jar',
         'com/dynatrace/hash4j/hash4j/0.30.0/hash4j-0.30.0.jar']
@@ -57,7 +57,7 @@ def main():
         for run in (1, 2):
             output = args.out/f'{source.stem}-{run}'
             command = ['java', '-cp', cp, 'io.github.gustavo2358.cobolexplorer.ExplorerMain',
-                       '--source', source.name, '--copybooks', str(producer/'corpus/cpy'), '--output', str(output)]
+                       '--json-compression', 'none', '--source', source.name, '--copybooks', str(producer/'corpus/cpy'), '--output', str(output)]
             result = subprocess.run(command, cwd=execution, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             (args.out/f'{source.stem}-{run}.log').write_bytes(result.stdout)
             wire = output/'cobol-semantic-product.json'

@@ -1,5 +1,7 @@
 # cobol-lower
 
+[Artefatos `.json.zst`: uso, identidade e compatibilidade](docs/engineering/json-zstd.md).
+
 Caminho corrente: `CobolLowerer` prioriza `PartialProgramLowerer` para SP composicional
 (contrato pinado SP 2.20.0/storage 1.7.0). Inclui tradução regional, CICS e evidência
 de entrada. [Roteamento FILE-DEPENDENCIES](docs/domain/file-dependencies.md).
@@ -48,14 +50,14 @@ Depois do bootstrap acima, com Java 21 selecionado, instale o reactor no mesmo r
 mvn -B -ntp "-Dmaven.repo.local=$LOWER_BUILD_ROOT/m2" install
 ```
 
-Execute da raiz do cobol-lower (o nome lógico do comando é `cobol-lower <semantic-product.json> <air.json>`):
+Execute da raiz do cobol-lower (o nome lógico do comando é `cobol-lower <semantic-product.json.zst> <air.json.zst>`):
 
 ```sh
 mvn -q -ntp -f adapters/pom.xml \
   "-Dmaven.repo.local=$LOWER_BUILD_ROOT/m2" \
   org.codehaus.mojo:exec-maven-plugin:3.5.0:java \
   -Dexec.mainClass=io.github.gustavo2358.lower.adapters.cli.CobolLower \
-  -Dexec.args="adapters/src/test/resources/sp/cobol-semantic-product.json /tmp/goback.air.json"
+  -Dexec.args="adapters/src/test/resources/sp/cobol-semantic-product.json /tmp/goback.air.json.zst"
 ```
 
 O `main` chama `System.exit(run(...))`; o processo Maven preserva esse exit code.
@@ -68,7 +70,7 @@ mvn -q -ntp -f adapters/pom.xml \
   -DincludeScope=runtime -Dmdep.outputFile=target/runtime-classpath.txt
 java -cp "adapters/target/classes:$(cat adapters/target/runtime-classpath.txt)" \
   io.github.gustavo2358.lower.adapters.cli.CobolLower \
-  "adapters/src/test/resources/sp/cobol-semantic-product.json" "/tmp/goback.air.json"
+  "adapters/src/test/resources/sp/cobol-semantic-product.json" "/tmp/goback.air.json.zst"
 ```
 
 | Exit | Resultado |

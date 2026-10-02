@@ -1,5 +1,7 @@
 package io.github.gustavo2358.lower.adapters.air;
 
+import io.github.gustavo2358.lower.adapters.transport.JsonFiles;
+
 import io.github.gustavo2358.air.json.AirJson;
 import io.github.gustavo2358.air.model.Publication;
 import java.io.IOException;
@@ -27,7 +29,9 @@ public final class AirFileOutput {
         Path target = destination.toAbsolutePath();
         Path temporary = files.temporary(target.getParent());
         try {
-            files.write(temporary, bytes);
+            if (JsonFiles.compressed(target)) {
+                try (var out = JsonFiles.output(files.open(temporary), target)) { out.write(bytes); }
+            } else files.write(temporary, bytes);
             try {
                 files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
             } catch (AtomicMoveNotSupportedException ex) {
@@ -46,6 +50,7 @@ public final class AirFileOutput {
             if (directory == null) throw new IOException("destination must name a file below a directory");
             return Files.createTempFile(directory, ".cobol-lower-air-", ".tmp");
         }
+        java.io.OutputStream open(Path path) throws IOException { return Files.newOutputStream(path); }
         void write(Path path, byte[] bytes) throws IOException { Files.write(path, bytes); }
         void move(Path source, Path target, CopyOption... options) throws IOException { Files.move(source, target, options); }
         void delete(Path path) throws IOException { Files.deleteIfExists(path); }
