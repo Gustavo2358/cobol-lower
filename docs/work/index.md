@@ -1,3 +1,5 @@
+[JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #54; qualificação, compatibilidade e benchmark completo. O PR registra a integração.
+
 [Integração atual — DONE / MERGED](analyzer-integration-20261001.md): lower #52, produtores em main e corpos compartilhados. As entradas anteriores abaixo são históricas.
 
 [CardDemo values/control — DONE / MERGED](carddemo-values-control-integration.md): capabilities 1–4 and review corrections integrated; point 5 is a separate campaign.

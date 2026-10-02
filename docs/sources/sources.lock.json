@@ -139,7 +139,7 @@
         "src/main/java/io/github/gustavo2358/cobolexplorer/CicsConditionSyntax.java",
         "src/main/java/io/github/gustavo2358/cobolexplorer/TableTextSemantics.java"
       ],
-      "evidence_level": "Merged frontend #77/#78; source/build/grammar/test content equals qualified 188300e78c792b8f39db0c4f04c03f4b1716273e. Checkpoint-4 Fast/full and 560-SP evidence reused; runtime effects remain unknown.",
+      "evidence_level": "JSON Zstandard qualification: fixed FAST, 14 integrated cases, 12 adversarial/auxiliary CLI checks and 73 CardDemo variants twice per format. Logical products preserved; PARTIAL and runtime limits remain. See docs/engineering/json-zstd.md. Earlier named campaign evidence remains historical.",
       "repository_url": "https://github.com/Gustavo2358/proleap-poc",
       "file_urls": [
         "https://github.com/Gustavo2358/proleap-poc/blob/188300e78c792b8f39db0c4f04c03f4b1716273e/docs/domain/cobol-semantic-product.md",
@@ -721,5 +721,5 @@
     }
   ],
   "implementation_state": "Stage-5 review branch: shared PERFORM bodies using control.local@1 plus anonymous logical-root cells. SP 2.62, qualified source 1.6; strict review pins. No physical layout proof is added. See docs/work/shared-routine-bodies.md and docs/work/stage5-anonymous-logical-roots.md.",
-  "metadata_scope": "Current SRC-SP and SRC-AIR-JAVA commits and trees identify merged main revisions. Named earlier campaigns and separately pinned reference snapshots remain historical evidence. See docs/work/analyzer-integration-20261001.md."
+  "metadata_scope": "Current producer commits are immutable JSON Zstandard qualification pins, integrated in frontend #80 and lower #54 in producer-first order. They need not equal the later documentation/merge HEAD. Earlier named campaigns, file URLs and reference snapshots remain historical. See docs/engineering/json-zstd.md."
 }
