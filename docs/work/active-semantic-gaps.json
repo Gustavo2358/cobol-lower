@@ -5,7 +5,9 @@
   "scope": [
     "SP 2.63 exact decoder admission",
     "positive proof validation for localized diagnostics",
-    "bilateral fixture and CardDemo regression"
+    "bilateral fixture and CardDemo regression",
+    "historical wire gap obligations preserved before SP 2.63 admission"
   ],
-  "notes": "Implementation, bilateral fixture and final 73-source regression passed; review and merge pending. Frontend PR #86; exact producer pin in sources.lock.json."
+  "notes": "Review P2 reproduced and fixed in decoder. Five historical rejection cases, positive SP 2.62/2.63 products, FAST and six selected E2E cases passed. Full 73-source evidence is prior qualification; see docs/domain/active-gap-admission.md. PR #58 remains open; no merge.",
+  "pr": "https://github.com/Gustavo2358/cobol-lower/pull/58"
 }

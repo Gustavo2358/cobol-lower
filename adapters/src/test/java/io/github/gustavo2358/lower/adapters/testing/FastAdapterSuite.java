@@ -8,6 +8,7 @@ public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
         ActiveGapsSuite.main(args);
+        GapVersionBoundarySuite.main(args);
         ZstdTransportSuite.main(args);
         MoveEffectSuite.main(args);
         SqlDispatchSuite.main(args);

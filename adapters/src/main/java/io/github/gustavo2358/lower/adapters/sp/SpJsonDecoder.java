@@ -671,6 +671,8 @@ public final class SpJsonDecoder {
             }
             if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
                 input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies),java.util.Optional.ofNullable(nominalValues));
+            // Normalized facts use current admission; the received wire still owes its historical diagnostics.
+            if (!receivedVersion.equals("2.63.0")) requireHistoricalGaps(input, receivedVersion);
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");
@@ -755,6 +757,23 @@ public final class SpJsonDecoder {
     private static void logical14(Wire14.LogicalDocument value) {
         if (value.logicalExtent() < 0 || value.logicalExtent() != value.value().codePointCount(0, value.value().length()))
             throw new PhysicalShape("$/logicalValue/logicalExtent");
+    }
+
+    private static void requireHistoricalGaps(SpInput input, String version) {
+        var localized = new java.util.HashSet<SpInput.StatementId>();
+        var structural = new java.util.HashSet<SpInput.StatementId>();
+        for (var gap : input.gaps()) {
+            localized.add(gap.statement());
+            if (gap.scope() == SpInput.GapScope.STRUCTURE) structural.add(gap.statement());
+        }
+        for (var statement : input.statements()) {
+            var header = statement.header();
+            String location = "$/gaps/" + header.id().handle() + ": SP " + version;
+            if (header.coverage() != SpInput.CoverageStatus.MODELED && !localized.contains(header.id()))
+                throw new PhysicalShape(location + " requires a localized gap for non-MODELED coverage");
+            if (header.containment().branch() == SpInput.Branch.UNKNOWN && !structural.contains(header.id()))
+                throw new PhysicalShape(location + " requires a STRUCTURE gap for UNKNOWN containment");
+        }
     }
 
     private static void requireCoherent15(Wire15.Document wire) {
