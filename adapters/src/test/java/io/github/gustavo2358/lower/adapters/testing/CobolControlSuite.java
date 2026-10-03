@@ -40,7 +40,7 @@ public final class CobolControlSuite {
                 var firsts=new ArrayList<Set<String>>();
                 var occurrences=new HashSet<LabelId>();
                 for(var link:result.statements())if(link.source().handle().equals(source)&&seqs.get(link.label()).terminator().header().id().equals(link.target())
-                    &&!(seqs.get(link.label()).terminator() instanceof Operations.LocalResume))occurrences.add(link.label());
+                    &&seqs.get(link.label()).terminator() instanceof Operations.Jump)occurrences.add(link.label());
                 for(var point:LocalControlOracle.reached(p))if(occurrences.contains(point.label()))firsts.add(LocalControlOracle.firstCalls(point,seqs));
                 need(firsts.size()==2&&firsts.contains(Set.of("FIRST"))&&firsts.contains(Set.of("SECOND")),"no cross return between PERFORM activations "+name+firsts);
             }

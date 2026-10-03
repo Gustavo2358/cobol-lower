@@ -1,0 +1,43 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-goto-fanout-10.json",
+  "sourceSha256" : "b16246aaeab5abb21831a4bf0a4c126fb713b7297bf8be96773daad7d5b9bbe1",
+  "variant" : "published",
+  "states" : [ {
+    "statement:11:opaque" : 1
+  }, {
+    "statement:0:assign" : 2,
+    "statement:12:return" : 3,
+    "statement:1:assign" : 4,
+    "statement:2:assign" : 5,
+    "statement:3:assign" : 6,
+    "statement:4:assign" : 7,
+    "statement:5:assign" : 8,
+    "statement:6:assign" : 9,
+    "statement:7:assign" : 10,
+    "statement:8:assign" : 11,
+    "statement:9:assign" : 12
+  }, {
+    "statement:10:invoke" : 13
+  }, { }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:10:invoke" : 13
+  }, {
+    "statement:23:return" : 3
+  } ]
+}

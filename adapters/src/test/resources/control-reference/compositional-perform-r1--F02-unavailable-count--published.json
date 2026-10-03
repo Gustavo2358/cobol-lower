@@ -1,0 +1,11 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-unavailable-count.json",
+  "sourceSha256" : "5c097f9252b4ba876446172c936af38d72d787f3d90c17164c35363b345303cc",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:opaque" : 2
+  }, { } ]
+}

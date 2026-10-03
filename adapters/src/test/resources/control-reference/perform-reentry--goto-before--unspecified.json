@@ -1,0 +1,9 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/goto-before.json",
+  "sourceSha256" : "20a4e3ce218d7055c7e3556891a01a016ef99279097bd7f4fc8357c12e3f9876",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:5:return" : 1
+  }, { } ]
+}

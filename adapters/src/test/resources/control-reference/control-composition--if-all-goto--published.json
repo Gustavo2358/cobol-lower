@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/if-all-goto.json",
+  "sourceSha256" : "1af73a954da1ba316ec0ca87672ad8a8d47a8dd42dc845897e2515d2f5394e2a",
+  "variant" : "published",
+  "states" : [ {
+    "statement:5:branch" : 1
+  }, {
+    "statement:2:assign" : 2,
+    "statement:3:assign" : 3
+  }, {
+    "statement:4:invoke" : 4
+  }, {
+    "statement:4:invoke" : 4
+  }, {
+    "statement:11:return" : 5
+  }, { } ]
+}

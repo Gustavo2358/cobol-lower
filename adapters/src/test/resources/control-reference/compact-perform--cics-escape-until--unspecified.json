@@ -1,0 +1,143 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/cics-escape-until.json",
+  "sourceSha256" : "ff81b1096dfd39718b7611db31b665b4b17dcf569196040155034727fc0f91a9",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:4:opaque" : 1
+  }, {
+    "statement:5:invoke:BEFORE" : 2
+  }, {
+    "statement:0:invoke:OLDHDLR" : 3,
+    "statement:6:branch" : 4
+  }, {
+    "statement:21:return" : 5
+  }, {
+    "statement:2:branch" : 6,
+    "statement:7:invoke:AFTER" : 7
+  }, { }, {
+    "statement:14:branch" : 8,
+    "statement:6:branch" : 4
+  }, {
+    "statement:0:invoke:OLDHDLR" : 9,
+    "statement:8:return" : 5
+  }, {
+    "statement:13:branch" : 10,
+    "statement:2:branch" : 6
+  }, {
+    "statement:21:return" : 5
+  }, {
+    "statement:16:opaque" : 11,
+    "statement:2:branch" : 6
+  }, {
+    "statement:3:branch" : 12
+  }, {
+    "statement:19:opaque" : 13,
+    "statement:6:branch" : 14
+  }, {
+    "statement:11:branch" : 15,
+    "statement:20:return" : 5,
+    "statement:9:branch" : 16
+  }, {
+    "statement:2:branch" : 17,
+    "statement:7:invoke:AFTER" : 18
+  }, {
+    "statement:19:opaque" : 13,
+    "statement:2:branch" : 19
+  }, {
+    "statement:19:opaque" : 13,
+    "statement:2:branch" : 20
+  }, {
+    "statement:14:branch" : 21,
+    "statement:6:branch" : 14
+  }, {
+    "statement:1:invoke:NEWHDLR" : 22,
+    "statement:8:return" : 5
+  }, {
+    "statement:11:branch" : 15,
+    "statement:14:branch" : 23
+  }, {
+    "statement:14:branch" : 24,
+    "statement:9:branch" : 16
+  }, {
+    "statement:13:branch" : 25,
+    "statement:2:branch" : 17
+  }, {
+    "statement:22:return" : 5
+  }, {
+    "statement:13:branch" : 26,
+    "statement:2:branch" : 19
+  }, {
+    "statement:13:branch" : 27,
+    "statement:2:branch" : 20
+  }, {
+    "statement:16:opaque" : 11,
+    "statement:2:branch" : 17
+  }, {
+    "statement:16:opaque" : 28,
+    "statement:2:branch" : 19
+  }, {
+    "statement:16:opaque" : 29,
+    "statement:2:branch" : 20
+  }, {
+    "statement:3:branch" : 30
+  }, {
+    "statement:3:branch" : 31
+  }, {
+    "statement:11:branch" : 15,
+    "statement:19:opaque" : 32
+  }, {
+    "statement:19:opaque" : 33,
+    "statement:9:branch" : 16
+  }, {
+    "statement:11:opaque" : 5,
+    "statement:20:return" : 5,
+    "statement:9:branch" : 34
+  }, {
+    "statement:11:branch" : 35,
+    "statement:20:return" : 5,
+    "statement:9:opaque" : 5
+  }, {
+    "statement:19:opaque" : 32,
+    "statement:2:branch" : 36
+  }, {
+    "statement:19:opaque" : 33,
+    "statement:2:branch" : 37
+  }, {
+    "statement:14:branch" : 38,
+    "statement:9:branch" : 34
+  }, {
+    "statement:11:branch" : 35,
+    "statement:14:branch" : 39
+  }, {
+    "statement:13:branch" : 40,
+    "statement:2:branch" : 36
+  }, {
+    "statement:13:branch" : 41,
+    "statement:2:branch" : 37
+  }, {
+    "statement:16:opaque" : 42,
+    "statement:2:branch" : 36
+  }, {
+    "statement:16:opaque" : 43,
+    "statement:2:branch" : 37
+  }, {
+    "statement:3:branch" : 44
+  }, {
+    "statement:3:branch" : 45
+  }, {
+    "statement:19:opaque" : 46,
+    "statement:9:branch" : 34
+  }, {
+    "statement:11:branch" : 35,
+    "statement:19:opaque" : 47
+  }, {
+    "statement:11:opaque" : 5,
+    "statement:20:return" : 5,
+    "statement:9:opaque" : 5
+  }, {
+    "statement:11:opaque" : 5,
+    "statement:20:return" : 5,
+    "statement:9:opaque" : 5
+  } ]
+}

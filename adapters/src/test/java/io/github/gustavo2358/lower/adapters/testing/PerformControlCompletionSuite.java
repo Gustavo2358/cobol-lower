@@ -46,13 +46,7 @@ public final class PerformControlCompletionSuite {
                 need(effect.envelope().control().known().size()==1&&effect.envelope().control().remainder()==Scopes.NoControl.INSTANCE,"one explicit phase successor");
             }
             if(name.equals("paragraph_goto_outside_active")) {
-                var terms=new HashMap<LabelId,Terminator>();result.publication().orElseThrow().units().getFirst().sequences().forEach(q->terms.put(q.label(),q.terminator()));
-                var todo=new ArrayDeque<LabelId>();todo.add(result.entries().getFirst().start());var reached=new HashSet<LabelId>();
-                while(!todo.isEmpty()) {var label=todo.removeFirst();if(!reached.add(label))continue;var term=terms.get(label);
-                    if(term instanceof Operations.Jump j)todo.add(j.destination());
-                    else if(term instanceof Operations.Invoke i){for(var alternative:i.outcomes().known())if(alternative instanceof Control.Normal n)todo.add(n.label());}
-                    else if(term instanceof Operations.Branch b){todo.add(b.trueDestination());todo.add(b.falseDestination());}
-                }
+                var reached=LocalControlOracle.reached(result.publication().orElseThrow()).stream().map(LocalControlOracle.Point::label).collect(java.util.stream.Collectors.toSet());
                 var call=source.statements().stream().filter(SpInput.CallFact.class::isInstance).findFirst().orElseThrow();
                 need(result.statements().stream().anyMatch(l->l.source().equals(call.header().id())&&reached.contains(l.label())),"external GO TO then paragraph exit retains the active endpoint and reaches caller continuation");
             }
@@ -99,12 +93,22 @@ public final class PerformControlCompletionSuite {
     }
     private static void reverse(ArrayNode array){var values=new ArrayList<JsonNode>();array.forEach(values::add);Collections.reverse(values);array.removeAll();values.forEach(array::add);}
     private static final class Graph {
-        final Map<LabelId,Terminator> terms=new HashMap<>();final Map<String,ObjectId> objects=new HashMap<>();final LabelId start;
+        final Map<LabelId,Terminator> terms=new HashMap<>();final Map<LabelId,Sequence> sequences=new HashMap<>();final Map<LabelId,LocalControlOracle.Point> points=new HashMap<>();final Map<String,ObjectId> objects=new HashMap<>();final LabelId start;
         Graph(SpInput input,LoweringResult result) {
-            result.publication().orElseThrow().units().getFirst().sequences().forEach(s->terms.put(s.label(),s.terminator()));
+            result.publication().orElseThrow().units().getFirst().sequences().forEach(s->{terms.put(s.label(),s.terminator());sequences.put(s.label(),s);});
+            LocalControlOracle.reached(result.publication().orElseThrow()).forEach(point->points.putIfAbsent(point.label(),point));
             input.dataDeclarations().forEach(d->result.data().stream().filter(l->l.source().equals(d.id())).findFirst().ifPresent(l->objects.put(d.canonicalName(),l.object())));
             var perform=input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).findFirst().orElseThrow();
-            start=result.statements().stream().filter(l->l.source().equals(perform.header().id())&&terms.get(l.label()) instanceof Operations.Jump).findFirst().orElseThrow().label();
+            start=visible(result.statements().stream().filter(l->l.source().equals(perform.header().id())&&terms.get(l.label()) instanceof Operations.LocalInvoke).findFirst().orElseThrow().label());
+        }
+        LabelId visible(LabelId label) {
+            var point=Objects.requireNonNull(points.get(label),"reachable phase "+label);var seen=new HashSet<LocalControlOracle.Point>();
+            while(terms.get(point.label()) instanceof Operations.Jump||terms.get(point.label()) instanceof Operations.LocalInvoke
+                    ||terms.get(point.label()) instanceof Operations.LocalResume||terms.get(point.label()) instanceof Operations.LocalUnwind) {
+                need(seen.add(point),"administrative path terminates");
+                var next=LocalControlOracle.successors(point,sequences);need(next.size()==1,"one administrative successor");point=next.getFirst();
+            }
+            return point.label();
         }
         LabelId effect(LabelId label,String kind,String write,String...reads) {
             need(terms.get(label) instanceof Operations.Opaque,"phase is effect "+kind+" "+write);
@@ -120,31 +124,27 @@ public final class PerformControlCompletionSuite {
         }
         Operations.Branch test(LabelId label){need(terms.get(label) instanceof Operations.Branch,"UNTIL test");return (Operations.Branch)terms.get(label);}
         LabelId bodyCompletion(LabelId body) {
-            var invocation=terms.get(body) instanceof Operations.LocalInvoke local?local:null;
-            var entry=invocation==null?body:invocation.entry();
-            var call=((Operations.Jump)terms.get(entry)).destination();need(terms.get(call) instanceof Operations.Invoke,"body CALL retained");
+            var call=visible(body);need(terms.get(call) instanceof Operations.Invoke,"body CALL retained");
             var completion=((Operations.Invoke)terms.get(call)).outcomes().known().stream().filter(Control.Normal.class::isInstance)
                 .map(Control.Normal.class::cast).findFirst().orElseThrow().label();
-            if(invocation==null)return completion;
-            need(terms.get(completion) instanceof Operations.LocalResume,"shared body completes by matched return");
-            return invocation.resume();
+            return visible(completion);
         }
         void before() {
-            var initI=((Operations.Jump)terms.get(start)).destination();var initJ=effect(initI,"initialization","I");
+            var initI=start;var initJ=effect(initI,"initialization","I");
             var testI=effect(initJ,"initialization","J","I");var outer=test(testI);var testJ=outer.falseDestination();var inner=test(testJ);
             var resetJ=effect(inner.trueDestination(),"increment","I","I");need(effect(resetJ,"initialization","J","I").equals(testI),"carry resets inner from current outer then tests outer");
             var increments=terms.entrySet().stream().filter(e->e.getValue() instanceof Operations.Opaque o&&o.observedKind().equals("perform-varying-increment")).toList();
             need(increments.size()==2,"two updates");var updateJ=increments.stream().filter(e->!e.getKey().equals(inner.trueDestination())).findFirst().orElseThrow().getKey();
             need(bodyCompletion(inner.falseDestination()).equals(updateJ),"BEFORE body completes into innermost update");
             need(effect(updateJ,"increment","J","J").equals(testJ),"inner update tests inner, not outer");
-            need(terms.get(outer.trueDestination()) instanceof Operations.Invoke,"only outer exhaustion reaches continuation CALL");
+            need(terms.get(visible(outer.trueDestination())) instanceof Operations.Invoke,"only outer exhaustion reaches continuation CALL");
             need(!inner.falseDestination().equals(outer.trueDestination()),"body and continuation remain distinct");
         }
         void after() {
-            var initI=((Operations.Jump)terms.get(start)).destination();var initJ=effect(initI,"initialization","I");var initK=effect(initJ,"initialization","J","I");var body=effect(initK,"initialization","K","J");
+            var initI=start;var initJ=effect(initI,"initialization","I");var initK=effect(initJ,"initialization","J","I");var body=effect(initK,"initialization","K","J");
             need(terms.get(body) instanceof Operations.Jump||terms.get(body) instanceof Operations.LocalInvoke,"AFTER enters body without a predicate");
             var tests=terms.entrySet().stream().filter(e->e.getValue() instanceof Operations.Branch).toList();need(tests.size()==3,"three separate predicates");
-            var outer=tests.stream().map(e->(Operations.Branch)e.getValue()).filter(b->terms.get(b.trueDestination()) instanceof Operations.Invoke).findFirst().orElseThrow();
+            var outer=tests.stream().map(e->(Operations.Branch)e.getValue()).filter(b->terms.get(visible(b.trueDestination())) instanceof Operations.Invoke).findFirst().orElseThrow();
             need(effect(outer.falseDestination(),"increment","I","I").equals(initJ),"outer repeat reinitializes J then K");
             var outerLabel=tests.stream().filter(e->e.getValue()==outer).findFirst().orElseThrow().getKey();
             var middle=tests.stream().map(e->(Operations.Branch)e.getValue()).filter(b->b.trueDestination().equals(outerLabel)).findFirst().orElseThrow();

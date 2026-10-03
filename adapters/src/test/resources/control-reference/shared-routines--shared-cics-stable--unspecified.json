@@ -1,0 +1,11 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "shared-routines/shared-cics-stable.json",
+  "sourceSha256" : "7509ed77c16766806c99620d33687eb6af7d2b0c2c4ed4d8b1b7c62444772ded",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:invoke:AFTERPGM" : 1
+  }, {
+    "statement:3:return" : 2
+  }, { } ]
+}

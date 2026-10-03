@@ -1,0 +1,20 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-outer-varying-before.json",
+  "sourceSha256" : "a9cbadd047333b1e3a87d64e079d5513147ebb376ca83c83a8869e271a415324",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:opaque" : 2
+  }, {
+    "statement:3:branch" : 3
+  }, {
+    "statement:1:invoke" : 4,
+    "statement:2:assign" : 5
+  }, {
+    "statement:4:return" : 6
+  }, {
+    "statement:3:opaque" : 2
+  }, { } ]
+}

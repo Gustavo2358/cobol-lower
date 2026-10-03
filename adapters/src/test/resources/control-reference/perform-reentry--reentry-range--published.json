@@ -1,0 +1,21 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-range.json",
+  "sourceSha256" : "a8b0aa7023ea027aeaf2c40377ce107c3cc9a746364639abfd026db40d583d2a",
+  "variant" : "published",
+  "states" : [ {
+    "statement:3:branch" : 1
+  }, {
+    "statement:1:invoke:ENDRANGE" : 2,
+    "statement:3:branch" : 3
+  }, {
+    "statement:0:invoke:AFTERP" : 4
+  }, {
+    "statement:1:invoke:ENDRANGE" : 5,
+    "statement:6:opaque" : 6
+  }, {
+    "statement:5:return" : 6
+  }, {
+    "statement:1:invoke:ENDRANGE" : 2
+  }, { } ]
+}

@@ -1,0 +1,45 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CTXBOOM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-FLAG PIC X.
+       01 WS-RETURN PIC 9(2).
+       PROCEDURE DIVISION.
+       MAIN.
+           PERFORM BODY-START THRU BODY-END
+           GOBACK.
+       RETURN-01.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-02.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-03.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-04.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-05.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-06.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-07.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-08.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       BODY-START.
+           IF WS-FLAG = 'Y'
+               GO TO DISPATCH
+           END-IF.
+       BODY-END.
+           EXIT.
+       DISPATCH.
+           GO TO RETURN-01 RETURN-02 RETURN-03 RETURN-04
+                 RETURN-05 RETURN-06 RETURN-07 RETURN-08
+                 DEPENDING ON WS-RETURN.
+           GOBACK.

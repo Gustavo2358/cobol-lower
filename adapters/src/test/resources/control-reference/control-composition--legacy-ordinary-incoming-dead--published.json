@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/legacy-ordinary-incoming-dead.json",
+  "sourceSha256" : "47b3734ec55ec9bdc49ee34876b61550dd8da2d2ee92b96af8471253b29681f8",
+  "variant" : "published",
+  "states" : [ {
+    "statement:2:assign" : 1
+  }, {
+    "statement:0:invoke" : 2
+  }, {
+    "statement:4:return" : 3
+  }, { } ]
+}

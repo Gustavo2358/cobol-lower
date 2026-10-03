@@ -1,0 +1,20 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-inner-varying-before.json",
+  "sourceSha256" : "550c8ba190daf303e080f48715048e7cc05f6af6d96412dea99b21e3bc020277",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:5:opaque" : 2
+  }, {
+    "statement:5:branch" : 3
+  }, {
+    "statement:1:invoke" : 4,
+    "statement:2:assign" : 5
+  }, {
+    "statement:4:return" : 6
+  }, {
+    "statement:5:opaque" : 2
+  }, { } ]
+}

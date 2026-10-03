@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform/peer-false.json",
+  "sourceSha256" : "8e74138702bbf5a6c241bc2d0daaf092c10202032d0c877633f099f845969dde",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:1:invoke" : 2
+  }, {
+    "statement:3:return" : 3
+  }, { } ]
+}

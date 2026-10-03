@@ -1,0 +1,15 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F01-literal-2.json",
+  "sourceSha256" : "19d4b3ae3df31fa41e51a5c9d8356870fcc714d67c2a9e89f87bb77ba42e576b",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:4:invoke:PROGA001" : 2
+  }, {
+    "statement:4:invoke:PROGA001" : 3
+  }, {
+    "statement:3:return" : 4
+  }, { } ]
+}

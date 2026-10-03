@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/terminal-if-no-else.json",
+  "sourceSha256" : "1e63b77b5b2e4d66991a299a8b33bf73a495c75fc99b7f5cf3acf4642f376fad",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:5:return" : 5
+  }, {
+    "statement:1:invoke" : 3
+  }, { } ]
+}

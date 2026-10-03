@@ -1,0 +1,135 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-evaluate-40.json",
+  "sourceSha256" : "7c29579812551105867dcf60dc256cb777735f41b4065ed7f1b8ddc6a9f5f200",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:44:branch" : 2
+  }, {
+    "statement:2:assign" : 3,
+    "statement:44:branch" : 4
+  }, {
+    "statement:1:invoke" : 5
+  }, {
+    "statement:3:assign" : 3,
+    "statement:44:branch" : 6
+  }, {
+    "statement:43:return" : 7
+  }, {
+    "statement:44:branch" : 8,
+    "statement:4:assign" : 3
+  }, { }, {
+    "statement:44:branch" : 9,
+    "statement:5:assign" : 3
+  }, {
+    "statement:44:branch" : 10,
+    "statement:6:assign" : 3
+  }, {
+    "statement:44:branch" : 11,
+    "statement:7:assign" : 3
+  }, {
+    "statement:44:branch" : 12,
+    "statement:8:assign" : 3
+  }, {
+    "statement:44:branch" : 13,
+    "statement:9:assign" : 3
+  }, {
+    "statement:10:assign" : 3,
+    "statement:44:branch" : 14
+  }, {
+    "statement:11:assign" : 3,
+    "statement:44:branch" : 15
+  }, {
+    "statement:12:assign" : 3,
+    "statement:44:branch" : 16
+  }, {
+    "statement:13:assign" : 3,
+    "statement:44:branch" : 17
+  }, {
+    "statement:14:assign" : 3,
+    "statement:44:branch" : 18
+  }, {
+    "statement:15:assign" : 3,
+    "statement:44:branch" : 19
+  }, {
+    "statement:16:assign" : 3,
+    "statement:44:branch" : 20
+  }, {
+    "statement:17:assign" : 3,
+    "statement:44:branch" : 21
+  }, {
+    "statement:18:assign" : 3,
+    "statement:44:branch" : 22
+  }, {
+    "statement:19:assign" : 3,
+    "statement:44:branch" : 23
+  }, {
+    "statement:20:assign" : 3,
+    "statement:44:branch" : 24
+  }, {
+    "statement:21:assign" : 3,
+    "statement:44:branch" : 25
+  }, {
+    "statement:22:assign" : 3,
+    "statement:44:branch" : 26
+  }, {
+    "statement:23:assign" : 3,
+    "statement:44:branch" : 27
+  }, {
+    "statement:24:assign" : 3,
+    "statement:44:branch" : 28
+  }, {
+    "statement:25:assign" : 3,
+    "statement:44:branch" : 29
+  }, {
+    "statement:26:assign" : 3,
+    "statement:44:branch" : 30
+  }, {
+    "statement:27:assign" : 3,
+    "statement:44:branch" : 31
+  }, {
+    "statement:28:assign" : 3,
+    "statement:44:branch" : 32
+  }, {
+    "statement:29:assign" : 3,
+    "statement:44:branch" : 33
+  }, {
+    "statement:30:assign" : 3,
+    "statement:44:branch" : 34
+  }, {
+    "statement:31:assign" : 3,
+    "statement:44:branch" : 35
+  }, {
+    "statement:32:assign" : 3,
+    "statement:44:branch" : 36
+  }, {
+    "statement:33:assign" : 3,
+    "statement:44:branch" : 37
+  }, {
+    "statement:34:assign" : 3,
+    "statement:44:branch" : 38
+  }, {
+    "statement:35:assign" : 3,
+    "statement:44:branch" : 39
+  }, {
+    "statement:36:assign" : 3,
+    "statement:44:branch" : 40
+  }, {
+    "statement:37:assign" : 3,
+    "statement:44:branch" : 41
+  }, {
+    "statement:38:assign" : 3,
+    "statement:44:branch" : 42
+  }, {
+    "statement:39:assign" : 3,
+    "statement:44:branch" : 43
+  }, {
+    "statement:40:assign" : 3,
+    "statement:44:branch" : 44
+  }, {
+    "statement:1:invoke" : 5,
+    "statement:41:assign" : 3
+  } ]
+}

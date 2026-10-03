@@ -1,0 +1,81 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/ctxboom-escape-04.json",
+  "sourceSha256" : "312d98a49990b931a55d55207ead85faa2e9f565a6279376314b333e09539a10",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:branch" : 1
+  }, {
+    "statement:12:branch" : 2,
+    "statement:3:return" : 3
+  }, {
+    "statement:0:branch" : 1,
+    "statement:1:branch" : 4
+  }, { }, {
+    "statement:16:opaque" : 5,
+    "statement:3:return" : 3
+  }, {
+    "statement:0:branch" : 6,
+    "statement:17:return" : 3
+  }, {
+    "statement:12:branch" : 7,
+    "statement:16:opaque" : 5
+  }, {
+    "statement:0:branch" : 6,
+    "statement:1:branch" : 8
+  }, {
+    "statement:16:opaque" : 9
+  }, {
+    "statement:0:branch" : 10,
+    "statement:10:opaque" : 3,
+    "statement:17:return" : 3,
+    "statement:4:opaque" : 3,
+    "statement:6:opaque" : 3,
+    "statement:8:opaque" : 3
+  }, {
+    "statement:12:branch" : 11,
+    "statement:16:opaque" : 9
+  }, {
+    "statement:0:branch" : 10,
+    "statement:1:branch" : 12
+  }, {
+    "statement:16:opaque" : 13
+  }, {
+    "statement:0:branch" : 14,
+    "statement:10:opaque" : 3,
+    "statement:17:return" : 3,
+    "statement:4:opaque" : 3,
+    "statement:6:opaque" : 3,
+    "statement:8:opaque" : 3
+  }, {
+    "statement:12:branch" : 15,
+    "statement:16:opaque" : 13
+  }, {
+    "statement:0:branch" : 14,
+    "statement:1:branch" : 16
+  }, {
+    "statement:16:opaque" : 17
+  }, {
+    "statement:0:branch" : 18,
+    "statement:10:opaque" : 3,
+    "statement:17:return" : 3,
+    "statement:4:opaque" : 3,
+    "statement:6:opaque" : 3,
+    "statement:8:opaque" : 3
+  }, {
+    "statement:12:branch" : 19,
+    "statement:16:opaque" : 17
+  }, {
+    "statement:0:branch" : 18,
+    "statement:1:branch" : 20
+  }, {
+    "statement:16:opaque" : 21
+  }, {
+    "statement:0:branch" : 18,
+    "statement:10:opaque" : 3,
+    "statement:17:return" : 3,
+    "statement:4:opaque" : 3,
+    "statement:6:opaque" : 3,
+    "statement:8:opaque" : 3
+  } ]
+}

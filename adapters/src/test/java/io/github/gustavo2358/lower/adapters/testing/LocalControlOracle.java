@@ -16,14 +16,26 @@ final class LocalControlOracle {
     static List<Point> successors(Point at,Map<LabelId,Sequence> seqs,boolean open) {
         var t=Objects.requireNonNull(seqs.get(at.label())).terminator();var stack=at.stack();
         if(t instanceof Operations.LocalInvoke i) {
+            if(i.reentryGuard().isPresent()) {
+                var guard=i.reentryGuard().orElseThrow();
+                for(var frame:stack)if(frame.header().id().unit().equals(i.header().id().unit())
+                        &&frame.reentryGuard().map(g->g.activationKey().equals(guard.activationKey())).orElse(false))
+                    return List.of(new Point(guard.destination(),stack));
+            }
             if(stack.stream().anyMatch(frame->frame.header().id().equals(i.header().id())))throw new AssertionError("producer emitted recursive shared control");
             var pushed=new ArrayList<>(stack);pushed.add(i);return List.of(new Point(i.entry(),pushed));
         }
-        if(t instanceof Operations.LocalResume)return stack.isEmpty()?List.of():List.of(new Point(stack.getLast().resume(),stack.subList(0,stack.size()-1)));
+        if(t instanceof Operations.LocalResume r) {
+            if(stack.isEmpty())return List.of();
+            var frame=stack.getLast();var destination=r.resumeKey().isEmpty()?Optional.of(frame.resume()):
+                frame.resumeRoutes().stream().filter(route->route.key().equals(r.resumeKey().orElseThrow())).map(Operations.ResumeRoute::destination).findFirst();
+            return destination.map(label->List.of(new Point(label,stack.subList(0,stack.size()-1)))).orElseGet(List::of);
+        }
         if(t instanceof Operations.LocalBoundary b) {
             if(!stack.isEmpty()&&stack.getLast().completionPorts().contains(b.port()))return List.of(new Point(stack.getLast().resume(),stack.subList(0,stack.size()-1)));
             return List.of(new Point(b.defaultDestination(),stack));
         }
+        if(t instanceof Operations.LocalUnwind u&&u.all())return List.of(new Point(u.destination(),List.of()));
         if(t instanceof Operations.LocalUnwind u)return u.count().compareTo(java.math.BigInteger.valueOf(stack.size()))>0?List.of():List.of(new Point(u.destination(),stack.subList(0,stack.size()-u.count().intValueExact())));
         var targets=new ArrayDeque<LabelId>();
         if(t instanceof Operations.Jump j)targets.add(j.destination());
@@ -47,6 +59,16 @@ final class LocalControlOracle {
         var seqs=sequences(p);var seen=new HashSet<Point>();var work=new ArrayDeque<Point>();
         p.units().forEach(u->u.entries().forEach(e->e.initialLabel().ifPresent(l->work.add(new Point(l,List.of())))));
         while(!work.isEmpty()){var point=work.removeFirst();if(seen.add(point))work.addAll(successors(point,seqs,open));}
+        return Set.copyOf(seen);
+    }
+    static Set<Point> reached(Unit unit,Set<LabelId> stop) {
+        var seqs=new HashMap<LabelId,Sequence>();unit.sequences().forEach(s->seqs.put(s.label(),s));
+        var seen=new HashSet<Point>();var work=new ArrayDeque<Point>();
+        unit.entries().forEach(e->e.initialLabel().ifPresent(l->work.add(new Point(l,List.of()))));
+        while(!work.isEmpty()) {
+            var point=work.removeFirst();if(!seen.add(point)||stop.contains(point.label()))continue;
+            work.addAll(successors(point,seqs));
+        }
         return Set.copyOf(seen);
     }
     static Set<String> firstCalls(Point start,Map<LabelId,Sequence> seqs) {

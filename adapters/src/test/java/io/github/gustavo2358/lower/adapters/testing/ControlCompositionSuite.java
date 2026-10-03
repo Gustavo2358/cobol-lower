@@ -47,6 +47,7 @@ public final class ControlCompositionSuite {
             var reversed=new ArrayList<>(input.statements());Collections.reverse(reversed);
             check(Arrays.equals(wire,codec.encode(lower(IfInputs.with(input,"statements",reversed)).publication().orElseThrow())),"M5 inventory permutation "+name);
             check(Arrays.equals(wire,codec.encode(lower(input).publication().orElseThrow())),"deterministic lowering "+name);
+            ControlLanguageOracle.reference(result,"control-composition--"+name+"--published");
             var byLabel=new HashMap<LabelId,Sequence>();unit.sequences().forEach(s->byLabel.put(s.label(),s));
             var reach=CompositionalPerformSuite.reachable(unit);
             for(var fact:input.statements()) {
@@ -69,7 +70,7 @@ public final class ControlCompositionSuite {
                 var destinations=branch.stream().map(s->((Operations.Branch)s.terminator()).falseDestination()).toList();
                 check(!destinations.getFirst().equals(destinations.getLast()),"M9 ordinary outcome cannot receive activation resume");
                 check(destinations.stream().map(byLabel::get).filter(s->s.terminator() instanceof Operations.Opaque).count()==1,"ordinary missing outcome has a local boundary");
-                check(destinations.stream().map(byLabel::get).filter(s->s.terminator() instanceof Operations.Jump).count()==1,"activation false/no-match returns contextually");
+                check(destinations.stream().map(byLabel::get).filter(s->s.terminator() instanceof Operations.LocalResume).count()==1,"activation false/no-match returns through its caller frame");
             }
             // M6 independent predicate coverage cannot erase branches or alter targets.
             var changed=new ArrayList<SpInput.StatementFact>();

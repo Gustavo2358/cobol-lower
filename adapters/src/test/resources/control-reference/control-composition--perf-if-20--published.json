@@ -1,0 +1,75 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-if-20.json",
+  "sourceSha256" : "730f59a869cc9a4266acafd54d943e98a521cbc5e06155d09bb291d0c74c7246",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:4:branch" : 4
+  }, {
+    "statement:24:return" : 5
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:5:branch" : 6
+  }, { }, {
+    "statement:1:invoke" : 3,
+    "statement:6:branch" : 7
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:7:branch" : 8
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:8:branch" : 9
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:9:branch" : 10
+  }, {
+    "statement:10:branch" : 11,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:11:branch" : 12,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:12:branch" : 13,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:13:branch" : 14,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:14:branch" : 15,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:15:branch" : 16,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:16:branch" : 17,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:17:branch" : 18,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:18:branch" : 19,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:19:branch" : 20,
+    "statement:1:invoke" : 3
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:20:branch" : 21
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:21:branch" : 22
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:22:branch" : 23
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 24
+  }, {
+    "statement:1:invoke" : 3
+  } ]
+}

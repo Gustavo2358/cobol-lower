@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-handler-ingress.json",
+  "sourceSha256" : "2bcd0cc16395a0346ee1cf04e225b2b501acaa94c5fb5ac79e1988faa4cdda15",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:opaque" : 1
+  }, {
+    "statement:3:opaque" : 2
+  }, {
+    "statement:7:opaque" : 3
+  }, { } ]
+}

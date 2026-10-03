@@ -1,0 +1,8 @@
+id: WORK-LOWER-UNIFIED-ACTIVATIONS
+title: Unificar a materialização de ativações sem expansão por cadeias
+status: IN_PROGRESS
+scope:
+  - materialização de PERFORM e continuações explícitas
+  - políticas SOURCE_UNDEFINED e UNSPECIFIED
+  - CICS, ESCAPE, entradas históricas e preservação de dependências
+  - oráculos independentes e qualificação completa do corpus

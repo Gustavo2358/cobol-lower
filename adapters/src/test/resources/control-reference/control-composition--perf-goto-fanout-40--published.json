@@ -1,0 +1,133 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-goto-fanout-40.json",
+  "sourceSha256" : "429dac65143271833b71dad8a74d168289d89c85e122b5f690a38728c6de1ec1",
+  "variant" : "published",
+  "states" : [ {
+    "statement:41:opaque" : 1
+  }, {
+    "statement:0:assign" : 2,
+    "statement:10:assign" : 3,
+    "statement:11:assign" : 4,
+    "statement:12:assign" : 5,
+    "statement:13:assign" : 6,
+    "statement:14:assign" : 7,
+    "statement:15:assign" : 8,
+    "statement:16:assign" : 9,
+    "statement:17:assign" : 10,
+    "statement:18:assign" : 11,
+    "statement:19:assign" : 12,
+    "statement:1:assign" : 13,
+    "statement:20:assign" : 14,
+    "statement:21:assign" : 15,
+    "statement:22:assign" : 16,
+    "statement:23:assign" : 17,
+    "statement:24:assign" : 18,
+    "statement:25:assign" : 19,
+    "statement:26:assign" : 20,
+    "statement:27:assign" : 21,
+    "statement:28:assign" : 22,
+    "statement:29:assign" : 23,
+    "statement:2:assign" : 24,
+    "statement:30:assign" : 25,
+    "statement:31:assign" : 26,
+    "statement:32:assign" : 27,
+    "statement:33:assign" : 28,
+    "statement:34:assign" : 29,
+    "statement:35:assign" : 30,
+    "statement:36:assign" : 31,
+    "statement:37:assign" : 32,
+    "statement:38:assign" : 33,
+    "statement:39:assign" : 34,
+    "statement:3:assign" : 35,
+    "statement:42:return" : 36,
+    "statement:4:assign" : 37,
+    "statement:5:assign" : 38,
+    "statement:6:assign" : 39,
+    "statement:7:assign" : 40,
+    "statement:8:assign" : 41,
+    "statement:9:assign" : 42
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, { }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:40:invoke" : 43
+  }, {
+    "statement:83:return" : 36
+  } ]
+}

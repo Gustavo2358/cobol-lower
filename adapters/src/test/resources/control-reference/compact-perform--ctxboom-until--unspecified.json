@@ -1,0 +1,59 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/ctxboom-until.json",
+  "sourceSha256" : "93ce9d158a69c09e52409d4e2f179fe02046b987e88aa272c27075d69a1d5aaa",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:1:branch" : 1
+  }, {
+    "statement:0:branch" : 2,
+    "statement:2:return" : 3
+  }, {
+    "statement:1:branch" : 1,
+    "statement:9:opaque" : 4
+  }, { }, {
+    "statement:10:return" : 3,
+    "statement:3:branch" : 5,
+    "statement:5:branch" : 6
+  }, {
+    "statement:0:branch" : 7,
+    "statement:9:opaque" : 4
+  }, {
+    "statement:0:branch" : 8,
+    "statement:9:opaque" : 4
+  }, {
+    "statement:3:branch" : 5,
+    "statement:9:opaque" : 9
+  }, {
+    "statement:5:branch" : 6,
+    "statement:9:opaque" : 10
+  }, {
+    "statement:10:return" : 3,
+    "statement:3:opaque" : 3,
+    "statement:5:branch" : 11
+  }, {
+    "statement:10:return" : 3,
+    "statement:3:branch" : 12,
+    "statement:5:opaque" : 3
+  }, {
+    "statement:0:branch" : 13,
+    "statement:9:opaque" : 9
+  }, {
+    "statement:0:branch" : 14,
+    "statement:9:opaque" : 10
+  }, {
+    "statement:5:branch" : 11,
+    "statement:9:opaque" : 15
+  }, {
+    "statement:3:branch" : 12,
+    "statement:9:opaque" : 16
+  }, {
+    "statement:10:return" : 3,
+    "statement:3:opaque" : 3,
+    "statement:5:opaque" : 3
+  }, {
+    "statement:10:return" : 3,
+    "statement:3:opaque" : 3,
+    "statement:5:opaque" : 3
+  } ]
+}

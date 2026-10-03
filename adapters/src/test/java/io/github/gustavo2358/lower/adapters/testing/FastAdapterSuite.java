@@ -34,6 +34,8 @@ public final class FastAdapterSuite {
         DatabaseControlSuite.main(new String[0]);
         CobolControlSuite.main(new String[0]);
         SharedRoutineSuite.main(new String[0]);
+        UnifiedActivationSuite.main(new String[0]);
+        UnifiedStructuralSuite.main(new String[0]);
         PerformReentrySuite.main(new String[0]);
         DliEffectsSuite.main(new String[0]);
         ConditionRegistrationSuite.main(new String[0]);

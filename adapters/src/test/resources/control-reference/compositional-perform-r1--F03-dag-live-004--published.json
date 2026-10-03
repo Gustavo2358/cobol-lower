@@ -1,0 +1,45 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F03-dag-live-004.json",
+  "sourceSha256" : "e61f40beefadc9f872c5e920cbaf529595a7f6131afa58234e21eeae2ebb74d1",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:2:assign" : 3
+  }, {
+    "statement:2:assign" : 4
+  }, {
+    "statement:2:assign" : 5
+  }, {
+    "statement:2:assign" : 6
+  }, {
+    "statement:2:assign" : 7
+  }, {
+    "statement:2:assign" : 8
+  }, {
+    "statement:2:assign" : 9
+  }, {
+    "statement:2:assign" : 10
+  }, {
+    "statement:2:assign" : 11
+  }, {
+    "statement:2:assign" : 12
+  }, {
+    "statement:2:assign" : 13
+  }, {
+    "statement:2:assign" : 14
+  }, {
+    "statement:2:assign" : 15
+  }, {
+    "statement:2:assign" : 16
+  }, {
+    "statement:2:assign" : 17
+  }, {
+    "statement:1:invoke" : 18
+  }, {
+    "statement:4:return" : 19
+  }, { } ]
+}
