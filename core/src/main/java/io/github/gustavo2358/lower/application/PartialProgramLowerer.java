@@ -128,8 +128,13 @@ final class PartialProgramLowerer implements LowerInput {
             required.add(CicsFileInvokeHandler.NAME);
         var resources=new ArrayList<>(files.resources());
         resources.addAll(SourceResourceLowering.resources(input,unit,ids,origins,unitOrigin));
-        if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke))required.add(Capabilities.LOCAL_CONTROL);
+        if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke
+            ||s.terminator() instanceof Operations.LocalResume||s.terminator() instanceof Operations.LocalUnwind
+            ||s.terminator() instanceof Operations.LocalBoundary))required.add(Capabilities.LOCAL_CONTROL);
         if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke i&&i.reentryGuard().isPresent()))required.add(Capabilities.LOCAL_REENTRY_GUARD);
+        if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke i&&!i.resumeRoutes().isEmpty()
+            ||s.terminator() instanceof Operations.LocalResume r&&r.resumeKey().isPresent()))required.add(Capabilities.LOCAL_RESUME_ROUTES);
+        if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalUnwind u&&u.all()))required.add(Capabilities.LOCAL_UNWIND_ALL);
         if(files.available()||input.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE)required.add(Capabilities.RESOURCE_BINDINGS);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),
             List.of(body), data.storage(), resources, List.of(), origins.origins(),

@@ -12,6 +12,7 @@ final class SharedRoutineBodies {
     private final Map<String,Key> keys=new HashMap<>();
     private final Map<Key,List<String>> proofs=new HashMap<>();
     private final Set<String> guarded=new HashSet<>();
+    private boolean recursiveUndefined;
     SharedRoutineBodies(ControlTopology product,TopologyBinding topology,java.util.function.Predicate<String> stableState) {
         this(product,topology,stableState,false);
     }
@@ -35,6 +36,7 @@ final class SharedRoutineBodies {
         var users=new HashMap<String,List<String>>();
         dependencies.forEach((id,calls)->calls.forEach(c->users.computeIfAbsent(c,k->new ArrayList<>()).add(id)));
         var recursive=recursive(dependencies,users);
+        recursiveUndefined=product.bindings().stream().anyMatch(b->recursive.contains(b.id())&&b.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED);
         for(var binding:product.bindings())if(recursive.contains(binding.id())) {
             if(admitGuardedCycles&&binding.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED)guarded.add(binding.id());
             else blocked.add(binding.id());
@@ -74,6 +76,7 @@ final class SharedRoutineBodies {
         }
         return recursive;
     }
+    boolean recursiveUndefined(){return recursiveUndefined;}
     boolean guarded(Binding binding){return guarded.contains(binding.id());}
     Optional<Key> key(Binding binding){return Optional.ofNullable(keys.get(binding.id()));}
     List<String> proofs(Binding binding){var key=keys.get(binding.id());return key==null?binding.proofs():proofs.get(key);}

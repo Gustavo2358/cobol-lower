@@ -31,8 +31,11 @@ public final class PerformReentrySuite {
             var legacy=new ControlTopology.Binding(binding.id(),binding.caller(),binding.region(),binding.endpoint(),binding.resume(),binding.entryPhase(),binding.completionPhase(),binding.phases(),binding.proofs());
             need(legacy.reentryPolicy()==ControlTopology.ReentryPolicy.UNSPECIFIED,"legacy typed constructor grants no recursive semantics");
             try {new ControlTopology.Binding(binding.id(),binding.caller(),binding.region(),binding.endpoint(),binding.resume(),binding.entryPhase(),binding.completionPhase(),binding.phases(),binding.proofs(),null);throw new AssertionError("null policy admitted");}catch(NullPointerException expected){}
-            var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);var p=result.publication().orElseThrow();
-            need(result.validation().orElseThrow().isStructurallyValid(),"valid AIR");new AirJson().decode(new AirJson().encode(p));
+            var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);
+            need(result.publication().isPresent(),"publication "+name+": "+result.status()+" "+result.limitations()+" "+result.validation());
+            var p=result.publication().orElseThrow();
+            need(result.validation().orElseThrow().isStructurallyValid(),"valid AIR");
+            if(name.equals("handler-terminal-before"))need(p.capabilities().required().contains(Capabilities.LOCAL_CONTROL),"standalone handler unwind requires local control even without a reachable invoke");new AirJson().decode(new AirJson().encode(p));
             var qualified=QualifiedSourceProjection.project(input,result.admission());
             need(io.github.gustavo2358.lower.application.HandlerStateScheduleProbe.sourceOrderInvariant(input),"source summary scheduling invariance "+name);
             var sourceCodec=new io.github.gustavo2358.lower.adapters.source.QualifiedSourceJson();

@@ -25,11 +25,17 @@ final class LocalControlOracle {
             if(stack.stream().anyMatch(frame->frame.header().id().equals(i.header().id())))throw new AssertionError("producer emitted recursive shared control");
             var pushed=new ArrayList<>(stack);pushed.add(i);return List.of(new Point(i.entry(),pushed));
         }
-        if(t instanceof Operations.LocalResume)return stack.isEmpty()?List.of():List.of(new Point(stack.getLast().resume(),stack.subList(0,stack.size()-1)));
+        if(t instanceof Operations.LocalResume r) {
+            if(stack.isEmpty())return List.of();
+            var frame=stack.getLast();var destination=r.resumeKey().isEmpty()?Optional.of(frame.resume()):
+                frame.resumeRoutes().stream().filter(route->route.key().equals(r.resumeKey().orElseThrow())).map(Operations.ResumeRoute::destination).findFirst();
+            return destination.map(label->List.of(new Point(label,stack.subList(0,stack.size()-1)))).orElseGet(List::of);
+        }
         if(t instanceof Operations.LocalBoundary b) {
             if(!stack.isEmpty()&&stack.getLast().completionPorts().contains(b.port()))return List.of(new Point(stack.getLast().resume(),stack.subList(0,stack.size()-1)));
             return List.of(new Point(b.defaultDestination(),stack));
         }
+        if(t instanceof Operations.LocalUnwind u&&u.all())return List.of(new Point(u.destination(),List.of()));
         if(t instanceof Operations.LocalUnwind u)return u.count().compareTo(java.math.BigInteger.valueOf(stack.size()))>0?List.of():List.of(new Point(u.destination(),stack.subList(0,stack.size()-u.count().intValueExact())));
         var targets=new ArrayDeque<LabelId>();
         if(t instanceof Operations.Jump j)targets.add(j.destination());

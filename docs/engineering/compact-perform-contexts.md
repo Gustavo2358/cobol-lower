@@ -4,6 +4,10 @@ id: LOWER-COMPACT-PERFORM
 status: IN_PROGRESS
 scope: lower; extensão explícita AIR; interpretação e transporte CFG
 
+As seções iniciais registram a primeira etapa, entregue em `989d379`. A extensão
+CICS/ESCAPE ao final substitui as exclusões dessa etapa; seus limites de dataflow
+e cobertura continuam vigentes.
+
 ## Problema e regra
 
 O materializador atual copia o corpo para cada cadeia de bindings ativos. A guarda
@@ -115,3 +119,75 @@ Resultados são locais, anteriores à revisão humana. A cobertura permanece PAR
 O programa corporativo original não está disponível; os resultados acima pertencem
 às fixtures sintéticas. Logs, comandos, hashes e medições ficam no workspace em
 `.lower-context-fix/evidence` e no baseline preservado em `artefatos-e2e`.
+
+
+## Extensão para CICS e ESCAPE — planejamento anterior ao código
+
+A reprodução `lower-context-cics-escape-20261002` confirmou OOM em ambos os
+caminhos no candidato 989d379, com oito retornos e heap de 512 MiB. Esta etapa
+substitui as exclusões anteriores para grupos cíclicos SOURCE_UNDEFINED.
+
+Autoridades verificadas: ControlTopology, TopologyBinding e o contrato publicado
+ESCAPE/endpoint; CicsExecutionState/HandlerStateAnalysis.Support (registro finito
+de definições alcançáveis); AIR 05 §§7.1–7.8. O comportamento de referência é o
+materializador anterior, incluindo suas fronteiras PARTIAL, não uma interpretação
+nova da linguagem COBOL. Impacto C3/C4: modelo/codec AIR, materializador e kernel
+local CFG; frontend permanece no mesmo pin e não muda.
+
+Algoritmo planejado:
+
+1. Quando há ciclo SOURCE_UNDEFINED e CICS/ESCAPE, usar frames explícitos em
+   todas as chamadas desse materializador. A guarda de binding cobre as fases,
+   inclusive para PERFORM inline. Nunca perder bindings ativos ao compartilhar.
+2. Compartilhar fases de PERFORM externo por binding e corpo por (entrada,
+   endpoint, modo handler), mantendo Support CICS no estado do ponto. Chamadores
+   e cadeias anteriores não fazem parte da identidade do corpo.
+3. Na conclusão, local.resume seleciona a rota do frame pela identidade do
+   Support de saída. Descobrir estados de conclusão e inscrever chamadores em
+   worklist; conectar cada chamador à sua continuação com o estado retornado.
+   Estado de entrada nunca substitui silenciosamente estado de saída.
+4. PERFORM inline conserva contexto lexical dentro do corpo compartilhado.
+   ESCAPE abandona explicitamente os frames inline contados nesse contexto e
+   resolve a conclusão no contexto externo correto. GO TO ordinário não desempilha.
+5. Ingresso de HANDLE ABEND abandona os frames interrompidos via unwind_all;
+   HANDLE CONDITION preserva a ativação, como na tradução anterior. Handler não
+   pode herdar guardas de continuações abandonadas.
+
+Invariante: cada ativação antes especializada possui um frame que registra sua
+continuação. Uma chamada guardada é testada antes das fases. O corpo compartilhado
+adiciona um frame administrativo; o retorno desse frame conserva exatamente o
+estado finito observado na saída. Contextos inline e seus abandonos correspondem
+às mesmas ativações lexicais antigas. Indução nas transferências fornece a relação
+entre configurações antigas e (ponto, Support, pilha) novas, ignorando apenas os
+passos administrativos. Não se unem supports, valores ou destinos de chamadores.
+
+Terminação: finitos bindings, corpos, estados de Support e contextos lexicais;
+cada ponto é emitido uma vez. Rotas crescem por pares (chamador, estado de saída),
+sem enumerar as permutações das cadeias de PERFORM. O custo ainda depende dos
+estados CICS e das closures; não há claim de complexidade linear universal nem
+melhoria do solver que enumera pilhas no dataflow.
+
+Oracles anteriores ao código: RED de tamanho nas duas fixtures reais; comparação
+exaustiva da linguagem de controle em casos pequenos com o algoritmo antigo;
+CICS com mudanças dentro do corpo e retorno, handler ingress, nested inline
+ESCAPE, fases e combinação CICS+ESCAPE. AIR valida/transporta campos, rejeita
+chaves/destinos inválidos e falta de capacidade. CFG testa rotas de dois chamadores,
+chave ausente, estado observado em dataflow e unwind_all liberando guardas.
+
+Gates: focal durante implementação; FAST e qualification-local final em AIR,
+lower e CFG, por alteração do contrato e do kernel de controle. E2E com os SPs
+exatos que falharam e escala maior; cobertura PARTIAL e limites preservados.
+
+### Validação focal da extensão
+
+Dezenove fixtures passaram, incluindo CICS, ESCAPE e combinações com fases
+TIMES/UNTIL/VARYING. Dezesseis comparações exaustivas da linguagem observável
+passaram contra a expansão de referência em casos pequenos. Quatro mutações
+adversariais confirmaram que o oracle detecta perda do estado de retorno, retenção
+de frames abandonados por handler/ESCAPE e remoção de guardas.
+
+Para selecionar a expansão de referência nos casos CICS, o teste mantém SP 2.62
+e seus fatos, alterando apenas a política de reentrada para UNSPECIFIED. Ambas
+as fronteiras de reentrada são opacas e não continuam. A comparação observa
+ocorrências/tipos e controle; uma asserção manual adicional exige NEWHDLR após
+LINK AFTER na fixture de mudança de estado. Não é prova geral de valores.

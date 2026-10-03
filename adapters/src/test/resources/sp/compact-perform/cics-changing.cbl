@@ -1,0 +1,36 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CTXBOOM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-FLAG PIC X.
+       01 WS-RETURN PIC 9(2).
+       PROCEDURE DIVISION.
+       MAIN.
+           EXEC CICS HANDLE ABEND LABEL(ERR) END-EXEC
+           EXEC CICS LINK PROGRAM('BEFORE') END-EXEC
+           PERFORM BODY-START THRU BODY-END
+           GOBACK.
+       RETURN-01.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-02.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       BODY-START.
+           IF WS-FLAG = 'C'
+               EXEC CICS HANDLE ABEND CANCEL END-EXEC
+           ELSE
+               EXEC CICS HANDLE ABEND RESET END-EXEC
+           END-IF
+           IF WS-FLAG = 'Y'
+               GO TO DISPATCH
+           END-IF.
+       BODY-END.
+           EXIT.
+       DISPATCH.
+           GO TO RETURN-01 RETURN-02
+                 DEPENDING ON WS-RETURN.
+           GOBACK.
+       ERR.
+           CALL 'OLDHDLR'
+           GOBACK.

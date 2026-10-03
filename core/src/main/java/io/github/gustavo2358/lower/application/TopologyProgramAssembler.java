@@ -11,13 +11,17 @@ import java.util.*;
  * bindings come from the same topology used by closure. Fact dispatch below
  * selects value/effect operations, never a source successor. */
 final class TopologyProgramAssembler {
+    private enum FrameKind { LEGACY, ROOT, ACTIVATION, BODY }
     private record Context(LocalIds base,Binding binding,LabelId completion,String entry,LabelId resume,Context parent,
-            HandlerStateAnalysis.Support support,boolean handler) {
+            HandlerStateAnalysis.Support support,boolean handler,FrameKind frame) {
+        Context(LocalIds ids,Binding binding,LabelId completion,String entry,LabelId resume,Context parent,HandlerStateAnalysis.Support support,boolean handler) {
+            this(ids,binding,completion,entry,resume,parent,support,handler,FrameKind.LEGACY);
+        }
         Context(LocalIds ids,Binding binding,LabelId completion,String entry) {this(ids,binding,completion,entry,null,null,null,false);}
         Context(LocalIds ids,Binding binding,LabelId completion,String entry,LabelId resume,Context parent) {this(ids,binding,completion,entry,resume,parent,null,false);}
         LocalIds ids(){return support==null?base:base.activation("handler-state:"+CicsExecutionState.key(support));}
-        Context at(String location){return new Context(base,binding,completion,location,resume,parent,support,handler);}
-        Context state(HandlerStateAnalysis.Support next){return new Context(base,binding,completion,entry,resume,parent,next,handler);}
+        Context at(String location){return new Context(base,binding,completion,location,resume,parent,support,handler,frame);}
+        Context state(HandlerStateAnalysis.Support next){return new Context(base,binding,completion,entry,resume,parent,next,handler,frame);}
     }
     private final PartialProgramAdmission.Plan plan;
     private final SpInput input;
@@ -43,6 +47,12 @@ final class TopologyProgramAssembler {
     private LocalIds occurrenceIds;
     private final CicsExecutionState cicsState;
     private final SharedRoutineBodies sharedBodies;
+    private final boolean compactContexts;
+    private final Map<SharedRoutineBodies.Key,List<String>> compactProofs=new HashMap<>();
+    private final Map<String,Set<HandlerStateAnalysis.Support>> returnStates=new HashMap<>();
+    private record PendingReturn(OperationId operation,String group,java.util.function.Function<HandlerStateAnalysis.Support,LabelId> destination,
+            Map<String,LabelId> routes) { }
+    private final Map<OperationId,PendingReturn> pendingReturns=new LinkedHashMap<>();
     private record BodyInstance(SharedRoutineBodies.Key key,HandlerStateAnalysis.Support support,boolean handler) { }
     private final Set<BodyInstance> emittedBodies=new HashSet<>();
     private final Map<HandlerStateAnalysis.Support,SharedRoutineBodies> stableBodies=new HashMap<>();
@@ -54,6 +64,15 @@ final class TopologyProgramAssembler {
         cicsState=input.controlTopology().orElseThrow().exceptionalEvents().isEmpty()&&input.controlTopology().orElseThrow().conditionEvents().isEmpty()?null:
             new CicsExecutionState(input,plan.admission().handlerState().orElseThrow());
         sharedBodies=new SharedRoutineBodies(input.controlTopology().orElseThrow(),topology,id->true,cicsState==null);
+        compactContexts=sharedBodies.recursiveUndefined()&&(cicsState!=null||input.controlTopology().orElseThrow().outcomes().stream().anyMatch(o->o.target().kind()==TargetKind.ESCAPE));
+        if(compactContexts) {
+            var grouped=new HashMap<SharedRoutineBodies.Key,Set<String>>();
+            for(var binding:input.controlTopology().orElseThrow().bindings())if(!topology.inline(binding)) {
+                var entry=topology.entry(binding);
+                if(entry.kind()==TargetKind.OCCURRENCE)grouped.computeIfAbsent(new SharedRoutineBodies.Key(entry.reference(),binding.endpoint()),k->new TreeSet<>()).addAll(binding.proofs());
+            }
+            grouped.forEach((key,value)->compactProofs.put(key,List.copyOf(value)));
+        }
         input.statements().forEach(s->facts.put(s.header().id().handle(),s));
         input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
         // A frontier with no licensed continuation cannot depend on a PERFORM
@@ -75,14 +94,23 @@ final class TopologyProgramAssembler {
             var activation=source.role()==SpInput.EntryRole.PRIMARY?ids:ids.activation("external-entry:"+source.id().handle());
             var root=cicsState==null?new Context(activation,null,null,target.orElseThrow().reference()):
                 new Context(activation,null,null,target.orElseThrow().reference(),null,null,CicsExecutionState.initial(),false);
+            if(compactContexts)root=new Context(root.base(),null,null,root.entry(),null,null,root.support(),false,FrameKind.ROOT);
             roots.put(source.id(),root);work.addLast(root);
         }
         while(!work.isEmpty()) {
             var context=work.removeFirst();
-            if(cicsState!=null) {
+            if(cicsState!=null||compactContexts) {
                 if(context.entry().startsWith("PHASE/"))statePhase(context);
                 else append(facts.get(context.entry()),context);
             } else for(var statement:topology.closure(context.entry(),context.binding()).stream().sorted().toList())append(facts.get(statement),context);
+        }
+        if(compactContexts)for(int i=0;i<sequences.size();i++) {
+            var sequence=sequences.get(i);var pending=pendingReturns.get(sequence.terminator().header().id());
+            if(pending==null)continue;
+            var call=(Operations.LocalInvoke)sequence.terminator();
+            var routes=pending.routes().entrySet().stream().sorted(Map.Entry.comparingByKey()).map(e->new Operations.ResumeRoute(e.getKey(),e.getValue())).toList();
+            var term=new Operations.LocalInvoke(call.header(),call.entry(),call.completionPorts(),call.resume(),call.fallback(),call.reentryGuard(),routes);
+            sequences.set(i,new Sequence(sequence.label(),sequence.instructions(),term,sequence.origin()));
         }
         var entries=new LinkedHashMap<SpInput.EntryId,PartialProgramAssembler.EntryAssembly>();
         for(var root:roots.entrySet()) {
@@ -117,6 +145,7 @@ final class TopologyProgramAssembler {
         return boundDestination(target,context.support()==null?context:context.state(cicsState.after(fact,context.support())),fact,role);
     }
     private LabelId boundDestination(Target target,Context context,SpInput.StatementFact fact,String role) {
+        if(compactContexts&&target.kind()==TargetKind.ESCAPE)return compactEscape(target,context,fact,role);
         if(target.kind()==TargetKind.ESCAPE) {
             var scope=topology.region(target.reference());
             if(scope.kind()==RegionKind.INLINE_BODY) {
@@ -139,10 +168,11 @@ final class TopologyProgramAssembler {
         }
         var r=topology.resolve(target,context.binding(),context.handler());
         if(r.kind()==TargetKind.OCCURRENCE) {
-            if(context.support()!=null)work.addLast(context.at(r.reference()));
+            if(context.support()!=null||compactContexts)work.addLast(context.at(r.reference()));
             return label(r.reference(),context.ids());
         }
         if(r.kind()==TargetKind.FILE_POINT)return FileTopologyLowering.label(unit,context.ids(),r.reference());
+        if(r.kind()==TargetKind.COMPLETE&&context.frame()==FrameKind.BODY)return compactBodyResume(context,fact);
         if(r.kind()==TargetKind.COMPLETE)return context.completion()!=null?context.completion():statePhaseLabel(context,context.binding().completionPhase());
         var at=new LabelId(unit,context.ids().id("label","topology-boundary",fact.header().id().handle(),role));
         if(synthetic.add(at)) {
@@ -194,7 +224,8 @@ final class TopologyProgramAssembler {
             term=frontier(fact,ids,"EXECUTABLE_CAPABILITY_NOT_READY",fact.header().id().handle());
         } else if(invoke.isPresent()) {
             var call=topology.binding(invoke.get().binding());
-            if(ids.containsActivation(call.id())) {
+            if(compactContexts)term=compactInvoke(fact,call,context);
+            else if(ids.containsActivation(call.id())) {
                 term=call.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED
                     ?undefinedReentry(fact,ids,call.region())
                     :frontier(fact,ids,"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
@@ -368,13 +399,18 @@ final class TopologyProgramAssembler {
             proofs.addAll(o.proofs());proofs.addAll(topology.resolve(o.target(),context.binding()).proofs());
             if(o.kind()==OutcomeKind.LOCAL_INVOKE)proofs.addAll(topology.binding(o.binding()).proofs());
         }
-        if(context.binding()!=null)proofs.addAll(sharedBodies(context).proofs(context.binding()));
+        if(context.binding()!=null) {
+            if(compactContexts)proofs.addAll(context.binding().proofs());
+            else proofs.addAll(sharedBodies(context).proofs(context.binding()));
+        }
         var topologyOrigin=evidence("operation/"+h.id().localId(),List.copyOf(proofs),context.ids());
         var origin=origins.derived(context.ids().id("origin","topology-operation",unit.localId(),h.id().localId()),List.of(h.origin(),topologyOrigin),"control-topology@2.39/operation-and-bound-outcomes");
         var header=new Operations.Header(h.id(),origin,h.coverage(),h.precision(),h.uncertainties());
         Terminator result=switch(term) {
             case Operations.Jump t -> new Operations.Jump(header,t.destination());
-            case Operations.LocalInvoke t -> new Operations.LocalInvoke(header,t.entry(),t.completionPorts(),t.resume(),t.fallback(),t.reentryGuard());
+            case Operations.LocalInvoke t -> new Operations.LocalInvoke(header,t.entry(),t.completionPorts(),t.resume(),t.fallback(),t.reentryGuard(),t.resumeRoutes());
+            case Operations.LocalResume t -> new Operations.LocalResume(header,t.fallback(),t.resumeKey());
+            case Operations.LocalUnwind t -> new Operations.LocalUnwind(header,t.count(),t.destination(),t.fallback(),t.all());
             case Operations.Branch t -> new Operations.Branch(header,t.predicate(),t.trueDestination(),t.falseDestination());
             case Operations.Opaque t -> new Operations.Opaque(header,t.observedKind(),t.knownOperands(),t.valueResults(),t.envelope());
             case Operations.Return t -> new Operations.Return(header,t.values());
@@ -417,6 +453,106 @@ final class TopologyProgramAssembler {
         sequences.add(new Sequence(at,List.of(),invoke,origin));PartialProgramAssembler.link(caller.header().id(),invoke,at,links,items);
         return at;
     }
+    /** Explicit frames replace complete caller chains; inline contexts retain only lexical ancestry. */
+    private Terminator compactInvoke(SpInput.StatementFact fact,Binding call,Context parent) {
+        if(topology.inline(call)&&parent.base().containsActivation(call.id()))
+            return call.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED?undefinedReentry(fact,parent.ids(),call.region()):frontier(fact,parent.ids(),"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
+        var base=topology.inline(call)?parent.base().activation(call.id()):occurrenceIds.activation("compact-perform:"+call.id());
+        if(!topology.inline(call)&&parent.handler())base=base.activation("handler-body");
+        var child=new Context(base,call,null,"",null,topology.inline(call)?parent:null,parent.support(),parent.handler(),FrameKind.ACTIVATION);
+        var entry=statePhaseLabel(child,call.entryPhase());
+        var resume=boundDestination(call.resume(),parent,fact,"resume");
+        var origin=evidence(call.id(),call.proofs(),parent.ids());
+        var op=new OperationId(unit,parent.ids().id("operation","topology-invoke",fact.header().id().handle(),"jump"));
+        var reject=call.reentryPolicy()==ReentryPolicy.SOURCE_UNDEFINED?reentryDestination(fact,call):compactUnknownReentry(fact,call);
+        var term=new Operations.LocalInvoke(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),
+            entry,List.of(),resume,localFallback(),Optional.of(new Operations.ReentryGuard(occurrenceIds.id("activation","local-binding",unit.localId(),call.id()),reject)));
+        pendingReturn(term,returnGroup(child,"activation"),support->boundDestination(call.resume(),parent.state(support),fact,"resume"));
+        return term;
+    }
+    private LabelId compactUnknownReentry(SpInput.StatementFact fact,Binding call) {
+        var ids=occurrenceIds.activation("reentry-guard:"+call.id());
+        var at=new LabelId(unit,ids.id("label","reentry-frontier",call.id(),"unavailable"));
+        if(synthetic.add(at)) {
+            var term=frontier(fact,ids,"TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE",call.region());
+            sequences.add(new Sequence(at,List.of(),term,term.header().origin()));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
+        return at;
+    }
+    private LabelId compactBody(SpInput.StatementFact fact,Context activation,String entry) {
+        var call=activation.binding();var key=new SharedRoutineBodies.Key(entry,call.endpoint());
+        var base=occurrenceIds.activation("compact-body:"+key.identity());
+        if(activation.handler())base=base.activation("handler-body");
+        var body=new Context(base,call,null,entry,null,null,activation.support(),activation.handler(),FrameKind.BODY);
+        work.addLast(body);
+        var at=new LabelId(unit,activation.ids().id("label","compact-body-invoke",call.id(),"BODY"));
+        if(synthetic.add(at)) {
+            var op=new OperationId(unit,activation.ids().id("operation","compact-body-invoke",call.id(),"BODY"));
+            var origin=evidence(call.id()+"/BODY-INVOKE",compactProofs.get(key),activation.ids());
+            var resume=statePhaseLabel(activation,call.completionPhase());
+            var term=new Operations.LocalInvoke(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),
+                label(entry,body.ids()),List.of(),resume,localFallback());
+            pendingReturn(term,returnGroup(body,"body"),support->statePhaseLabel(activation.state(support),call.completionPhase()));
+            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
+        return at;
+    }
+    private LabelId compactBodyResume(Context body,SpInput.StatementFact fact) {
+        var at=new LabelId(unit,body.ids().id("label","compact-body-resume",unit.localId(),"complete"));
+        if(synthetic.add(at)) {
+            var origin=evidence("compact-body-resume",body.binding().proofs(),body.ids());
+            var term=compactResume(body,"body",fact,origin);
+            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
+        return at;
+    }
+    private Terminator compactResume(Context context,String kind,SpInput.StatementFact fact,OriginId origin) {
+        var op=new OperationId(unit,context.ids().id("operation","compact-resume",unit.localId(),kind));
+        var group=returnGroup(context,kind);
+        if(context.support()!=null&&returnStates.computeIfAbsent(group,k->new LinkedHashSet<>()).add(context.support()))
+            for(var pending:List.copyOf(pendingReturns.values()))if(pending.group().equals(group))addReturnRoute(pending,context.support());
+        return new Operations.LocalResume(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),localFallback(),
+            Optional.ofNullable(context.support()).map(this::resumeKey));
+    }
+    private String returnGroup(Context context,String kind){return context.base().id("continuation","compact-"+kind,unit.localId(),kind);}
+    private String resumeKey(HandlerStateAnalysis.Support support){return occurrenceIds.id("continuation","cics-state",unit.localId(),CicsExecutionState.key(support));}
+    private void pendingReturn(Operations.LocalInvoke invoke,String group,java.util.function.Function<HandlerStateAnalysis.Support,LabelId> destination) {
+        if(cicsState==null)return;
+        var pending=new PendingReturn(invoke.header().id(),group,destination,new TreeMap<>());pendingReturns.put(invoke.header().id(),pending);
+        for(var support:returnStates.getOrDefault(group,Set.of()))addReturnRoute(pending,support);
+    }
+    private void addReturnRoute(PendingReturn pending,HandlerStateAnalysis.Support support) {
+        var key=resumeKey(support);if(!pending.routes().containsKey(key))pending.routes().put(key,pending.destination().apply(support));
+    }
+    private LabelId compactEscape(Target target,Context context,SpInput.StatementFact fact,String role) {
+        var scope=topology.region(target.reference());var frame=context;int count=0;
+        if(scope.kind()==RegionKind.INLINE_BODY) {
+            while(frame!=null) {
+                if(frame.frame()==FrameKind.ACTIVATION)count++;
+                if(frame.binding()!=null&&frame.binding().endpoint().equals(scope.boundary())) {
+                    var parent=Objects.requireNonNull(frame.parent()).state(context.support());
+                    var destination=boundDestination(frame.binding().resume(),parent,fact,role);
+                    return compactUnwind(context,count,false,destination,fact,role);
+                }
+                frame=frame.parent();
+            }
+            throw new IllegalArgumentException("inline escape has no lexical activation");
+        }
+        while(frame.parent()!=null&&topology.inline(frame.binding())&&!topology.contains(frame.binding(),scope.id())) {count++;frame=frame.parent();}
+        var completion=new Target(TargetKind.COMPLETE,scope.id(),target.proofs());
+        var destination=boundDestination(completion,frame.state(context.support()),fact,role);
+        return count==0?destination:compactUnwind(context,count,false,destination,fact,role);
+    }
+    private LabelId compactUnwind(Context context,int count,boolean all,LabelId destination,SpInput.StatementFact fact,String role) {
+        var at=new LabelId(unit,context.ids().id("label","compact-unwind",fact.header().id().handle(),role));
+        if(synthetic.add(at)) {
+            var op=new OperationId(unit,context.ids().id("operation","compact-unwind",fact.header().id().handle(),role));
+            var origin=evidence("compact-unwind/"+fact.header().id().handle()+"/"+role,topology.outcomes(fact.header().id().handle()).stream().flatMap(o->o.proofs().stream()).distinct().toList(),context.ids());
+            var term=new Operations.LocalUnwind(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),java.math.BigInteger.valueOf(count),destination,localFallback(),all);
+            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        }
+        return at;
+    }
     /** The activation guard covers all PERFORM phases, including initialization and tests. */
     private LabelId guardedCompletion(SpInput.StatementFact fact,Binding call,LocalIds ids) {
         var at=new LabelId(unit,ids.id("label","guarded-completion",call.id(),"RESUME"));
@@ -453,7 +589,19 @@ final class TopologyProgramAssembler {
         var at=new LabelId(unit,context.ids().id("label","topology-state-phase",binding.id(),name));
         if(!emitted.add(at))return;
         var fact=facts.get(binding.caller());
-        if(name.equals("BODY")||name.equals("RESUME")) {
+        if(compactContexts&&(name.equals("BODY")||name.equals("RESUME"))) {
+            var origin=evidence(binding.id()+"/"+name,binding.proofs(),context.ids());
+            Terminator term;
+            if(name.equals("RESUME")) {
+                term=compactResume(context,"activation",fact,origin);
+            } else {
+                var entry=topology.entry(binding);
+                var target=!topology.inline(binding)&&entry.kind()==TargetKind.OCCURRENCE?compactBody(fact,context,entry.reference()):
+                    boundDestination(topology.region(binding.region()).entry(),context,fact,"body");
+                term=PerformSequenceAssembler.jump("topology-state-"+name,fact.header().id(),target,origin,unit,context.ids());
+            }
+            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+        } else if(name.equals("BODY")||name.equals("RESUME")) {
             var destination=name.equals("BODY")?boundDestination(topology.region(binding.region()).entry(),context,fact,"body"):
                 boundDestination(binding.resume(),Objects.requireNonNull(context.parent()).state(context.support()),fact,"resume");
             var origin=evidence(binding.id()+"/"+name,binding.proofs(),context.ids());
@@ -507,8 +655,11 @@ final class TopologyProgramAssembler {
                 // Finite exceptional ingress, independent of the interrupted call stack.
                 var base=occurrenceIds.activation("handler-ingress:"+event.id()+"/"+CicsExecutionState.key(context.support()));
                 var handler=new Context(base,null,null,selection.localEntry().orElseThrow().location(),null,null,support,true);
+                if(compactContexts)handler=new Context(handler.base(),null,null,handler.entry(),null,null,handler.support(),true,FrameKind.ROOT);
                 work.addLast(handler);
-                alternatives.add(new Control.Exceptional("CICS_TASK_ABEND/"+event.origin(),new Control.Handler(label(handler.entry(),handler.ids()))));
+                var entry=label(handler.entry(),handler.ids());
+                if(compactContexts)entry=compactUnwind(handler,0,true,entry,fact,"handler-ingress");
+                alternatives.add(new Control.Exceptional("CICS_TASK_ABEND/"+event.origin(),new Control.Handler(entry)));
             } else {
                 if(selection.outerLevelRemainder())alternatives.add(new Control.Exceptional("CICS_TASK_ABEND",Control.Propagate.INSTANCE));
                 localUnknown|=selection.unknownLocalRemainder()||selection.target().isPresent();
