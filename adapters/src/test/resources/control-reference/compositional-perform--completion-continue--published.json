@@ -1,0 +1,15 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform/completion-continue.json",
+  "sourceSha256" : "65bca54780d81fbaa017c3b806e3fd918deea76bf3e9ac155d50dd684a17d326",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:1:invoke" : 3
+  }, {
+    "statement:4:return" : 4
+  }, { } ]
+}

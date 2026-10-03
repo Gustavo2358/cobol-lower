@@ -1,0 +1,15 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform/nested-depth-3.json",
+  "sourceSha256" : "ab6b89d6dd9d33ac50682e40b39a128267b6298bf06196d216976ea4a49a1f9d",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:1:invoke" : 3
+  }, {
+    "statement:4:return" : 4
+  }, { } ]
+}

@@ -1,0 +1,20 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/goto-escape-performed.json",
+  "sourceSha256" : "fb3dfc4f46424e8767326ba7e88a72a5d931d5174b5af4a117c892360dfc7ff2",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:4:branch" : 2
+  }, {
+    "statement:2:assign" : 3,
+    "statement:3:invoke" : 4
+  }, {
+    "statement:1:invoke" : 5
+  }, {
+    "statement:8:return" : 6
+  }, {
+    "statement:6:return" : 6
+  }, { } ]
+}

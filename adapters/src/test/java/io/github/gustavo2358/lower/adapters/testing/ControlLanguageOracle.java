@@ -39,6 +39,51 @@ final class ControlLanguageOracle {
             result.replaceAll((k,v)->Set.copyOf(v));return result;
         }
     }
+    /** Frozen finite-language reference captured from a separately qualified lower commit. */
+    static com.fasterxml.jackson.databind.node.ArrayNode snapshot(LoweringResult result) {
+        var machine=Machine.of(result);var ids=new LinkedHashMap<Set<LocalControlOracle.Point>,Integer>();
+        var pending=new ArrayDeque<Set<LocalControlOracle.Point>>();ids.put(machine.roots(),0);pending.add(machine.roots());
+        var rows=CobolControlSuite.J.createArrayNode();
+        while(!pending.isEmpty()) {
+            var row=rows.addObject();
+            for(var edge:machine.transitions(pending.removeFirst()).entrySet()) {
+                var to=edge.getValue();if(!ids.containsKey(to)){ids.put(to,ids.size());pending.addLast(to);}
+                row.put(edge.getKey(),ids.get(to));
+            }
+            if(ids.size()>200_000)throw new AssertionError("reference resource bound exceeded; no snapshot verdict");
+        }
+        return rows;
+    }
+    static void reference(LoweringResult actual,String resource)throws java.io.IOException {
+        com.fasterxml.jackson.databind.JsonNode rows;
+        try(var stream=ControlLanguageOracle.class.getResourceAsStream("/control-reference/"+resource+".json")) {
+            var reference=CobolControlSuite.J.readTree(Objects.requireNonNull(stream,resource));
+            if(!reference.path("referenceCommit").asText().equals("cb1b87250f133535ab26a3056be0d6da144d81bf"))
+                throw new AssertionError("unqualified control reference "+resource);
+            try(var fixture=ControlLanguageOracle.class.getResourceAsStream("/sp/"+reference.path("fixture").asText())) {
+                var digest=java.security.MessageDigest.getInstance("SHA-256").digest(Objects.requireNonNull(fixture,resource).readAllBytes());
+                if(!java.util.HexFormat.of().formatHex(digest).equals(reference.path("sourceSha256").asText()))
+                    throw new AssertionError("source fixture differs from frozen reference "+resource);
+            } catch(java.security.NoSuchAlgorithmException error) { throw new AssertionError(error); }
+            rows=reference.path("states");
+        }
+        if(!rows.isArray()||rows.isEmpty())throw new AssertionError("invalid frozen reference "+resource);
+        for(var row:rows) {
+            if(!row.isObject())throw new AssertionError("invalid reference state "+resource);
+            row.elements().forEachRemaining(to->{if(!to.isIntegralNumber()||to.intValue()<0||to.intValue()>=rows.size())
+                throw new AssertionError("invalid reference transition "+resource);});
+        }
+        var machine=Machine.of(actual);
+        record Pair(Set<LocalControlOracle.Point> points,int state) { }
+        var pending=new ArrayDeque<Pair>();var seen=new HashSet<Pair>();pending.add(new Pair(machine.roots(),0));
+        while(!pending.isEmpty()) {
+            var pair=pending.removeFirst();if(!seen.add(pair))continue;
+            if(seen.size()>200_000)throw new AssertionError("reference pair bound exceeded; no equivalence verdict");
+            var next=machine.transitions(pair.points());var expected=rows.get(pair.state());var keys=new TreeSet<String>();expected.fieldNames().forEachRemaining(keys::add);
+            if(!next.keySet().equals(keys))throw new AssertionError(resource+" control language differs: "+next.keySet()+" vs "+keys);
+            next.forEach((symbol,points)->pending.addLast(new Pair(points,expected.path(symbol).intValue())));
+        }
+    }
     static void equivalent(LoweringResult left,LoweringResult right,String name) {
         var a=Machine.of(left);var b=Machine.of(right);
         record Pair(Set<LocalControlOracle.Point> a,Set<LocalControlOracle.Point> b) { }

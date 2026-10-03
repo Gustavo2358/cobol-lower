@@ -1,0 +1,19 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/legacy-ordinary-incoming-live.json",
+  "sourceSha256" : "336bb3152b43fff994a47e71ca56ef423215edf3a8abee49ace87e7bb7666173",
+  "variant" : "published",
+  "states" : [ {
+    "statement:2:assign" : 1
+  }, {
+    "statement:0:invoke" : 2
+  }, {
+    "statement:1:assign" : 3
+  }, {
+    "statement:2:assign" : 4
+  }, {
+    "statement:3:invoke" : 5
+  }, {
+    "statement:6:return" : 6
+  }, { } ]
+}

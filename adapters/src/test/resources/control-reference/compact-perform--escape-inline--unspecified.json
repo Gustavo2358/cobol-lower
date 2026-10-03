@@ -1,0 +1,56 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/escape-inline.json",
+  "sourceSha256" : "98fc5ff02c40d9f7f64466124781ab2dbee90bf10cfefd68e807137ecf500476",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:0:branch" : 1
+  }, {
+    "statement:8:branch" : 2,
+    "statement:9:branch" : 3
+  }, {
+    "statement:0:branch" : 1,
+    "statement:1:branch" : 4
+  }, {
+    "statement:0:branch" : 1,
+    "statement:8:branch" : 2
+  }, {
+    "statement:13:opaque" : 5,
+    "statement:3:return" : 6
+  }, {
+    "statement:0:branch" : 7,
+    "statement:14:return" : 6
+  }, { }, {
+    "statement:8:branch" : 8,
+    "statement:9:branch" : 9
+  }, {
+    "statement:0:branch" : 7,
+    "statement:1:branch" : 10
+  }, {
+    "statement:0:branch" : 7,
+    "statement:8:branch" : 8
+  }, {
+    "statement:13:opaque" : 11
+  }, {
+    "statement:0:branch" : 12,
+    "statement:14:return" : 6,
+    "statement:4:opaque" : 6,
+    "statement:6:opaque" : 6
+  }, {
+    "statement:8:branch" : 13,
+    "statement:9:branch" : 14
+  }, {
+    "statement:0:branch" : 12,
+    "statement:1:branch" : 15
+  }, {
+    "statement:0:branch" : 12,
+    "statement:8:branch" : 13
+  }, {
+    "statement:13:opaque" : 16
+  }, {
+    "statement:0:branch" : 12,
+    "statement:14:return" : 6,
+    "statement:4:opaque" : 6,
+    "statement:6:opaque" : 6
+  } ]
+}

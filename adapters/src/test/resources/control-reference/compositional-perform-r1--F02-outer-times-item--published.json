@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-outer-times-item.json",
+  "sourceSha256" : "5fb3a8dfe6b1d9c147b1249da651edded4d962dfe14b572963145d58459f1ad1",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:4:return" : 5
+  }, {
+    "statement:3:branch" : 2
+  }, { } ]
+}

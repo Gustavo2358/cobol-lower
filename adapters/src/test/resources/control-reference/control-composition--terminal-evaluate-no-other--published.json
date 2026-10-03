@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/terminal-evaluate-no-other.json",
+  "sourceSha256" : "47e78f177571942c4a1c7a7a7efbcf636dd89b0e6a4bce4aa56b63961636d1cd",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:5:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:4:return" : 5
+  }, {
+    "statement:1:invoke" : 3
+  }, { } ]
+}

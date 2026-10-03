@@ -1,0 +1,24 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/nested-if-evaluate.json",
+  "sourceSha256" : "b6d7b1124445f4e07fc6f7b81db14edfbbd9cbc252b55f9fec4d3b2fa268f58a",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:4:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:8:branch" : 4
+  }, {
+    "statement:7:return" : 5
+  }, {
+    "statement:2:assign" : 6,
+    "statement:5:branch" : 7
+  }, { }, {
+    "statement:1:invoke" : 3
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:3:assign" : 6
+  } ]
+}

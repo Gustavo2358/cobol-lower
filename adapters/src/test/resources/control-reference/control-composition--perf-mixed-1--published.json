@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-mixed-1.json",
+  "sourceSha256" : "936e2c3b05aa7dc1ebc829602668058c081b41df15eb99ed05f1a9767ee07d6a",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:5:return" : 5
+  }, {
+    "statement:1:invoke" : 3
+  }, { } ]
+}

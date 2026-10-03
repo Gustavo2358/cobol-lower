@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/perf-if-1.json",
+  "sourceSha256" : "36b10d69024ee81ddec3c626a35c29408303d4915d529aa34d7b52312452233e",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:3:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:5:return" : 5
+  }, {
+    "statement:1:invoke" : 3
+  }, { } ]
+}

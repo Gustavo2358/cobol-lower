@@ -1,0 +1,69 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/ctxboom-varying.json",
+  "sourceSha256" : "b37148f46767d5e059c162543e28c881134b199bbf1f1109c88acf482580c098",
+  "variant" : "published",
+  "states" : [ {
+    "statement:1:opaque" : 1
+  }, {
+    "statement:1:branch" : 2
+  }, {
+    "statement:0:branch" : 3,
+    "statement:2:return" : 4
+  }, {
+    "statement:1:opaque" : 1,
+    "statement:9:opaque" : 5
+  }, { }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 6,
+    "statement:5:opaque" : 7
+  }, {
+    "statement:3:branch" : 8
+  }, {
+    "statement:5:branch" : 9
+  }, {
+    "statement:0:branch" : 10,
+    "statement:9:opaque" : 5
+  }, {
+    "statement:0:branch" : 11,
+    "statement:9:opaque" : 5
+  }, {
+    "statement:3:opaque" : 6,
+    "statement:9:opaque" : 12
+  }, {
+    "statement:5:opaque" : 7,
+    "statement:9:opaque" : 13
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 14
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 15,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:5:branch" : 16
+  }, {
+    "statement:3:branch" : 17
+  }, {
+    "statement:0:branch" : 18,
+    "statement:9:opaque" : 12
+  }, {
+    "statement:0:branch" : 19,
+    "statement:9:opaque" : 13
+  }, {
+    "statement:5:opaque" : 14,
+    "statement:9:opaque" : 20
+  }, {
+    "statement:3:opaque" : 15,
+    "statement:9:opaque" : 21
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  } ]
+}

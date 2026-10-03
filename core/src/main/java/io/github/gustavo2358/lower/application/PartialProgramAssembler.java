@@ -5,10 +5,11 @@ import io.github.gustavo2358.air.model.Ids.*;
 import io.github.gustavo2358.lower.domain.SpInput;
 import java.util.*;
 
-/** One explicit source occurrence per sequence; BASIC bodies specialize by activation. */
+/** Explicit source occurrences; reusable structural PERFORM bodies return through local frames. */
 final class PartialProgramAssembler {
     private record Task(List<SpInput.StatementFact> body, Map<SpInput.StatementId,LabelId> completions,
                         boolean intrinsic, LocalIds ids, SpInput.StatementId entry) { }
+    private record Activation(LabelId entry,LabelId rejected) { }
     record EntryAssembly(LabelId label,OriginId origin) { }
     record Assembly(List<Sequence> sequences, LabelId entryLabel, OriginId entrySequenceOrigin,Map<SpInput.EntryId,EntryAssembly> entries) {
         Assembly(List<Sequence> sequences,LabelId label,OriginId origin){this(sequences,label,origin,Map.of());}
@@ -19,10 +20,11 @@ final class PartialProgramAssembler {
             List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items, List<Evidence.Uncertainty> uncertainties,FileResourceLowering files) {
         var sequences=new ArrayList<Sequence>();
         var work=new ArrayDeque<Task>();
+        var activations=new HashMap<SpInput.StatementId,Activation>();
         work.add(new Task(plan.statements(),Map.of(),false,ids,plan.admission().input().orElseThrow().entryInventory().entries().getFirst().start().statement().orElseThrow()));
         while(!work.isEmpty()) {
             var task=work.removeFirst();
-            append(plan,task.body(),task.completions(),task.intrinsic(),data,unit,task.ids(),origins,statements,operands,items,uncertainties,sequences,files,work,task.entry());
+            append(plan,task.body(),task.completions(),task.intrinsic(),data,unit,task.ids(),origins,statements,operands,items,uncertainties,sequences,files,work,task.entry(),ids,activations);
         }
         Collections.reverse(sequences);
         var input=plan.admission().input().orElseThrow();
@@ -40,7 +42,7 @@ final class PartialProgramAssembler {
     private static void append(PartialProgramAdmission.Plan plan,List<SpInput.StatementFact> sourceStatements,
             Map<SpInput.StatementId,LabelId> overrides,boolean intrinsic,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.StatementLink> statements,List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,
-            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files,Deque<Task> work,SpInput.StatementId contextEntry) {
+            List<Evidence.Uncertainty> uncertainties,List<Sequence> sequences,FileResourceLowering files,Deque<Task> work,SpInput.StatementId contextEntry,LocalIds rootIds,Map<SpInput.StatementId,Activation> activations) {
         var demanded=PerformActivationDemand.inContext(plan,sourceStatements,overrides,intrinsic,contextEntry,unit,ids);
         for(var fact:sourceStatements) {
             var label=label(fact.header().id(),unit,ids);files.sourceEntry(label); var next=PartialProgramAdmission.ordinaryNext(plan.admission().input().orElseThrow(),fact);
@@ -96,38 +98,50 @@ final class PartialProgramAssembler {
                     && !demanded.contains(p.header().id())) {
                 term=opaque(p,null,data,unit,ids,origins,uncertainties,operands,true,"ACTIVATION_NOT_MATERIALIZED_IN_ENTRY_PROJECTION");
                 link(p.header().id(),term,label,statements,items);
-            } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())
-                    && !ids.containsActivation(p.header().id().handle())) {
-                var body=plan.compositions().get(p.header().id());
-                var activation=ids.activation(p.header().id().handle());
-                var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
-                var reference=origins.source("perform-range-reference",p.header().id().handle()+"/structural",p.start().orElseThrow().referenceOrigin());
-                var evidence=new LinkedHashSet<OriginId>(List.of(source,reference));
-                evidence.add(origins.source("paragraph",p.start().orElseThrow().id().handle(),p.start().orElseThrow().paragraphOrigin()));
-                for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
-                var origin=origins.derived(ids.id("origin","compositional-perform-entry",unit.localId(),p.header().id().handle()),
-                    List.copyOf(evidence),"perform-structural@1/activation-entry");
-                var target=label(p.targetEntry().orElseThrow(),unit,activation);
-                if(body.isEmpty())throw new IllegalStateException("known entry must have an inventoried occurrence");
-                {
-                    var resumeLabel=new LabelId(unit,activation.id("label","perform-normal-resume",unit.localId(),p.header().id().handle()));
-                    var resumeIds=activation.activation("normal-resume");
-                    var resumeOrigin=origins.derived(resumeIds.id("origin","compositional-perform-resume",unit.localId(),p.header().id().handle()),
+            } else if(fact instanceof SpInput.ProcedurePerformFact p && plan.compositions().containsKey(p.header().id())) {
+                var activation=activations.get(p.header().id());
+                if(activation==null) {
+                    var body=plan.compositions().get(p.header().id());
+                    var bodyIds=rootIds.activation("structural-perform:"+p.header().id().handle());
+                    var target=label(p.targetEntry().orElseThrow(),unit,bodyIds);
+                    var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
+                    var reference=origins.source("perform-range-reference",p.header().id().handle()+"/structural",p.start().orElseThrow().referenceOrigin());
+                    var evidence=new LinkedHashSet<OriginId>(List.of(source,reference));
+                    evidence.add(origins.source("paragraph",p.start().orElseThrow().id().handle(),p.start().orElseThrow().paragraphOrigin()));
+                    for(var paragraph:p.procedures())evidence.add(origins.source("paragraph",paragraph.id().handle(),paragraph.provenance()));
+                    var origin=origins.derived(bodyIds.id("origin","compositional-perform-entry",unit.localId(),p.header().id().handle()),
+                        List.copyOf(evidence),"perform-structural@1/activation-entry");
+                    var resumeLabel=new LabelId(unit,bodyIds.id("label","perform-normal-resume",unit.localId(),p.header().id().handle()));
+                    var resumeOrigin=origins.derived(bodyIds.id("origin","compositional-perform-resume",unit.localId(),p.header().id().handle()),
                         List.of(source,origin,origins.source("perform-continuation",p.header().id().handle(),p.normalContinuation().provenance())),"perform-structural@1/conditional-activation-resume");
-                    Terminator resume=destination==null?opaque(p,null,data,unit,resumeIds,origins,uncertainties,operands,false)
-                        :PerformSequenceAssembler.jump("compositional-resume",p.header().id(),destination,resumeOrigin,unit,resumeIds);
-                    sequences.add(new Sequence(resumeLabel,List.of(),resume,resumeOrigin));
-                    link(p.header().id(),resume,resumeLabel,statements,items);
-                    var routing=PerformRepetitionAssembler.wrap(p,target,resumeLabel,data,unit,ids,origins,statements,operands,items,uncertainties,sequences);
-                    term=PerformSequenceAssembler.jump("compositional-entry",p.header().id(),routing.entry(),origin,unit,ids);
-                    link(p.header().id(),term,label,statements,items);
+                    var resumeOp=new OperationId(unit,bodyIds.id("operation","perform-normal-resume",unit.localId(),p.header().id().handle()));
+                    var resume=new Operations.LocalResume(new Operations.Header(resumeOp,resumeOrigin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(resumeOp),List.of()),LocalActivationFrames.fallback(unit));
+                    sequences.add(new Sequence(resumeLabel,List.of(),resume,resumeOrigin));link(p.header().id(),resume,resumeLabel,statements,items);
+                    var routing=PerformRepetitionAssembler.wrap(p,target,resumeLabel,data,unit,bodyIds,origins,statements,operands,items,uncertainties,sequences);
+                    var rejected=new LabelId(unit,bodyIds.id("label","structural-reentry",unit.localId(),p.header().id().handle()));
+                    var frontier=opaque(p,null,data,unit,bodyIds.activation("reentry"),origins,uncertainties,operands,true,"RECURSIVE_PERFORM_NOT_SUPPORTED");
+                    sequences.add(new Sequence(rejected,List.of(),frontier,frontier.header().origin()));link(p.header().id(),frontier,rejected,statements,items);
+                    activation=new Activation(routing.entry(),rejected);activations.put(p.header().id(),activation);
                     var completions=new HashMap<SpInput.StatementId,LabelId>();
                     for(int i=0;i<p.procedures().size();i++) {
-                        var after=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,activation):routing.completion();
+                        var after=i+1<p.procedures().size()?label(p.procedures().get(i+1).entry(),unit,bodyIds):routing.completion();
                         for(var id:p.procedures().get(i).completions())completions.put(id,after);
                     }
-                    work.addLast(new Task(body,completions,true,activation,p.targetEntry().orElseThrow()));
+                    if(body.isEmpty())throw new IllegalStateException("known entry must have an inventoried occurrence");
+                    work.addLast(new Task(body,completions,true,bodyIds,p.targetEntry().orElseThrow()));
                 }
+                var source=origins.source("statement",p.header().id().handle(),p.header().provenance());
+                var callerResume=destination;
+                if(callerResume==null) {
+                    callerResume=new LabelId(unit,ids.id("label","missing-perform-resume",unit.localId(),p.header().id().handle()));
+                    var frontier=opaque(p,null,data,unit,ids.activation("missing-resume:"+p.header().id().handle()),origins,uncertainties,operands,false);
+                    sequences.add(new Sequence(callerResume,List.of(),frontier,frontier.header().origin()));link(p.header().id(),frontier,callerResume,statements,items);
+                }
+                var op=new OperationId(unit,ids.id("operation","structural-invoke",unit.localId(),p.header().id().handle()));
+                term=new Operations.LocalInvoke(new Operations.Header(op,source,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),
+                    activation.entry(),List.of(),callerResume,LocalActivationFrames.fallback(unit),
+                    Optional.of(new Operations.ReentryGuard(rootIds.id("activation","structural-perform",unit.localId(),p.header().id().handle()),activation.rejected())));
+                link(p.header().id(),term,label,statements,items);
             } else if(precise && fact instanceof SpInput.ProcedurePerformFact p) {
                 var activation=ids.activation(p.header().id().handle());
                 var target=label(p.procedures().getFirst().entry(),unit,activation);

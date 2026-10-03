@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-outer-until-after.json",
+  "sourceSha256" : "8d4dd1e0b5838f4a0c7accda2030bd6789b12c01fb8b50443ce0ecafe9c83d42",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:3:branch" : 3
+  }, {
+    "statement:1:invoke" : 4,
+    "statement:2:assign" : 2
+  }, {
+    "statement:4:return" : 5
+  }, { } ]
+}

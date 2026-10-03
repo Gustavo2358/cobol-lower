@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/ordinary-dead-depending.json",
+  "sourceSha256" : "f29e67f55fd0cd1f13d1d5ebb3c3b2d452046305f39b7712a0d52d6f54053d46",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:1:invoke" : 2
+  }, {
+    "statement:2:return" : 3
+  }, { } ]
+}

@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-inner-times.json",
+  "sourceSha256" : "ae99d19578f0ceff53651e2bc3d049d6e624e5e95ee8c2c98571602447948a2f",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:5:branch" : 3
+  }, {
+    "statement:1:invoke" : 4,
+    "statement:2:assign" : 2
+  }, {
+    "statement:4:return" : 5
+  }, { } ]
+}

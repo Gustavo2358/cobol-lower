@@ -19,20 +19,48 @@ public final class SharedRoutineSuite {
             if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
             var seqs=p.units().getFirst().sequences();
             var calls=seqs.stream().map(Sequence::terminator).filter(Operations.LocalInvoke.class::isInstance).map(Operations.LocalInvoke.class::cast).toList();
-            if(calls.size()!=2)throw new AssertionError("two local calls required, got "+calls.size());
-            if(!calls.get(0).entry().equals(calls.get(1).entry()))throw new AssertionError("body must be shared");
-            if(calls.get(0).resume().equals(calls.get(1).resume()))throw new AssertionError("caller continuations must differ");
+            if(calls.size()!=4)throw new AssertionError("two activations and two body invokes required, got "+calls.size());
+            var byEntry=new HashMap<io.github.gustavo2358.air.model.Ids.LabelId,List<Operations.LocalInvoke>>();
+            calls.forEach(call->byEntry.computeIfAbsent(call.entry(),k->new ArrayList<>()).add(call));
+            var shared=byEntry.values().stream().filter(group->group.size()==2).toList();
+            if(shared.size()!=1)throw new AssertionError("both activations must invoke one shared body");
+            if(shared.getFirst().get(0).resume().equals(shared.getFirst().get(1).resume()))throw new AssertionError("caller continuations must differ");
+            ControlLanguageOracle.reference(result,"perform-reentry--sequential-callers--published");
             long bodies=seqs.stream().filter(s->s.terminator() instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget l&&l.name().equals("INP")).count();
             if(bodies!=1)throw new AssertionError("exactly one native body call, got "+bodies);
             if(!p.capabilities().required().contains(Capabilities.LOCAL_CONTROL))throw new AssertionError("local-control capability required");
             if(!new io.github.gustavo2358.air.json.AirJson().decode(new io.github.gustavo2358.air.json.AirJson().encode(p)).equals(p))throw new AssertionError("transport");
         }
+        checkSharedProofs();
         checkContextModes();
         checkCyclic();
         checkContextExplosion();
         checkCics("shared-cics-stable", true);
         checkCics("shared-cics-distinct-state", false);
         System.out.println("SHARED_ROUTINES=PASS; compact fixtures=19; exhaustive control comparisons=16; adversarial mutations=4");
+    }
+    private static void checkSharedProofs()throws Exception {
+        com.fasterxml.jackson.databind.node.ObjectNode tree;
+        try(var stream=SharedRoutineSuite.class.getResourceAsStream("/sp/perform-reentry/sequential-callers.json")) {
+            tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
+        }
+        var proofs=(com.fasterxml.jackson.databind.node.ArrayNode)tree.path("controlTopology").path("proofs");
+        var required=new HashSet<String>();int caller=0;
+        for(var binding:tree.path("controlTopology").path("bindings")) {
+            var proof=(com.fasterxml.jackson.databind.node.ObjectNode)proofs.get(0).deepCopy();
+            var marker="shared-caller-proof-"+caller++;proof.put("id",marker);proof.put("rule",marker);proofs.add(proof);
+            ((com.fasterxml.jackson.databind.node.ArrayNode)binding.path("proofs")).add(marker);
+            required.add("SP2.39/"+proof.path("kind").asText()+"/"+marker);
+        }
+        var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+        var p=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS).publication().orElseThrow();
+        var byId=new HashMap<io.github.gustavo2358.air.model.Ids.OriginId,Origins.Origin>();p.origins().forEach(o->byId.put(o.id(),o));
+        var body=p.units().getFirst().sequences().stream().map(Sequence::terminator)
+            .filter(t->t instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget l&&l.name().equals("INP")).findFirst().orElseThrow();
+        var todo=new ArrayDeque<io.github.gustavo2358.air.model.Ids.OriginId>();todo.add(body.header().origin());var seen=new HashSet<io.github.gustavo2358.air.model.Ids.OriginId>();
+        while(!todo.isEmpty()) {var id=todo.removeFirst();if(!seen.add(id))continue;
+            if(byId.get(id) instanceof Origins.Derived d){required.remove(d.rule());todo.addAll(d.inputs());}}
+        if(!required.isEmpty())throw new AssertionError("shared body lost caller proofs: "+required);
     }
     private static void checkContextExplosion()throws Exception {
         for(var name:List.of("ctxboom-04","ctxboom-08","ctxboom-times","ctxboom-until","ctxboom-varying")) {
@@ -51,15 +79,16 @@ public final class SharedRoutineSuite {
                 }
                 var reordered=((SpJsonDecoder.Decoded)CobolControlSuite.decode(permuted)).input();
                 if(!p.equals(new CobolLowerer().lower(reordered,CobolLower.POSITIVE_OPTIONS).publication().orElseThrow()))throw new AssertionError(name+": SCC scheduling changed the publication");
-                // Historical policy selects the previous explicit expansion. Compare all finite
-                // control traces, including instruction steps in TIMES/UNTIL/VARYING phases.
+                // Compare both policies with frozen machines from the previous implementation.
+                // The machines retain instruction steps in TIMES/UNTIL/VARYING phases.
                 // N=8 is a size regression only: expanding it is the original OOM fixture.
                 if(!name.equals("ctxboom-08")) {
                     var old=tree.deepCopy();old.put("contractVersion","2.56.0");
                     old.path("controlTopology").path("bindings").forEach(b->((com.fasterxml.jackson.databind.node.ObjectNode)b).remove("reentryPolicy"));
                     var historical=((SpJsonDecoder.Decoded)CobolControlSuite.decode(old)).input();
-                    var expanded=new CobolLowerer().lower(historical,CobolLower.POSITIVE_OPTIONS);
-                    ControlLanguageOracle.equivalent(result,expanded,name);
+                    var historicalResult=new CobolLowerer().lower(historical,CobolLower.POSITIVE_OPTIONS);
+                    ControlLanguageOracle.reference(result,"compact-perform--"+name+"--published");
+                    ControlLanguageOracle.reference(historicalResult,"compact-perform--"+name+"--unspecified");
                 }
             }
         }
@@ -86,7 +115,7 @@ public final class SharedRoutineSuite {
                         ?new Operations.LocalInvoke(i.header(),i.entry(),i.completionPorts(),i.resume(),i.fallback(),i.reentryGuard(),i.resumeRoutes().stream().map(route->new Operations.ResumeRoute(route.key(),i.resume())).toList()):t);
                 }
                 if(name.equals("cics-handler-reentry"))rejectMutation(result,"handler-keeps-frames",t->t instanceof Operations.LocalUnwind u&&u.all()?new Operations.LocalUnwind(u.header(),u.count(),u.destination(),u.fallback()):t);
-                if(name.equals("escape-nested"))rejectMutation(result,"escape-keeps-inline",t->t instanceof Operations.LocalUnwind u?new Operations.LocalUnwind(u.header(),java.math.BigInteger.ZERO,u.destination(),u.fallback()):t);
+                if(name.equals("escape-nested"))rejectMutation(result,"escape-loses-selected-return",t->t instanceof Operations.LocalResume r&&r.resumeKey().isPresent()?new Operations.LocalResume(r.header(),r.fallback()):t);
                 if(name.equals("ctxboom-cics-04"))rejectMutation(result,"unguarded-cycle",t->t instanceof Operations.LocalInvoke i?new Operations.LocalInvoke(i.header(),i.entry(),i.completionPorts(),i.resume(),i.fallback(),Optional.empty(),i.resumeRoutes()):t);
                 var permutation=tree.deepCopy();
                 for(var field:List.of("occurrences","regions","boundaries","outcomes","bindings","proofs")) {
@@ -100,7 +129,8 @@ public final class SharedRoutineSuite {
                     var old=tree.deepCopy();
                     old.path("controlTopology").path("bindings").forEach(b->((com.fasterxml.jackson.databind.node.ObjectNode)b).put("reentryPolicy","UNSPECIFIED"));
                     var historical=((SpJsonDecoder.Decoded)CobolControlSuite.decode(old)).input();
-                    ControlLanguageOracle.equivalent(result,new CobolLowerer().lower(historical,CobolLower.POSITIVE_OPTIONS),name);
+                    ControlLanguageOracle.reference(result,"compact-perform--"+name+"--published");
+                    ControlLanguageOracle.reference(new CobolLowerer().lower(historical,CobolLower.POSITIVE_OPTIONS),"compact-perform--"+name+"--unspecified");
                     System.out.println("CONTEXT_EQUIVALENT "+name+" sequences="+p.units().getFirst().sequences().size());
                 }
             }
@@ -144,12 +174,15 @@ public final class SharedRoutineSuite {
             if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
             var calls=p.units().getFirst().sequences().stream().map(Sequence::terminator)
                 .filter(Operations.LocalInvoke.class::isInstance).map(Operations.LocalInvoke.class::cast).toList();
-            if(calls.size()!=2)throw new AssertionError(fixture+": expected two local invocations, got "+calls.size());
+            if(calls.size()!=4)throw new AssertionError(fixture+": expected activation and body frames for both calls, got "+calls.size());
+            calls=calls.stream().filter(call->call.reentryGuard().isEmpty()).toList();
+            if(calls.size()!=2)throw new AssertionError(fixture+": two body invocations required");
+            ControlLanguageOracle.reference(result,"shared-routines--"+fixture+"--published");
             if(calls.get(0).entry().equals(calls.get(1).entry())!=sameState)
                 throw new AssertionError(fixture+": body identity must distinguish entry handler states");
             var reached=LocalControlOracle.reached(p);var seqs=LocalControlOracle.sequences(p);
             long resumes=reached.stream().filter(point->seqs.get(point.label()).terminator() instanceof Operations.LocalResume).count();
-            if(resumes!=2)throw new AssertionError(fixture+": matched returns "+resumes);
+            if(resumes!=4)throw new AssertionError(fixture+": matched returns "+resumes);
         }
     }
 }

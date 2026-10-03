@@ -1,0 +1,20 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform-r1/F02-times-partial.json",
+  "sourceSha256" : "1c3703b3f1c45b4f09937844c2da7468c8ff809460beabd2ebca62411b17a726",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:assign" : 2
+  }, {
+    "statement:5:opaque" : 3
+  }, {
+    "statement:3:branch" : 4
+  }, {
+    "statement:1:invoke" : 5,
+    "statement:2:assign" : 2
+  }, {
+    "statement:4:return" : 6
+  }, { } ]
+}

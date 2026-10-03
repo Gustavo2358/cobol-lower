@@ -61,6 +61,16 @@ final class LocalControlOracle {
         while(!work.isEmpty()){var point=work.removeFirst();if(seen.add(point))work.addAll(successors(point,seqs,open));}
         return Set.copyOf(seen);
     }
+    static Set<Point> reached(Unit unit,Set<LabelId> stop) {
+        var seqs=new HashMap<LabelId,Sequence>();unit.sequences().forEach(s->seqs.put(s.label(),s));
+        var seen=new HashSet<Point>();var work=new ArrayDeque<Point>();
+        unit.entries().forEach(e->e.initialLabel().ifPresent(l->work.add(new Point(l,List.of()))));
+        while(!work.isEmpty()) {
+            var point=work.removeFirst();if(!seen.add(point)||stop.contains(point.label()))continue;
+            work.addAll(successors(point,seqs));
+        }
+        return Set.copyOf(seen);
+    }
     static Set<String> firstCalls(Point start,Map<LabelId,Sequence> seqs) {
         var calls=new TreeSet<String>();var seen=new HashSet<Point>();var work=new ArrayDeque<Point>();work.add(start);
         while(!work.isEmpty()) {

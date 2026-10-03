@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/handler-terminal-before.json",
+  "sourceSha256" : "66b04248962e3c52c61f3e822864760c655c846b406ece94cb9137594dd94024",
+  "variant" : "published",
+  "states" : [ {
+    "statement:1:opaque" : 1
+  }, {
+    "statement:2:opaque" : 2
+  }, {
+    "statement:4:return" : 3
+  }, { } ]
+}

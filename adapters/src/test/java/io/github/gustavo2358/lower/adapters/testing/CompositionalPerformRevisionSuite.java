@@ -21,10 +21,7 @@ public final class CompositionalPerformRevisionSuite {
         }
     }
     static Set<LabelId> reachable(Unit unit,Set<LabelId> stop) {
-        var index=new HashMap<LabelId,Sequence>();unit.sequences().forEach(s->index.put(s.label(),s));
-        var seen=new HashSet<LabelId>();var todo=new ArrayDeque<LabelId>();todo.add(unit.entries().getFirst().initialLabel().orElseThrow());
-        while(!todo.isEmpty()) {var id=todo.removeFirst();if(seen.add(id)&&!stop.contains(id))todo.addAll(CompositionalPerformSuite.successors(index.get(id).terminator()));}
-        return seen;
+        return LocalControlOracle.reached(unit,stop).stream().map(LocalControlOracle.Point::label).collect(java.util.stream.Collectors.toSet());
     }
     public static void main(String[] args) throws Exception {
         var names=new ArrayList<String>();
@@ -35,6 +32,7 @@ public final class CompositionalPerformRevisionSuite {
         for(var name:names) {
             var input=input(name);var result=new CobolLowerer().lower(input,CobolLower.OPTIONS);
             check(result.publication().isPresent(),"R1 AIR valid "+name+" "+result.status()+" "+result.validation());
+            ControlLanguageOracle.reference(result,"compositional-perform-r1--"+name+"--published");
             var pub=result.publication().orElseThrow();var unit=pub.units().getFirst();var reach=reachable(unit,Set.of());
             var codec=new AirJson();var bytes=codec.encode(pub);check(pub.equals(codec.decode(bytes)),"R1 AIR round-trip "+name);
             var reversed=new ArrayList<>(input.statements());Collections.reverse(reversed);
@@ -86,7 +84,10 @@ public final class CompositionalPerformRevisionSuite {
                     check(resumes==0 && unit.sequences().size()==input.statements().size(),"cold DAG keeps linear ordinary inventory without activation tree");
                     var sources=new HashSet<SpInput.StatementId>();result.statements().forEach(l->sources.add(l.source()));
                     check(input.statements().stream().allMatch(s->sources.contains(s.header().id())),"cold source inventory never discarded");
-                } else check(resumes==(name.contains("chain")?65:31),"only demanded contexts emitted "+name);
+                } else {
+                    long written=input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).count();
+                    check(resumes==(name.contains("chain")?65:9)&&resumes<=written,"one reusable activation per demanded written PERFORM "+name);
+                }
             }
         }
         System.out.println("COMPOSITIONAL_PERFORM_R1=PASS");

@@ -1,0 +1,25 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-callers.json",
+  "sourceSha256" : "4a59ea3160bf67fbfc97742336e3e1e015a0dfb914a5b9b15b437e7429fc2b8b",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:branch" : 1
+  }, {
+    "statement:0:invoke:FIRST" : 2,
+    "statement:2:branch" : 3
+  }, {
+    "statement:2:branch" : 4
+  }, {
+    "statement:0:invoke:FIRST" : 2,
+    "statement:6:opaque" : 5
+  }, {
+    "statement:1:invoke:SECOND" : 6,
+    "statement:2:branch" : 7
+  }, { }, {
+    "statement:5:return" : 5
+  }, {
+    "statement:1:invoke:SECOND" : 6,
+    "statement:6:opaque" : 5
+  } ]
+}

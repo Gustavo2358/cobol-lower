@@ -1,0 +1,75 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/ctxboom-times.json",
+  "sourceSha256" : "8f1375710683cf48d76dc5b5a660cd9046d4b8b3f92d829dce702399aa238da9",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:0:branch" : 1
+  }, {
+    "statement:1:branch" : 2,
+    "statement:9:opaque" : 3
+  }, {
+    "statement:0:branch" : 1,
+    "statement:2:return" : 4
+  }, {
+    "statement:0:branch" : 5,
+    "statement:10:return" : 4
+  }, { }, {
+    "statement:3:branch" : 6,
+    "statement:5:branch" : 7,
+    "statement:9:opaque" : 8
+  }, {
+    "statement:0:branch" : 9,
+    "statement:9:opaque" : 3
+  }, {
+    "statement:0:branch" : 10,
+    "statement:9:opaque" : 3
+  }, {
+    "statement:0:branch" : 11,
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:3:branch" : 6,
+    "statement:9:opaque" : 12
+  }, {
+    "statement:5:branch" : 7,
+    "statement:9:opaque" : 13
+  }, {
+    "statement:3:branch" : 14,
+    "statement:5:branch" : 15,
+    "statement:9:opaque" : 16
+  }, {
+    "statement:0:branch" : 17,
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4
+  }, {
+    "statement:0:branch" : 18,
+    "statement:10:return" : 4,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:0:branch" : 18,
+    "statement:9:opaque" : 13
+  }, {
+    "statement:0:branch" : 17,
+    "statement:9:opaque" : 12
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:5:branch" : 15,
+    "statement:9:opaque" : 19
+  }, {
+    "statement:3:branch" : 14,
+    "statement:9:opaque" : 20
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  }, {
+    "statement:10:return" : 4,
+    "statement:3:opaque" : 4,
+    "statement:5:opaque" : 4
+  } ]
+}

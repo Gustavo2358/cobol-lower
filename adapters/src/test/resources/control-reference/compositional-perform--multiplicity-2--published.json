@@ -1,0 +1,17 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform/multiplicity-2.json",
+  "sourceSha256" : "d5332e48235f955cc1a80a90bb17b200f6a9a21b553caed8dcd70bb9b0c8f1ff",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:2:invoke" : 2
+  }, {
+    "statement:1:assign" : 3
+  }, {
+    "statement:2:invoke" : 4
+  }, {
+    "statement:5:return" : 5
+  }, { } ]
+}

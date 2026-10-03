@@ -1,0 +1,19 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-conditional-handler.json",
+  "sourceSha256" : "2655d8fce7f77ebf2c45a6c5381b6503e75cab721c7446d534f9aea0c3b4abd6",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:opaque" : 1
+  }, {
+    "statement:1:branch" : 2
+  }, {
+    "statement:0:invoke:AFTERP" : 3,
+    "statement:1:branch" : 4
+  }, {
+    "statement:4:return" : 5
+  }, {
+    "statement:0:invoke:AFTERP" : 3,
+    "statement:5:opaque" : 5
+  }, { } ]
+}

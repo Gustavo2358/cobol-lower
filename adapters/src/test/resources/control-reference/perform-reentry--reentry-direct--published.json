@@ -1,0 +1,13 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-direct.json",
+  "sourceSha256" : "869c9c92430f4efc4ae7f723bbe7ab702a300272fadc7b652fc5372cf9bf4a70",
+  "variant" : "published",
+  "states" : [ {
+    "statement:1:invoke:BEFORE" : 1
+  }, {
+    "statement:1:invoke:BEFORE" : 2
+  }, {
+    "statement:4:opaque" : 3
+  }, { } ]
+}

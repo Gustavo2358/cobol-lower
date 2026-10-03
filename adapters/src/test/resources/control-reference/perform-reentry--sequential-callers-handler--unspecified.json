@@ -1,0 +1,19 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/sequential-callers-handler.json",
+  "sourceSha256" : "73a4ab5c128c5df542a49c335eee882f6d9c0458504f9ba02bd6cf159e503d4c",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:3:opaque" : 1
+  }, {
+    "statement:2:invoke:INP" : 2
+  }, {
+    "statement:0:invoke:FIRST" : 3
+  }, {
+    "statement:2:invoke:INP" : 4
+  }, {
+    "statement:1:invoke:SECOND" : 5
+  }, {
+    "statement:6:return" : 6
+  }, { } ]
+}

@@ -1,0 +1,85 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/cics-handler-reentry.json",
+  "sourceSha256" : "4731e84c00ecb5cd635460f420ff4cb82f838364c93cc9ce7d1527f2fc19c5e1",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:1:opaque" : 1
+  }, {
+    "statement:2:invoke:BEFORE" : 2
+  }, {
+    "statement:12:opaque" : 3,
+    "statement:9:invoke:BODY" : 4
+  }, {
+    "statement:13:return" : 5,
+    "statement:9:invoke:BODY" : 6
+  }, {
+    "statement:0:branch" : 7,
+    "statement:12:opaque" : 8
+  }, { }, {
+    "statement:0:branch" : 9
+  }, {
+    "statement:12:opaque" : 10,
+    "statement:4:return" : 5
+  }, {
+    "statement:13:return" : 5,
+    "statement:9:invoke:BODY" : 11
+  }, {
+    "statement:12:opaque" : 12
+  }, {
+    "statement:13:return" : 5,
+    "statement:9:invoke:BODY" : 13
+  }, {
+    "statement:0:branch" : 14
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 15
+  }, {
+    "statement:0:branch" : 16,
+    "statement:12:opaque" : 8
+  }, {
+    "statement:12:opaque" : 17
+  }, {
+    "statement:0:branch" : 18
+  }, {
+    "statement:12:opaque" : 19
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 20
+  }, {
+    "statement:12:opaque" : 21
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 22
+  }, {
+    "statement:0:branch" : 23
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 15
+  }, {
+    "statement:0:branch" : 24,
+    "statement:12:opaque" : 8
+  }, {
+    "statement:12:opaque" : 25
+  }, {
+    "statement:12:opaque" : 26
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 20
+  }, {
+    "statement:13:return" : 5,
+    "statement:5:opaque" : 5,
+    "statement:7:opaque" : 5,
+    "statement:9:invoke:BODY" : 22
+  } ]
+}

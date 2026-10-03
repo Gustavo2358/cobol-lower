@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "shared-routines/shared-cics-distinct-state.json",
+  "sourceSha256" : "499512ec136f7db072d3bc9c2a9cbe2f13338c89f871b6b93db03ce8330704c6",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:opaque" : 1
+  }, {
+    "statement:4:opaque" : 2
+  }, {
+    "statement:6:invoke:AFTERPGM" : 3
+  }, {
+    "statement:1:invoke:NEWPROG" : 4,
+    "statement:7:return" : 5
+  }, {
+    "statement:10:return" : 5
+  }, { } ]
+}

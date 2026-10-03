@@ -1,0 +1,72 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compact-perform/cics-condition.json",
+  "sourceSha256" : "a75d6a61929b15e77ae23841a20247bb819809fc1edbd5b85b18a26fa95325fc",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:2:opaque" : 1
+  }, {
+    "statement:3:invoke:BEFORE" : 2
+  }, {
+    "statement:0:invoke:OLDHDLR" : 3,
+    "statement:10:opaque" : 4
+  }, {
+    "statement:16:return" : 5
+  }, {
+    "statement:11:invoke:BODY" : 6
+  }, { }, {
+    "statement:14:opaque" : 7,
+    "statement:1:branch" : 8
+  }, {
+    "statement:10:opaque" : 9,
+    "statement:15:return" : 5
+  }, {
+    "statement:14:opaque" : 7,
+    "statement:5:return" : 5
+  }, {
+    "statement:11:invoke:BODY" : 10
+  }, {
+    "statement:14:opaque" : 11,
+    "statement:1:branch" : 12
+  }, {
+    "statement:10:opaque" : 13,
+    "statement:15:return" : 5,
+    "statement:6:opaque" : 5,
+    "statement:8:opaque" : 5
+  }, {
+    "statement:14:opaque" : 14
+  }, {
+    "statement:11:invoke:BODY" : 15
+  }, {
+    "statement:10:opaque" : 16,
+    "statement:15:return" : 5,
+    "statement:6:opaque" : 5,
+    "statement:8:opaque" : 5
+  }, {
+    "statement:14:opaque" : 17,
+    "statement:1:branch" : 18
+  }, {
+    "statement:11:invoke:BODY" : 19
+  }, {
+    "statement:15:return" : 5,
+    "statement:6:opaque" : 5,
+    "statement:8:opaque" : 5
+  }, {
+    "statement:14:opaque" : 20
+  }, {
+    "statement:14:opaque" : 20,
+    "statement:1:branch" : 21
+  }, {
+    "statement:10:opaque" : 13,
+    "statement:15:return" : 5,
+    "statement:6:opaque" : 5,
+    "statement:8:opaque" : 5
+  }, {
+    "statement:14:opaque" : 22
+  }, {
+    "statement:10:opaque" : 16,
+    "statement:15:return" : 5,
+    "statement:6:opaque" : 5,
+    "statement:8:opaque" : 5
+  } ]
+}

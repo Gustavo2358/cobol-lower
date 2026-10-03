@@ -1,0 +1,18 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/terminal-evaluate-other-continue.json",
+  "sourceSha256" : "6757d56610f01b71fc89c34baed1032c43a97d35583c62870c372975d2b5a8a7",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:assign" : 1
+  }, {
+    "statement:5:branch" : 2
+  }, {
+    "statement:1:invoke" : 3,
+    "statement:2:assign" : 4
+  }, {
+    "statement:4:return" : 5
+  }, {
+    "statement:1:invoke" : 3
+  }, { } ]
+}

@@ -1,0 +1,47 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/reentry-file.json",
+  "sourceSha256" : "c19bb2afbed821f41daa97454cd3565977a2f7de3ec81f7e6b4bec152bad6945",
+  "variant" : "published",
+  "states" : [ {
+    "statement:0:branch" : 1
+  }, {
+    "statement:0:branch" : 2,
+    "statement:4:invoke:CLIENTDD" : 3
+  }, {
+    "statement:3:opaque" : 4,
+    "statement:4:invoke:CLIENTDD" : 5
+  }, {
+    "statement:4:branch" : 6
+  }, { }, {
+    "statement:4:branch" : 7
+  }, {
+    "statement:4:opaque" : 8,
+    "statement:5:invoke:CLIENTDD" : 9
+  }, {
+    "statement:4:opaque" : 10,
+    "statement:5:invoke:CLIENTDD" : 11
+  }, {
+    "statement:5:invoke:CLIENTDD" : 9
+  }, {
+    "statement:5:branch" : 12
+  }, {
+    "statement:5:invoke:CLIENTDD" : 11
+  }, {
+    "statement:5:branch" : 13
+  }, {
+    "statement:5:opaque" : 14
+  }, {
+    "statement:5:opaque" : 15
+  }, {
+    "statement:2:return" : 4,
+    "statement:5:opaque" : 16
+  }, {
+    "statement:4:invoke:CLIENTDD" : 3,
+    "statement:5:opaque" : 17
+  }, {
+    "statement:2:return" : 4
+  }, {
+    "statement:4:invoke:CLIENTDD" : 3
+  } ]
+}

@@ -1,0 +1,21 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "control-composition/evaluate-all-transfer-no-join.json",
+  "sourceSha256" : "1f799a775f184daebe4322a3f697b2d92bd946a1b0fa90f10b4edb94e898b5cb",
+  "variant" : "published",
+  "states" : [ {
+    "statement:3:branch" : 1
+  }, {
+    "statement:0:assign" : 2,
+    "statement:3:branch" : 3
+  }, {
+    "statement:2:invoke" : 4
+  }, {
+    "statement:1:assign" : 5,
+    "statement:5:return" : 6
+  }, {
+    "statement:9:return" : 6
+  }, {
+    "statement:2:invoke" : 4
+  }, { } ]
+}

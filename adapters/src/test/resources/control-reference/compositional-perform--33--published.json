@@ -1,0 +1,21 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "compositional-perform/33.json",
+  "sourceSha256" : "0c2667afd1df0957cb044b04c5633250292463b3d108a6d7541a1a372f56a296",
+  "variant" : "published",
+  "states" : [ {
+    "statement:2:assign" : 1
+  }, {
+    "statement:3:assign" : 2
+  }, {
+    "statement:0:invoke" : 3
+  }, {
+    "statement:5:assign" : 4
+  }, {
+    "statement:4:assign" : 5
+  }, {
+    "statement:1:invoke" : 6
+  }, {
+    "statement:8:return" : 7
+  }, { } ]
+}

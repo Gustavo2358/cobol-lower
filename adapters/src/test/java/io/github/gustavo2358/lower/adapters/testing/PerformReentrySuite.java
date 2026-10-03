@@ -83,7 +83,8 @@ public final class PerformReentrySuite {
             var historic=(SpJsonDecoder.Decoded)CobolControlSuite.decode(old);need(historic.input().controlTopology().orElseThrow().bindings().stream().allMatch(b->b.reentryPolicy()==ControlTopology.ReentryPolicy.UNSPECIFIED),"historical missing policy stays unspecified");
             var historicalResult=new CobolLowerer().lower(historic.input(),CobolLower.POSITIVE_OPTIONS);
             var historical=historicalResult.publication().orElseThrow();
-            ControlLanguageOracle.equivalent(result,historicalResult,name);
+            ControlLanguageOracle.reference(result,"perform-reentry--"+name+"--published");
+            ControlLanguageOracle.reference(historicalResult,"perform-reentry--"+name+"--unspecified");
             need(historical.uncertainties().stream().noneMatch(u->u.code().equals("cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED")),"no source policy guessed for historical input");
             if(name.startsWith("reentry-"))need(historical.uncertainties().stream().anyMatch(u->u.code().equals("cobol-lower:TOPOLOGY_RECURSIVE_ACTIVATION_UNAVAILABLE")),"historical limitation remains explicit");
             cases++;

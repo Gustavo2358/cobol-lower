@@ -1,0 +1,16 @@
+{
+  "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
+  "fixture" : "perform-reentry/sequential-loop.json",
+  "sourceSha256" : "27e618525f5479e08e190bc0c5561d90505c56e3de66d905b4855068c767fc32",
+  "variant" : "unspecified",
+  "states" : [ {
+    "statement:1:invoke:INP" : 1
+  }, {
+    "statement:2:branch" : 2
+  }, {
+    "statement:0:invoke:AFTERP" : 3,
+    "statement:1:invoke:INP" : 1
+  }, {
+    "statement:4:return" : 4
+  }, { } ]
+}
