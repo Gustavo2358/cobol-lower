@@ -83,11 +83,19 @@ public final class EntryGobackAdmission implements AdmitInput {
             c.provenance(gap.provenance());
             gapScopes.computeIfAbsent(gap.statement(), ignored -> new HashSet<>()).add(gap.scope());
         }
+        var diagnosticEvidence = new DiagnosticEvidence(input.controlTopology());
         for (var statement : input.statements()) {
             c.touch(); var h = statement.header(); var scopes = gapScopes.getOrDefault(h.id(), Set.of());
-            c.require(h.coverage() == CoverageStatus.MODELED || !scopes.isEmpty(), Rule.GAP, h.id().handle(), h.provenance(), "Non-modeled statement retains localized gap");
+            boolean noOp = statement instanceof OtherStatement o && o.variant() == Variant.OBSERVED
+                && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
+                && diagnosticEvidence.localControl(h.id().handle());
+            boolean currentCapability = noOp || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
+                || !(statement instanceof OtherStatement) && h.coverage() == CoverageStatus.PARTIAL
+                && h.readiness().lowering().status() == ReadinessStatus.SUFFICIENT
+                && diagnosticEvidence.membership(h.id().handle());
+            c.require(h.coverage() == CoverageStatus.MODELED || !scopes.isEmpty() || h.coverage() != CoverageStatus.INPUT_MISSING && currentCapability, Rule.GAP, h.id().handle(), h.provenance(), "Non-modeled statement retains localized gap");
             if (h.containment().branch() == Branch.UNKNOWN)
-                c.require(h.coverage() != CoverageStatus.MODELED && scopes.contains(GapScope.STRUCTURE), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Unknown containment requires non-modeled coverage and STRUCTURE gap");
+                c.require(h.coverage() != CoverageStatus.MODELED && (scopes.contains(GapScope.STRUCTURE) || diagnosticEvidence.membership(h.id().handle())), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Unknown containment requires non-modeled coverage and STRUCTURE gap");
             if (h.containment().parent().isPresent()) {
                 var parentId = h.containment().parent().orElseThrow(); var parent = c.lookup(parentId);
                 c.require(parentId.unit().equals(unit) && ((parent instanceof IfFact || parent instanceof OtherStatement other && other.variant() == Variant.IF) && (h.containment().branch()==Branch.THEN||h.containment().branch()==Branch.ELSE) || parent instanceof EvaluateFact && h.containment().branch()==Branch.EVALUATE_ARM || parent instanceof OtherStatement && h.containment().branch()==Branch.FILE_HANDLER) && parent.header().programPoint() < h.programPoint(), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Parent must be an earlier published IF in the same unit");

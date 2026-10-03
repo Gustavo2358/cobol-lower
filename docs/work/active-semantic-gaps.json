@@ -1,0 +1,11 @@
+{
+  "id": "WORK-ACTIVE-SEMANTIC-GAPS-001",
+  "title": "Admit SP 2.63 current gap obligations from positive facts",
+  "status": "IN_PROGRESS",
+  "scope": [
+    "SP 2.63 exact decoder admission",
+    "positive proof validation for localized diagnostics",
+    "bilateral fixture and CardDemo regression"
+  ],
+  "notes": "Implementation, bilateral fixture and final 73-source regression passed; review and merge pending. Frontend PR #86; exact producer pin in sources.lock.json."
+}

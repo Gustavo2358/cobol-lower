@@ -1,5 +1,25 @@
 # Estado upstream observado
 
+## SP 2.63 — gaps ativos, revisão em 2026-10-03
+
+Produtor fixado em `ed4830e41689e05001468fe8d4cf9ffcfb87207f`,
+[frontend PR #86](https://github.com/Gustavo2358/proleap-poc/pull/86).
+Este lower admite exatamente SP 2.63.0 e valida as provas que dispensam
+os diagnósticos antigos. O source lock vincula todos os paths/digests desse
+produtor ao mesmo commit. As demais autoridades continuam nos pins próprios.
+
+FAST e full local passaram; o corpus final de 73 fontes completou 292 etapas.
+Dependencies preservou todas as categorias, candidatos, suportes, proveniência
+e estados (65 PARTIAL, 8 COMPLETE). Foram retiradas 10.774 ocorrências redundantes;
+13 limitações estruturais reais continuam explícitas.
+
+[Contrato, testes e limites](../domain/active-gap-admission.md).
+[Relatório integral e hashes no produtor](https://github.com/Gustavo2358/proleap-poc/blob/ed4830e41689e05001468fe8d4cf9ffcfb87207f/docs/validation/active-gaps.md).
+Disponibilizar o consumidor que admite 2.63 antes de trocar o frontend.
+Os dois PRs aguardam revisão; nenhum merge foi realizado nesta mudança.
+As seções seguintes preservam o contexto histórico.
+
+
 ## Stage 5 review branch — 2026-09-30
 
 AIR `e0aef0e1928d88a74fe66b7a4d0af84556b84b19` (PR #23) transports existing

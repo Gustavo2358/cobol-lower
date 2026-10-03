@@ -26,3 +26,5 @@ reader SP 2.7 e validação de fatos físicos; integração M1 em andamento.
 - [Frontend control topology / SP 2.39](control-topology.md): single new-contract authority, generic binding and explicit partial frontiers.
 
 - [R7 exceptional handler source semantics](cics-exceptional-handlers.md) — SP2.45, source-only selection and entry.
+
+- [Admissão de gaps atuais do SP 2.63](active-gap-admission.md).
