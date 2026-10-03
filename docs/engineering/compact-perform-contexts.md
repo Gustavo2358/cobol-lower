@@ -1,6 +1,6 @@
 # Materialização de PERFORM com frames compartilhados
 
-Status: implementação em qualificação local; revisão humana pendente.
+Status: lower qualificado localmente; revisão humana pendente.
 
 O lower usa frames explícitos para todas as ativações de PERFORM. A política
 SOURCE_UNDEFINED, sua ausência em entradas históricas, CICS e ESCAPE não escolhem
@@ -91,14 +91,35 @@ pelo corpus E2E. Equivalência de linguagem de controle, sozinha, não prova val
 
 ## Qualificação e limites
 
-A mudança invalida a qualificação da representação anterior: requer FAST e
-qualification-local do lower, fronteira integrada com CFG e as 560 fontes do
-corpus. O comparador deve relacionar identidades à fonte e contabilizar candidatos,
-suportes, proveniência, incertezas e remainders; quantidades ou nomes isolados não
-bastam. Toda divergência precisa ser explicada, sem modificar evidência para PASS.
+FAST e qualification-local do lower passaram no conteúdo de produção de
+`6dae2889d74377f82857b38e19599429cd76ea93`. As 560 fontes foram executadas novamente
+pela pipeline completa. A auditoria bidirecional por ocorrência-fonte passou em
+560/560, com ponteiros JSON, hashes e definições completas de proveniência. Não há
+diferença sem explicação. A comparação estrita original permanece preservada.
+
+Foram conservadas 916 ocorrências-fonte de programas / 1.082 candidatos e 487 de
+arquivos / 463 candidatos, incluindo suportes, provas, remainders e incertezas.
+Essas contagens são um resumo; a aceitação depende das correspondências individuais.
+Sites físicos de programas passaram de 954 a 868, e arestas de 1.096 a 1.020, devido
+ao compartilhamento. Sites de arquivos passaram de 395 a 401 por inventário explícito;
+as 388 arestas foram preservadas. Cada diferença está contabilizada na auditoria.
+Os 439 COMPLETE e 121 PARTIAL permanecem.
+
+As explicações verificam as guardas SOURCE_UNDEFINED publicadas, o escopo das
+incertezas e as ocorrências antes apenas inventariadas. Diagnósticos de fases
+removidas têm prova independente de inalcançabilidade. A auditoria rejeitou 11
+mutações negativas: perda de candidato, suporte, produtor, origem, premissa,
+remainder, contexto de entrada, ocorrência-fonte, prova de binding, incerteza e
+ocultação de perda alcançável como UNREACHABLE.
+
+Os 12 stress tests históricos/mistos passaram com heap de 512 MiB. Em 100 destinos,
+o lower produziu 617 sequences no caso CICS e 626 com ESCAPE, em menos de 7 segundos.
+A qualificação final do consumidor e seus ajustes de viabilidade são documentados
+separadamente no PR analysis-cfg #62.
 
 Os resultados brutos, referências, REDs, comandos, hashes e execuções preservadas
 estão no workspace em `artefatos-e2e/lower-unification-20261003`. A qualificação
-final e a comparação completa ainda estão em andamento. PARTIAL permanece PARTIAL.
+por ocorrência-fonte está em `explanations-11-02`, e os hashes do runtime em
+`qualified-runtime.json`. PARTIAL permanece PARTIAL.
 O programa corporativo original não está disponível; a reprodução é sintética.
 Não há autorização de merge.
