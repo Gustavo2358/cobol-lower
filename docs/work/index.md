@@ -1,3 +1,5 @@
+[Ativações PERFORM unificadas — DONE / MERGED](../engineering/compact-perform-contexts.md#fechamento-aprovado--2026-10-03): lower #56; controle compartilhado e dependências qualificadas em 560 casos.
+
 [Limpeza do snapshot de fontes](../engineering/source-snapshot.md): evidência bruta histórica preservada no Git; fixtures e baselines executáveis mantidos.
 
 [JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #54; qualificação, compatibilidade e benchmark completo. O PR registra a integração.

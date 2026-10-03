@@ -1,8 +1,14 @@
 id: WORK-LOWER-UNIFIED-ACTIVATIONS
 title: Unificar a materialização de ativações sem expansão por cadeias
-status: IN_PROGRESS
+status: DONE
 scope:
   - materialização de PERFORM e continuações explícitas
   - políticas SOURCE_UNDEFINED e UNSPECIFIED
   - CICS, ESCAPE, entradas históricas e preservação de dependências
   - oráculos independentes e qualificação completa do corpus
+pr: https://github.com/Gustavo2358/cobol-lower/pull/56
+merge_commit: d90fdcaf6a21fafb845dd36344ee216a616d4186
+notes:
+  - Aprovado pelo usuário e mergeado em 2026-10-03. FAST/full e corpus de 560 casos passaram.
+  - Árvores do merge e do head qualificado idênticas; pins exatos preservados.
+  - Fechamento e limites em docs/engineering/compact-perform-contexts.md.
