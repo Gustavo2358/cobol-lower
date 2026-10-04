@@ -91,6 +91,7 @@ public final class CallAdmission implements AdmitInput {
             for (var statement : input.statements()) {
                 c.touch();
                 if (statement instanceof MoveFact m) {
+                    IntegerMoveAdmission.validate(m,c);
                     if (m.source() instanceof DataReference read) reference(read, m.header(), operands, c);
                     else {
                         operand(m.source().id(), m.header(), operands, c);

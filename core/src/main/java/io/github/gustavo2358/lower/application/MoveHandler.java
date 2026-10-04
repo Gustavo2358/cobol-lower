@@ -9,7 +9,7 @@ import java.util.*;
 final class MoveHandler {
     static Operations.Assign translate(SpInput.MoveFact move, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.OperandLink> links, List<Evidence.CoverageItem> items) {
-        var operation = new OperationId(unit, ids.id("operation", "scalar-move-assign", unit.localId(), move.header().id().handle()));
+        var operation = new OperationId(unit, ids.id("operation", "scalar-move-assign", unit.localId(), move.header().id().handle()+(move.integerTransfers().isEmpty()?"":"/"+move.target().id().handle())));
         var owner = new OperationOwner(operation);
         var origin = origins.source("statement", move.header().id().handle(), move.header().provenance());
         var sourceOrigin = origins.source("operand", move.source().id().handle(), move.source().provenance());
@@ -34,8 +34,8 @@ final class MoveHandler {
         } else {
             var literal = (SpInput.LiteralSource) move.source();
             value = new Expressions.Literal(new Operand.Header(source, Operand.Role.VALUE_READ, sourceOrigin),
-                new Values.TextValue(move.textAdjustment().map(adjustment -> adjustment.result().value())
-                    .orElseGet(() -> literal.logicalValue().orElseThrow().value())));
+                move.integerTransfers().isEmpty()?new Values.TextValue(move.textAdjustment().map(adjustment -> adjustment.result().value())
+                    .orElseGet(() -> literal.logicalValue().orElseThrow().value())):new Values.IntValue(move.integerTransfers().getFirst().value().orElseThrow()));
         }
         links.add(new LoweringResult.OperandLink(move.source().id(), source, sourceOrigin));
         links.add(new LoweringResult.OperandLink(move.target().id(), target, targetOrigin));

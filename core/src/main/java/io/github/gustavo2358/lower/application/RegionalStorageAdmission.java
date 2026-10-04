@@ -169,10 +169,12 @@ final class RegionalStorageAdmission {
                 if(exact!=null)require(exact.length().equals(java.math.BigInteger.valueOf(move.textAdjustment().orElseThrow().receiverExtent())),
                     "exact logical extent contradicts published text transfer");
             });
+        var factIndex=input.factDependencies().map(FactDependencyIndex::new).orElse(null);
         if(unboundedRelation) {
             require(storage.bases().stream().noneMatch(b->b.allocation().proved()),
                 "unproved root relation contradicts allocation independence");
-            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()
+                    ||factIndex!=null&&byData.containsKey(d.id())&&factIndex.cells.containsKey(byData.get(d.id()).node().handle())),
                 "unproved root relation contradicts standalone scalar proof");
         }
         // The physical parent chain bounds a subordinate overlay to its record.
@@ -194,15 +196,15 @@ final class RegionalStorageAdmission {
             if(pv.offset().value().isPresent()&&pv.extent().value().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent())
                 require(view.offset().value().get().compareTo(pv.offset().value().get())>=0&&end(view).compareTo(end(pv))<=0,"child view exceeds published parent extent");
         });
-        var factIndex=input.factDependencies().map(FactDependencyIndex::new).orElse(null);
         var componentSizes=new HashMap<BaseId,Integer>();
         for(var view:views.values())componentSizes.merge(view.base(),1,Integer::sum);
         for(var declaration:input.dataDeclarations()) {
             c.touch();var view=byData.get(declaration.id());
             if(view==null||!(CallAdmission.scalar(declaration)||PerformCountAdmission.integer(declaration)))continue;
             var node=nodes.get(view.node());
-            require((factIndex!=null&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
-                    &&factIndex.cells.containsKey(node.id().handle()))
+            require((factIndex!=null&&factIndex.cells.containsKey(node.id().handle())
+                    &&(node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
+                        ||declaration.scalarInteger().isPresent()&&factIndex.integers.contains(node.id().handle())))
                     ||(logical.byData.containsKey(declaration.id())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
                     &&logical.byData.get(declaration.id()).length().equals(java.math.BigInteger.valueOf(declaration.scalarText().orElseThrow().logicalExtent())))
                     ||node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,

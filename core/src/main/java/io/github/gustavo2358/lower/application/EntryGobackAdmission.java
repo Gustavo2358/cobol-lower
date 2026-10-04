@@ -93,7 +93,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             boolean noOp = statement instanceof OtherStatement o && o.variant() == Variant.OBSERVED
                 && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                 && diagnosticEvidence.localControl(h.id().handle());
-            boolean currentCapability = noOp || (conditionSets.contains(h.id().handle())||conditionIfs.contains(h.id().handle()))&&diagnosticEvidence.localControl(h.id().handle()) || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
+            boolean currentCapability = statement instanceof MoveFact m&&m.integerTransfers().size()==1+m.additionalTransfers().size()&&diagnosticEvidence.localControl(h.id().handle()) || noOp || (conditionSets.contains(h.id().handle())||conditionIfs.contains(h.id().handle()))&&diagnosticEvidence.localControl(h.id().handle()) || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
                 || !(statement instanceof OtherStatement) && h.coverage() == CoverageStatus.PARTIAL
                 && h.readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                 && diagnosticEvidence.membership(h.id().handle());

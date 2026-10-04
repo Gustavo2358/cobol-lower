@@ -1,5 +1,12 @@
 # Estado upstream observado
 
+## Checkpoint 2 — SP 2.65
+
+Snapshot de código do produtor: `5cfa8d14f87826206dc03b65acaf6a2ba3ee67f5`. AIR permanece em
+`a4c49bcf5e07000cb78349c2cc6357ca2dfe7acd`. O source lock contém commit, tree
+e hashes exatos. A qualificação deste checkpoint está em
+[Numeric MOVE](../work/numeric-move-qualification.md).
+
 ## SP 2.63 — gaps ativos, revisão em 2026-10-03
 
 Produtor fixado em `ed4830e41689e05001468fe8d4cf9ffcfb87207f`,

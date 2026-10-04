@@ -12,7 +12,7 @@
   </dependencies>
   <build><plugins><plugin>
     <groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId>
-    <executions><execution><id>zstd-transport-suite</id><phase>test</phase><goals><goal>java</goal></goals><configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.ZstdTransportSuite</mainClass><classpathScope>test</classpathScope></configuration></execution><execution><id>decoder-contract-suite</id><phase>test</phase><goals><goal>java</goal></goals>
+    <executions><execution><id>numeric-move-suite</id><phase>test</phase><goals><goal>java</goal></goals><configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.NumericMoveSuite</mainClass><classpathScope>test</classpathScope></configuration></execution><execution><id>zstd-transport-suite</id><phase>test</phase><goals><goal>java</goal></goals><configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.ZstdTransportSuite</mainClass><classpathScope>test</classpathScope></configuration></execution><execution><id>decoder-contract-suite</id><phase>test</phase><goals><goal>java</goal></goals>
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.DecoderSuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution><execution><id>air-output-suite</id><phase>test</phase><goals><goal>java</goal></goals>
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass><classpathScope>test</classpathScope></configuration>

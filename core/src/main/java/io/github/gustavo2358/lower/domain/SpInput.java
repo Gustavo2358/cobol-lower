@@ -295,8 +295,9 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         OperandId id();
         Provenance provenance();
     }
-    public record LiteralSource(OperandId id, LiteralKind kind, Optional<LogicalValue> logicalValue, Provenance provenance) implements MoveSource {
-        public LiteralSource { Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
+    public record LiteralSource(OperandId id, LiteralKind kind, Optional<java.math.BigDecimal> numericValue, Optional<LogicalValue> logicalValue, Provenance provenance) implements MoveSource {
+        public LiteralSource(OperandId id,LiteralKind kind,Optional<LogicalValue> logicalValue,Provenance provenance){this(id,kind,Optional.empty(),logicalValue,provenance);}
+        public LiteralSource { Objects.requireNonNull(numericValue); Objects.requireNonNull(id); Objects.requireNonNull(kind); Objects.requireNonNull(logicalValue); Objects.requireNonNull(provenance); }
     }
     public enum ResolutionReason { UNIQUE_VISIBLE_DECLARATION, QUALIFIED_HIERARCHY_MATCH, MULTIPLE_VALID_CANDIDATES,
         DECLARATION_NOT_FOUND, INPUT_INCOMPLETE, UNSUPPORTED_GRAMMAR_FORM, UNSUPPORTED_DIALECT_OPTION, INVALID_NAMESPACE_FOR_CONTEXT }
@@ -336,8 +337,14 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record LogicalTransfer(OperandId target,LogicalValue value) {
         public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
+    public record IntegerTransfer(OperandId target,Optional<java.math.BigInteger> value) {
+        public IntegerTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<IntegerTransfer> integerTransfers) implements StatementFact {
+        public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,logicalTransfers,List.of());
+        }
         public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,
                 NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,List.of());
@@ -356,7 +363,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);integerTransfers=List.copyOf(integerTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
     /** Input facts are preserved; no executable handler/event lowering is qualified. */

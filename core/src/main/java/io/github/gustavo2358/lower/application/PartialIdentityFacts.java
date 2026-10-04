@@ -248,6 +248,7 @@ final class PartialIdentityFacts {
             }
             case SpInput.LiteralSource r -> {
                 field.accept("LiteralSource");
+                if(r.numericValue().isPresent()){field.accept("numericValue@2.65");value.accept(r.numericValue().orElseThrow().toString());}
                 field.accept("id"); value.accept(r.id());
                 field.accept("kind"); value.accept(r.kind());
                 field.accept("logicalValue"); value.accept(r.logicalValue());
@@ -291,6 +292,9 @@ final class PartialIdentityFacts {
             case SpInput.MoveTransfer r -> {
                 field.accept("MoveTransfer");field.accept("source");value.accept(r.source());field.accept("target");value.accept(r.target());field.accept("effect");value.accept(r.effect());
             }
+            case SpInput.IntegerTransfer r -> {
+                field.accept("IntegerTransfer");field.accept("target");value.accept(r.target());field.accept("value");value.accept(r.value());
+            }
             case SpInput.LogicalTransfer r -> {
                 field.accept("LogicalTransfer");field.accept("target");value.accept(r.target());field.accept("value");value.accept(r.value());
             }
@@ -305,6 +309,7 @@ final class PartialIdentityFacts {
                 if(r.regionalMove().isPresent()){field.accept("regionalMove@1");value.accept(r.regionalMove().get());}
                 if(!r.additionalTransfers().isEmpty()){field.accept("additionalTransfers@1");value.accept(r.additionalTransfers());}
                 if(!r.logicalTransfers().isEmpty()){field.accept("logicalTransfers@2.38");value.accept(r.logicalTransfers());}
+                if(!r.integerTransfers().isEmpty()){field.accept("integerTransfers@2.65");value.accept(r.integerTransfers());}
             }
             case SpInput.LiteralCallTarget r -> {
                 field.accept("LiteralCallTarget");

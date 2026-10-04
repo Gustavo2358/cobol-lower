@@ -1,0 +1,8 @@
+{
+  "id": "WORK-NUMERIC-MOVE-CP2",
+  "title": "Consume numeric MOVE and logical INT cells",
+  "status": "IN_PROGRESS",
+  "scope": [
+    "SP2.65 in PR58, source proofs, AIR INT assignments, hostile payloads and CardDemo regression"
+  ]
+}

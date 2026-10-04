@@ -87,3 +87,11 @@ V1 remains closed to that field and keeps its two-field symbol wire. V2 cannot
 be admitted under SP <=2.48; missing, null and nonboolean flags are input errors.
 No filename/name heuristic, reparsing, storage proof or AIR change is implied.
 The [model revision](../work/synthetic-dfh-structure.md) defines the evidence boundary.
+
+## SP 2.65: valores numéricos e MOVE DISPLAY
+
+O contrato corrente preserva o valor decimal de literais NUMERIC e admite
+`LOGICAL_INTEGER` no grafo causal. `integerTransfers` é uma lista fechada por
+MOVE, validada também na porta em memória: origem/destino inteiro, capacidade,
+valor e ordem do prefixo devem concordar. Campos de contratos anteriores não
+adquirem esta semântica. Veja [regras e oracles](numeric-move.md).

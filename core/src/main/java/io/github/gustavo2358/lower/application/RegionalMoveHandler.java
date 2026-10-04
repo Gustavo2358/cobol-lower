@@ -12,6 +12,20 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        if(!move.integerTransfers().isEmpty()) {
+            var integers=new HashMap<SpInput.OperandId,SpInput.IntegerTransfer>();move.integerTransfers().forEach(t->integers.put(t.target(),t));
+            var transfers=move.regionalMove().isPresent()?move.transfers():List.of(new SpInput.MoveTransfer(move.source(),move.target(),
+                new StorageFacts.Move(StorageFacts.MoveKind.UNAVAILABLE,List.of(),List.of("ACCESS_NOT_PROVEN"))));
+            var result=new ArrayList<Instruction>();
+            for(var transfer:transfers) {
+                var proof=integers.get(transfer.target().id());
+                var single=new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),
+                    Optional.of(transfer.effect()),List.of(),List.of(),proof==null?List.of():List.of(proof));
+                if(proof!=null)result.add(MoveHandler.translate(single,data,unit,ids,origins,links,items));
+                else result.addAll(sequence(single,false,data,storage,unit,ids,origins,links,items,uncertainties));
+            }
+            return List.copyOf(result);
+        }
         // A whole-item copy classification does not make a named view independent.
         // Update the proved logical family and its projections before scalar shortcuts.
         if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);

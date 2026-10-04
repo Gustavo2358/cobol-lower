@@ -12,13 +12,14 @@ final class FactDependencyStorage {
             ScalarDataTranslator.Result legacy,List<Memory.Storage> storage,UnitId unit,LocalIds ids,SourceOrigins origins) {
         if(facts==null)return Map.of();
         var result=new TreeMap<String,StorageId>();var nodes=new HashMap<String,StorageFacts.Node>();source.nodes().values().forEach(n->nodes.put(n.id().handle(),n));
+        var integerCells=new HashSet<String>();for(var fact:facts.graph.facts())if(fact.kind()==FactDependencies.FactKind.LOGICAL_INTEGER&&facts.available(fact.dependencies()))integerCells.add(fact.subject());
         var required=new TreeSet<String>();facts.bindings.values().forEach(b->required.addAll(b.cells()));
         for(var node:required) {
             var n=nodes.get(node);var data=n.data().map(legacy.index()::get).orElse(null);
             if(data!=null&&data.storage().isPresent()){result.put(node,data.storage().orElseThrow());continue;}
             var id=new StorageId(unit.publication(),ids.id("storage","r2-logical-cell",unit.localId(),node));
             var origin=proofOrigin(facts,facts.cells.get(node).dependencies(),"cell/"+node,unit,ids,origins);
-            storage.add(new Memory.Cell(new Memory.StorageHeader(id,Optional.of(unit),Memory.Lifetime.PERSISTENT,Memory.Visibility.PRIVATE,origin),Types.known(Types.Builtin.TEXT)));
+            storage.add(new Memory.Cell(new Memory.StorageHeader(id,Optional.of(unit),Memory.Lifetime.PERSISTENT,Memory.Visibility.PRIVATE,origin),Types.known(integerCells.contains(node)?Types.Builtin.INT:Types.Builtin.TEXT)));
             result.put(node,id);
         }
         return Map.copyOf(result);
