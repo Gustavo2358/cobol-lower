@@ -1,5 +1,7 @@
 # Checkpoint 1 — qualificação de condições 88 e SET
 
+> Fechamento do lower: DONE / MERGED no PR #58. [Integração e limites](priority2-integration.md). Os estados de revisão abaixo são históricos.
+
 Status: IN_PROGRESS, revisão nos PRs frontend #86, lower #58 e AIR #27; sem merge.
 
 ## Resultado por ocorrência

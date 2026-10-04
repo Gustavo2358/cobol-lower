@@ -1,5 +1,7 @@
 # Checkpoint 2 — valores numéricos e MOVE inteiro DISPLAY
 
+> Fechamento do lower: DONE / MERGED no PR #58. [Integração e limites](priority2-integration.md). Os estados de revisão abaixo são históricos.
+
 Status: IN_PROGRESS, implementação qualificada para review nos PRs frontend #86 e lower #58; sem merge.
 
 ## Resultado

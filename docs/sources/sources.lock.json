@@ -774,6 +774,6 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "Priority2 MOVE implementation; local FAST passed, final73 integration in progress; human review pending.",
+  "implementation_state": "Priority2 MOVE merged in PR #58; final73 qualification and FAST passed. See docs/work/priority2-integration.md.",
   "metadata_scope": "Current SP 2.66, AIR and IR immutable pins support priority2 MOVE. Earlier named campaign evidence remains historical; current qualification is recorded in docs/work/numeric-move-full.md."
 }

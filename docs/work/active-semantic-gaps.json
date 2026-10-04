@@ -1,13 +1,13 @@
 {
   "id": "WORK-ACTIVE-SEMANTIC-GAPS-001",
   "title": "Admit SP 2.63 current gap obligations from positive facts",
-  "status": "IN_PROGRESS",
+  "status": "DONE",
   "scope": [
     "SP 2.63 exact decoder admission",
     "positive proof validation for localized diagnostics",
     "bilateral fixture and CardDemo regression",
     "historical wire gap obligations preserved before SP 2.63 admission"
   ],
-  "notes": "Review P2 reproduced and fixed in decoder. Five historical rejection cases, positive SP 2.62/2.63 products, FAST and six selected E2E cases passed. Full 73-source evidence is prior qualification; see docs/domain/active-gap-admission.md. PR #58 remains open; no merge.",
+  "notes": "Merged in PR #58, b4551bec673957a73ca1d2533e830b0584f2088b, with required technical tests passed. See priority2-integration.md.",
   "pr": "https://github.com/Gustavo2358/cobol-lower/pull/58"
 }
