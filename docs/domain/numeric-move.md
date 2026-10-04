@@ -1,10 +1,20 @@
-# Integer DISPLAY MOVE — SP 2.65
+# Transferências MOVE canônicas — SP 2.66
 
-Status: IN_PROGRESS. Consume the frontend numeric proof on each MOVE receiver. The frontend owns COBOL rules: IBM 6.4 elementary MOVE, unsigned unedited DISPLAY integers, fitting integer literal or integer DATA of no greater capacity. No physical encoding, sign removal, scale or truncation is inferred.
+O consumidor valida os fatos numéricos/textuais na porta JSON e em memória.
+`ScalarNumber` e `NumericTransfer` substituem o caminho de inteiro DISPLAY;
+expressões AIR preservam leituras, receptores, ordem, provenance e incerteza.
+Os descritores de sinal, escala, USAGE, edição e TRUNC vêm do frontend. O lower
+não interpreta COBOL, PICTURE, nomes ou offsets não publicados.
 
-Admission must check typed source value, unique whole-item bindings, positive integer capacity, receiver identity, exact provenance and distinct transfer targets. DATA multi-target transfers cover a proved prefix, preserving the sending value after every certified write; an unsupported peer ends the prefix. Literal certificates may cover a subset; unsupported receivers retain their effect. Reject forged values, oversized literals, narrowed DATA, unrelated/duplicate targets and a numeric value labeled TEXT.
+Acesso/tipo conhecido não cria Cell ou escrita MUST. Views compartilhadas mantêm
+seus bounds; destinatários alternativos conservam MAY. Valor desconhecido usa
+Assign(Unknown) com dependências quando pureza, destino e efeito estão provados.
+TRUNC ausente não cria configuração implícita nem falha de controle fictícia.
+Dados textuais/numéricos de representação não provada mantêm guards próprios.
 
-Build target indexes once: linear work in receivers and digit-string size, without powers, range enumeration or combinations. Lower admitted values to existing AIR INT Read/Literal and Assign. The proof goes through the ordinary MOVE dispatch and source identity digest. Validate in-memory and JSON, then AIR, CFG and dependency preservation on all 73 frozen CardDemo inputs.
+A tradução é linear nos receptores e no tamanho das receitas tipadas. Índices são
+construídos uma vez; não há enumeração de valores, opções ou combinações de aliases.
+Oracles, pins e qualificação: [prioridade 2](../work/numeric-move-full.md).
 
 ## Receptores mistos
 
@@ -67,8 +77,8 @@ MONTH após uma escrita em DATE-N sem uma interpretação de representação.
 ### Limite do controle para representação inválida
 
 MOVE não declara um destino de desvio local. A alternativa inválida conserva a
-continuação normal conhecida e saídas abertas da unidade (normal, excepcional,
-parada, divergência e controle externo). Ela não acrescenta GO TO para cada
+continuação normal conhecida, exceção e parada próprias da operação,
+além de divergência e controle externo abertos. Ela não acrescenta GO TO para cada
 rótulo da publicação. A opção NUMCHECK documenta continuação com MSG e término
 com ABD; NUMPROC/INVDATA documentam resultados distintos com dados inválidos.
 Nenhuma dessas regras cria destinos locais de GO TO. Efeitos de memória e
