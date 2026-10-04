@@ -102,3 +102,5 @@ IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
 
 - [WORK-LOWER-CONDITION-NAMES-001](condition-names.json): IN_PROGRESS, revisão no PR #58.
 - [Semântica](../domain/condition-names.md) e [qualificação](condition-names-qualification.md).
+
+- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — IN_PROGRESS, PR de revisão.
