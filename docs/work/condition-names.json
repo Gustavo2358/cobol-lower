@@ -1,6 +1,7 @@
 {
   "id": "WORK-LOWER-CONDITION-NAMES-001",
   "title": "Consumir condições 88 e SET do SP 2.64",
-  "status": "IN_PROGRESS",
-  "scope": "Tradução dos fatos canônicos, contrato adversarial e regressão integrada CardDemo no PR #58; sem merge."
+  "status": "DONE",
+  "scope": "Tradução dos fatos canônicos, contrato adversarial e regressão integrada CardDemo no PR #58.",
+  "notes": "Merged in PR #58, b4551bec673957a73ca1d2533e830b0584f2088b, with required technical tests passed. See priority2-integration.md."
 }

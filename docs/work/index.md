@@ -100,7 +100,9 @@ IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
 
 ## Condições 88 e SET — checkpoint 1
 
-- [WORK-LOWER-CONDITION-NAMES-001](condition-names.json): IN_PROGRESS, revisão no PR #58.
+- [WORK-LOWER-CONDITION-NAMES-001](condition-names.json): DONE / MERGED no PR #58.
 - [Semântica](../domain/condition-names.md) e [qualificação](condition-names-qualification.md).
 
-- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — IN_PROGRESS, PR de revisão.
+- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — DONE / MERGED no PR #58; snapshot CP2.1 histórico.
+
+[Prioridades 1 e 2 — fechamento](priority2-integration.md): DONE / MERGED #58, com pins integrados.

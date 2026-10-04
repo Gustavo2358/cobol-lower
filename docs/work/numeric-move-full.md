@@ -1,5 +1,7 @@
 # Prioridade 2 — transferências canônicas do SP 2.66
 
+> Fechamento do lower: DONE / MERGED no PR #58. [Integração e limites](priority2-integration.md). Os estados de revisão abaixo são históricos.
+
 Implementação qualificada e pronta para revisão. O work item permanece
 IN_PROGRESS até merge. Esta entrega fecha o escopo causal finito da auditoria
 de produto de 2026-10-04; o checkpoint CP2.1 permanece como baseline histórico.
