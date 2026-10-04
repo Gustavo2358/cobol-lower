@@ -11,6 +11,7 @@ final class LogicalTextIndex {
     final Map<SpInput.DataId,StorageFacts.LogicalTextView> byData;
     final Map<StorageFacts.NodeId,StorageFacts.Node> nodes;
     private final Map<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>> leaves;
+    private final Map<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>> families;
     LogicalTextIndex(SpInput input,Map<StorageFacts.NodeId,StorageFacts.Node> nodes) {
         this.nodes=nodes;
         input.storage().filter(s->!s.logicalTextViews().isEmpty()).ifPresent(s->require(s.profile()==StorageFacts.Profile.UNSPECIFIED,"logical text W1 cannot select physical profile"));
@@ -52,6 +53,12 @@ final class LogicalTextIndex {
             }
         }
         this.views=Map.copyOf(views);this.byData=Map.copyOf(byData);
+        var grouped = new HashMap<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>>();
+        views.values().forEach(v -> grouped.computeIfAbsent(v.root(), k -> new ArrayList<>()).add(v));
+        var families = new HashMap<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>>();
+        grouped.forEach((root, family) -> families.put(root, family.stream()
+                .sorted(Comparator.comparing(v -> v.node().handle())).toList()));
+        this.families = Map.copyOf(families);
         var frozen=new HashMap<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>>();leaves.forEach((k,v)->frozen.put(k,List.copyOf(v)));this.leaves=Map.copyOf(frozen);
     }
     List<StorageFacts.LogicalTextView> leaves(StorageFacts.LogicalTextView view) {
@@ -62,7 +69,7 @@ final class LogicalTextIndex {
         return result;
     }
     List<StorageFacts.LogicalTextView> family(StorageFacts.LogicalTextView view) {
-        return views.values().stream().filter(v->v.root().equals(view.root())).sorted(Comparator.comparing(v->v.node().handle())).toList();
+        return families.getOrDefault(view.root(), List.of());
     }
     boolean literalMove(SpInput.MoveFact move) {
         var target=move.target().logicalWholeItem().map(byData::get).orElse(null);

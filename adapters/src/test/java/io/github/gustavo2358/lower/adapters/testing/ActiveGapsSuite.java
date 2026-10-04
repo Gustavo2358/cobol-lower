@@ -51,7 +51,7 @@ public final class ActiveGapsSuite {
         var inputMissing = source.deepCopy();
         for (var s : inputMissing.path("statements")) if (noOps.contains(s.path("header").path("id").asText())) ((ObjectNode)s.path("header")).put("coverage","INPUT_MISSING");
         rejected(inputMissing);
-        var future = source.deepCopy().put("contractVersion","2.64.0");
+        var future = source.deepCopy().put("contractVersion","2.65.0");
         need(new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(future)) instanceof SpJsonDecoder.Rejected, "future remains closed");
         System.out.println("ACTIVE_GAPS: real SP2.63, valid AIR, retained uncertainty and 6 proof-loss/version mutations PASS");
     }

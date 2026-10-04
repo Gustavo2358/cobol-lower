@@ -68,8 +68,18 @@ final class PartialIdentityFacts {
             case FileFacts.Operand r -> {field.accept("FileOperand");value.accept(r.role());value.accept(r.form());value.accept(r.references());value.accept(r.writtenValue());value.accept(r.provenance());value.accept(r.gapCodes());}
             case FileFacts.Handler r -> {field.accept("FileHandler");value.accept(r.kind());value.accept(r.statements());value.accept(r.provenance());}
             case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
+            case io.github.gustavo2358.lower.domain.ConditionNames r -> {field.accept("ConditionNames");value.accept(r.definitions());value.accept(r.uses());value.accept(r.assignments());value.accept(r.predicates());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Definition r -> {field.accept("ConditionNames.Definition");value.accept(r.id());value.accept(r.parent());value.accept(r.anonymous());value.accept(r.domain());value.accept(r.ranges());value.accept(r.falseValue());value.accept(r.variableProvenance());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Range r -> {field.accept("ConditionNames.Range");value.accept(r.first());value.accept(r.last());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Value r -> {field.accept("ConditionNames.Value");value.accept(r.kind());value.accept(r.value());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Use r -> {field.accept("ConditionNames.Use");value.accept(r.id());value.accept(r.statement());value.accept(r.definition());value.accept(r.operand());value.accept(r.access());value.accept(r.indices());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Index r -> {field.accept("ConditionNames.Index");value.accept(r.kind());value.accept(r.value());value.accept(r.arguments());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Assignment r -> {field.accept("ConditionNames.Assignment");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.use());value.accept(r.truth());value.accept(r.value());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Predicate r -> {field.accept("ConditionNames.Predicate");value.accept(r.statement());value.accept(r.role());value.accept(r.tree());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Tree r -> {field.accept("ConditionNames.Tree");value.accept(r.kind());value.accept(r.use());value.accept(r.children());}
             case SpInput r -> {
                 field.accept("SpInput");
+                if(r.conditionNames().isPresent()){field.accept("conditionNames");value.accept(r.conditionNames().get());}
                 if(r.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE){field.accept("sourceDependencies@1");value.accept(r.sourceDependencies());}
                 field.accept("unit"); value.accept(r.unit());
                 field.accept("policy"); value.accept(r.policy());

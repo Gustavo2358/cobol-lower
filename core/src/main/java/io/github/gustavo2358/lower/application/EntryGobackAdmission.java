@@ -76,24 +76,31 @@ public final class EntryGobackAdmission implements AdmitInput {
                 c.require(h.readiness().effectsDataflow().status() != ReadinessStatus.SUFFICIENT, Rule.READINESS, h.id().handle(), h.provenance(), "GOBACK local exit does not publish sufficient effects");
         }
         var gapScopes = new HashMap<StatementId, Set<GapScope>>();
+        var gapCodes = new HashMap<StatementId, Set<String>>();
         for (var gap : input.gaps()) {
             c.touch();
             c.require(gap.statement().unit().equals(unit) && c.lookup(gap.statement()) != null, Rule.GAP, gap.statement().handle(), gap.provenance(), "Gap must reference a published statement in the same unit");
             c.require(!gap.code().isBlank() && !gap.detail().isBlank(), Rule.GAP, gap.statement().handle(), gap.provenance(), "Gap code/detail required");
             c.provenance(gap.provenance());
             gapScopes.computeIfAbsent(gap.statement(), ignored -> new HashSet<>()).add(gap.scope());
+            gapCodes.computeIfAbsent(gap.statement(),ignored->new HashSet<>()).add(gap.code());
         }
         var diagnosticEvidence = new DiagnosticEvidence(input.controlTopology());
+        var conditionSets=input.conditionNames().map(f->io.github.gustavo2358.lower.domain.ConditionNameContract.completeSets(f,input.statements())).orElse(Set.of());
+        var conditionIfs=input.conditionNames().stream().flatMap(f->f.predicates().stream()).filter(p->p.role().equals("IF")&&p.tree().complete()).map(p->p.statement()).collect(java.util.stream.Collectors.toSet());
         for (var statement : input.statements()) {
             c.touch(); var h = statement.header(); var scopes = gapScopes.getOrDefault(h.id(), Set.of());
             boolean noOp = statement instanceof OtherStatement o && o.variant() == Variant.OBSERVED
                 && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                 && diagnosticEvidence.localControl(h.id().handle());
-            boolean currentCapability = noOp || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
+            boolean currentCapability = noOp || (conditionSets.contains(h.id().handle())||conditionIfs.contains(h.id().handle()))&&diagnosticEvidence.localControl(h.id().handle()) || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
                 || !(statement instanceof OtherStatement) && h.coverage() == CoverageStatus.PARTIAL
                 && h.readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                 && diagnosticEvidence.membership(h.id().handle());
             c.require(h.coverage() == CoverageStatus.MODELED || !scopes.isEmpty() || h.coverage() != CoverageStatus.INPUT_MISSING && currentCapability, Rule.GAP, h.id().handle(), h.provenance(), "Non-modeled statement retains localized gap");
+            if(statement instanceof OtherStatement o&&o.variant()==Variant.OBSERVED&&!noOp
+                    &&!(conditionSets.contains(h.id().handle())&&diagnosticEvidence.localControl(h.id().handle())))
+                c.require(gapCodes.getOrDefault(h.id(),Set.of()).contains(o.gapCode()),Rule.GAP,h.id().handle(),h.provenance(),"Unmodeled observed statement retains its capability gap");
             if (h.containment().branch() == Branch.UNKNOWN)
                 c.require(h.coverage() != CoverageStatus.MODELED && (scopes.contains(GapScope.STRUCTURE) || diagnosticEvidence.membership(h.id().handle())), Rule.CONTAINMENT, h.id().handle(), h.provenance(), "Unknown containment requires non-modeled coverage and STRUCTURE gap");
             if (h.containment().parent().isPresent()) {

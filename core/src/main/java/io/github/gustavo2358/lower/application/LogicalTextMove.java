@@ -57,6 +57,26 @@ final class LogicalTextMove {
         var f=new ExpressionsFor(operation,origin);Expression source;
         if(move.source() instanceof SpInput.LiteralSource literal)source=f.literal(literal.logicalValue().orElseThrow().value());
         else source=f.read(data.index().get(((SpInput.DataReference)move.source()).logicalWholeItem().orElseThrow()).object());
+        return write(target,root,rootObject,source,f,operation,origin,sourceOrigin,targetOrigin,
+            move.header().id().handle()+"/"+move.target().id().handle(),Optional.of(move.source().id()),move.target().id(),logical,data,unit,ids,links);
+    }
+    static List<Instruction> literal(SpInput.StatementFact statement,SpInput.DataReference destination,String text,int ordinal,
+            LogicalTextIndex logical,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
+            List<LoweringResult.OperandLink> links,OriginId declaredValueOrigin) {
+        var target=logical.byData.get(destination.binding().selected().orElseThrow());var root=logical.views.get(target.root());
+        var rootObject=LogicalTextRoots.object(logical.nodes.get(root.node()),data);
+        var key=statement.header().id().handle()+"/set/"+ordinal;
+        var operation=new OperationId(unit,ids.id("operation","logical-condition-set",unit.localId(),key));
+        var targetOrigin=origins.source("operand",destination.id().handle(),destination.provenance());
+        var origin=origins.derived(ids.id("origin","logical-condition-set",unit.localId(),key),List.of(declaredValueOrigin,targetOrigin),"condition-name@1/ordered-set-assignment");
+        var f=new ExpressionsFor(operation,origin);
+        return write(target,root,rootObject,f.literal(text),f,operation,origin,declaredValueOrigin,targetOrigin,key,Optional.empty(),destination.id(),logical,data,unit,ids,links);
+    }
+    private static List<Instruction> write(io.github.gustavo2358.lower.domain.StorageFacts.LogicalTextView target,
+            io.github.gustavo2358.lower.domain.StorageFacts.LogicalTextView root,ObjectId rootObject,Expression source,
+            ExpressionsFor f,OperationId operation,OriginId origin,OriginId sourceOrigin,OriginId targetOrigin,String key,
+            Optional<SpInput.OperandId> sourceId,SpInput.OperandId targetId,LogicalTextIndex logical,ScalarDataTranslator.Result data,
+            UnitId unit,LocalIds ids,List<LoweringResult.OperandLink> links) {
         Expression value=f.fit(source,target.length());
         if(target.start().signum()>0)value=f.concat(f.slice(f.read(rootObject),BigInteger.ZERO,target.start()),value);
         var end=LogicalTextIndex.end(target);
@@ -65,11 +85,11 @@ final class LogicalTextMove {
         var place=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(operation),"destination"),Operand.Role.VALUE_WRITE,targetOrigin),rootObject);
         var result=new ArrayList<Instruction>();
         result.add(new Operations.Assign(new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(operation),List.of()),place,value));
-        links.add(new LoweringResult.OperandLink(move.source().id(),value.header().id(),sourceOrigin));links.add(new LoweringResult.OperandLink(move.target().id(),place.header().id(),targetOrigin));
+        var written=value;sourceId.ifPresent(id->links.add(new LoweringResult.OperandLink(id,written.header().id(),sourceOrigin)));links.add(new LoweringResult.OperandLink(targetId,place.header().id(),targetOrigin));
         for(var view:logical.family(target)) {
             var node=logical.nodes.get(view.node());if(node.data().isEmpty()||view.node().equals(root.node()))continue;
             var object=data.index().get(node.data().orElseThrow());if(object==null)continue;
-            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),move.header().id().handle()+"/"+move.target().id().handle()+"/"+view.node().handle()));
+            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),key+"/"+view.node().handle()));
             var e=new ExpressionsFor(id,origin);
             var dest=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(id),"destination"),Operand.Role.VALUE_WRITE,targetOrigin),object.object());
             result.add(new Operations.Assign(new Operations.Header(id,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(id),List.of()),dest,e.slice(e.read(rootObject),view.start(),view.length())));

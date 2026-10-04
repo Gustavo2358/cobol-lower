@@ -1,0 +1,93 @@
+{
+  "pins": [
+    {
+      "source": "SRC-SP",
+      "commit": "b0a387c2bcecb0621a015a231543fb7de8dc65a4",
+      "paths": 137,
+      "verified": true
+    },
+    {
+      "source": "SRC-AIR-JAVA",
+      "commit": "a4c49bcf5e07000cb78349c2cc6357ca2dfe7acd",
+      "paths": 28,
+      "verified": true
+    }
+  ],
+  "bytecode": {
+    "frontend": {
+      "classes": 2382,
+      "identical": true,
+      "differences": [],
+      "frozenDigest": "4a349d568b81ab12266da42aa8363b93bbc1c0a64d64230c87125ec3d33a4523"
+    },
+    "lower-core": {
+      "classes": 539,
+      "identical": true,
+      "differences": [],
+      "frozenDigest": "115b49d48d67791f9b53eab14d2db029580544f3ced66ed1d307fc0c14481303"
+    },
+    "lower-adapters": {
+      "classes": 713,
+      "identical": true,
+      "differences": [],
+      "frozenDigest": "b45549cdfe2d75c51a6ebee1c593b535b3542a81ba68b56ba18667383c61f5df"
+    },
+    "air-model": {
+      "classes": 341,
+      "identical": true,
+      "differences": [],
+      "frozenDigest": "7ba4cef7908139df66346003d3225a45b4dea4b5757ebd274df4045627b5c22b"
+    },
+    "air-json": {
+      "classes": 35,
+      "identical": true,
+      "differences": [],
+      "frozenDigest": "58a7acba466474c0447228d015f3a0fda309a6b1a1742ad9b7c78007b404094f"
+    }
+  },
+  "dependencies": {
+    "sources": 73,
+    "statusesBefore": {
+      "COMPLETE": 8,
+      "PARTIAL": 65
+    },
+    "statusesAfter": {
+      "COMPLETE": 8,
+      "PARTIAL": 65
+    },
+    "deltas": 0,
+    "lostCandidates": 0,
+    "addedCandidates": 0,
+    "missingSites": 0,
+    "sourceDependenciesIdentical": 73,
+    "fileDeclarationsIdentical": 73,
+    "observedDependenciesIdentical": 73,
+    "counts": {
+      "programs": {
+        "sitesBefore": 150,
+        "sitesAfter": 150,
+        "candidatesBefore": 209,
+        "candidatesAfter": 209
+      },
+      "files": {
+        "sitesBefore": 391,
+        "sitesAfter": 391,
+        "candidatesBefore": 378,
+        "candidatesAfter": 378
+      },
+      "qualified": {
+        "sitesBefore": 259,
+        "sitesAfter": 259,
+        "candidatesBefore": 95,
+        "candidatesAfter": 95
+      }
+    }
+  },
+  "evidenceSha256": {
+    "lower-full-final.log": "ef87c1229c6090f1d1a5e44b6a4560cc5ddd88886a7aa217aa904fa013a189a9",
+    "lower-focal-3.log": "221d9bc6b84ba6814ec53dfe56f200dbf7828d1d39724c9da2a2d195d89b009a",
+    "final-pins-audit.json": "69c563de9c22b4f672959786a6e9801f576dd70ef0743b97417f6a90eb322837",
+    "final-bytecode-equivalence.json": "c021546dfe623905a42db320a802c747d065d5c54d812f5a434f31b2d07e2e15",
+    "pipeline-final/dependency-comparison.json": "6cf39fe98910a2781f9bd0739d8dbacc6ada9ee8415b60ba47df72b29d8441b7"
+  }
+}

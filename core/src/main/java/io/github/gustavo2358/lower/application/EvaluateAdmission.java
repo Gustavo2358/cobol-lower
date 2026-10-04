@@ -24,7 +24,7 @@ final class EvaluateAdmission {
                     Rule.PROFILE_FACT,e.header().id().handle(),l.provenance(),"typed simple literal and unique operand identity required");
             });
             for(var read:a.conditionReads()) CallAdmission.reference(read,e.header(),operands,c);
-            c.require(a.selection().isPresent() || a.conditionOrigin().exact(),Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"unmodeled WHEN has exact source origin");
+            c.require(a.selection().isPresent() || a.conditionOrigin().exact() || a.control().contentAvailability()!=Availability.KNOWN&&!a.control().gapCodes().isEmpty(),Rule.STRUCTURE,e.header().id().handle(),a.conditionOrigin(),"unmodeled WHEN has exact source origin");
             arm(e,a.control(),a.statements(),members,c);
         }
         arm(e,e.otherArm(),e.otherStatements(),members,c);
