@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F02-times-partial.json",
-  "sourceSha256" : "1c3703b3f1c45b4f09937844c2da7468c8ff809460beabd2ebca62411b17a726",
+  "referenceSourceSha256": "1c3703b3f1c45b4f09937844c2da7468c8ff809460beabd2ebca62411b17a726",
+  "sourceSha256": "6297a03bf5ce75cd7fe346aad9e0ad135946ff020dc4a0ff72f4db08750ce040",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

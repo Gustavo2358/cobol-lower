@@ -17,8 +17,8 @@ public final class PerformVaryingIntegrationSuite {
     public static void run() throws Exception {
         var codec=new AirJson();
         var partial=List.of("unresolved-control","noninteger","nonscalar","subscript-control","unknown-from","unknown-by","variable-by","zero-by",
-            "unsupported-condition","unresolved-condition","after-level","incoming","escape","cycle","recursive","partial-end","unknown-body");
-        var names=new ArrayList<>(List.of("before","default","after","thru","from-read","decrement","branches","1","2","5","40"));names.addAll(partial);
+            "unsupported-condition","unresolved-condition","incoming","escape","cycle","recursive","partial-end","unknown-body");
+        var names=new ArrayList<>(List.of("before","default","after","thru","from-read","decrement","branches","after-level","1","2","5","40"));names.addAll(partial);
         for(var name:names) {
             var input=PerformFamilyIntegrationSuite.inputFixture("varying-"+name);
             var result=PartialIntegrationSuite.lower(input);var reverse=new ArrayList<>(input.statements());Collections.reverse(reverse);
@@ -27,8 +27,8 @@ public final class PerformVaryingIntegrationSuite {
                 .filter(Operations.Opaque.class::isInstance).map(Operations.Opaque.class::cast)
                 .filter(o->o.observedKind().startsWith("perform-varying-")).toList();
             if(!partial.contains(name)||name.equals("unsupported-condition")||name.equals("unresolved-condition")) {
-                check(effects.size()==2*input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).count(),
-                    "initialization and update per callsite "+name+" actual="+effects.size());
+                check(effects.size()==input.statements().stream().filter(SpInput.ProcedurePerformFact.class::isInstance).map(SpInput.ProcedurePerformFact.class::cast).mapToInt(f->3*f.varying().orElseThrow().levels()-1).sum(),
+                    "initialization/update per level and inner reset per nesting "+name+" actual="+effects.size());
                 for(var e:effects)check(e.envelope().memory().knownWrites().size()==1 && e.envelope().memory().knownWrites().equals(e.envelope().memory().mustOverwrite())
                     && e.envelope().memory().otherWrites()==Scopes.NoMemory.INSTANCE && e.envelope().control().remainder()==Scopes.NoControl.INSTANCE,"localized must-write with closed continuation "+name);
             } else if(Set.of("incoming","escape","cycle","recursive","unknown-body").contains(name)) {
@@ -38,7 +38,7 @@ public final class PerformVaryingIntegrationSuite {
                     && e.envelope().memory().otherWrites()==Scopes.NoMemory.INSTANCE,
                     "partial body does not broaden implicit VARYING writes "+name);
                 if(name.equals("recursive"))check(result.publication().orElseThrow().uncertainties().stream()
-                    .anyMatch(u->u.code().contains("RECURSIVE_PERFORM_NOT_SUPPORTED")),"recursive return remains unsupported");
+                    .anyMatch(u->u.code().equals("cobol-lower:LOCAL_REENTRY_SOURCE_UNDEFINED")),"active recursive return remains source-undefined under the published reentry policy");
             } else check(effects.isEmpty(),"unavailable repetition/entry not specialized "+name);
         }
         var input=PerformFamilyIntegrationSuite.inputFixture("varying-after");

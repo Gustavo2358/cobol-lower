@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/if-all-transfer-no-join.json",
-  "sourceSha256" : "c2863a3d34b741cb652cb87a72589eb5c19ef1db0e0cdea7ce1c2544679d01cc",
+  "referenceSourceSha256": "c2863a3d34b741cb652cb87a72589eb5c19ef1db0e0cdea7ce1c2544679d01cc",
+  "sourceSha256": "5edee01fae5ed90e97bd0e61872e636783ef1506859e4f91a06a7e5c23c02468",
   "variant" : "published",
   "states" : [ {
     "statement:3:branch" : 1

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/ctxboom-cics-04.json",
-  "sourceSha256" : "b99da83c686544147b95258c2899143096c239ee2a6c850cde23cb16d9459350",
+  "referenceSourceSha256": "b99da83c686544147b95258c2899143096c239ee2a6c850cde23cb16d9459350",
+  "sourceSha256": "976c2f5ffe5f835979961b832c50e92ed1aff149fecb3bbe7c080d73da7a04b4",
   "variant" : "unspecified",
   "states" : [ {
     "statement:1:opaque" : 1

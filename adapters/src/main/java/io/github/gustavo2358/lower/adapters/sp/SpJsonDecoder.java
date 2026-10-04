@@ -91,48 +91,49 @@ public final class SpJsonDecoder {
             if (!node.path("schema").textValue().equals("cobol-semantic-product"))
                 return reject(Code.UNSUPPORTED_CONTRACT, "$/schema");
             String receivedVersion=node.path("contractVersion").textValue();
+            if(!TextFittingWire.normalize(node,receivedVersion))return reject(Code.INPUT_ERROR,"$/statements/textAdjustment");
             var profile=SpContractProfile.admitted(receivedVersion);
             if(profile==null)return reject(Code.UNSUPPORTED_CONTRACT,"$/contractVersion");
-            if(!java.util.Set.of("2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion)) {
+            if(!java.util.Set.of("2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)) {
                 for(var effect:node.path("statementEffects"))if(effect.path("proof").asText().equals("SEARCH_INDEX_MAY"))throw new PhysicalShape("search index effects require SP2.56");
                 for(var region:node.path("controlTopology").path("regions"))if(java.util.Set.of("SENTENCE","SEARCH","SEARCH_ARM").contains(region.path("kind").asText()))throw new PhysicalShape("sentence/search regions require SP2.56");
                 for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("kind").asText().equals("PROGRAM_HALT")||outcome.path("target").path("kind").asText().equals("PROGRAM_HALT"))throw new PhysicalShape("program halt requires SP2.56");
             }
             for(var effect:node.path("statementEffects"))
-                if(effect.path("proof").asText().equals("MOVE_TARGETS")&&!java.util.Set.of("2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("MOVE footprint requires SP2.58");
+                if(effect.path("proof").asText().equals("MOVE_TARGETS")&&!java.util.Set.of("2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("MOVE footprint requires SP2.58");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(java.util.Set.of("DLI_HOST_OPERANDS","CICS_CONDITION_REGISTRATION").contains(effect.path("proof").asText())&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statementEffects/new embedded proof requires SP2.46");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
+                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
             for(var condition:node.path("storage").path("entryState").path("conditions"))
-                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(condition.path("kind").asText().equals("LOGICAL_TEXT")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("$/storage/entryState/LOGICAL_TEXT requires SP2.46");
             for(var statement:node.path("statements")) {
                 String variant=statement.path("variant").asText();
                 var condition=variant.equals("IF")?statement.path("condition"):statement.path("loop").path("condition");
                 if(condition.isObject()) {
-                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
+                    if(condition.has("textPredicate")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("$/condition/textPredicate requires SP2.46");
                     if(!condition.has("textPredicate")&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
                         ((com.fasterxml.jackson.databind.node.ObjectNode)condition).putNull("textPredicate");
                 }
-                if(variant.equals("CICS_COMMAND")&&(java.util.Set.of("ASKTIME","FORMATTIME","ASSIGN","INQUIRE_PROGRAM","SEND_TEXT","WRITEQ_TD").contains(statement.path("commandKind").asText())||statement.path("gapCodes").toString().contains("CICS_COMMAND_DUPLICATE_FLAG_IGNORED"))&&!java.util.Set.of("2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&(java.util.Set.of("ASKTIME","FORMATTIME","ASSIGN","INQUIRE_PROGRAM","SEND_TEXT","WRITEQ_TD").contains(statement.path("commandKind").asText())||statement.path("gapCodes").toString().contains("CICS_COMMAND_DUPLICATE_FLAG_IGNORED"))&&!java.util.Set.of("2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("extended CICS catalogue requires SP2.54");
-                if(variant.equals("CICS_COMMAND")&&java.util.Set.of("SYNCPOINT_ROLLBACK","RETURN").contains(statement.path("commandKind").asText())&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&java.util.Set.of("SYNCPOINT_ROLLBACK","RETURN").contains(statement.path("commandKind").asText())&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("CICS completion commands require SP2.50");
                 if(variant.equals("CICS_COMMAND")&&!profile.terminalSend()&&(statement.path("commandKind").asText().equals("SEND_TERMINAL")||statement.has("length")))
                     throw new PhysicalShape("$/statements terminal SEND requires SP2.44");
                 if(variant.equals("CICS_HANDLER")&&!profile.handlers()||variant.equals("CICS_ABEND")&&!profile.abend()||variant.equals("CICS_COMMAND")&&!profile.commands())
                     throw new PhysicalShape("$/statements/variant not admitted by "+receivedVersion);
-                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.path("commandKind").asText().equals("RETRIEVE")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/RETRIEVE requires SP2.46");
-                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(variant.equals("CICS_HANDLER")&&statement.has("registrationEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/registrationEffects requires SP2.46");
                 if(variant.equals("CICS_HANDLER")&&!statement.has("registrationEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("registrationEffects");
-                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(variant.equals("CICS_COMMAND")&&statement.has("hostEffects")&&!java.util.Set.of("2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("$/statements/hostEffects requires SP2.46");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("hostEffects"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("hostEffects");
-                if(variant.equals("CICS_COMMAND")&&statement.has("implicitArea")&&!java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("implicitArea requires SP2.53");
+                if(variant.equals("CICS_COMMAND")&&statement.has("implicitArea")&&!java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("implicitArea requires SP2.53");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("implicitArea"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("implicitArea");
                 if(variant.equals("CICS_COMMAND")&&!statement.has("length"))((com.fasterxml.jackson.databind.node.ObjectNode)statement).putNull("length");
             }
@@ -142,22 +143,29 @@ public final class SpJsonDecoder {
             if(!profile.commands())for(var proof:node.path("controlTopology").path("proofs"))
                 if(proof.path("rule").asText().startsWith("cics-command-"))
                     throw new PhysicalShape("$/controlTopology/proofs/rule requires SP2.43");
-            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
+            if(!java.util.Set.of("2.45.0","2.46.0","2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)&&node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isEmpty())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents requires SP2.45");
             if(node.path("controlTopology").has("exceptionalEvents")&&!node.path("controlTopology").path("exceptionalEvents").isArray())
                 throw new PhysicalShape("$/controlTopology/exceptionalEvents must be an array");
+            ConditionNamesWire.Document conditionNames=null;
+            if(node.has("conditionNames")) {
+                if(!java.util.Set.of("2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("$/conditionNames requires SP2.64");
+                conditionNames=mapper.treeToValue(node.get("conditionNames"),ConditionNamesWire.Document.class);
+                requirePhysical(conditionNames,"$/conditionNames",meter);
+                ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("conditionNames");
+            }
             io.github.gustavo2358.lower.domain.NominalValues nominalValues=null;
             if(node.has("nominalValues")) {
-                if(!java.util.Set.of("2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("$/nominalValues requires SP2.47");
+                if(!java.util.Set.of("2.47.0","2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("$/nominalValues requires SP2.47");
                 var nominal=node.path("nominalValues");
                 boolean tableContract=nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V4");
-                if(tableContract&&(!java.util.Set.of("2.60.0","2.61.0","2.62.0").contains(receivedVersion)||!nominal.path("tableFields").isArray()))throw new PhysicalShape("table fields require SP2.60 and array");
+                if(tableContract&&(!java.util.Set.of("2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)||!nominal.path("tableFields").isArray()))throw new PhysicalShape("table fields require SP2.60 and array");
                 if(!tableContract&&nominal.has("tableFields"))throw new PhysicalShape("table fields require V4");
                 if(!tableContract)((com.fasterxml.jackson.databind.node.ObjectNode)nominal).putArray("tableFields");
                 boolean expressionContract=tableContract||nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V3");
-                if(expressionContract&&!java.util.Set.of("2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("nominal expressions require SP2.59");
+                if(expressionContract&&!java.util.Set.of("2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("nominal expressions require SP2.59");
                 boolean modelContract=expressionContract||nominal.path("authority").asText().equals("NOMINAL_TEXT_SOURCE_V2");
-                if(modelContract&&!java.util.Set.of("2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("model assumptions require SP2.49");
+                if(modelContract&&!java.util.Set.of("2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("model assumptions require SP2.49");
                 for(var symbol:nominal.path("symbols")) {
                     if(!symbol.isObject())throw new PhysicalShape("nominal symbol must be an object");
                     if(modelContract&&!symbol.path("modelAssumed").isBoolean())throw new PhysicalShape("modelAssumed boolean required");
@@ -181,24 +189,26 @@ public final class SpJsonDecoder {
             }
             for(var statement:node.path("statements"))if(statement.path("varying").isObject()) {
                 var varying=(com.fasterxml.jackson.databind.node.ObjectNode)statement.path("varying");
-                if(varying.has("afterLoops")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("afterLoops requires SP2.48");
+                if(varying.has("afterLoops")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("afterLoops requires SP2.48");
                 if(!varying.has("afterLoops")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)varying.putArray("afterLoops");
                 for(var loop:varying.path("afterLoops"))if(loop.path("condition").isObject()&&!loop.path("condition").has("textPredicate"))
                     ((com.fasterxml.jackson.databind.node.ObjectNode)loop.path("condition")).putNull("textPredicate");
             }
             for(var input:node.path("factDependencies").path("inputs"))
-                if(input.path("kind").asText().equals("MODEL_STORAGE")&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))
+                if(input.path("kind").asText().equals("MODEL_STORAGE")&&!java.util.Set.of("2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))
                     throw new PhysicalShape("MODEL_STORAGE requires SP2.50");
             boolean factContract=profile.factDependencies();
             if(factContract!=node.has("factDependencies")||factContract&&!node.path("factDependencies").isObject())
                 throw new PhysicalShape("$/factDependencies requires SP2.40/2.41/2.42/2.43 and is mandatory there");
             io.github.gustavo2358.lower.domain.FactDependencies factDependencies=null;
             if(factContract) {
+                if(!receivedVersion.equals("2.66.0"))for(var fact:node.path("factDependencies").path("facts"))
+                    if(fact.path("kind").asText().equals("LOGICAL_NUMBER"))throw new PhysicalShape("LOGICAL_NUMBER requires SP2.66");
                 factDependencies=mapper.treeToValue(node.path("factDependencies"),io.github.gustavo2358.lower.domain.FactDependencies.class);
                 requirePhysical(factDependencies,"$/factDependencies",meter);
                 ((com.fasterxml.jackson.databind.node.ObjectNode)node).remove("factDependencies");
             }
-            boolean alternateContract=java.util.Set.of("2.61.0","2.62.0").contains(receivedVersion);
+            boolean alternateContract=java.util.Set.of("2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion);
             if(node.path("entryInventory").path("scope").asText().equals("SOURCE_DECLARED")&&!alternateContract)
                 throw new PhysicalShape("alternate entry inventory requires SP2.61");
             for(var entry:node.path("entryInventory").path("entries")) {
@@ -215,17 +225,17 @@ public final class SpJsonDecoder {
             if(topologyContract) {
                 var topologyNode=(com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology");
                 for(var field:java.util.List.of("conditionRegistrations","conditionEvents")) {
-                    if(topologyNode.has(field)&&(!topologyNode.path(field).isArray()||!receivedVersion.equals("2.62.0")&&!topologyNode.path(field).isEmpty()))throw new PhysicalShape("condition state requires SP2.62 array");
+                    if(topologyNode.has(field)&&(!topologyNode.path(field).isArray()||!java.util.Set.of("2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)&&!topologyNode.path(field).isEmpty()))throw new PhysicalShape("condition state requires SP2.62 array");
                     if(!topologyNode.has(field))topologyNode.putArray(field);
                 }
-                if(!receivedVersion.equals("2.62.0"))for(var event:topologyNode.path("exceptionalEvents"))if(event.path("origin").asText().equals("LINK_PGMIDERR"))throw new PhysicalShape("LINK default event requires SP2.62");
+                if(!java.util.Set.of("2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))for(var event:topologyNode.path("exceptionalEvents"))if(event.path("origin").asText().equals("LINK_PGMIDERR"))throw new PhysicalShape("LINK default event requires SP2.62");
                 if(topologyNode.has("entryPoints")&&(!topologyNode.path("entryPoints").isArray()||!alternateContract&&!topologyNode.path("entryPoints").isEmpty()))
                     throw new PhysicalShape("entryPoints requires SP2.61 array");
                 if(!topologyNode.has("entryPoints"))topologyNode.putArray("entryPoints");
-                boolean sourcePossibility=java.util.Set.of("2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion);
+                boolean sourcePossibility=java.util.Set.of("2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion);
                 boolean hasSource=topologyNode.has("sourceContinuations");
                 if(receivedVersion.equals("2.52.0")&&(!topologyNode.path("sourceContinuations").isArray()||topologyNode.path("sourceContinuations").isEmpty())
-                    ||java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion)&&hasSource&&!topologyNode.path("sourceContinuations").isArray()
+                    ||java.util.Set.of("2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)&&hasSource&&!topologyNode.path("sourceContinuations").isArray()
                     ||!sourcePossibility&&hasSource&&(!topologyNode.path("sourceContinuations").isArray()||!topologyNode.path("sourceContinuations").isEmpty()))
                     throw new PhysicalShape("sourceContinuations requires SP2.52; optional empty inventory from SP2.53");
                 if(!hasSource)topologyNode.putArray("sourceContinuations");
@@ -241,18 +251,18 @@ public final class SpJsonDecoder {
                 for(var flow:topologyNode.path("fileFlows"))for(var point:flow.path("points"))
                     if(!point.has("ordinal")||!point.path("ordinal").isIntegralNumber())throw new PhysicalShape("FILE point ordinal required integer");
                 if(!node.path("controlTopology").has("exceptionalEvents"))((com.fasterxml.jackson.databind.node.ObjectNode)node.path("controlTopology")).putArray("exceptionalEvents");
-                for(var region:node.path("controlTopology").path("regions"))if(region.path("kind").asText().equals("SECTION")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("SECTION topology requires SP2.48");
-                for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("target").path("kind").asText().equals("ESCAPE")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("ESCAPE topology requires SP2.48");
+                for(var region:node.path("controlTopology").path("regions"))if(region.path("kind").asText().equals("SECTION")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("SECTION topology requires SP2.48");
+                for(var outcome:node.path("controlTopology").path("outcomes"))if(outcome.path("target").path("kind").asText().equals("ESCAPE")&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("ESCAPE topology requires SP2.48");
                 for(var binding:node.path("controlTopology").path("bindings"))for(var phase:binding.path("phases")) {
-                    if(phase.path("level").asInt()!=0&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("phase level requires SP2.48");
+                    if(phase.path("level").asInt()!=0&&!java.util.Set.of("2.48.0","2.49.0","2.50.0","2.51.0","2.52.0","2.53.0","2.54.0","2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("phase level requires SP2.48");
                     if(!phase.hasNonNull("level"))((com.fasterxml.jackson.databind.node.ObjectNode)phase).put("level",0);
                 }
                 for(var binding:topologyNode.path("bindings")) {
                     if(binding.has("reentryPolicy")) {
                         if(!binding.path("reentryPolicy").isTextual())throw new PhysicalShape("binding reentryPolicy must be a string");
-                        if(!java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion)&&!binding.path("reentryPolicy").asText().equals("UNSPECIFIED"))throw new PhysicalShape("binding reentry policy requires SP2.57");
+                        if(!java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)&&!binding.path("reentryPolicy").asText().equals("UNSPECIFIED"))throw new PhysicalShape("binding reentry policy requires SP2.57");
                     } else {
-                        if(java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("binding reentryPolicy required in SP2.57");
+                        if(java.util.Set.of("2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("binding reentryPolicy required in SP2.57");
                         ((com.fasterxml.jackson.databind.node.ObjectNode)binding).put("reentryPolicy","UNSPECIFIED");
                     }
                 }
@@ -263,6 +273,21 @@ public final class SpJsonDecoder {
             boolean partialSequenceContract=topologyContract||node.path("contractVersion").asText().equals("2.38.0");
             boolean partialSequence=false;
             for(var statement:node.path("statements"))if(statement.path("variant").asText().equals("MOVE")) {
+                var fillSources=new java.util.ArrayList<com.fasterxml.jackson.databind.JsonNode>();
+                fillSources.add(statement.path("source"));statement.path("additionalTransfers").forEach(t->fillSources.add(t.path("source")));
+                for(var source:fillSources)if(java.util.Set.of("FIGURATIVE_LOW","FIGURATIVE_HIGH").contains(source.path("kind").asText()))
+                    if(!receivedVersion.equals("2.66.0")||source.hasNonNull("logicalValue"))throw new PhysicalShape("symbolic collating fill requires SP2.66 and no concrete logical value");
+                if(!receivedVersion.equals("2.66.0")&&(java.util.Set.of("RIGHT_FIT_SPACE","ZERO_FILL").contains(statement.path("textAdjustment").path("rule").asText())
+                    ||statement.path("source").path("kind").asText().equals("FIGURATIVE_ZERO")
+                    ||statement.path("source").path("kind").asText().equals("NUMERIC")&&!statement.path("source").path("logicalValue").isNull()&&!statement.path("source").path("logicalValue").isMissingNode()
+                    ||statement.path("copySemantics").asText().equals("FORMATTED_NUMBER")
+                    ||statement.path("copySemantics").asText().equals("FITTED_TEXT")&&statement.path("source").path("variant").asText().equals("DATA")))
+                    throw new PhysicalShape("general text fitting requires SP2.66");
+                if(!receivedVersion.equals("2.66.0")&&statement.path("copySemantics").asText().equals("FITTED_TEXT")
+                    &&(!statement.path("header").path("provenance").path("exact").asBoolean()
+                       ||!statement.path("source").path("provenance").path("exact").asBoolean()
+                       ||!statement.path("target").path("provenance").path("exact").asBoolean()))
+                    throw new PhysicalShape("historical fitting requires exact source mapping");
                 partialSequence|=statement.has("logicalTransfers");
                 if(statement.path("additionalTransfers").isArray()&&!statement.path("additionalTransfers").isEmpty()) {
                     partialSequence|=statement.path("regionalMove").path("kind").asText().equals("UNAVAILABLE");
@@ -272,6 +297,46 @@ public final class SpJsonDecoder {
             }
             if(!topologyContract&&partialSequence!=partialSequenceContract)
                 throw new PhysicalShape("$/contractVersion partial MOVE sequence requires SP2.38");
+            if(!receivedVersion.equals("2.66.0"))for(var statement:node.path("statements"))
+                if(statement.path("variant").asText().equals("MOVE"))for(var reference:statement.findParents("logicalWholeItem"))
+                    if(reference.path("logicalWholeItem").isTextual()&&!reference.path("provenance").path("exact").asBoolean())
+                        throw new PhysicalShape("historical logical whole MOVE requires exact mapping");
+            for(var ref:node.findParents("binding"))if(ref.has("role")&&ref.has("id")) {
+                var slice=ref.path("logicalSlice");
+                if(!slice.isNull()&&!slice.isMissingNode()&&!receivedVersion.equals("2.66.0"))
+                    throw new PhysicalShape("logical slice requires SP2.66");
+                if(slice.isMissingNode()&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=11)
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)ref).putNull("logicalSlice");
+            }
+            for (var declaration : node.path("dataDeclarations")) {
+                var editing=declaration.path("scalarEdit");
+                if(!editing.isMissingNode()&&!editing.isNull()&&!receivedVersion.equals("2.66.0"))
+                    throw new PhysicalShape("numeric editing requires SP2.66");
+                if(editing.isMissingNode()&&receivedVersion.startsWith("2.")&&Integer.parseInt(receivedVersion.split("\\.")[1])>=4)
+                    ((com.fasterxml.jackson.databind.node.ObjectNode)declaration).putNull("scalarEdit");
+                var number = declaration.path("scalarNumber");
+                if (number.isMissingNode() || number.isNull()) continue;
+                if (!receivedVersion.equals("2.66.0") || !number.isObject() || number.size() != 5
+                        || !number.path("digits").isIntegralNumber() || !number.path("digits").canConvertToInt()
+                        || !number.path("scale").isIntegralNumber() || !number.path("scale").canConvertToInt()
+                        || !number.path("signed").isBoolean() || !number.path("representation").isTextual() || !number.path("trunc").isTextual())
+                    throw new PhysicalShape("scalarNumber requires the complete SP2.66 numeric descriptor");
+            }
+            var numericTransfers=new java.util.LinkedHashMap<String,java.util.List<NumericTransfersWire.Transfer>>();
+            for(var statement:node.path("statements"))if(statement.has("numericTransfers")) {
+                if(!receivedVersion.equals("2.66.0")||!statement.path("variant").asText().equals("MOVE")
+                    ||!statement.path("numericTransfers").isArray()||statement.path("numericTransfers").isEmpty())
+                    throw new PhysicalShape("numericTransfers requires SP2.66 MOVE");
+                var facts=new java.util.ArrayList<NumericTransfersWire.Transfer>();var targets=new java.util.HashSet<String>();
+                for(var transfer:statement.path("numericTransfers")) {
+                    if(!transfer.isObject()||transfer.size()!=2||!transfer.path("target").isTextual()
+                        ||!transfer.has("value")||!(transfer.path("value").isNull()||transfer.path("value").isTextual())
+                        ||!targets.add(transfer.path("target").asText()))throw new PhysicalShape("numericTransfers shape or duplicate target");
+                    facts.add(mapper.treeToValue(transfer,NumericTransfersWire.Transfer.class));
+                }
+                numericTransfers.put(statement.path("header").path("id").asText(),java.util.List.copyOf(facts));
+                ((com.fasterxml.jackson.databind.node.ObjectNode)statement).remove("numericTransfers");
+            }
             var logicalTransfers=new java.util.LinkedHashMap<String,java.util.List<PendingLogical>>();
             for(var statement:node.path("statements"))if(statement.has("logicalTransfers")) {
                 if(!partialSequenceContract||!statement.path("variant").asText().equals("MOVE")
@@ -427,7 +492,7 @@ public final class SpJsonDecoder {
             if(java.util.Set.of("2.11.0","2.12.0","2.14.0","2.15.0","2.16.0","2.17.0","2.18.0").contains(node.path("contractVersion").textValue()))
                 for(var ref:node.findParents("binding"))if(ref.has("role")&&ref.has("id"))((com.fasterxml.jackson.databind.node.ObjectNode)ref).putNull("logicalWholeItem");
             for(var effect:node.path("statementEffects"))
-                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
+                if(java.util.Set.of("SQL_HOST_OPERANDS","DLI_EXTERNAL_OPERANDS").contains(effect.path("proof").asText())&&!java.util.Set.of("2.55.0","2.56.0","2.57.0","2.58.0","2.59.0","2.60.0","2.61.0","2.62.0","2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion))throw new PhysicalShape("database effects require SP2.55");
             for(var condition:node.path("storage").path("entryState").path("conditions")) {
                 if(logicalAccessContract&&!condition.has("logicalText"))throw new PhysicalShape("$/storage/entryState/conditions/logicalText");
                 if(!logicalAccessContract&&condition.has("logicalText"))return reject(Code.UNSUPPORTED_CONTRACT,"$/logicalText requires SP 2.19");
@@ -669,8 +734,24 @@ public final class SpJsonDecoder {
                 input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),
                     input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
             }
+            if(!numericTransfers.isEmpty()) {
+                var statements=new java.util.ArrayList<SpInput.StatementFact>();var matched=new java.util.HashSet<String>();
+                for(var fact:input.statements()) {
+                    var numericPending=numericTransfers.get(fact.header().id().handle());
+                    if(numericPending!=null) {
+                        if(!(fact instanceof SpInput.MoveFact m))throw new PhysicalShape("numericTransfers owner");
+                        matched.add(m.header().id().handle());
+                        fact=new SpInput.MoveFact(m.header(),m.source(),m.target(),m.copySemantics(),m.normalContinuation(),m.textAdjustment(),m.regionalMove(),m.additionalTransfers(),m.logicalTransfers(),NumericTransfersWire.materialize(numericPending,m.header().id()));
+                    }
+                    statements.add(fact);
+                }
+                if(matched.size()!=numericTransfers.size())throw new PhysicalShape("numericTransfers owner");
+                input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),statements,input.structure(),input.gaps(),input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations());
+            }
             if(topologyContract)input=new SpInput(input.unit(),input.policy(),input.dataDeclarations(),input.statements(),input.structure(),input.gaps(),
-                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies),java.util.Optional.ofNullable(nominalValues));
+                input.coverage(),input.entryInventory(),input.storageIndependence(),input.compositional(),input.storage(),input.fileInventory(),input.sourceDependencies(),input.ordinaryContinuations(),java.util.Optional.of(topology),java.util.Optional.ofNullable(factDependencies),java.util.Optional.ofNullable(nominalValues),conditionNames==null?java.util.Optional.empty():java.util.Optional.of(ConditionNamesWire.materialize(conditionNames,input.unit())));
+            // Normalized facts use current admission; the received wire still owes its historical diagnostics.
+            if (!java.util.Set.of("2.63.0","2.64.0","2.65.0","2.66.0").contains(receivedVersion)) requireHistoricalGaps(input, receivedVersion);
             return new Decoded(input, variants);
         } catch (StreamConstraintsException ex) {
             return reject(Code.IMPLEMENTATION_LIMIT, "$ limits");
@@ -723,7 +804,6 @@ public final class SpJsonDecoder {
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical13(value);
             }
-            if (statement instanceof Wire13.MoveDocument m && m.textAdjustment() != null) logical13(m.textAdjustment().result());
             if (statement instanceof Wire13.CallDocument c && c.target() instanceof Wire13.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical13(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -745,7 +825,6 @@ public final class SpJsonDecoder {
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical14(value);
             }
-            if (statement instanceof Wire14.MoveDocument m && m.textAdjustment() != null) logical14(m.textAdjustment().result());
             if (statement instanceof Wire14.CallDocument c && c.target() instanceof Wire14.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical14(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -757,17 +836,33 @@ public final class SpJsonDecoder {
             throw new PhysicalShape("$/logicalValue/logicalExtent");
     }
 
+    private static void requireHistoricalGaps(SpInput input, String version) {
+        var localized = new java.util.HashSet<SpInput.StatementId>();
+        var structural = new java.util.HashSet<SpInput.StatementId>();
+        for (var gap : input.gaps()) {
+            localized.add(gap.statement());
+            if (gap.scope() == SpInput.GapScope.STRUCTURE) structural.add(gap.statement());
+        }
+        for (var statement : input.statements()) {
+            var header = statement.header();
+            String location = "$/gaps/" + header.id().handle() + ": SP " + version;
+            if (header.coverage() != SpInput.CoverageStatus.MODELED && !localized.contains(header.id()))
+                throw new PhysicalShape(location + " requires a localized gap for non-MODELED coverage");
+            if (header.containment().branch() == SpInput.Branch.UNKNOWN && !structural.contains(header.id()))
+                throw new PhysicalShape(location + " requires a STRUCTURE gap for UNKNOWN containment");
+        }
+    }
+
     private static void requireCoherent15(Wire15.Document wire) {
         for (var data : wire.dataDeclarations()) if (data.scalarText() != null && data.scalarText().logicalExtent() <= 0)
             throw new PhysicalShape("$/dataDeclarations/scalarText/logicalExtent");
         for (var statement : wire.statements()) {
             if (statement instanceof Wire15.MoveDocument m && m.source() instanceof Wire15.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical15(value);
             }
-            if (statement instanceof Wire15.MoveDocument m && m.textAdjustment() != null) logical15(m.textAdjustment().result());
             if (statement instanceof Wire15.CallDocument c && c.target() instanceof Wire15.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical15(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -787,11 +882,10 @@ public final class SpJsonDecoder {
         for (var statement : wire.statements()) {
             if (statement instanceof Wire16.MoveDocument m && m.source() instanceof Wire16.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical16(value);
             }
-            if (statement instanceof Wire16.MoveDocument m && m.textAdjustment() != null) logical16(m.textAdjustment().result());
             if (statement instanceof Wire16.CallDocument c && c.target() instanceof Wire16.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical16(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -809,11 +903,10 @@ public final class SpJsonDecoder {
         for (var statement : wire.statements()) {
             if (statement instanceof Wire18.MoveDocument m && m.source() instanceof Wire18.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical18(value);
             }
-            if (statement instanceof Wire18.MoveDocument m && m.textAdjustment() != null) logical18(m.textAdjustment().result());
             if (statement instanceof Wire18.CallDocument c && c.target() instanceof Wire18.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical18(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -837,11 +930,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire20.MoveDocument m && m.source() instanceof Wire20.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical20(value);
             }
-            if (statement instanceof Wire20.MoveDocument m && m.textAdjustment() != null) logical20(m.textAdjustment().result());
             if (statement instanceof Wire20.CallDocument c && c.target() instanceof Wire20.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical20(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -865,11 +957,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire21.MoveDocument m && m.source() instanceof Wire21.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical21(value);
             }
-            if (statement instanceof Wire21.MoveDocument m && m.textAdjustment() != null) logical21(m.textAdjustment().result());
             if (statement instanceof Wire21.CallDocument c && c.target() instanceof Wire21.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical21(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -893,11 +984,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire22.MoveDocument m && m.source() instanceof Wire22.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical22(value);
             }
-            if (statement instanceof Wire22.MoveDocument m && m.textAdjustment() != null) logical22(m.textAdjustment().result());
             if (statement instanceof Wire22.CallDocument c && c.target() instanceof Wire22.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical22(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -921,11 +1011,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire23.MoveDocument m && m.source() instanceof Wire23.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical23(value);
             }
-            if (statement instanceof Wire23.MoveDocument m && m.textAdjustment() != null) logical23(m.textAdjustment().result());
             if (statement instanceof Wire23.CallDocument c && c.target() instanceof Wire23.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical23(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -949,11 +1038,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire24.MoveDocument m && m.source() instanceof Wire24.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical24(value);
             }
-            if (statement instanceof Wire24.MoveDocument m && m.textAdjustment() != null) logical24(m.textAdjustment().result());
             if (statement instanceof Wire24.CallDocument c && c.target() instanceof Wire24.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical24(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -977,11 +1065,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire25.MoveDocument m && m.source() instanceof Wire25.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical25(value);
             }
-            if (statement instanceof Wire25.MoveDocument m && m.textAdjustment() != null) logical25(m.textAdjustment().result());
             if (statement instanceof Wire25.CallDocument c && c.target() instanceof Wire25.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical25(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -1005,11 +1092,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire26.MoveDocument m && m.source() instanceof Wire26.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical26(value);
             }
-            if (statement instanceof Wire26.MoveDocument m && m.textAdjustment() != null) logical26(m.textAdjustment().result());
             if (statement instanceof Wire26.CallDocument c && c.target() instanceof Wire26.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical26(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -1025,6 +1111,13 @@ public final class SpJsonDecoder {
         if (!wire.storage().version().equals("1.0.0")) throw new PhysicalShape("$/storage/version");
         requireCoherentFacts27(wire);
     }
+    private static boolean validLiteralText(SpInput.LiteralKind kind,String number,String text) {
+        if(kind!=SpInput.LiteralKind.NUMERIC)return (kind==SpInput.LiteralKind.ALPHANUMERIC||kind==SpInput.LiteralKind.FIGURATIVE_ZERO&&number.equals("0"))&&number.equals(text);
+        if(text.isEmpty())return false;
+        for(int i=0;i<text.length();i++)if(text.charAt(i)<'0'||text.charAt(i)>'9')return false;
+        try {var value=new java.math.BigDecimal(number);return value.scale()==0&&value.abs().compareTo(new java.math.BigDecimal(text))==0;}
+        catch(NumberFormatException ex){return false;}
+    }
     private static void requireCoherentFacts211(Wire211.Document wire) {
         wire.storage().nodes().forEach(n->measure211(n.extent()));
         wire.storage().bases().forEach(b->measure211(b.extent()));
@@ -1037,7 +1130,7 @@ public final class SpJsonDecoder {
             if(statement instanceof Wire211.MoveDocument m)for(var transfer:m.additionalTransfers()) {
                 if(transfer.source() instanceof Wire211.LiteralDocument literal&&literal.logicalValue()!=null) {
                     logical211(literal.logicalValue());
-                    if(literal.kind()!=SpInput.LiteralKind.ALPHANUMERIC||!literal.value().equals(literal.logicalValue().value()))throw new PhysicalShape("$/statements/additionalTransfers/source/logicalValue");
+                    if(!validLiteralText(literal.kind(),literal.value(),literal.logicalValue().value()))throw new PhysicalShape("$/statements/additionalTransfers/source/logicalValue");
                 }
             }
             if (statement instanceof Wire211.EvaluateDocument e) for (var a : e.arms()) {
@@ -1052,11 +1145,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire211.MoveDocument m && m.source() instanceof Wire211.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical211(value);
             }
-            if (statement instanceof Wire211.MoveDocument m && m.textAdjustment() != null) logical211(m.textAdjustment().result());
             if (statement instanceof Wire211.CallDocument c && c.target() instanceof Wire211.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical211(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -1086,11 +1178,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire210.MoveDocument m && m.source() instanceof Wire210.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical210(value);
             }
-            if (statement instanceof Wire210.MoveDocument m && m.textAdjustment() != null) logical210(m.textAdjustment().result());
             if (statement instanceof Wire210.CallDocument c && c.target() instanceof Wire210.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical210(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");
@@ -1120,11 +1211,10 @@ public final class SpJsonDecoder {
             }
             if (statement instanceof Wire27.MoveDocument m && m.source() instanceof Wire27.LiteralDocument literal && literal.logicalValue() != null) {
                 var value = literal.logicalValue();
-                if (literal.kind() != SpInput.LiteralKind.ALPHANUMERIC || !literal.value().equals(value.value()))
+                if (!validLiteralText(literal.kind(),literal.value(),value.value()))
                     throw new PhysicalShape("$/statements/source/logicalValue");
                 logical27(value);
             }
-            if (statement instanceof Wire27.MoveDocument m && m.textAdjustment() != null) logical27(m.textAdjustment().result());
             if (statement instanceof Wire27.CallDocument c && c.target() instanceof Wire27.LiteralTargetDocument l && l.logicalValue() != null) {
                 logical27(l.logicalValue());
                 if (!l.text().equals(l.logicalValue().value())) throw new PhysicalShape("$/statements/target/text");

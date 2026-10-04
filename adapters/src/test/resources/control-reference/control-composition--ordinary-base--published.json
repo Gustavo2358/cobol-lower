@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/ordinary-base.json",
-  "sourceSha256" : "7891b45fa1e234bde2841a31e532571edc28f6dd853b9a4d9dba21f6ec0c869d",
+  "referenceSourceSha256": "7891b45fa1e234bde2841a31e532571edc28f6dd853b9a4d9dba21f6ec0c869d",
+  "sourceSha256": "98dc66d5a24fd82306ddb27fdd5e2775ac5367b75f20989ac6d4ca4255ed75a7",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

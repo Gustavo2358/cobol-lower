@@ -17,7 +17,7 @@ final class SupportedProgramAssembler {
         OriginId entrySequenceOrigin = null;
         for (var fact : plan.primary()) {
             if (fact instanceof SpInput.MoveFact move) {
-                var assign = MoveHandler.translate(move, data, unit, ids, origins, operands, items);
+                var assign = MoveHandler.translate(move, data, unit, ids, origins, operands,items,uncertainties);
                 instructions.add(assign); inputs.add(assign.header().origin());
                 inputs.add(origins.source("continuation", move.header().id().handle(), move.normalContinuation().provenance()));
                 link(move.header().id(), assign, current, statements, items); continue;
@@ -36,15 +36,15 @@ final class SupportedProgramAssembler {
                 terminator = IfSequenceAssembler.branch(f, thenLabel, elseLabel, data, unit, ids, origins, operands, items, uncertainties);
                 var completion = origins.source("if-completion", f.header().id().handle(), f.normalContinuation().provenance());
                 inputs.add(completion);
-                sequences.add(IfSequenceAssembler.arm(f, f.thenArm(), diamond.thenMoves(), thenLabel, continuation, completion, data, unit, ids, origins, statements, operands, items));
+                sequences.add(IfSequenceAssembler.arm(f, f.thenArm(), diamond.thenMoves(), thenLabel, continuation, completion, data, unit, ids, origins, statements, operands, items, uncertainties));
                 if (f.elseArm().presence() == SpInput.ClausePresence.PRESENT)
-                    sequences.add(IfSequenceAssembler.arm(f, f.elseArm(), diamond.elseMoves(), elseLabel, continuation, completion, data, unit, ids, origins, statements, operands, items));
+                    sequences.add(IfSequenceAssembler.arm(f, f.elseArm(), diamond.elseMoves(), elseLabel, continuation, completion, data, unit, ids, origins, statements, operands, items, uncertainties));
             } else if (fact instanceof SpInput.PerformFact p) {
                 var target = label(p.targetEntry().orElseThrow(), unit, ids);
                 var proof = PerformSequenceAssembler.control(p, target, continuation, unit, ids, origins);
                 terminator = proof.invoke();
                 var bodyOrigins = new ArrayList<>(List.of(proof.paragraphOrigin(), proof.performOrigin(), proof.referenceOrigin(), proof.resumeOrigin()));
-                var body = PerformSequenceAssembler.moves(plan.body(), target, data, unit, ids, origins, statements, operands, items, bodyOrigins);
+                var body = PerformSequenceAssembler.moves(plan.body(), target, data, unit, ids, origins, statements, operands, items, bodyOrigins,uncertainties);
                 var returnOrigin = origins.derived(ids.id("origin", "perform-return", unit.localId(), p.header().id().handle()), bodyOrigins,
                     "perform-basic@1/isolated-paragraph-end-to-unique-resume");
                 var returning = PerformSequenceAssembler.jump("resume", p.targetExit().orElseThrow(), continuation, returnOrigin, unit, ids);

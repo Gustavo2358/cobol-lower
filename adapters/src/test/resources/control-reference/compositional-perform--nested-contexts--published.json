@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/nested-contexts.json",
-  "sourceSha256" : "0450fea83022a1254b4477b1d2cc4e7ebe0b1f1d0207f4666a1cf209ecdd7633",
+  "referenceSourceSha256": "0450fea83022a1254b4477b1d2cc4e7ebe0b1f1d0207f4666a1cf209ecdd7633",
+  "sourceSha256": "e09f0bcfdbf4b9746673c341090575347bbed0aeee277b8d73bb82f5e3ec53ad",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

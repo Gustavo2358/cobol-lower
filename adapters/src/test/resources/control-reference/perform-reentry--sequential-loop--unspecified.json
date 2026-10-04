@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/sequential-loop.json",
-  "sourceSha256" : "27e618525f5479e08e190bc0c5561d90505c56e3de66d905b4855068c767fc32",
+  "referenceSourceSha256": "27e618525f5479e08e190bc0c5561d90505c56e3de66d905b4855068c767fc32",
+  "sourceSha256": "1612a06b0fc1139d45334bfa022cdcd1ddb7364b1201d803bde24678137f6e20",
   "variant" : "unspecified",
   "states" : [ {
     "statement:1:invoke:INP" : 1

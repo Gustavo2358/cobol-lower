@@ -53,9 +53,9 @@ final class Wire210 {
     record ScalarDocument(LogicalDomain logicalDomain, int logicalExtent, StorageClass storageClass, DeclarationScope declarationScope) { }
     record LogicalDocument(LogicalDomain logicalDomain, String value, int logicalExtent) { }
     record WholeDocument(String data) { }
-    record IntegerDocument(int digits) { }
+    record NumberDocument(int digits,int scale,boolean signed,String representation,String trunc) { }
     record DataDocument(String id, String canonicalName, @Nullable String picture, Wire.ProvenanceDocument provenance,
-        CoverageStatus coverage, Wire.ReadinessDocument readiness, @Nullable ScalarDocument scalarText,@Nullable IntegerDocument scalarInteger) { }
+        CoverageStatus coverage, Wire.ReadinessDocument readiness, @Nullable ScalarDocument scalarText,@Nullable NumberDocument scalarNumber,@Nullable io.github.gustavo2358.lower.domain.SpInput.ScalarEdit scalarEdit) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "variant")
     @JsonSubTypes({@JsonSubTypes.Type(value = LiteralDocument.class, name = "LITERAL"),
         @JsonSubTypes.Type(value = DataSourceDocument.class, name = "DATA")})
@@ -67,7 +67,7 @@ final class Wire210 {
     record MoveDocument(Wire.StatementHeaderDocument header, MoveSourceDocument source, ReferenceDocument target,
         CopySemantics copySemantics, ContinuationDocument normalContinuation, @Nullable AdjustmentDocument textAdjustment, @Nullable RegionalMoveDocument regionalMove) implements StatementDocument { }
     record GobackDocument(Wire.StatementHeaderDocument header, GobackExit exit, LocalContinuation localContinuation) implements StatementDocument { }
-    record AdjustmentDocument(TextAdjustmentRule rule, int receiverExtent, LogicalDocument result, Wire.ProvenanceDocument provenance) { }
+    record AdjustmentDocument(TextAdjustmentRule rule, int receiverExtent, Wire.ProvenanceDocument provenance) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({@JsonSubTypes.Type(value = DataTargetDocument.class, name = "DATA"),
         @JsonSubTypes.Type(value = LiteralTargetDocument.class, name = "LITERAL")})

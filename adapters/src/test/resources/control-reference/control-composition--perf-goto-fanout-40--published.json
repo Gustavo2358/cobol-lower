@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/perf-goto-fanout-40.json",
-  "sourceSha256" : "429dac65143271833b71dad8a74d168289d89c85e122b5f690a38728c6de1ec1",
+  "referenceSourceSha256": "429dac65143271833b71dad8a74d168289d89c85e122b5f690a38728c6de1ec1",
+  "sourceSha256": "2fc7c3a4afbdab5ffcda862cec85db02b8e4ff2fc6d9a387e6e01c1140bc3f00",
   "variant" : "published",
   "states" : [ {
     "statement:41:opaque" : 1

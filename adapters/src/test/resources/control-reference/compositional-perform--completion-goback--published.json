@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/completion-goback.json",
-  "sourceSha256" : "557188344ce2b81308022fcf2dc6df2b217743a69b15b9d8ec413283a4a41b5b",
+  "referenceSourceSha256": "557188344ce2b81308022fcf2dc6df2b217743a69b15b9d8ec413283a4a41b5b",
+  "sourceSha256": "8b7fa983237c7f7d144442b0618a951e1b5cb8e5207ee9854c95a315b289b298",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

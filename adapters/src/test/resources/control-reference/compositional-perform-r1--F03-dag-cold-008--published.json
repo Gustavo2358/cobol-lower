@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F03-dag-cold-008.json",
-  "sourceSha256" : "2da34a5b2e3e2d339702eae3c0e6b2bc3d75912937462130278f62e5f5523a48",
+  "referenceSourceSha256": "2da34a5b2e3e2d339702eae3c0e6b2bc3d75912937462130278f62e5f5523a48",
+  "sourceSha256": "adfa6aa0e23d8b0e6168fa2f36c6ccbe582376ce58a94f299fa7d9f3b3f0fc9d",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

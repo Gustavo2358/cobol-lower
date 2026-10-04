@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/dead-body.json",
-  "sourceSha256" : "2a2cc35155a472fcbff35d282428164884825470179ad91f3c557303f918e28f",
+  "referenceSourceSha256": "2a2cc35155a472fcbff35d282428164884825470179ad91f3c557303f918e28f",
+  "sourceSha256": "d6539d4689cb27b0d79234f2244784c7933cfda88343adb51efb88c83a8e384d",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

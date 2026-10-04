@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F01-options-regional-2.json",
-  "sourceSha256" : "09057c567a610b3f6d18bc4840400b53239e6c66a8039f6f9084c37f78c2d1d4",
+  "referenceSourceSha256": "09057c567a610b3f6d18bc4840400b53239e6c66a8039f6f9084c37f78c2d1d4",
+  "sourceSha256": "1831be7951d010b30b768c14c8711cc0361072cd073d9b7433d8ffda07557c9f",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

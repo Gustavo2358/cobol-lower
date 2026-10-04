@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ZERO-FILL-CHECKPOINT.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 RECORD-A.
+          05 TEXT-A PIC X(4).
+          05 NUMBER-A PIC S9(4) COMP-3.
+       01 TEXT-RECORD.
+          05 LEFT-A PIC X(2).
+          05 RIGHT-A PIC X(3).
+       PROCEDURE DIVISION.
+           MOVE ZERO TO TEXT-A
+           MOVE ZEROS TO NUMBER-A
+           MOVE '0' TO TEXT-A
+           MOVE ZEROES TO TEXT-RECORD
+           GOBACK.

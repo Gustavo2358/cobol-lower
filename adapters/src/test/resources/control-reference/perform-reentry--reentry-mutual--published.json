@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-mutual.json",
-  "sourceSha256" : "5e6ec76d1ae241a51a569683380a552a269b4b44f2a4d925cee943f273ceab0f",
+  "referenceSourceSha256": "5e6ec76d1ae241a51a569683380a552a269b4b44f2a4d925cee943f273ceab0f",
+  "sourceSha256": "6dd1e7542f64e40f25eed5b0873e6882d743fdb7634e77c6e0ceed2a90095690",
   "variant" : "published",
   "states" : [ {
     "statement:1:invoke:INP" : 1

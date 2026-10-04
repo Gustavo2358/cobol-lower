@@ -68,8 +68,18 @@ final class PartialIdentityFacts {
             case FileFacts.Operand r -> {field.accept("FileOperand");value.accept(r.role());value.accept(r.form());value.accept(r.references());value.accept(r.writtenValue());value.accept(r.provenance());value.accept(r.gapCodes());}
             case FileFacts.Handler r -> {field.accept("FileHandler");value.accept(r.kind());value.accept(r.statements());value.accept(r.provenance());}
             case FileFacts.Candidate r -> {field.accept("FileCandidate");value.accept(r.id());value.accept(r.owner());}
+            case io.github.gustavo2358.lower.domain.ConditionNames r -> {field.accept("ConditionNames");value.accept(r.definitions());value.accept(r.uses());value.accept(r.assignments());value.accept(r.predicates());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Definition r -> {field.accept("ConditionNames.Definition");value.accept(r.id());value.accept(r.parent());value.accept(r.anonymous());value.accept(r.domain());value.accept(r.ranges());value.accept(r.falseValue());value.accept(r.variableProvenance());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Range r -> {field.accept("ConditionNames.Range");value.accept(r.first());value.accept(r.last());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Value r -> {field.accept("ConditionNames.Value");value.accept(r.kind());value.accept(r.value());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Use r -> {field.accept("ConditionNames.Use");value.accept(r.id());value.accept(r.statement());value.accept(r.definition());value.accept(r.operand());value.accept(r.access());value.accept(r.indices());value.accept(r.provenance());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Index r -> {field.accept("ConditionNames.Index");value.accept(r.kind());value.accept(r.value());value.accept(r.arguments());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Assignment r -> {field.accept("ConditionNames.Assignment");value.accept(r.statement());value.accept(r.ordinal());value.accept(r.use());value.accept(r.truth());value.accept(r.value());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Predicate r -> {field.accept("ConditionNames.Predicate");value.accept(r.statement());value.accept(r.role());value.accept(r.tree());}
+            case io.github.gustavo2358.lower.domain.ConditionNames.Tree r -> {field.accept("ConditionNames.Tree");value.accept(r.kind());value.accept(r.use());value.accept(r.children());}
             case SpInput r -> {
                 field.accept("SpInput");
+                if(r.conditionNames().isPresent()){field.accept("conditionNames");value.accept(r.conditionNames().get());}
                 if(r.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE){field.accept("sourceDependencies@1");value.accept(r.sourceDependencies());}
                 field.accept("unit"); value.accept(r.unit());
                 field.accept("policy"); value.accept(r.policy());
@@ -156,7 +166,8 @@ final class PartialIdentityFacts {
                 field.accept("coverage"); value.accept(r.coverage());
                 field.accept("readiness"); value.accept(r.readiness());
                 field.accept("scalarText"); value.accept(r.scalarText());
-                if(r.scalarInteger().isPresent()){field.accept("scalarInteger");value.accept(r.scalarInteger());}
+                if(r.scalarNumber().isPresent()){field.accept("scalarNumber");value.accept(r.scalarNumber());}
+                if(r.scalarEdit().isPresent()){field.accept("scalarEdit");value.accept(r.scalarEdit());}
             }
             case SpInput.Containment r -> {
                 field.accept("Containment");
@@ -186,7 +197,10 @@ final class PartialIdentityFacts {
             case SpInput.PerformParagraph r -> {
                 field.accept("PerformParagraph"); value.accept(r.id()); value.accept(r.entry()); value.accept(r.statements()); value.accept(r.completions()); value.accept(r.provenance());
             }
-            case SpInput.ScalarInteger r -> {field.accept("ScalarInteger");value.accept(r.digits());}
+            case SpInput.ScalarNumber r -> {field.accept("ScalarNumber");value.accept(r.digits());value.accept(r.scale());value.accept(r.signed());value.accept(r.representation());value.accept(r.trunc());}
+            case SpInput.ScalarEdit r -> {field.accept("ScalarEdit");value.accept(r.parts());value.accept(r.digits());value.accept(r.scale());value.accept(r.extent());}
+            case SpInput.EditPart r -> {field.accept("EditPart");value.accept(r.kind());value.accept(r.count());value.accept(r.text());value.accept(r.negative());}
+            case SpInput.LogicalSlice r -> {field.accept("LogicalSlice");value.accept(r.data());value.accept(r.start());value.accept(r.length());}
             case SpInput.VaryingOperand r -> {field.accept("VaryingOperand");value.accept(r.level());value.accept(r.role());value.accept(r.integer());value.accept(r.references());value.accept(r.provenance());}
             case SpInput.PerformVarying r -> {field.accept("PerformVarying");value.accept(r.levels());value.accept(r.controls());}
             case SpInput.PerformCount r -> {field.accept("PerformCount");value.accept(r.profile());value.accept(r.integer());value.accept(r.reference());value.accept(r.provenance());}
@@ -238,6 +252,7 @@ final class PartialIdentityFacts {
             }
             case SpInput.LiteralSource r -> {
                 field.accept("LiteralSource");
+                if(r.numericValue().isPresent()){field.accept("numericValue@2.65");value.accept(r.numericValue().orElseThrow().toString());}
                 field.accept("id"); value.accept(r.id());
                 field.accept("kind"); value.accept(r.kind());
                 field.accept("logicalValue"); value.accept(r.logicalValue());
@@ -262,6 +277,7 @@ final class PartialIdentityFacts {
                 field.accept("binding"); value.accept(r.binding());
                 field.accept("wholeItemAccess"); value.accept(r.wholeItemAccess());
                 if(r.logicalWholeItem().isPresent()){field.accept("logicalWholeItem@2.19");value.accept(r.logicalWholeItem().get());}
+                if(r.logicalSlice().isPresent()){field.accept("logicalSlice@2.66");value.accept(r.logicalSlice().get());}
                 field.accept("provenance"); value.accept(r.provenance());
                 if(r.regionalAccess().isPresent()){field.accept("regionalAccess@1");value.accept(r.regionalAccess().get());}
             }
@@ -275,11 +291,13 @@ final class PartialIdentityFacts {
                 field.accept("TextAdjustment");
                 field.accept("rule"); value.accept(r.rule());
                 field.accept("receiverExtent"); value.accept(r.receiverExtent());
-                field.accept("result"); value.accept(r.result());
                 field.accept("provenance"); value.accept(r.provenance());
             }
             case SpInput.MoveTransfer r -> {
                 field.accept("MoveTransfer");field.accept("source");value.accept(r.source());field.accept("target");value.accept(r.target());field.accept("effect");value.accept(r.effect());
+            }
+            case SpInput.NumericTransfer r -> {
+                field.accept("NumericTransfer");field.accept("target");value.accept(r.target());field.accept("value");value.accept(r.value());
             }
             case SpInput.LogicalTransfer r -> {
                 field.accept("LogicalTransfer");field.accept("target");value.accept(r.target());field.accept("value");value.accept(r.value());
@@ -295,6 +313,7 @@ final class PartialIdentityFacts {
                 if(r.regionalMove().isPresent()){field.accept("regionalMove@1");value.accept(r.regionalMove().get());}
                 if(!r.additionalTransfers().isEmpty()){field.accept("additionalTransfers@1");value.accept(r.additionalTransfers());}
                 if(!r.logicalTransfers().isEmpty()){field.accept("logicalTransfers@2.38");value.accept(r.logicalTransfers());}
+                if(!r.numericTransfers().isEmpty()){field.accept("numericTransfers@2.65");value.accept(r.numericTransfers());}
             }
             case SpInput.LiteralCallTarget r -> {
                 field.accept("LiteralCallTarget");

@@ -10,11 +10,21 @@ final class EvaluateLowerer {
     static List<Sequence> chain(SpInput.EvaluateFact e,List<LabelId> armEntries,LabelId noMatch,ScalarDataTranslator.Result data,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,
             List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        return chain(e,armEntries,noMatch,data,unit,ids,origins,links,items,uncertainties,null);
+    }
+    static List<Sequence> chain(SpInput.EvaluateFact e,List<LabelId> armEntries,LabelId noMatch,ScalarDataTranslator.Result data,
+            UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,
+            List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties,ConditionNameLowerer names) {
         var result=new ArrayList<Sequence>();
         var source=origins.source("statement",e.header().id().handle(),e.header().provenance());
         var completion=origins.source("evaluate-completion",e.header().id().handle(),e.normalContinuation().provenance());
         for(int i=0;i<e.arms().size();i++) {
             var arm=e.arms().get(i);var key=e.header().id().handle()+"/when/"+arm.ordinal();
+            var role="EVALUATE_WHEN/"+arm.ordinal();
+            if(names!=null&&names.has(e.header().id().handle(),role)) {
+                var branch=names.branch(e,role,armEntries.get(i),i+1<e.arms().size()?label(e,i+1,unit,ids):noMatch,unit,ids,origins,uncertainties);
+                result.add(new Sequence(label(e,i,unit,ids),List.of(),branch,branch.header().origin()));continue;
+            }
             var operation=new OperationId(unit,ids.id("operation","evaluate-branch",unit.localId(),key));
             var selection=origins.source("evaluate-selection",key,arm.conditionOrigin());
             var entry=origins.source("evaluate-arm",key,arm.control().provenance());

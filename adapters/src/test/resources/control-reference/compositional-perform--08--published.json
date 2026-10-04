@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/08.json",
-  "sourceSha256" : "d07bd5f383f62750963e028f6a3550a4496d7be3a7b2bb66a2a564ad3add451e",
+  "referenceSourceSha256": "d07bd5f383f62750963e028f6a3550a4496d7be3a7b2bb66a2a564ad3add451e",
+  "sourceSha256": "78188db6359ec6d7937020fe78ad176f34b94f982019861ae92f78bbde376c9c",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

@@ -23,7 +23,7 @@ public final class DependencyPreservationSuite {
         var declaration=unit.objects().stream().filter(d->d.id().equals(object)).findFirst().orElseThrow();
         if(!(declaration.storage() instanceof Memory.CellBinding cell)||p.storage().stream().noneMatch(s->s instanceof Memory.Cell c&&c.header().id().equals(cell.storage())))
             throw new AssertionError("supported logical value needs a positive Cell");
-        if(!unit.sequences().stream().flatMap(s->s.instructions().stream()).anyMatch(i->i instanceof Operations.Assign a&&a.destination() instanceof Places.ObjectPlace o&&o.object().equals(object)&&a.value() instanceof Expressions.Literal l&&l.value().equals(new Values.TextValue("PROGA   "))))throw new AssertionError("local definition must target same nominal identity");
+        if(!unit.sequences().stream().flatMap(s->s.instructions().stream()).anyMatch(i->i instanceof Operations.Assign a&&a.destination() instanceof Places.ObjectPlace o&&o.object().equals(object)&&FigurativeFillChecks.eval(a.value(),java.util.Map.of(),java.util.Map.of()).equals("PROGA   ")))throw new AssertionError("local definition must target same nominal identity");
         var mapper=new ObjectMapper();var old=(ObjectNode)mapper.readTree(bytes);old.put("contractVersion","2.31.0");
         if(decoder.decode(mapper.writeValueAsBytes(old)) instanceof SpJsonDecoder.Decoded)throw new AssertionError("old version accepts possible transfer");
         var malformed=(ObjectNode)mapper.readTree(bytes);((ObjectNode)malformed.path("statements").get(0).path("textAdjustment").path("result")).put("value","BADPGM  ");

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/nested-if-evaluate.json",
-  "sourceSha256" : "b6d7b1124445f4e07fc6f7b81db14edfbbd9cbc252b55f9fec4d3b2fa268f58a",
+  "referenceSourceSha256": "b6d7b1124445f4e07fc6f7b81db14edfbbd9cbc252b55f9fec4d3b2fa268f58a",
+  "sourceSha256": "5a6f9b1d39b8121d0596e06d1c712facfd6440adb7ea3012c69983780dcb2d77",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

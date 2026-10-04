@@ -46,17 +46,70 @@ final class LogicalTextMove {
         return List.copyOf(result);
     }
     static List<Instruction> translate(SpInput.MoveFact move,LogicalTextIndex logical,ScalarDataTranslator.Result data,
-            UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items) {
-        var target=logical.byData.get(move.target().logicalWholeItem().orElseThrow());var root=logical.views.get(target.root());
+            UnitId unit,LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
+        var target=logical.access(move.target());var root=logical.root(target);
         var rootObject=LogicalTextRoots.object(logical.nodes.get(root.node()),data);
         var statement=origins.source("statement",move.header().id().handle(),move.header().provenance());
         var sourceOrigin=origins.source("operand",move.source().id().handle(),move.source().provenance());
         var targetOrigin=origins.source("operand",move.target().id().handle(),move.target().provenance());
         var operation=new OperationId(unit,ids.id("operation","logical-text-copy",unit.localId(),move.header().id().handle()+"/"+move.target().id().handle()));
         var origin=origins.derived(ids.id("origin","logical-text-copy",unit.localId(),operation.localId()),List.of(statement,sourceOrigin,targetOrigin),"logical-text@2/capture-fit-update-root");
-        var f=new ExpressionsFor(operation,origin);Expression source;
-        if(move.source() instanceof SpInput.LiteralSource literal)source=f.literal(literal.logicalValue().orElseThrow().value());
-        else source=f.read(data.index().get(((SpInput.DataReference)move.source()).logicalWholeItem().orElseThrow()).object());
+        var f=new ExpressionsFor(operation,origin);Expression source;UncertaintyId fillReason=null;
+        if(move.copySemantics()==SpInput.CopySemantics.FORMATTED_NUMBER) {
+            var receiver=move.target().wholeItemAccess().orElseThrow().data();var edit=data.formats().get(receiver);
+            SpInput.ScalarNumber number=null;
+            if(move.source() instanceof SpInput.LiteralSource literal)source=NumericFormatting.literal(literal.numericValue().orElseThrow(),edit,f.h());
+            else {
+                var sending=((SpInput.DataReference)move.source()).wholeItemAccess().orElseThrow().data();
+                source=f.read(data.index().get(sending).object());number=data.numbers().get(sending);
+            }
+            source=NumericFormatting.format(source,number,edit,data.logicalTextExtents().get(receiver),name->f.h());
+        } else if(move.source() instanceof SpInput.LiteralSource literal) {
+            if(literal.kind().collatingFill()) {
+                fillReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","collating-fill-character",unit.localId(),operation.localId()));
+                uncertainties.add(new Evidence.Uncertainty(fillReason,"COLLATING_CHARACTER_NOT_SELECTED",List.of(Evidence.Dimension.VALUES),
+                    new Scopes.EntityScope(List.of(operation)),"The "+literal.kind()+" character depends on the source collating sequence",origin));
+                var character=new Expressions.Unknown(f.h(),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,fillReason);
+                source=new Expressions.FillText(f.h(),f.fit(character,BigInteger.ONE),target.length());
+            } else {
+                source=f.literal(literal.logicalValue().orElseThrow().value());
+                if(literal.kind()==SpInput.LiteralKind.FIGURATIVE_ZERO)source=new Expressions.FitText(f.h(),source,target.length(),"0");
+            }
+        }
+        else {
+            var reference=(SpInput.DataReference)move.source();
+            var sending=reference.logicalSlice().map(SpInput.LogicalSlice::data).or(reference::logicalWholeItem).orElseThrow();
+            source=f.read(data.index().get(sending).object());
+            if(reference.logicalSlice().isPresent()) {
+                var slice=reference.logicalSlice().orElseThrow();source=f.slice(source,slice.start(),slice.length());
+            }
+        }
+        var result=write(target,root,rootObject,source,f,operation,origin,sourceOrigin,targetOrigin,
+            move.header().id().handle()+"/"+move.target().id().handle(),Optional.of(move.source().id()),move.target().id(),logical,data,unit,ids,links);
+        if(fillReason==null)return result;
+        var updated=new ArrayList<Instruction>(result);var assign=(Operations.Assign)updated.getFirst();var h=assign.header();
+        var values=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.OPEN,List.of(fillReason));
+        var precision=new Evidence.Precision(h.precision().control(),h.precision().storage(),h.precision().effects(),values,h.precision().dependencies());
+        updated.set(0,new Operations.Assign(new Operations.Header(h.id(),h.origin(),h.coverage(),precision,List.of(fillReason)),assign.destination(),assign.value()));
+        return List.copyOf(updated);
+    }
+    static List<Instruction> literal(SpInput.StatementFact statement,SpInput.DataReference destination,String text,int ordinal,
+            LogicalTextIndex logical,ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
+            List<LoweringResult.OperandLink> links,OriginId declaredValueOrigin) {
+        var target=logical.byData.get(destination.binding().selected().orElseThrow());var root=logical.root(target);
+        var rootObject=LogicalTextRoots.object(logical.nodes.get(root.node()),data);
+        var key=statement.header().id().handle()+"/set/"+ordinal;
+        var operation=new OperationId(unit,ids.id("operation","logical-condition-set",unit.localId(),key));
+        var targetOrigin=origins.source("operand",destination.id().handle(),destination.provenance());
+        var origin=origins.derived(ids.id("origin","logical-condition-set",unit.localId(),key),List.of(declaredValueOrigin,targetOrigin),"condition-name@1/ordered-set-assignment");
+        var f=new ExpressionsFor(operation,origin);
+        return write(target,root,rootObject,f.literal(text),f,operation,origin,declaredValueOrigin,targetOrigin,key,Optional.empty(),destination.id(),logical,data,unit,ids,links);
+    }
+    private static List<Instruction> write(io.github.gustavo2358.lower.domain.StorageFacts.LogicalTextView target,
+            io.github.gustavo2358.lower.domain.StorageFacts.LogicalTextView root,ObjectId rootObject,Expression source,
+            ExpressionsFor f,OperationId operation,OriginId origin,OriginId sourceOrigin,OriginId targetOrigin,String key,
+            Optional<SpInput.OperandId> sourceId,SpInput.OperandId targetId,LogicalTextIndex logical,ScalarDataTranslator.Result data,
+            UnitId unit,LocalIds ids,List<LoweringResult.OperandLink> links) {
         Expression value=f.fit(source,target.length());
         if(target.start().signum()>0)value=f.concat(f.slice(f.read(rootObject),BigInteger.ZERO,target.start()),value);
         var end=LogicalTextIndex.end(target);
@@ -65,11 +118,11 @@ final class LogicalTextMove {
         var place=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(operation),"destination"),Operand.Role.VALUE_WRITE,targetOrigin),rootObject);
         var result=new ArrayList<Instruction>();
         result.add(new Operations.Assign(new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(operation),List.of()),place,value));
-        links.add(new LoweringResult.OperandLink(move.source().id(),value.header().id(),sourceOrigin));links.add(new LoweringResult.OperandLink(move.target().id(),place.header().id(),targetOrigin));
+        var written=value;sourceId.ifPresent(id->links.add(new LoweringResult.OperandLink(id,written.header().id(),sourceOrigin)));links.add(new LoweringResult.OperandLink(targetId,place.header().id(),targetOrigin));
         for(var view:logical.family(target)) {
             var node=logical.nodes.get(view.node());if(node.data().isEmpty()||view.node().equals(root.node()))continue;
             var object=data.index().get(node.data().orElseThrow());if(object==null)continue;
-            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),move.header().id().handle()+"/"+move.target().id().handle()+"/"+view.node().handle()));
+            var id=new OperationId(unit,ids.id("operation","logical-text-project",unit.localId(),key+"/"+view.node().handle()));
             var e=new ExpressionsFor(id,origin);
             var dest=new Places.ObjectPlace(new Operand.Header(new OperandId(new OperationOwner(id),"destination"),Operand.Role.VALUE_WRITE,targetOrigin),object.object());
             result.add(new Operations.Assign(new Operations.Header(id,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(id),List.of()),dest,e.slice(e.read(rootObject),view.start(),view.length())));

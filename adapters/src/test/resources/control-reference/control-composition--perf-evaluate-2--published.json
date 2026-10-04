@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/perf-evaluate-2.json",
-  "sourceSha256" : "622858d43b5d59362aad98a2dcdf12d5dccc3e20fa3620028b8400027ed9b5f4",
+  "referenceSourceSha256": "622858d43b5d59362aad98a2dcdf12d5dccc3e20fa3620028b8400027ed9b5f4",
+  "sourceSha256": "2c82d5453ef636266698c3242c9dae5124b80bfa637b15c5a8d7567719231d57",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

@@ -23,7 +23,7 @@ public final class IfInputs {
             var value=thenArm?"PROGA":"PROGB";
             var source=new LiteralSource(m.source().id(),((io.github.gustavo2358.lower.domain.SpInput.LiteralSource) m.source()).kind(),Optional.of(new LogicalValue(LogicalDomain.TEXT,value,5)),m.source().provenance());
             var next=new NormalContinuation(ContinuationAvailability.KNOWN,Optional.of(i+1<children.size()?children.get(i+1):call.header().id()),m.normalContinuation().provenance());
-            statements.add(new MoveFact(header,source,m.target(),CopySemantics.FITTED_TEXT,next,Optional.of(new TextAdjustment(TextAdjustmentRule.RIGHT_PAD_SPACE,8,new LogicalValue(LogicalDomain.TEXT,value+"   ",8),m.header().provenance()))));
+            statements.add(new MoveFact(header,source,m.target(),CopySemantics.FITTED_TEXT,next,Optional.of(new TextAdjustment(TextAdjustmentRule.RIGHT_PAD_SPACE,8,m.header().provenance()))));
         }
         var ifHeader=new StatementHeader(ifId,0,new Containment(Optional.empty(),Branch.ROOT),p,CoverageStatus.MODELED,call.header().readiness());
         var id=new OperandId(ifId,"operand:"+(thenCount+elseCount+2)+":0");var selected=base.dataDeclarations().get(1).id();

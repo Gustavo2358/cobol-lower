@@ -30,7 +30,7 @@ final class PerformRepetitionAssembler {
                 entry=initialLabel;
                 if(before)completion=incrementLabel;else repeat=incrementLabel;
             }
-            var decision=PerformLoopAssembler.decision(p,repeat,destination,data,unit,ids,origins,operands,items,uncertainties);
+            var decision=PerformLoopAssembler.decision(p,1,repeat,destination,data,unit,ids,origins,operands,items,uncertainties);
             sequences.add(new Sequence(decisionLabel,List.of(),decision,decision.header().origin()));
             PartialProgramAssembler.link(p.header().id(),decision,decisionLabel,statements,items);
         }

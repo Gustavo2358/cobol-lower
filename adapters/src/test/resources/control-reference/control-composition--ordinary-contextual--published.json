@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/ordinary-contextual.json",
-  "sourceSha256" : "cacfd5bc8e15fcf861e3ba80199ab7eb5ef30ec2533be0c744eb4f6c811ecb7b",
+  "referenceSourceSha256": "cacfd5bc8e15fcf861e3ba80199ab7eb5ef30ec2533be0c744eb4f6c811ecb7b",
+  "sourceSha256": "eab9878279136532e3450b940a1f7e51e99d233e848fd11744f29c4398c90210",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

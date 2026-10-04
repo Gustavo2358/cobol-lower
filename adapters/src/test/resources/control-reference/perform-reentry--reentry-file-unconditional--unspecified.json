@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-file-unconditional.json",
-  "sourceSha256" : "a372424795cf7aff530f342b0b155f63d83cb764fe52430c274d4beb3e40207c",
+  "referenceSourceSha256": "a372424795cf7aff530f342b0b155f63d83cb764fe52430c274d4beb3e40207c",
+  "sourceSha256": "acfb8c34f2c306b69681713837f95adc6f4dc06809120bf910f55d77f4ff687d",
   "variant" : "unspecified",
   "states" : [ {
     "statement:2:opaque" : 1

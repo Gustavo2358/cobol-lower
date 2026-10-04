@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-range.json",
-  "sourceSha256" : "a8b0aa7023ea027aeaf2c40377ce107c3cc9a746364639abfd026db40d583d2a",
+  "referenceSourceSha256": "a8b0aa7023ea027aeaf2c40377ce107c3cc9a746364639abfd026db40d583d2a",
+  "sourceSha256": "620200be124573657dd62a01b11f3fc6d7a28d2d1e9abf539126c53d799f8a47",
   "variant" : "unspecified",
   "states" : [ {
     "statement:3:branch" : 1

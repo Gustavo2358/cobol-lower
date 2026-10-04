@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOCAL-OVERLAY.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 INPUT-AREA.
+          05 LENGTH-A PIC S9(4) COMP.
+          05 FLAG-A PIC X.
+          05 NAME-I PIC X(8).
+       01 OUTPUT-AREA REDEFINES INPUT-AREA.
+          05 FILLER PIC X(3).
+          05 NAME-O PIC X(8).
+       PROCEDURE DIVISION.
+           MOVE -1 TO LENGTH-A.
+           MOVE 'PGM00001' TO NAME-O.
+           CALL NAME-I.
+           MOVE SPACES TO OUTPUT-AREA.
+           CALL NAME-I.
+           GOBACK.

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/completion-exit-paragraph.json",
-  "sourceSha256" : "54e2b47a8f476c691e81fca133396e3bf371c1361e2e1fbf97a4a2a3322b8b18",
+  "referenceSourceSha256": "54e2b47a8f476c691e81fca133396e3bf371c1361e2e1fbf97a4a2a3322b8b18",
+  "sourceSha256": "23344a36ad7e3197a29d1d95fe88cb5f6d331cc8f1e48b15e8edf1b676a2820e",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

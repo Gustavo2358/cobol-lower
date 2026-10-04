@@ -70,7 +70,7 @@ public final class CallOracle {
         check(hasLocation(origins, next.origin(), call.normalContinuation().provenance().original()), "normal continuation evidence");
         for (int i = 0; i < values.size(); i++) {
             var assign = (Operations.Assign) first.instructions().get(i);
-            check(assign.value() instanceof Expressions.Literal l && l.value().equals(new Values.TextValue(values.get(i))), "raw fitted/identity assigned text");
+            check(TextRecipeOracle.value(assign.value()).equals(values.get(i)), "raw fitted/identity assigned text");
             var link = result.statements().stream().filter(s -> s.target().equals(assign.header().id())).findFirst().orElseThrow();
             var m = (SpInput.MoveFact) input.statements().stream().filter(s -> s.header().id().equals(link.source())).findFirst().orElseThrow();
             var data = result.data().stream().filter(d -> d.source().equals(m.target().binding().selected().orElseThrow())).findFirst().orElseThrow();

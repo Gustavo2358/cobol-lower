@@ -96,14 +96,14 @@ public final class RegionalTranslationSuite {
             var source=new SpInput.LiteralSource(original.source().id(),SpInput.LiteralKind.ALPHANUMERIC,
                 Optional.of(new SpInput.LogicalValue(SpInput.LogicalDomain.TEXT,text,text.length())),original.source().provenance());
             var fitted=new SpInput.TextAdjustment(SpInput.TextAdjustmentRule.RIGHT_PAD_SPACE,4,
-                new SpInput.LogicalValue(SpInput.LogicalDomain.TEXT,text+" ".repeat(4-text.length()),4),original.header().provenance());
+                original.header().provenance());
             var update=new SpInput.MoveFact(original.header(),source,original.target(),SpInput.CopySemantics.FITTED_TEXT,
                 original.normalContinuation(),Optional.of(fitted),Optional.of(effect));
             var changed=new ArrayList<>(copy.statements());changed.set(0,update);
             var result=lower(IfInputs.with(copy,"statements",changed));
             var op=result.statements().stream().filter(l->l.source().equals(original.header().id())).map(LoweringResult.StatementLink::target).toList();
             var write=instructions(result.publication().orElseThrow()).stream().filter(i->op.contains(i.header().id())).findFirst().orElseThrow();
-            check(text.equals("AB")?write instanceof Operations.Assign a&&a.value() instanceof Expressions.Literal l&&l.value().equals(new Values.TextValue("AB  "))
+            check(text.equals("AB")?write instanceof Operations.Assign a&&a.value() instanceof Expressions.FitText f&&f.length().intValueExact()==4&&f.pad().equals(" ")&&f.value() instanceof Expressions.Literal l&&l.value().equals(new Values.TextValue("AB"))
                 :write instanceof Operations.Nop,"proved scalar fitting survives when encodable; unsupported runtime character is omitted with coverage");
             var legacyTarget=IfInputs.with(update.target(),"regionalAccess",Optional.empty());
             var legacy=IfInputs.with(IfInputs.with(update,"regionalMove",Optional.empty()),"target",legacyTarget);
@@ -117,7 +117,7 @@ public final class RegionalTranslationSuite {
     private static void mixedNumeric() {
         var input=io.github.gustavo2358.lower.testing.RegionalInputs.group(1);var unit=input.unit();
         var data=new ArrayList<>(input.dataDeclarations());var template=data.getFirst();
-        var numeric=new SpInput.DataFact(new SpInput.DataId(unit,"data:50"),"numeric",Optional.of("never parse this"),template.provenance(),template.coverage(),template.readiness(),Optional.empty(),Optional.of(new SpInput.ScalarInteger(9)));data.add(numeric);
+        var numeric=new SpInput.DataFact(new SpInput.DataId(unit,"data:50"),"numeric",Optional.of("never parse this"),template.provenance(),template.coverage(),template.readiness(),Optional.empty(),Optional.of(new SpInput.ScalarNumber(9,0,false,"DISPLAY","UNSPECIFIED")));data.add(numeric);
         var physical=input.storage().get();var node=new StorageFacts.NodeId(unit,"storage-node:200");var base=new StorageFacts.BaseId(unit,"storage-base:777");
         var unknown=new StorageFacts.Measure(Optional.empty(),List.of("NUMERIC_REPRESENTATION_NOT_PROVED"));
         var nodes=new ArrayList<>(physical.nodes());nodes.add(new StorageFacts.Node(node,Optional.empty(),1,false,StorageFacts.Kind.OPAQUE,Optional.of(numeric.id()),unknown,numeric.provenance()));

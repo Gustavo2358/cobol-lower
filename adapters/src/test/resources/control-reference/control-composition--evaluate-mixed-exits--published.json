@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/evaluate-mixed-exits.json",
-  "sourceSha256" : "13571a0be112cc2b475adaa8bd9395df61f9a27a84a0715e1b54bddb4039f50b",
+  "referenceSourceSha256": "13571a0be112cc2b475adaa8bd9395df61f9a27a84a0715e1b54bddb4039f50b",
+  "sourceSha256": "ea4c606612705b4d580bb454a6fe763d12b8c7c99fa871596b5b3dad18f7e14f",
   "variant" : "published",
   "states" : [ {
     "statement:4:branch" : 1

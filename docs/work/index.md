@@ -97,3 +97,10 @@ SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks
 IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
 
 - [Stage5 JSON GENERATE — checkpoint4](stage5-json-generate.md): authority repin, source alternatives and qualification.
+
+## Condições 88 e SET — checkpoint 1
+
+- [WORK-LOWER-CONDITION-NAMES-001](condition-names.json): IN_PROGRESS, revisão no PR #58.
+- [Semântica](../domain/condition-names.md) e [qualificação](condition-names-qualification.md).
+
+- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — IN_PROGRESS, PR de revisão.

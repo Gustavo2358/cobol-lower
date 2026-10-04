@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/ordinary-numeric-dead-depending.json",
-  "sourceSha256" : "d5e2dff58284fd73886f232409da831773e0f599b2f1ae104f37570b94d65378",
+  "referenceSourceSha256": "d5e2dff58284fd73886f232409da831773e0f599b2f1ae104f37570b94d65378",
+  "sourceSha256": "8a3551ff179152bd9ad61458ff5ce3b10ef3378872bad3fabd4ae0fb6611afce",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

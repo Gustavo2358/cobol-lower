@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/goback-no-join.json",
-  "sourceSha256" : "63a426cc7c1f016195b0f0dc5a1b69a8d35884096d8f2d20e25f7d1ddaec8f0c",
+  "referenceSourceSha256": "63a426cc7c1f016195b0f0dc5a1b69a8d35884096d8f2d20e25f7d1ddaec8f0c",
+  "sourceSha256": "fd677360d9ee942656a4c55e7d65cfb3bcc7fc7a82ee90a1c456f904135a5425",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

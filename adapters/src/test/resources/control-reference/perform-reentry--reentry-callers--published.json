@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-callers.json",
-  "sourceSha256" : "4a59ea3160bf67fbfc97742336e3e1e015a0dfb914a5b9b15b437e7429fc2b8b",
+  "referenceSourceSha256": "4a59ea3160bf67fbfc97742336e3e1e015a0dfb914a5b9b15b437e7429fc2b8b",
+  "sourceSha256": "6f824763ad898fbe2fabf36447f2ab56174b8675f2ef5cf70f05fa5c40671944",
   "variant" : "published",
   "states" : [ {
     "statement:2:branch" : 1

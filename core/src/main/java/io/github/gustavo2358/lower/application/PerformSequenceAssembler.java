@@ -22,10 +22,10 @@ final class PerformSequenceAssembler {
         var paragraphOrigin = control.paragraphOrigin(); var resumeOrigin = control.resumeOrigin();
         link(p.header().id(), jump, main, statements, items);
         var mainOrigins = new ArrayList<OriginId>(List.of(entryOrigin, invokeOrigin));
-        var prefix = moves(plan.prefix(), main, data, unit, ids, origins, statements, operands, items, mainOrigins);
+        var prefix = moves(plan.prefix(), main, data, unit, ids, origins, statements, operands, items, mainOrigins,uncertainties);
         var mainOrigin = origins.derived(ids.id("origin", "perform-main", unit.localId(), start.handle()), mainOrigins, "perform-basic@1/explicit-primary-entry");
         var bodyOrigins = new ArrayList<OriginId>(List.of(paragraphOrigin, performOrigin, referenceOrigin, resumeOrigin));
-        var body = moves(plan.body(), target, data, unit, ids, origins, statements, operands, items, bodyOrigins);
+        var body = moves(plan.body(), target, data, unit, ids, origins, statements, operands, items, bodyOrigins,uncertainties);
         var returnOrigin = origins.derived(ids.id("origin", "perform-return", unit.localId(), p.header().id().handle()), bodyOrigins,
             "perform-basic@1/isolated-paragraph-end-to-unique-resume");
         var returning = jump("resume", p.targetExit().orElseThrow(), resume, returnOrigin, unit, ids);
@@ -56,10 +56,10 @@ final class PerformSequenceAssembler {
     }
     static List<Instruction> moves(List<SpInput.MoveFact> moves, LabelId label, ScalarDataTranslator.Result data, UnitId unit,
             LocalIds ids, SourceOrigins origins, List<LoweringResult.StatementLink> statements, List<LoweringResult.OperandLink> operands,
-            List<Evidence.CoverageItem> items, List<OriginId> inputs) {
+            List<Evidence.CoverageItem> items, List<OriginId> inputs,List<Evidence.Uncertainty> uncertainties) {
         var result = new ArrayList<Instruction>();
         for (var move : moves) {
-            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands, items);
+            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands,items,uncertainties);
             result.add(assign); inputs.add(assign.header().origin());
             inputs.add(origins.source("continuation", move.header().id().handle(), move.normalContinuation().provenance()));
             link(move.header().id(), assign, label, statements, items);

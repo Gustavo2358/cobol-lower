@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/ctxboom-times.json",
-  "sourceSha256" : "8f1375710683cf48d76dc5b5a660cd9046d4b8b3f92d829dce702399aa238da9",
+  "referenceSourceSha256": "8f1375710683cf48d76dc5b5a660cd9046d4b8b3f92d829dce702399aa238da9",
+  "sourceSha256": "9bac098f00a5b49e3b0b7b7f4cdb5f8b2cd60a3dd045266455f89f75701ded8f",
   "variant" : "published",
   "states" : [ {
     "statement:0:branch" : 1

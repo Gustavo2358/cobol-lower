@@ -63,7 +63,7 @@ final class CompilationAdmission {
     private static boolean implicitFileData(SpCompilation.UnitProduct u,SpCompilation.UnitProduct source,DataId data){
         return source.product().fileInventory().declarations().stream().filter(f->u.fileCaptures().contains(new FileFacts.Candidate(f.id(),f.owner()))&&f.visibility()==FileFacts.Visibility.GLOBAL).anyMatch(f->f.records().contains(data)||f.references().stream().anyMatch(r->r.binding().selected().filter(data::equals).isPresent()));
     }
-    private static boolean same(DataFact a,DataFact b){return a.canonicalName().equals(b.canonicalName())&&a.picture().equals(b.picture())&&a.provenance().equals(b.provenance())&&a.scalarText().equals(b.scalarText())&&a.scalarInteger().equals(b.scalarInteger());}
+    private static boolean same(DataFact a,DataFact b){return a.canonicalName().equals(b.canonicalName())&&a.picture().equals(b.picture())&&a.provenance().equals(b.provenance())&&a.scalarText().equals(b.scalarText())&&a.scalarNumber().equals(b.scalarNumber());}
     static boolean ancestor(UnitKey a,UnitKey b){return a.compilationUnitId().equals(b.compilationUnitId())&&a.structuralPath().size()<b.structuralPath().size()&&b.structuralPath().subList(0,a.structuralPath().size()).equals(a.structuralPath());}
     static final Comparator<UnitKey> ORDER=(a,b)->{int c=a.compilationUnitId().compareTo(b.compilationUnitId());if(c!=0)return c;int n=Math.min(a.structuralPath().size(),b.structuralPath().size());for(int i=0;i<n;i++){c=Integer.compare(a.structuralPath().get(i),b.structuralPath().get(i));if(c!=0)return c;}c=Integer.compare(a.structuralPath().size(),b.structuralPath().size());return c!=0?c:a.canonicalProgramName().compareTo(b.canonicalProgramName());};
 }

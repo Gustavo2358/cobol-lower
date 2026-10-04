@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/perf-if-1.json",
-  "sourceSha256" : "36b10d69024ee81ddec3c626a35c29408303d4915d529aa34d7b52312452233e",
+  "referenceSourceSha256": "36b10d69024ee81ddec3c626a35c29408303d4915d529aa34d7b52312452233e",
+  "sourceSha256": "c0a4c3e356e0831b3c8de07ec1fc556b265b01c9b8ee7246633a979bbdef55bb",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

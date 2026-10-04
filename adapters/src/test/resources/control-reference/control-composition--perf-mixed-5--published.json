@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/perf-mixed-5.json",
-  "sourceSha256" : "b682c6eb5ce6dfc9683e80318f29ca020dcf68a128c90c7986c657452ad58b91",
+  "referenceSourceSha256": "b682c6eb5ce6dfc9683e80318f29ca020dcf68a128c90c7986c657452ad58b91",
+  "sourceSha256": "753f40e10786dfe14f7aa02b7294666884de687aba3ea998e3deecd47198e2e7",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

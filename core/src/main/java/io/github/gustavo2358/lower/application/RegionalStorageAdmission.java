@@ -45,10 +45,10 @@ final class RegionalStorageAdmission {
         var views=new LinkedHashMap<NodeId,View>();var byData=new LinkedHashMap<DataId,View>();
         if(input.storage().isEmpty()) {
             for(var statement:input.statements()) {
-                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty(),"regional access requires a storage inventory");
+                c.touch();for(var ref:references(statement))require(ref.regionalAccess().isEmpty()&&ref.regionalAlternatives().isEmpty()&&ref.logicalSlice().isEmpty(),"regional access requires a storage inventory");
                 if(statement instanceof MoveFact m)require(m.regionalMove().isEmpty(),"regional MOVE requires an explicit environment");
             }
-            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes),Set.of(),null);
+            return new Index(input,nodes,bases,views,byData,new LogicalTextIndex(input,nodes,null),Set.of(),null);
         }
         require(input.compositional(),"regional facts require the compositional input profile");
         var storage=input.storage().get();boolean environment=storage.profile()==Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047;
@@ -90,7 +90,8 @@ final class RegionalStorageAdmission {
             node.data().ifPresent(id->byData.put(id,view));
         }
         require(views.size()==nodes.size()&&referencedBases.equals(bases.keySet()),"all physical nodes and bases require explicit view closure");
-        var logical=new LogicalTextIndex(input,nodes);
+        var factIndex=input.factDependencies().map(FactDependencyIndex::new).orElse(null);
+        var logical=new LogicalTextIndex(input,nodes,factIndex);
         var relationIds=new HashSet<RelationId>();
         for(var relation:storage.relations()) {
             c.touch();c.identity(relation.id().unit(),relation.id().handle(),"storage-relation",relation.provenance());c.provenance(relation.provenance());gaps(relation.gapCodes());
@@ -169,10 +170,22 @@ final class RegionalStorageAdmission {
                 if(exact!=null)require(exact.length().equals(java.math.BigInteger.valueOf(move.textAdjustment().orElseThrow().receiverExtent())),
                     "exact logical extent contradicts published text transfer");
             });
+
+        if(factIndex!=null)for(var binding:factIndex.bindings.values())if(!binding.exactCell().isEmpty()) {
+            var node=nodes.get(new NodeId(input.unit(),binding.node()));
+            var representative=nodes.get(new NodeId(input.unit(),binding.exactCell()));
+            if(node!=null&&representative!=null&&node.data().isPresent()&&representative.data().isPresent()) {
+                var left=c.data(node.data().orElseThrow());var right=c.data(representative.data().orElseThrow());
+                require(left.scalarNumber().equals(right.scalarNumber()),"numeric aliases require the same value descriptor");
+                if(left.scalarText().isPresent()&&right.scalarText().isPresent())
+                    require(left.scalarText().equals(right.scalarText()),"text aliases require the same value extent");
+            }
+        }
         if(unboundedRelation) {
             require(storage.bases().stream().noneMatch(b->b.allocation().proved()),
                 "unproved root relation contradicts allocation independence");
-            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            require(input.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()
+                    ||factIndex!=null&&byData.containsKey(d.id())&&factIndex.cells.containsKey(byData.get(d.id()).node().handle())),
                 "unproved root relation contradicts standalone scalar proof");
         }
         // The physical parent chain bounds a subordinate overlay to its record.
@@ -186,7 +199,7 @@ final class RegionalStorageAdmission {
             nodes.get(view.node()).data().ifPresent(uncertainData::add);
         }
         require(input.dataDeclarations().stream().filter(d->uncertainData.contains(d.id()))
-            .allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            .allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()),
             "uncertain component contradicts scalar proof");
         for(var node:storage.nodes())node.parent().ifPresent(id->{
             var parent=nodes.get(id);var pv=views.get(id);var view=views.get(node.id());
@@ -194,22 +207,21 @@ final class RegionalStorageAdmission {
             if(pv.offset().value().isPresent()&&pv.extent().value().isPresent()&&view.offset().value().isPresent()&&view.extent().value().isPresent())
                 require(view.offset().value().get().compareTo(pv.offset().value().get())>=0&&end(view).compareTo(end(pv))<=0,"child view exceeds published parent extent");
         });
-        var factIndex=input.factDependencies().map(FactDependencyIndex::new).orElse(null);
         var componentSizes=new HashMap<BaseId,Integer>();
         for(var view:views.values())componentSizes.merge(view.base(),1,Integer::sum);
         for(var declaration:input.dataDeclarations()) {
             c.touch();var view=byData.get(declaration.id());
-            if(view==null||!(CallAdmission.scalar(declaration)||PerformCountAdmission.integer(declaration)))continue;
+            if(view==null||!(CallAdmission.scalar(declaration)||NumericMoveAdmission.numeric(declaration)))continue;
             var node=nodes.get(view.node());
-            require((factIndex!=null&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
-                    &&factIndex.cells.containsKey(node.id().handle()))
+            require((factIndex!=null&&(factIndex.texts.contains(node.id().handle())&&factIndex.materializable(node.id().handle())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
+                        ||declaration.scalarNumber().isPresent()&&factIndex.integers.contains(node.id().handle())&&factIndex.materializable(node.id().handle())))
                     ||(logical.byData.containsKey(declaration.id())&&node.kind()==Kind.ELEMENTARY&&declaration.scalarText().isPresent()
                     &&logical.byData.get(declaration.id()).length().equals(java.math.BigInteger.valueOf(declaration.scalarText().orElseThrow().logicalExtent())))
                     ||node.parent().isEmpty()&&node.kind()!=Kind.GROUP&&componentSizes.get(view.base())==1,
                 "standalone scalar proof contradicts shared or nested physical storage");
             if(declaration.scalarText().isPresent()&&view.codec().isPresent())require(view.extent().value().orElseThrow()
                 .equals(java.math.BigInteger.valueOf(declaration.scalarText().get().logicalExtent())),"scalar text extent contradicts physical view");
-            require(declaration.scalarInteger().isEmpty()||view.codec().isEmpty(),"scalar integer proof contradicts textual physical interpretation");
+            require(declaration.scalarNumber().isEmpty()||view.codec().isEmpty(),"scalar integer proof contradicts textual physical interpretation");
         }
         input.storageIndependence().filter(p->p.availability()==Availability.KNOWN).ifPresent(proof->{
             var components=new HashSet<BaseId>();
@@ -260,6 +272,7 @@ final class RegionalStorageAdmission {
         for(var statement:input.statements()) {
             c.touch();
             for(var ref:references(statement)) {
+                logical.validate(ref);
                 if(!ref.regionalAlternatives().isEmpty()) {
                     require(ref.role()==OperandRole.CALL_TARGET&&ref.binding().status()==ResolutionStatus.AMBIGUOUS
                         &&ref.binding().selected().isEmpty()&&ref.regionalAccess().isEmpty()&&ref.wholeItemAccess().isEmpty(),"alternatives require an ambiguous CALL reference");

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/cics-condition.json",
-  "sourceSha256" : "a75d6a61929b15e77ae23841a20247bb819809fc1edbd5b85b18a26fa95325fc",
+  "referenceSourceSha256": "a75d6a61929b15e77ae23841a20247bb819809fc1edbd5b85b18a26fa95325fc",
+  "sourceSha256": "b2b0adf363b4489b708b257c751b85a7dca29940ba1d97d373554e1f123670a6",
   "variant" : "unspecified",
   "states" : [ {
     "statement:2:opaque" : 1

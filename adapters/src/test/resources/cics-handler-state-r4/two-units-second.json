@@ -54,8 +54,8 @@
           "status": "SUFFICIENT"
         }
       },
-      "scalarInteger": null,
-      "scalarText": null
+      "scalarText": null,
+      "scalarNumber": null
     },
     {
       "canonicalName": "PGM",
@@ -94,13 +94,13 @@
           "status": "SUFFICIENT"
         }
       },
-      "scalarInteger": null,
       "scalarText": {
         "declarationScope": "LOCAL",
         "logicalDomain": "TEXT",
         "logicalExtent": 8,
         "storageClass": "WORKING_STORAGE"
-      }
+      },
+      "scalarNumber": null
     }
   ],
   "statements": [

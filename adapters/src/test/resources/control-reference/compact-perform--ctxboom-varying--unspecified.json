@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/ctxboom-varying.json",
-  "sourceSha256" : "b37148f46767d5e059c162543e28c881134b199bbf1f1109c88acf482580c098",
+  "referenceSourceSha256": "b37148f46767d5e059c162543e28c881134b199bbf1f1109c88acf482580c098",
+  "sourceSha256": "717480393f690e02f86da954f87f4acea5c8114f35901b458791192c373e3062",
   "variant" : "unspecified",
   "states" : [ {
     "statement:1:opaque" : 1

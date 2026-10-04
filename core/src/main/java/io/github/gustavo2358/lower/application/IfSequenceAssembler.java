@@ -31,9 +31,9 @@ final class IfSequenceAssembler {
             List.of(terminal.header().origin(), continuation), "simple-if@1/explicit-call-normal-continuation");
         // Serialization inventory order has no control meaning. Entry is returned explicitly.
         sequences.add(new Sequence(returning, List.of(), terminal, returnOrigin));
-        sequences.add(arm(f, f.thenArm(), plan.thenMoves(), thenLabel, merge, completion, data, unit, ids, origins, statements, operands, items));
+        sequences.add(arm(f, f.thenArm(), plan.thenMoves(), thenLabel, merge, completion, data, unit, ids, origins, statements, operands, items, uncertainties));
         if (f.elseArm().presence() == SpInput.ClausePresence.PRESENT)
-            sequences.add(arm(f, f.elseArm(), plan.elseMoves(), elseLabel, merge, completion, data, unit, ids, origins, statements, operands, items));
+            sequences.add(arm(f, f.elseArm(), plan.elseMoves(), elseLabel, merge, completion, data, unit, ids, origins, statements, operands, items, uncertainties));
         var invoke = InvokeHandler.translate(call, data.index(), returning, continuation, unit, ids, origins, operands, items, uncertainties);
         link(call.header().id(), invoke, merge, statements, items);
         var mergeOrigin = origins.derived(ids.id("origin", "if-sequence", unit.localId(), merge.localId()),
@@ -62,13 +62,13 @@ final class IfSequenceAssembler {
     }
     static Sequence arm(SpInput.IfFact owner, SpInput.IfArm arm, List<SpInput.MoveFact> moves, LabelId label, LabelId merge,
             OriginId completion, ScalarDataTranslator.Result data, UnitId unit, LocalIds ids, SourceOrigins origins,
-            List<LoweringResult.StatementLink> statements, List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items) {
+            List<LoweringResult.StatementLink> statements, List<LoweringResult.OperandLink> operands, List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var key = arm.entry().statement().orElseThrow().handle();
         var armOrigin = origins.source("if-arm", key, arm.provenance());
         var inputs = new ArrayList<OriginId>(); inputs.add(armOrigin); inputs.add(completion);
         var instructions = new ArrayList<Instruction>();
         for (var move : moves) {
-            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands, items);
+            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands,items,uncertainties);
             instructions.add(assign); inputs.add(assign.header().origin());
             inputs.add(origins.source("continuation", move.header().id().handle(), move.normalContinuation().provenance()));
             link(move.header().id(), assign, label, statements, items);

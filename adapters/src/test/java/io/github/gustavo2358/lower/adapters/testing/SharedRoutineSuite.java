@@ -13,7 +13,9 @@ public final class SharedRoutineSuite {
         var resource="/sp/perform-reentry/sequential-callers.json";
         try(var stream=SharedRoutineSuite.class.getResourceAsStream(resource)) {
             var tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
-            var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+            var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
             var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);
             var p=result.publication().orElseThrow();
             if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
@@ -52,7 +54,9 @@ public final class SharedRoutineSuite {
             ((com.fasterxml.jackson.databind.node.ArrayNode)binding.path("proofs")).add(marker);
             required.add("SP2.39/"+proof.path("kind").asText()+"/"+marker);
         }
-        var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+        var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
         var p=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS).publication().orElseThrow();
         var byId=new HashMap<io.github.gustavo2358.air.model.Ids.OriginId,Origins.Origin>();p.origins().forEach(o->byId.put(o.id(),o));
         var body=p.units().getFirst().sequences().stream().map(Sequence::terminator)
@@ -66,7 +70,9 @@ public final class SharedRoutineSuite {
         for(var name:List.of("ctxboom-04","ctxboom-08","ctxboom-times","ctxboom-until","ctxboom-varying")) {
             try(var stream=SharedRoutineSuite.class.getResourceAsStream("/sp/compact-perform/"+name+".json")) {
                 var tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
-                var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+                var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
                 var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);var p=result.publication().orElseThrow();
                 if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
                 if(p.units().getFirst().sequences().size()>100)throw new AssertionError(name+": copied call chains instead of compact bodies");
@@ -83,8 +89,8 @@ public final class SharedRoutineSuite {
                 // The machines retain instruction steps in TIMES/UNTIL/VARYING phases.
                 // N=8 is a size regression only: expanding it is the original OOM fixture.
                 if(!name.equals("ctxboom-08")) {
-                    var old=tree.deepCopy();old.put("contractVersion","2.56.0");
-                    old.path("controlTopology").path("bindings").forEach(b->((com.fasterxml.jackson.databind.node.ObjectNode)b).remove("reentryPolicy"));
+                    var old=tree.deepCopy();
+                    old.path("controlTopology").path("bindings").forEach(b->((com.fasterxml.jackson.databind.node.ObjectNode)b).put("reentryPolicy","UNSPECIFIED"));
                     var historical=((SpJsonDecoder.Decoded)CobolControlSuite.decode(old)).input();
                     var historicalResult=new CobolLowerer().lower(historical,CobolLower.POSITIVE_OPTIONS);
                     ControlLanguageOracle.reference(result,"compact-perform--"+name+"--published");
@@ -99,7 +105,9 @@ public final class SharedRoutineSuite {
                 "cics-escape-changing","cics-escape-times","cics-escape-until","cics-escape-varying")) {
             try(var stream=SharedRoutineSuite.class.getResourceAsStream("/sp/compact-perform/"+name+".json")) {
                 var tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
-                var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+                var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
                 var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);var p=result.publication().orElseThrow();
                 if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
                 if(name.startsWith("ctxboom-")&&p.units().getFirst().sequences().size()>200)throw new AssertionError(name+": context expansion remains: "+p.units().getFirst().sequences().size());
@@ -153,7 +161,9 @@ public final class SharedRoutineSuite {
     private static void checkCyclic()throws Exception {
         try(var stream=SharedRoutineSuite.class.getResourceAsStream("/sp/perform-reentry/reentry-mutual.json")) {
             var tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
-            var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+            var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
             var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);
             var p=result.publication().orElseThrow();
             if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());
@@ -168,7 +178,9 @@ public final class SharedRoutineSuite {
     private static void checkCics(String fixture, boolean sameState)throws Exception {
         try(var stream=SharedRoutineSuite.class.getResourceAsStream("/sp/shared-routines/"+fixture+".json")) {
             var tree=(com.fasterxml.jackson.databind.node.ObjectNode)CobolControlSuite.J.readTree(Objects.requireNonNull(stream));
-            var input=((SpJsonDecoder.Decoded)CobolControlSuite.decode(tree)).input();
+            var decoded=CobolControlSuite.decode(tree);
+                if(!(decoded instanceof SpJsonDecoder.Decoded accepted))throw new AssertionError("fixture decode: "+decoded);
+                var input=accepted.input();
             var result=new CobolLowerer().lower(input,CobolLower.POSITIVE_OPTIONS);
             var p=result.publication().orElseThrow();
             if(!result.validation().orElseThrow().isStructurallyValid())throw new AssertionError(result.validation());

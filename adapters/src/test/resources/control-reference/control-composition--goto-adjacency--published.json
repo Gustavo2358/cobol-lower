@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/goto-adjacency.json",
-  "sourceSha256" : "412dce57cc05cdbe0d8ad4bc2e495da1620dda838a90fab18350d6d33c66d08e",
+  "referenceSourceSha256": "412dce57cc05cdbe0d8ad4bc2e495da1620dda838a90fab18350d6d33c66d08e",
+  "sourceSha256": "fcbd18527d4bc0a6c81e1a702837a6a18ade4c8da891e4e5d2ca654dfa09c4ba",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1
