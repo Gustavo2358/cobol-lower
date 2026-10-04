@@ -1,8 +1,9 @@
 {
   "id": "WORK-NUMERIC-MOVE-CP2",
-  "title": "Consume numeric MOVE and logical INT cells",
+  "title": "Preserve MOVE transfers, values and local influence under SP 2.66",
   "status": "IN_PROGRESS",
   "scope": [
-    "SP2.65 in PR58, source proofs, AIR INT assignments, hostile payloads and CardDemo regression"
+    "Canonical numeric/text types and local transfers, source reads, receiver effects, aliases/bounds and provenance; unknown results retain causality; no AP implementation or checkpoint 3",
+    "Finite CardDemo73 inventory and dependencies/effects qualification; final PR review without merge"
   ]
 }

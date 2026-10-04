@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/terminal-before.json",
-  "sourceSha256" : "b4ffd242228c0d9a8d9244fb4f5bcc3effaee04052ec1d592ccb847b1c1a0af2",
+  "referenceSourceSha256": "b4ffd242228c0d9a8d9244fb4f5bcc3effaee04052ec1d592ccb847b1c1a0af2",
+  "sourceSha256": "4dd8739ba83c825d67c9d9a4776b424ac5bd6e3545be7af300e9b23d685ddc8f",
   "variant" : "unspecified",
   "states" : [ {
     "statement:3:return" : 1

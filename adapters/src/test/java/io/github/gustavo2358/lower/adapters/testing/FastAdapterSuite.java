@@ -9,6 +9,8 @@ public final class FastAdapterSuite {
     public static void main(String[] args) throws Exception {
         ConditionNameSuite.main(args);
         NumericMoveSuite.main(args);
+        NumericConversionSuite.main(args); NumericEditSuite.main(args); LogicalSliceSuite.main(args); TruncSuite.main(args); LocalOverlaySuite.main(args);
+        IntegerTextSuite.main(args); ZeroFillSuite.main(args); MoveTextFitSuite.main(args);
         ActiveGapsSuite.main(args);
         GapVersionBoundarySuite.main(args);
         ZstdTransportSuite.main(args);

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/if-all-goto.json",
-  "sourceSha256" : "1af73a954da1ba316ec0ca87672ad8a8d47a8dd42dc845897e2515d2f5394e2a",
+  "referenceSourceSha256": "1af73a954da1ba316ec0ca87672ad8a8d47a8dd42dc845897e2515d2f5394e2a",
+  "sourceSha256": "94f4a36491cf9957e8848680b5ef6b14c2b10f9d9052d2a20b650db74710c816",
   "variant" : "published",
   "states" : [ {
     "statement:5:branch" : 1

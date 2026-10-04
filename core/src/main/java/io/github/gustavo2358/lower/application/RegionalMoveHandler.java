@@ -12,46 +12,54 @@ final class RegionalMoveHandler {
     private RegionalMoveHandler() { }
     static List<Instruction> sequence(SpInput.MoveFact move,boolean fitted,ScalarDataTranslator.Result data,RegionalStorageAdmission.Index storage,UnitId unit,
             LocalIds ids,SourceOrigins origins,List<LoweringResult.OperandLink> links,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
-        if(!move.integerTransfers().isEmpty()) {
-            var integers=new HashMap<SpInput.OperandId,SpInput.IntegerTransfer>();move.integerTransfers().forEach(t->integers.put(t.target(),t));
+        if(!move.numericTransfers().isEmpty()) {
+            var integers=new HashMap<SpInput.OperandId,SpInput.NumericTransfer>();move.numericTransfers().forEach(t->integers.put(t.target(),t));
             var transfers=move.regionalMove().isPresent()?move.transfers():List.of(new SpInput.MoveTransfer(move.source(),move.target(),
                 new StorageFacts.Move(StorageFacts.MoveKind.UNAVAILABLE,List.of(),List.of("ACCESS_NOT_PROVEN"))));
             var result=new ArrayList<Instruction>();
             for(var transfer:transfers) {
                 var proof=integers.get(transfer.target().id());
-                var single=new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),
+                boolean formatting=proof!=null&&transfer.target().wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(data.logicalTextExtents()::containsKey).isPresent();
+                var single=new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),formatting?SpInput.CopySemantics.FORMATTED_NUMBER:SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),
                     Optional.of(transfer.effect()),List.of(),List.of(),proof==null?List.of():List.of(proof));
-                if(proof!=null)result.add(MoveHandler.translate(single,data,unit,ids,origins,links,items));
+                if(formatting&&transfer.target().logicalWholeItem().filter(storage.logical().byData::containsKey).isPresent())
+                    result.addAll(LogicalTextMove.translate(single,storage.logical(),data,unit,ids,origins,links,items,uncertainties));
+                else if(proof!=null)result.add(MoveHandler.translate(single,data,unit,ids,origins,links,items,uncertainties));
                 else result.addAll(sequence(single,false,data,storage,unit,ids,origins,links,items,uncertainties));
             }
             return List.copyOf(result);
         }
         // A whole-item copy classification does not make a named view independent.
         // Update the proved logical family and its projections before scalar shortcuts.
-        if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items);
+        if(move.copySemantics()==SpInput.CopySemantics.FORMATTED_NUMBER
+                &&move.target().logicalWholeItem().filter(storage.logical().byData::containsKey).isPresent())
+            return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items,uncertainties);
+        if(move.logicalTransfers().isEmpty()&&storage.logical().literalMove(move))return LogicalTextMove.translate(move,storage.logical(),data,unit,ids,origins,links,items,uncertainties);
         // A logical Cell can use the whole-item proof without a byte codec.
         // Physical destinations retain their published byte transfer and codec obligations.
-        if(move.copySemantics()==SpInput.CopySemantics.FULL_IDENTITY
+        if((move.copySemantics()==SpInput.CopySemantics.FULL_IDENTITY||move.copySemantics()==SpInput.CopySemantics.FORMATTED_NUMBER||fitted&&move.copySemantics()==SpInput.CopySemantics.FITTED_TEXT)
                 &&move.target().wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(d->!data.views().containsKey(d)).isPresent()
                 &&move.target().wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(data.index()::containsKey).isPresent()
                 &&(!(move.source() instanceof SpInput.DataReference read)
                     ||read.wholeItemAccess().map(SpInput.WholeItemAccess::data).filter(data.index()::containsKey).isPresent()))
-            return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items));
+            return List.of(MoveHandler.translate(move,data,unit,ids,origins,links,items,uncertainties));
         if(move.copySemantics()==SpInput.CopySemantics.POSSIBLE_TEXT) {
             boolean available=move.target().logicalWholeItem().filter(data.index()::containsKey).isPresent()
                 &&(!(move.source() instanceof SpInput.DataReference r)||r.wholeItemAccess().map(SpInput.WholeItemAccess::data).or(r::logicalWholeItem).filter(data.index()::containsKey).isPresent());
-            return List.of(available?MoveHandler.translate(move,data,unit,ids,origins,links,items):ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties));
+            return List.of(available?MoveHandler.translate(move,data,unit,ids,origins,links,items,uncertainties):ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties));
         }
         if(move.regionalMove().isEmpty())return List.of(translate(move,fitted,data,unit,ids,origins,links,items,uncertainties));
         var result=new ArrayList<Instruction>();
         var transfers=move.transfers();
+        boolean logicalSequence=storage.logical().sequence(move);
+        var logicalTransfers=new HashMap<SpInput.OperandId,SpInput.LogicalTransfer>();move.logicalTransfers().forEach(t->logicalTransfers.put(t.target(),t));
         for(int i=0;i<transfers.size();i++) {
             var transfer=transfers.get(i);
-            var logical=move.logicalTransfers().stream().filter(t->t.target().equals(transfer.target().id())).findFirst();
+            var logical=Optional.ofNullable(logicalTransfers.get(transfer.target().id()));
             var single=transfers.size()==1?move:new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),
                 SpInput.CopySemantics.UNAVAILABLE,move.normalContinuation(),Optional.empty(),Optional.of(transfer.effect()));
-            if(storage.logical().sequence(move)&&storage.logical().literalMove(single)) {
-                result.addAll(LogicalTextMove.translate(single,storage.logical(),data,unit,ids,origins,links,items));
+            if(logicalSequence&&storage.logical().literalMove(single)) {
+                result.addAll(LogicalTextMove.translate(single,storage.logical(),data,unit,ids,origins,links,items,uncertainties));
             } else if(logical.isPresent()) {
                 result.add(logical(move,transfer,logical.orElseThrow(),data,unit,ids,origins,links,items));
             } else {
@@ -87,7 +95,7 @@ final class RegionalMoveHandler {
         if(move.regionalMove().filter(e->e.kind()==StorageFacts.MoveKind.UNAVAILABLE).isPresent())
             return ConservativeMove.translate(move,data,unit,ids,origins,links,uncertainties);
         if(move.regionalMove().isEmpty()||admittedFitting)
-            return MoveHandler.translate(move,data,unit,ids,origins,links,items);
+            return MoveHandler.translate(move,data,unit,ids,origins,links,items,uncertainties);
         var effect=move.regionalMove().get();
         // In the SP MOVE contract MUST_UNKNOWN denotes an unimplemented transform,
         // not an external input. Retain the source occurrence without a substitute write.

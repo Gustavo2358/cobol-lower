@@ -10,9 +10,14 @@ final class LogicalTextIndex {
     final Map<StorageFacts.NodeId,StorageFacts.LogicalTextView> views;
     final Map<SpInput.DataId,StorageFacts.LogicalTextView> byData;
     final Map<StorageFacts.NodeId,StorageFacts.Node> nodes;
+    private final Map<SpInput.DataId,StorageFacts.LogicalTextView> local;
+    private final Map<StorageFacts.NodeId,StorageFacts.LogicalTextView> localRoots;
+    private final Set<SpInput.DataId> edited;
+    private final Map<StorageFacts.NodeId,Set<String>> bounded;
+    private final Map<StorageFacts.NodeId,Set<String>> locationsByNode=new HashMap<>();
     private final Map<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>> leaves;
     private final Map<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>> families;
-    LogicalTextIndex(SpInput input,Map<StorageFacts.NodeId,StorageFacts.Node> nodes) {
+    LogicalTextIndex(SpInput input,Map<StorageFacts.NodeId,StorageFacts.Node> nodes,FactDependencyIndex facts) {
         this.nodes=nodes;
         input.storage().filter(s->!s.logicalTextViews().isEmpty()).ifPresent(s->require(s.profile()==StorageFacts.Profile.UNSPECIFIED,"logical text W1 cannot select physical profile"));
         var views=new LinkedHashMap<StorageFacts.NodeId,StorageFacts.LogicalTextView>();
@@ -53,6 +58,34 @@ final class LogicalTextIndex {
             }
         }
         this.views=Map.copyOf(views);this.byData=Map.copyOf(byData);
+        var declarations=new HashMap<SpInput.DataId,SpInput.DataFact>();input.dataDeclarations().forEach(d->declarations.put(d.id(),d));
+        var bounded=new HashMap<StorageFacts.NodeId,Set<String>>();
+        var local=new HashMap<SpInput.DataId,StorageFacts.LogicalTextView>();var localRoots=new HashMap<StorageFacts.NodeId,StorageFacts.LogicalTextView>();
+        this.edited=input.dataDeclarations().stream().filter(d->d.scalarEdit().isPresent()).map(SpInput.DataFact::id).collect(java.util.stream.Collectors.toUnmodifiableSet());
+        if(facts!=null)for(var node:nodes.values())if(node.data().isPresent()&&!byData.containsKey(node.data().orElseThrow())) {
+            var declaration=declarations.get(node.data().orElseThrow());var binding=facts.bindings.get(node.id().handle());
+            if(declaration==null||declaration.scalarText().isEmpty()||binding==null||!facts.texts.contains(node.id().handle())||!facts.available(binding.dependencies()))continue;
+            var root=binding.exactCell().isEmpty()?node.id():new StorageFacts.NodeId(input.unit(),binding.exactCell());
+            if(binding.exactCell().isEmpty()) {
+                var locations=new HashSet<>(binding.cells());locations.addAll(binding.regions());
+                if(locations.isEmpty())continue;
+                bounded.put(node.id(),Set.copyOf(locations));
+            }
+            var length=BigInteger.valueOf(declaration.scalarText().orElseThrow().logicalExtent());
+            local.put(declaration.id(),new StorageFacts.LogicalTextView(node.id(),root,BigInteger.ZERO,length));
+            localRoots.put(root,new StorageFacts.LogicalTextView(root,root,BigInteger.ZERO,length));
+        }
+        // Every family root has a canonical bound; bounded local views do not
+        // assert a disjoint family merely because their nominal roots differ.
+        if(facts!=null)for(var node:nodes.values()) {
+            var binding=facts.bindings.get(node.id().handle());
+            if(binding!=null&&facts.available(binding.dependencies())) {
+                var locations=new HashSet<>(binding.cells());locations.addAll(binding.regions());
+                if(!locations.isEmpty()&&!bounded.containsKey(node.id()))locationsByNode.put(node.id(),Set.copyOf(locations));
+            }
+        }
+        locationsByNode.putAll(bounded);this.bounded=Map.copyOf(bounded);
+        this.local=Map.copyOf(local);this.localRoots=Map.copyOf(localRoots);
         var grouped = new HashMap<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>>();
         views.values().forEach(v -> grouped.computeIfAbsent(v.root(), k -> new ArrayList<>()).add(v));
         var families = new HashMap<StorageFacts.NodeId,List<StorageFacts.LogicalTextView>>();
@@ -71,13 +104,37 @@ final class LogicalTextIndex {
     List<StorageFacts.LogicalTextView> family(StorageFacts.LogicalTextView view) {
         return families.getOrDefault(view.root(), List.of());
     }
+    private StorageFacts.LogicalTextView whole(SpInput.DataId id){return byData.containsKey(id)?byData.get(id):local.get(id);}
+    StorageFacts.LogicalTextView root(StorageFacts.LogicalTextView view){return views.containsKey(view.root())?views.get(view.root()):localRoots.get(view.root());}
+    void validate(SpInput.DataReference reference) {
+        reference.logicalSlice().ifPresent(slice->{
+            var whole=whole(slice.data());
+            require(whole!=null&&reference.binding().status()==SpInput.ResolutionStatus.RESOLVED
+                &&reference.binding().selected().equals(Optional.of(slice.data()))
+                &&reference.wholeItemAccess().isEmpty()&&reference.logicalWholeItem().isEmpty()
+                &&slice.start().signum()>=0&&slice.length().signum()>0
+                &&slice.start().add(slice.length()).compareTo(whole.length())<=0,
+                "logical slice requires a uniquely selected complete character view and in-bounds interval");
+        });
+    }
+    StorageFacts.LogicalTextView access(SpInput.DataReference reference) {
+        if(reference.logicalSlice().isEmpty())return reference.logicalWholeItem().map(this::whole).orElse(null);
+        var slice=reference.logicalSlice().orElseThrow();var whole=whole(slice.data());
+        return whole==null?null:new StorageFacts.LogicalTextView(whole.node(),whole.root(),whole.start().add(slice.start()),slice.length());
+    }
     boolean literalMove(SpInput.MoveFact move) {
-        var target=move.target().logicalWholeItem().map(byData::get).orElse(null);
-        if(target==null||!move.target().logicalWholeItem().equals(move.target().binding().selected())||!move.additionalTransfers().isEmpty())return false;
-        if(move.source() instanceof SpInput.LiteralSource literal)return literal.logicalValue().isPresent();
+        var target=access(move.target());
+        if(target==null||!move.additionalTransfers().isEmpty())return false;
+        if(move.target().logicalSlice().isEmpty()&&move.target().binding().selected().filter(edited::contains).isPresent()
+                &&move.copySemantics()!=SpInput.CopySemantics.FORMATTED_NUMBER)return false;
+        if(move.source() instanceof SpInput.LiteralSource literal)return literal.logicalValue().isPresent()||literal.kind().collatingFill();
         if(move.source() instanceof SpInput.DataReference source) {
-            var from=source.logicalWholeItem().map(byData::get).orElse(null);
-            return from!=null&&source.logicalWholeItem().equals(source.binding().selected())&&!from.root().equals(target.root());
+            var from=access(source);
+            if(from!=null&&(bounded.containsKey(from.node())||bounded.containsKey(target.node()))) {
+                var a=locationsByNode.get(from.node());var b=locationsByNode.get(target.node());
+                return a!=null&&b!=null&&Collections.disjoint(a,b);
+            }
+            return from!=null&&(!from.root().equals(target.root())||end(from).compareTo(target.start())<=0||end(target).compareTo(from.start())<=0);
         }
         return false;
     }
@@ -85,7 +142,7 @@ final class LogicalTextIndex {
         if(move.additionalTransfers().isEmpty())return literalMove(move);
         // A partially admitted sequence must not reread a source after a receiver
         // with unknown aliases. A literal has no such capture obligation.
-        boolean literal=move.source() instanceof SpInput.LiteralSource l&&l.logicalValue().isPresent();
+        boolean literal=move.source() instanceof SpInput.LiteralSource l&&(l.logicalValue().isPresent()||l.kind().collatingFill());
         boolean any=false;
         for(var transfer:move.transfers()) {
             var single=new SpInput.MoveFact(move.header(),transfer.source(),transfer.target(),

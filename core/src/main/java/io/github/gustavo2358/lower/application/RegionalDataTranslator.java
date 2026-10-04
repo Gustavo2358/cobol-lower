@@ -41,8 +41,12 @@ final class RegionalDataTranslator {
         var selected=move.target().wholeItemAccess().orElseThrow().data();
         if(!textual(source,selected))return true;
         var view=source.byData().get(selected);
-        return MemoryCodecs.encodeText(RegionalStorageAdmission.IBM1047,new Values.TextValue(move.textAdjustment().map(a->a.result().value()).orElseGet(()->((SpInput.LiteralSource)move.source()).logicalValue().orElseThrow().value())),
-            view.extent().value().orElseThrow()).status()==MemoryCodecs.Status.EXACT;
+        var literal=((SpInput.LiteralSource)move.source()).logicalValue().orElseThrow();
+        int size=literal.value().codePointCount(0,literal.value().length());
+        int length=view.extent().value().orElseThrow().min(java.math.BigInteger.valueOf(size)).intValueExact();
+        var prefix=literal.value().substring(0,literal.value().offsetByCodePoints(0,length));
+        return MemoryCodecs.encodeText(RegionalStorageAdmission.IBM1047,new Values.TextValue(prefix),java.math.BigInteger.valueOf(length)).status()==MemoryCodecs.Status.EXACT;
+
     }
     static ScalarDataTranslator.Result translate(List<SpInput.DataFact> declarations,RegionalStorageAdmission.Index source,
             Set<SpInput.DataId> requiredData,Set<SpInput.DataId> capturedLogicalText,Set<SpInput.DataId> captureLocals,
@@ -60,6 +64,7 @@ final class RegionalDataTranslator {
         source.owner().storage().ifPresent(st->st.renames().forEach(r->source.nodes().get(r.owner()).data().ifPresent(aliasData::add)));
         if(factDependencies!=null)sourceText.removeIf(d->source.byData().containsKey(d)&&!factDependencies.declarations.contains(source.byData().get(d).node().handle()));
         var legacy=ScalarDataTranslator.translate(declarations.stream().filter(d->factDependencies==null||source.byData().get(d.id())==null||(factDependencies.materializable(source.byData().get(d.id()).node().handle())&&factDependencies.declarations.contains(source.byData().get(d.id()).node().handle())))
+            .filter(d->canonicalCell(source,d))
             .filter(d->!textual(source,d.id())
             &&(source.byData().get(d.id())==null||!exactByNode.containsKey(source.byData().get(d.id()).node()))
             &&(!aliasData.contains(d.id())||source.logical().byData.containsKey(d.id()))).toList(),unit,ids,origins,items,uncertainties);
@@ -180,7 +185,9 @@ final class RegionalDataTranslator {
             var reason=gap(declaration.id().handle(),objectOrigin,new Scopes.EntityScope(List.of(object)),List.of(object),
                 "STORAGE_DECLARATION_UNKNOWN",List.of("LOGICAL_TYPE_OR_PHYSICAL_VIEW_UNPROVEN"),unit,ids,items,uncertainties);
             Types.TypeRef type;
-            if(sourceText.contains(declaration.id())) {
+            if(declaration.scalarNumber().isPresent()) {
+                type=Types.known(declaration.scalarNumber().orElseThrow().scale()==0?Types.Builtin.INT:Types.Builtin.DECIMAL);
+            } else if(sourceText.contains(declaration.id())) {
                 type=Types.known(Types.Builtin.TEXT);
             } else {
                 var typeReason=new UncertaintyId(unit.publication(),ids.id("uncertainty","unknown-declaration-type",unit.localId(),declaration.id().handle()));
@@ -198,7 +205,7 @@ final class RegionalDataTranslator {
                 objectOrigin=FactDependencyStorage.proofOrigin(factDependencies,publishedBinding.dependencies(),"binding/"+view.node().handle(),unit,ids,origins);
                 var cell=publishedBinding.exactCell().isEmpty()?Optional.<StorageId>empty():Optional.of(provedCells.get(publishedBinding.exactCell()));
                 visibility=Memory.Visibility.PRIVATE;
-                if(sourceText.contains(declaration.id()))index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
+                if(sourceText.contains(declaration.id())||declaration.scalarNumber().isPresent())index.put(declaration.id(),new LoweringResult.DataLink(declaration.id(),object,cell,dataOrigin));
             } else if(publishedBinding==null&&base==null&&sourceText.contains(declaration.id())&&!captureLocals.contains(declaration.id())&&source.localCellSafe(declaration.id())) {
                 var exact=exactByNode.get(view==null?null:view.node());
                 var key=exact==null?declaration.id().handle():exact.representative().handle();
@@ -226,7 +233,15 @@ final class RegionalDataTranslator {
         relationCoverage(source,physical,relationOrigins,unit,ids,items,uncertainties);
         renamesCoverage(source,physical,renamesOrigins,unit,ids,items,uncertainties);
         return new ScalarDataTranslator.Result(List.copyOf(objects),List.copyOf(storage),Collections.unmodifiableMap(index),Map.copyOf(bindings),Map.copyOf(physical),Map.copyOf(nominal),declarations.stream()
-            .filter(d->d.scalarText().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarText().orElseThrow().logicalExtent())),anonymousRoots);
+            .filter(d->d.scalarText().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarText().orElseThrow().logicalExtent())),anonymousRoots,declarations.stream().filter(d->d.scalarNumber().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarNumber().orElseThrow())),declarations.stream().filter(d->d.scalarEdit().isPresent()).collect(java.util.stream.Collectors.toUnmodifiableMap(SpInput.DataFact::id,d->d.scalarEdit().orElseThrow())));
+    }
+    private static boolean canonicalCell(RegionalStorageAdmission.Index source,SpInput.DataFact data) {
+        var view=source.byData().get(data.id());var facts=source.facts();
+        if(view==null||facts==null)return true;
+        var binding=facts.bindings.get(view.node().handle());
+        // Numeric type publication no longer implies an independent cell. Textual
+        // family roots retain their separate, already validated logical proof.
+        return binding==null||(binding.exactCell().isEmpty()?data.scalarNumber().isEmpty()&&(data.scalarText().isEmpty()||source.logical().byData.containsKey(data.id())):binding.exactCell().equals(view.node().handle()));
     }
     private static void renamesCoverage(RegionalStorageAdmission.Index source,Map<StorageFacts.BaseId,StorageId> physical,
             Map<StorageFacts.RelationId,OriginId> renamesOrigins,UnitId unit,LocalIds ids,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {

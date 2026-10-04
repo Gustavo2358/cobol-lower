@@ -16,7 +16,7 @@ public final class CallInputs {
             var source = new LiteralSource(m.source().id(), LiteralKind.ALPHANUMERIC, Optional.of(new LogicalValue(LogicalDomain.TEXT, value, 5)), m.source().provenance());
             statements.add(new MoveFact(m.header(), source, m.target(), extent == 8 ? CopySemantics.FITTED_TEXT : CopySemantics.FULL_IDENTITY,
                 m.normalContinuation(), extent == 8 ? Optional.of(new TextAdjustment(TextAdjustmentRule.RIGHT_PAD_SPACE, 8,
-                    new LogicalValue(LogicalDomain.TEXT, value.equals("PROGA") ? "PROGA   " : "OTHER   ", 8), m.header().provenance())) : Optional.empty()));
+                    m.header().provenance())) : Optional.empty()));
         }
         var old = base.statements().getLast().header();
         var targetId = new OperandId(old.id(), "operand:" + moves + ":0");

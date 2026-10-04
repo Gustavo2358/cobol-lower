@@ -20,6 +20,26 @@ public final class ScalarIdentitySuite {
     private static String identity(SpInput input, List<DataFact> data, MoveFact move) {
         return CanonicalRevision.scalar(input, data, List.of(move), (GobackFact) input.statements().getLast(), 32).orElseThrow();
     }
+    private static int numericIdentity(SpInput input,DataFact data,MoveFact move) {
+        var number = new ScalarNumber(4, 0, true, "BINARY", "STD");
+        var numeric = with(data, "scalarNumber", Optional.of(number));
+        var edit = new ScalarEdit(List.of(new EditPart("SIGN", 1, "+", "-"),new EditPart("DIGITS", 4, "", "")),4,0,5);
+        var edited = with(data, "scalarEdit", Optional.of(edit));
+        int count = 0;
+        for (var pair : List.of(List.of(numeric, with(numeric,"scalarNumber",Optional.of(with(number,"trunc","BIN")))),
+                List.of(data, edited),
+                List.of(edited,with(edited,"scalarEdit",Optional.of(with(edit,"parts",List.of(new EditPart("SIGN",1," ","-"),new EditPart("DIGITS",4,"","")))))))) {
+            var a=ScalarInputs.replace(input,List.of(pair.getFirst()),input.statements());
+            var b=ScalarInputs.replace(input,List.of(pair.getLast()),input.statements());
+            if(CanonicalRevision.partial(a,32).equals(CanonicalRevision.partial(b,32)))throw new AssertionError("PARTIAL_ID numeric metadata absent");count++;
+        }
+        var slice=new LogicalSlice(data.id(),java.math.BigInteger.ZERO,java.math.BigInteger.ONE);
+        var target=with(with(move.target(),"wholeItemAccess",Optional.empty()),"logicalSlice",Optional.of(slice));
+        var a=ScalarInputs.replace(input,input.dataDeclarations(),List.of(with(move,"target",target),input.statements().getLast()));
+        var b=ScalarInputs.replace(input,input.dataDeclarations(),List.of(with(move,"target",with(target,"logicalSlice",Optional.of(with(slice,"start",java.math.BigInteger.ONE)))),input.statements().getLast()));
+        if(CanonicalRevision.partial(a,32).equals(CanonicalRevision.partial(b,32)))throw new AssertionError("PARTIAL_ID slice absent");
+        return count+1;
+    }
     public static int run() {
         int count = 0; var input = ScalarInputs.create(1, 1); var m = (MoveFact) input.statements().getFirst(); var d = input.dataDeclarations().getFirst();
         var baseline = identity(input, List.of(d), m);
@@ -53,6 +73,6 @@ public final class ScalarIdentitySuite {
         if (!pub.units().getFirst().objects().getFirst().id().localId().matches("[0-9a-f]{32}")
                 || pub.coverage().items().stream().anyMatch(item -> item.sourceKey().length() > 120))
             throw new AssertionError("SCALAR_ID no expanded identities or source keys"); count++;
-        return count;
+        return count + numericIdentity(input, d, m);
     }
 }

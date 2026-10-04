@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/ctxboom-escape-04.json",
-  "sourceSha256" : "312d98a49990b931a55d55207ead85faa2e9f565a6279376314b333e09539a10",
+  "referenceSourceSha256": "312d98a49990b931a55d55207ead85faa2e9f565a6279376314b333e09539a10",
+  "sourceSha256": "cb34f992c6e938b76969129972224ba2d68f0c76f927740cba3fd456f9b2ffbb",
   "variant" : "unspecified",
   "states" : [ {
     "statement:0:branch" : 1

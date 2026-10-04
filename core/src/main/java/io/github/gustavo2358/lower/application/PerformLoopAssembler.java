@@ -7,12 +7,11 @@ import java.util.*;
 
 /** One unknown decision and a back edge, independent of runtime iteration count. */
 final class PerformLoopAssembler {
-    static Operations.Branch decision(SpInput.ProcedurePerformFact p,LabelId body,LabelId resume,
+    static Operations.Branch decision(SpInput.ProcedurePerformFact p,int level,LabelId body,LabelId resume,
             ScalarDataTranslator.Result data,UnitId unit,LocalIds ids,SourceOrigins origins,
             List<LoweringResult.OperandLink> operands,List<Evidence.CoverageItem> items,List<Evidence.Uncertainty> uncertainties) {
         var loop=p.loop().orElseThrow();
         var operation=new OperationId(unit,ids.id("operation","perform-loop-decision",unit.localId(),p.header().id().handle()));
-        int level=p.varying().map(v->v.controls().getFirst().level()).orElse(1);
         String role=level==1?"perform-loop":"perform-loop-level-"+level;
         var origin=origins.source(role+"-condition",p.header().id().handle(),loop.provenance());
         var predicate=IfPredicate.translate(p.header().id(),loop.predicate(),loop.conditionReads(),role,

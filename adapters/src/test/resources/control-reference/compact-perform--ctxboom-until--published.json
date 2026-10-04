@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/ctxboom-until.json",
-  "sourceSha256" : "93ce9d158a69c09e52409d4e2f179fe02046b987e88aa272c27075d69a1d5aaa",
+  "referenceSourceSha256": "93ce9d158a69c09e52409d4e2f179fe02046b987e88aa272c27075d69a1d5aaa",
+  "sourceSha256": "8b1c5205f2070666ea28e6c124ee08fa528482e8de478858786b3601b73f03a0",
   "variant" : "published",
   "states" : [ {
     "statement:1:branch" : 1

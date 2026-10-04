@@ -91,7 +91,7 @@ public final class CallAdmission implements AdmitInput {
             for (var statement : input.statements()) {
                 c.touch();
                 if (statement instanceof MoveFact m) {
-                    IntegerMoveAdmission.validate(m,c);
+                    NumericMoveAdmission.validate(m,c);
                     if (m.source() instanceof DataReference read) reference(read, m.header(), operands, c);
                     else {
                         operand(m.source().id(), m.header(), operands, c);
@@ -118,13 +118,13 @@ public final class CallAdmission implements AdmitInput {
                         if(supported) {
                             var source=((LiteralSource)m.source()).logicalValue().orElseThrow().value();
                             int n=scalar.logicalExtent(),count=source.codePointCount(0,source.length());
-                            var expected=count>n?source.substring(0,source.offsetByCodePoints(0,n)):source+" ".repeat(n-count);
+                            var expected=((LiteralSource)m.source()).kind()==LiteralKind.FIGURATIVE_ZERO?"0".repeat(n):count>n?source.substring(0,source.offsetByCodePoints(0,n)):source+" ".repeat(n-count);
                             supported=expected.equals(transfer.value().value());
                         }
                         c.require(supported,Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),
                             "Independent logical transfer must fit a proved literal into its own whole receiver");
                     }
-                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT || m.copySemantics() == CopySemantics.POSSIBLE_TEXT) == m.textAdjustment().isPresent(),
+                    c.require((m.copySemantics() == CopySemantics.FITTED_TEXT && m.source() instanceof LiteralSource || m.copySemantics() == CopySemantics.POSSIBLE_TEXT) == m.textAdjustment().isPresent(),
                         Rule.PROFILE_FACT, m.header().id().handle(), m.header().provenance(), "FITTED_TEXT/POSSIBLE_TEXT iff textAdjustment present");
                     if(m.copySemantics()==CopySemantics.POSSIBLE_TEXT) {
                         c.require(m.header().provenance().exact()&&m.target().logicalWholeItem().isPresent()
@@ -133,13 +133,17 @@ public final class CallAdmission implements AdmitInput {
                         if(m.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()&&m.textAdjustment().isPresent()) {
                             var value=literal.logicalValue().orElseThrow();var adjustment=m.textAdjustment().orElseThrow();
                             c.require(value.logicalExtent()<=adjustment.receiverExtent()
-                                &&adjustment.result().value().equals(value.value()+" ".repeat(Math.max(0,adjustment.receiverExtent()-value.logicalExtent()))),
+                                &&adjustment.rule()!=TextAdjustmentRule.ZERO_FILL,
                                 Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),"Possible text result must preserve literal plus right spaces");
                         }
                     }
+                    if(m.source() instanceof DataReference read&&(m.copySemantics()==CopySemantics.FULL_IDENTITY||m.copySemantics()==CopySemantics.FITTED_TEXT))
+                        validateTextDisjoint(m,read,c);
+                    if(m.copySemantics()==CopySemantics.FITTED_TEXT)validateFitting(m,c);
+                    if(m.copySemantics()==CopySemantics.FORMATTED_NUMBER)validateNumberFormatting(m,c);
                     m.textAdjustment().ifPresent(a -> {
-                        c.provenance(a.provenance()); logical(a.result(), m.header(), c);
-                        c.require(a.receiverExtent() > 0 && a.receiverExtent() == a.result().logicalExtent(), Rule.PROFILE_FACT,
+                        c.provenance(a.provenance());
+                        c.require(a.receiverExtent() > 0, Rule.PROFILE_FACT,
                             m.header().id().handle(), a.provenance(), "Adjustment result extent equals positive receiver extent");
                     });
                 } else if (statement instanceof CallFact call) {
@@ -193,7 +197,7 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(binding.status() == ResolutionStatus.RESOLVED
                 && binding.selected().equals(Optional.of(w.data())) && c.data(w.data()) != null,
             Rule.PROFILE_FACT, h.id().handle(), reference.provenance(), "Whole-item proof agrees with uniquely selected DATA"));
-        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact||c.lookup(h.id()) instanceof CicsCommandFact)&&binding.status()==ResolutionStatus.RESOLVED
+        reference.logicalWholeItem().ifPresent(data -> c.require((reference.provenance().exact()||c.lookup(h.id()) instanceof MoveFact||c.lookup(h.id()) instanceof CicsFact||c.lookup(h.id()) instanceof CicsFileFact||c.lookup(h.id()) instanceof CicsCommandFact)&&binding.status()==ResolutionStatus.RESOLVED
                 &&binding.selected().equals(Optional.of(data))&&c.data(data)!=null,
             Rule.PROFILE_FACT,h.id().handle(),reference.provenance(),"Logical access requires exact source or canonical typed CICS host and unique declaration"));
     }
@@ -220,35 +224,74 @@ public final class CallAdmission implements AdmitInput {
         reference.wholeItemAccess().ifPresent(w -> c.require(scalar(c.data(w.data())), Rule.PROFILE_FACT,
             h.id().handle(), reference.provenance(), "Whole-item target has scalar TEXT proof"));
     }
+    private static void validateNumberFormatting(MoveFact m,EntryGobackAdmission.Context c) {
+        admitReference(m.target(),OperandRole.WRITE,m.header(),c);
+        var target=m.target().wholeItemAccess().map(a->c.data(a.data())).orElse(null);
+        boolean edited=target!=null&&target.scalarEdit().isPresent();
+        boolean source;
+        if(m.source() instanceof DataReference r) {
+            var number=NumericMoveAdmission.number(r,OperandRole.READ,c);
+            source=number!=null&&(edited||number.scale()<=0)
+                &&(NumericMoveAdmission.exactCell(r,c)||c.input.controlTopology().isPresent()&&NumericMoveAdmission.disjoint(r,m.target(),c));
+        } else source=edited&&m.source() instanceof LiteralSource l&&l.numericValue().isPresent();
+        c.require(source&&m.additionalTransfers().isEmpty()&&m.numericTransfers().isEmpty()&&m.textAdjustment().isEmpty(),
+            Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),"Number formatting requires a typed numeric source and a whole text receiver");
+    }
+    private static void validateFitting(MoveFact m,EntryGobackAdmission.Context c) {
+        admitReference(m.target(),OperandRole.WRITE,m.header(),c);
+        c.require(m.additionalTransfers().isEmpty(),Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),
+            "Fitting requires a single proved elementary receiver");
+        if(m.source() instanceof DataReference r) {
+            admitReference(r,OperandRole.READ,m.header(),c);
+            return;
+        }
+        var literal=(LiteralSource)m.source();var target=m.target().wholeItemAccess().map(a->c.data(a.data()));
+        boolean valid=(literal.kind()==LiteralKind.ALPHANUMERIC||literal.kind()==LiteralKind.FIGURATIVE_ZERO||literal.kind()==LiteralKind.NUMERIC&&NumericMoveAdmission.integerText(literal))&&literal.logicalValue().isPresent()
+            &&target.flatMap(DataFact::scalarText).isPresent()&&m.textAdjustment().isPresent();
+        if(valid) {
+            var a=m.textAdjustment().orElseThrow();var v=literal.logicalValue().orElseThrow();int n=target.orElseThrow().scalarText().orElseThrow().logicalExtent();
+            int size=v.value().codePointCount(0,v.value().length());
+            valid=a.receiverExtent()==n
+                &&(literal.kind()==LiteralKind.FIGURATIVE_ZERO?a.rule()==TextAdjustmentRule.ZERO_FILL:a.rule()==TextAdjustmentRule.RIGHT_FIT_SPACE||a.rule()==TextAdjustmentRule.RIGHT_PAD_SPACE&&size<n);
+        }
+        c.require(valid,Rule.PROFILE_FACT,m.header().id().handle(),m.header().provenance(),"Fitted literal must equal the declared right-padding/truncation result");
+    }
+    private static void validateTextDisjoint(MoveFact m,DataReference read,EntryGobackAdmission.Context c) {
+        c.require(NumericMoveAdmission.exactCell(read,c)&&NumericMoveAdmission.exactCell(m.target(),c)
+            ||c.regionalStorage!=null&&c.regionalStorage.logical().literalMove(m),Rule.PROFILE_FACT,
+            m.header().id().handle(),m.header().provenance(),"Shared textual views require proved disjoint sending and receiving ranges");
+    }
     static void admitMove(MoveFact m, EntryGobackAdmission.Context c) {
         var h = m.header();
+        if(m.copySemantics()==CopySemantics.FORMATTED_NUMBER){validateNumberFormatting(m,c);return;}
         admitReference(m.target(), OperandRole.WRITE, h, c);
         if (m.source() instanceof DataReference read) {
             admitReference(read, OperandRole.READ, h, c);
-            c.require(m.copySemantics() == CopySemantics.FULL_IDENTITY && m.textAdjustment().isEmpty(), Rule.PROFILE_FACT,
-                h.id().handle(), h.provenance(), "Data copy requires FULL_IDENTITY; no data fitting");
+            c.require((m.copySemantics() == CopySemantics.FULL_IDENTITY || m.copySemantics()==CopySemantics.FITTED_TEXT) && m.textAdjustment().isEmpty(), Rule.PROFILE_FACT,
+                h.id().handle(), h.provenance(), "Data copy requires identity or explicit fitting");
             if (read.wholeItemAccess().isPresent() && m.target().wholeItemAccess().isPresent()) {
+                validateTextDisjoint(m,read,c);
                 var source = c.data(read.wholeItemAccess().orElseThrow().data());
                 var target = c.data(m.target().wholeItemAccess().orElseThrow().data());
                 c.require(source.scalarText().isPresent() && target.scalarText().isPresent()
-                        && source.scalarText().orElseThrow().logicalExtent() == target.scalarText().orElseThrow().logicalExtent(),
+                        && (m.copySemantics()==CopySemantics.FITTED_TEXT||source.scalarText().orElseThrow().logicalExtent() == target.scalarText().orElseThrow().logicalExtent()),
                     Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Data copy requires equal scalar extents");
             }
             return;
         }
         var literal = (LiteralSource) m.source();
         var value = literal.logicalValue();
-        c.require(literal.kind() == LiteralKind.ALPHANUMERIC && value.isPresent(), Rule.PROFILE_FACT,
+        c.require((literal.kind() == LiteralKind.ALPHANUMERIC||literal.kind()==LiteralKind.FIGURATIVE_ZERO||literal.kind()==LiteralKind.NUMERIC&&NumericMoveAdmission.integerText(literal)) && value.isPresent(), Rule.PROFILE_FACT,
             h.id().handle(), m.source().provenance(), "Published logical TEXT source required");
         c.require(m.copySemantics() != CopySemantics.UNAVAILABLE, Rule.PROFILE_FACT, h.id().handle(), h.provenance(),
-            "FULL_IDENTITY or FITTED_TEXT required; truncation remains unsupported");
+            "FULL_IDENTITY or FITTED_TEXT required");
         if (m.target().wholeItemAccess().isPresent() && value.isPresent()) {
             var data = c.data(m.target().wholeItemAccess().orElseThrow().data());
             if (data.scalarText().isPresent()) {
                 int extent = data.scalarText().orElseThrow().logicalExtent();
                 boolean coherent = m.copySemantics() == CopySemantics.FULL_IDENTITY
                     ? extent == value.orElseThrow().logicalExtent()
-                    : m.textAdjustment().filter(a -> a.receiverExtent() == extent && value.orElseThrow().logicalExtent() < extent).isPresent();
+                    : m.textAdjustment().filter(a -> a.receiverExtent() == extent && (a.rule()==TextAdjustmentRule.RIGHT_FIT_SPACE||a.rule()==TextAdjustmentRule.ZERO_FILL&&literal.kind()==LiteralKind.FIGURATIVE_ZERO||a.rule()==TextAdjustmentRule.RIGHT_PAD_SPACE&&value.orElseThrow().logicalExtent() < extent)).isPresent();
                 c.require(coherent, Rule.PROFILE_FACT, h.id().handle(), h.provenance(), "Published source/receiver/adjustment extents agree; no fitting performed");
             }
         }

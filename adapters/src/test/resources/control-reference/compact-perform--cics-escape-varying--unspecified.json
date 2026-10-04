@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/cics-escape-varying.json",
-  "sourceSha256" : "9477fb1f197d9af51f8d076f8fd3bc14921f0ddd4ead0bd01e7de498012226bf",
+  "referenceSourceSha256": "9477fb1f197d9af51f8d076f8fd3bc14921f0ddd4ead0bd01e7de498012226bf",
+  "sourceSha256": "b0d76bab8ea9c1ad9e824626bd35a64d6b7eef612a22722e079948ee6808e5da",
   "variant" : "unspecified",
   "states" : [ {
     "statement:4:opaque" : 1

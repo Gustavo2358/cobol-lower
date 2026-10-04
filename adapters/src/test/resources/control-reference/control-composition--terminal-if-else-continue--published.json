@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/terminal-if-else-continue.json",
-  "sourceSha256" : "f716fb28799a5a9fddad8a2c1b1b37788eeb13b34ff1c1021ea7618b8127cd16",
+  "referenceSourceSha256": "f716fb28799a5a9fddad8a2c1b1b37788eeb13b34ff1c1021ea7618b8127cd16",
+  "sourceSha256": "b180b815cf9efa7d41544ef8ef48a6e718ba8d76bab2e89f975aef7d6dee1796",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

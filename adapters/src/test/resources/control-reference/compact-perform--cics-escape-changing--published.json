@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/cics-escape-changing.json",
-  "sourceSha256" : "e6a6a66efaa3c9b8d316d6f66b1f83d3ed8a50a08a3b64eb701691da5ef041eb",
+  "referenceSourceSha256": "e6a6a66efaa3c9b8d316d6f66b1f83d3ed8a50a08a3b64eb701691da5ef041eb",
+  "sourceSha256": "fec161334bdef10688c26db46f4d8dda43cdf68f36d17ddfaae3863a2e1e0ee1",
   "variant" : "published",
   "states" : [ {
     "statement:4:opaque" : 1

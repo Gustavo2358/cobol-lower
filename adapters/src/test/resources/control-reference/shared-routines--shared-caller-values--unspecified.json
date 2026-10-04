@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "shared-routines/shared-caller-values.json",
-  "sourceSha256" : "685518aae193069ed94fd0c34ac2f9a8c9c8baef3347f7977c180b3b12a2c819",
+  "referenceSourceSha256": "685518aae193069ed94fd0c34ac2f9a8c9c8baef3347f7977c180b3b12a2c819",
+  "sourceSha256": "f1e626c90a250740a6293321119cae0ea57ba15364515cd88c2296ec74859928",
   "variant" : "unspecified",
   "states" : [ {
     "statement:0:assign" : 1

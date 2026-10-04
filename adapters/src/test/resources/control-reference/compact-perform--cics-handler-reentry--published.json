@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/cics-handler-reentry.json",
-  "sourceSha256" : "4731e84c00ecb5cd635460f420ff4cb82f838364c93cc9ce7d1527f2fc19c5e1",
+  "referenceSourceSha256": "4731e84c00ecb5cd635460f420ff4cb82f838364c93cc9ce7d1527f2fc19c5e1",
+  "sourceSha256": "6ff5723be60481a65ebed77523243835e2549c3b8aae1dc22c827c2f07dc1fc4",
   "variant" : "published",
   "states" : [ {
     "statement:1:opaque" : 1

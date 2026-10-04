@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/halt-before.json",
-  "sourceSha256" : "72f6d41d54dc2322fb7ee261aee87d144a14d84e46844af4a7d17c413c7b2d7e",
+  "referenceSourceSha256": "72f6d41d54dc2322fb7ee261aee87d144a14d84e46844af4a7d17c413c7b2d7e",
+  "sourceSha256": "cd438d00a069c492360050ab6dd48b6fa96dad8e2aae5066c7b18a4aedde6045",
   "variant" : "published",
   "states" : [ {
     "statement:3:opaque" : 1

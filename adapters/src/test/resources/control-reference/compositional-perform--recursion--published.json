@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform/recursion.json",
-  "sourceSha256" : "7bbcdca2089a41a31e27045f9f4cb052cdc75df89e491228f1be7a4ee5811af9",
+  "referenceSourceSha256": "7bbcdca2089a41a31e27045f9f4cb052cdc75df89e491228f1be7a4ee5811af9",
+  "sourceSha256": "336917378e34e7163e843215957562b2e3b0879aef58289171a128ea63ba80c0",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

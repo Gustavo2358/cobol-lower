@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-conditional-handler.json",
-  "sourceSha256" : "2655d8fce7f77ebf2c45a6c5381b6503e75cab721c7446d534f9aea0c3b4abd6",
+  "referenceSourceSha256": "2655d8fce7f77ebf2c45a6c5381b6503e75cab721c7446d534f9aea0c3b4abd6",
+  "sourceSha256": "a375b7734dc8df74aaf081efee79d9d361b71bfedc6f03ee13b380af0ecf9b0a",
   "variant" : "published",
   "states" : [ {
     "statement:2:opaque" : 1

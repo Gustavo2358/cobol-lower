@@ -10,7 +10,7 @@ import static io.github.gustavo2358.lower.domain.SpInput.*;
 /** Mechanical materialization only. Semantic validation belongs to the inner application. */
 final class Materialize {
     private static Optional<java.math.BigDecimal> numeric(LiteralKind kind,String value) {
-        return kind==LiteralKind.NUMERIC?Optional.of(new java.math.BigDecimal(value)):Optional.empty();
+        return (kind==LiteralKind.NUMERIC||kind==LiteralKind.FIGURATIVE_ZERO)?Optional.of(new java.math.BigDecimal(value)):Optional.empty();
     }
     private Materialize() { }
     static final class EffectShape extends IllegalArgumentException { private static final long serialVersionUID=1L; EffectShape(String message){super(message);} }
@@ -180,7 +180,7 @@ final class Materialize {
                         }, binding.candidates().stream().map(c -> new DataId(unit, c.id())).toList(),
                             Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())), binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
                         Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit)),
-                    v.copySemantics(), continuation(next, unit), Optional.ofNullable(v.textAdjustment()).map(a -> new TextAdjustment(a.rule(), a.receiverExtent(), logical(a.result()), provenance(a.provenance(), unit))));
+                    v.copySemantics(), continuation(next, unit), Optional.ofNullable(v.textAdjustment()).map(a -> new TextAdjustment(a.rule(), a.receiverExtent(), provenance(a.provenance(), unit))));
             }
             case Wire13.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -234,7 +234,7 @@ final class Materialize {
                         }, binding.candidates().stream().map(c -> new DataId(unit, c.id())).toList(),
                             Optional.ofNullable(binding.selected()).map(id -> new DataId(unit, id)), Optional.of(ResolutionReason.valueOf(binding.reason().name())), binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
                         Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit)),
-                    v.copySemantics(), continuation(next, unit), Optional.ofNullable(v.textAdjustment()).map(a -> new TextAdjustment(a.rule(), a.receiverExtent(), logical(a.result()), provenance(a.provenance(), unit))));
+                    v.copySemantics(), continuation(next, unit), Optional.ofNullable(v.textAdjustment()).map(a -> new TextAdjustment(a.rule(), a.receiverExtent(), provenance(a.provenance(), unit))));
             }
             case Wire14.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -299,7 +299,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire15.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -369,7 +369,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire16.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -439,7 +439,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire18.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -516,7 +516,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire20.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -596,7 +596,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire21.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -682,7 +682,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire22.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -768,7 +768,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire23.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -823,7 +823,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true);
     }
@@ -860,7 +860,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire24.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -915,7 +915,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true);
     }
@@ -952,7 +952,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire25.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -1007,7 +1007,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true);
     }
@@ -1049,7 +1049,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))));
+                        provenance(adjustment.provenance(), unit))));
             }
             case Wire26.CallDocument v -> {
                 CallTarget target = switch (v.target()) {
@@ -1134,7 +1134,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true, Optional.of(physicalStorage(d.storage(),unit)));
     }
@@ -1181,7 +1181,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
+                        provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())),v.additionalTransfers().stream().map(t->new MoveTransfer(source211(t.source(),h.id(),unit),reference(t.target(),h.id(),unit),new StorageFacts.Move(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList());
             }
             case Wire211.CicsHandlerDocument v -> new CicsHandlerFact(h,v.handlerKind(),v.action(),v.targetKind(),
@@ -1261,7 +1261,7 @@ final class Materialize {
                 binding.candidates().stream().map(Wire.CandidateDocument::canonicalName).toList()),
             Optional.ofNullable(target.wholeItemAccess()).map(w -> new WholeItemAccess(new DataId(unit, w.data()))), provenance(target.provenance(), unit),
             Optional.ofNullable(target.regionalAccess()).map(a->new StorageFacts.Access(new StorageFacts.NodeId(unit,a.view()),Optional.ofNullable(a.slice()).map(slice->new StorageFacts.Slice(unsigned(slice.offset()),unsigned(slice.extent()))))),
-            target.regionalAlternatives()==null?List.of():target.regionalAlternatives().stream().map(x->new StorageFacts.Access(new StorageFacts.NodeId(unit,x.view()),Optional.ofNullable(x.slice()).map(t->new StorageFacts.Slice(unsigned(t.offset()),unsigned(t.extent()))))).toList(),Optional.ofNullable(target.logicalWholeItem()).map(id->new DataId(unit,id)));
+            target.regionalAlternatives()==null?List.of():target.regionalAlternatives().stream().map(x->new StorageFacts.Access(new StorageFacts.NodeId(unit,x.view()),Optional.ofNullable(x.slice()).map(t->new StorageFacts.Slice(unsigned(t.offset()),unsigned(t.extent()))))).toList(),Optional.ofNullable(target.logicalWholeItem()).map(id->new DataId(unit,id)),Optional.ofNullable(target.logicalSlice()).map(a->new LogicalSlice(new DataId(unit,a.data()),unsigned(a.start()),unsigned(a.length()))));
     }
     private static IfArm arm(Wire211.ArmDocument a, UnitKey unit) {
         return new IfArm(a.presence(),a.contentAvailability(),executableStart(a.entry(),unit),provenance(a.provenance(),unit),a.gapCodes());
@@ -1304,7 +1304,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true, Optional.of(physicalStorage(d.storage(),unit)));
     }
@@ -1346,7 +1346,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
+                        provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())));
             }
             case Wire210.CallDocument v -> {
@@ -1423,7 +1423,7 @@ final class Materialize {
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
-                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarInteger()).map(n->new ScalarInteger(n.digits())));
+                provenance(v.provenance(), unit), v.coverage(), readiness(v.readiness(), unit), scalar,Optional.ofNullable(v.scalarNumber()).map(n->new ScalarNumber(n.digits(),n.scale(),n.signed(),n.representation(),n.trunc())),Optional.ofNullable(v.scalarEdit()));
         }).toList(), d.statements().stream().map(v -> statement(v, unit)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true, Optional.of(physicalStorage(d.storage(),unit)));
     }
@@ -1465,7 +1465,7 @@ final class Materialize {
                 };
                 yield new MoveFact(h, source, reference(v.target(), h.id(), unit), v.copySemantics(), continuation(v.normalContinuation(), unit),
                     Optional.ofNullable(v.textAdjustment()).map(adjustment -> new TextAdjustment(adjustment.rule(), adjustment.receiverExtent(),
-                        logical(adjustment.result()), provenance(adjustment.provenance(), unit))),
+                        provenance(adjustment.provenance(), unit))),
                     Optional.ofNullable(v.regionalMove()).map(m->new StorageFacts.Move(m.kind(),m.bytes(),m.gapCodes())));
             }
             case Wire27.CallDocument v -> {

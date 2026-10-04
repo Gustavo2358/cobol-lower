@@ -30,8 +30,8 @@ public final class MoveDataSuite {
         var p = result.publication().orElseThrow();
         var assigns = p.units().getFirst().sequences().stream().flatMap(s -> s.instructions().stream())
             .filter(Operations.Assign.class::isInstance).map(Operations.Assign.class::cast).toList();
-        check(assigns.size() == 2 && assigns.getFirst().value() instanceof Expressions.Literal, "literal remains literal");
-        check(((Values.TextValue)((Expressions.Literal)assigns.getFirst().value()).value()).value().equals("PROGA   "), "literal fitting preserved");
+        check(assigns.size() == 2 && TextRecipeOracle.value(assigns.getFirst().value()).equals("PROGA   "), "literal remains literal");
+        check(assigns.getFirst().value() instanceof Expressions.FitText, "literal fitting remains symbolic");
         check(assigns.get(1).value() instanceof Expressions.Read, "copy is Read, not constant folding");
         var read = (Expressions.Read) assigns.get(1).value();
         check(read.header().role() == Operand.Role.VALUE_READ && read.place().header().role() == Operand.Role.VALUE_READ, "real read roles");

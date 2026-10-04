@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F03-dag-live-004.json",
-  "sourceSha256" : "e61f40beefadc9f872c5e920cbaf529595a7f6131afa58234e21eeae2ebb74d1",
+  "referenceSourceSha256": "e61f40beefadc9f872c5e920cbaf529595a7f6131afa58234e21eeae2ebb74d1",
+  "sourceSha256": "094000660d66d99976bdb671a4183ad3e259d375cf4b3b214e7266281eb30435",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

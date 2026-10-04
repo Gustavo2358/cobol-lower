@@ -52,7 +52,7 @@ final class CanonicalRevision {
             e.provenance(m.normalContinuation().provenance());
             m.textAdjustment().ifPresent(a -> {
                 e.word("FITTED_TEXT"); e.symbol(a.rule()); e.number(a.receiverExtent());
-                e.word(a.result().value()); e.number(a.result().logicalExtent()); e.provenance(a.provenance());
+                e.provenance(a.provenance());
             });
         });
         input.storageIndependence().filter(p -> p.availability() == Availability.KNOWN).ifPresent(proof -> {
@@ -134,6 +134,7 @@ final class CanonicalRevision {
         if (value instanceof String s) { word("text"); word(s); }
         else if (value instanceof Enum<?> e) { word("enum"); word(e.getDeclaringClass().getName()); word(e.name()); }
         else if (value instanceof Integer n) { word("integer"); number(n); }
+        else if (value instanceof java.math.BigDecimal n) { word("decimal");word(n.unscaledValue().toString());number(n.scale()); }
         else if (value instanceof java.math.BigInteger n) { word("big-integer"); word(n.toString()); }
         else if (value instanceof Boolean b) { word("boolean"); flag(b); }
         else if (value instanceof Optional<?> o) { word("optional"); flag(o.isPresent()); o.ifPresent(this::recordFact); }

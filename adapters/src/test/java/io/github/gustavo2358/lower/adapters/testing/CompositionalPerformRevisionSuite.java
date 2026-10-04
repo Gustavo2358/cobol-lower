@@ -65,6 +65,12 @@ public final class CompositionalPerformRevisionSuite {
             }
             if(name.startsWith("F02-")) {
                 var calls=unit.sequences().stream().filter(s->s.terminator() instanceof Operations.Invoke).toList();
+                if(name.equals("F02-unavailable-count")) {
+                    check(calls.isEmpty(),"unavailable authoritative repetition does not invent an executable continuation");
+                    check(input.statements().stream().filter(SpInput.CallFact.class::isInstance).count()==1,"source CALL remains in qualified input");
+                    check(pub.coverage().inventory()==Evidence.InventoryStatus.PARTIAL,"unmodeled source continuation remains partial");
+                    continue;
+                }
                 check(calls.size()==1,"one source CALL "+name);var call=calls.getFirst();
                 check(reach.contains(call.label())!=name.equals("F02-unavailable-count"),"supported repetition returns; unavailable repetition has no bypass "+name);
                 if(!name.equals("F02-unavailable-count")) {

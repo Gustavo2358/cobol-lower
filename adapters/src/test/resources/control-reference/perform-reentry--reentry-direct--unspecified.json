@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/reentry-direct.json",
-  "sourceSha256" : "869c9c92430f4efc4ae7f723bbe7ab702a300272fadc7b652fc5372cf9bf4a70",
+  "referenceSourceSha256": "869c9c92430f4efc4ae7f723bbe7ab702a300272fadc7b652fc5372cf9bf4a70",
+  "sourceSha256": "c7a9d59e843503bfb906b8a7fc5fe3f0bd991d10ce9f086731e6ae3103a246c2",
   "variant" : "unspecified",
   "states" : [ {
     "statement:1:invoke:BEFORE" : 1

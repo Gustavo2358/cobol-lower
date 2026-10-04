@@ -11,6 +11,7 @@ final class FactDependencyIndex {
     final Map<String,FactDependencies.Fact> cells;
     final Set<String> allocated;
     final Set<String> integers;
+    final Set<String> texts;
     final Set<String> declarations;
     final Map<String,FactDependencies.Fact> allocations;
     final Map<String,FactDependencies.Proof> proofs;
@@ -18,14 +19,15 @@ final class FactDependencyIndex {
         this.graph=graph;known=graph.proofAvailability();
         var ds=new HashSet<String>();for(var p:graph.proofs())if(p.kind()==FactDependencies.ProofKind.DECLARATION_CONTEXT&&Boolean.TRUE.equals(known.get(p.id())))ds.add(p.subject());declarations=Set.copyOf(ds);
         var bs=new HashMap<String,FactDependencies.Binding>();graph.bindings().forEach(b->bs.put(b.node(),b));bindings=Map.copyOf(bs);
-        var integerTypes=new HashSet<String>();
+        var integerTypes=new HashSet<String>();var textTypes=new HashSet<String>();
         var cs=new HashMap<String,FactDependencies.Fact>();var as=new HashSet<String>();var af=new HashMap<String,FactDependencies.Fact>();
         for(var f:graph.facts())if(available(f.dependencies())) {
-            if(f.kind()==FactDependencies.FactKind.LOGICAL_INTEGER)integerTypes.add(f.subject());
+            if(f.kind()==FactDependencies.FactKind.LOGICAL_TEXT)textTypes.add(f.subject());
+            if(f.kind()==FactDependencies.FactKind.LOGICAL_NUMBER)integerTypes.add(f.subject());
             if(f.kind()==FactDependencies.FactKind.LOCAL_CELL)cs.put(f.subject(),f);
             if(f.kind()==FactDependencies.FactKind.STORAGE_IDENTITY){as.add(f.subject());af.put(f.subject(),f);}
         }
-        integers=Set.copyOf(integerTypes);cells=Map.copyOf(cs);allocated=Set.copyOf(as);allocations=Map.copyOf(af);
+        integers=Set.copyOf(integerTypes);texts=Set.copyOf(textTypes);cells=Map.copyOf(cs);allocated=Set.copyOf(as);allocations=Map.copyOf(af);
         var ps=new HashMap<String,FactDependencies.Proof>();graph.proofs().forEach(p->ps.put(p.id(),p));proofs=Map.copyOf(ps);
     }
     boolean available(List<String> dependencies){return dependencies.stream().allMatch(d->Boolean.TRUE.equals(known.get(d)));}

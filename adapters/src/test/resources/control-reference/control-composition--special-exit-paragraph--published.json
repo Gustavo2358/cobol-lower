@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/special-exit-paragraph.json",
-  "sourceSha256" : "fdbc0ba24ffb48a8bb1605d2836e4adf9786a0cb0c48a73120bec84ccaa75d03",
+  "referenceSourceSha256": "fdbc0ba24ffb48a8bb1605d2836e4adf9786a0cb0c48a73120bec84ccaa75d03",
+  "sourceSha256": "63801086464656f2ef1815363008fb235588859de4978aa4a9d3c28bfbe8e34a",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

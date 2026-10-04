@@ -255,6 +255,15 @@ final class TopologyProgramAssembler {
             } else if(normal!=null&&conditionNames.hasSet(fact.header().id().handle())) {
                 instructions.addAll(conditionNames.set(fact,plan.storage().logical(),unit,ids,origins,uncertainties));
                 term=PerformSequenceAssembler.jump("topology-normal",fact.header().id(),normal,evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids);
+            } else if(precise&&fact instanceof SpInput.MoveFact m&&normal!=null&&NumericMoveControl.required(m,data)) {
+                var chain=NumericMoveControl.sequences(m,label,normal,plan.fitted().contains(m.header().id()),data,plan.storage(),unit,ids,origins,operands,items,uncertainties)
+                    .stream().map(s->new Sequence(s.label(),s.instructions(),explain(s.terminator(),fact,context),s.origin())).toList();
+                term=chain.getFirst().terminator();
+                for(int i=1;i<chain.size();i++) {
+                    var sequence=chain.get(i);sequences.add(sequence);
+                    for(var operation:sequence.instructions())PartialProgramAssembler.link(fact.header().id(),operation,sequence.label(),links,items);
+                    PartialProgramAssembler.link(fact.header().id(),sequence.terminator(),sequence.label(),links,items);
+                }
             } else if(precise&&fact instanceof SpInput.MoveFact m&&normal!=null) {
                 instructions.addAll(RegionalMoveHandler.sequence(m,plan.fitted().contains(m.header().id()),data,plan.storage(),unit,ids,origins,operands,items,uncertainties));
                 term=PerformSequenceAssembler.jump("topology-normal",fact.header().id(),normal,evidence(published.getFirst().id(),published.getFirst().proofs(),ids),unit,ids);
@@ -612,7 +621,8 @@ final class TopologyProgramAssembler {
     private boolean varyingEffectAvailable(SpInput.ProcedurePerformFact p) {
         if(p.varying().isEmpty())return false;
         var controls=p.varying().orElseThrow().controls();
-        return PerformVaryingAdmission.levelExecutable(controls,declarations::get)
+        return p.varying().orElseThrow().levels()==1
+            &&PerformVaryingAdmission.levelExecutable(controls,declarations::get)
             &&controls.stream().flatMap(o->o.references().stream()).allMatch(r->r.wholeItemAccess()
                 .filter(w->data.index().containsKey(w.data())).isPresent());
     }
@@ -642,7 +652,7 @@ final class TopologyProgramAssembler {
         } else {var p=phasePayload((SpInput.ProcedurePerformFact)fact,phase.level());
             var phaseIds=phase.level()==0?context.ids():context.ids().activation("phase:"+phase.id());
             term=switch(phase.operation()) {
-            case "UNTIL_PREDICATE" -> PerformLoopAssembler.decision(p,destinations.get("false"),destinations.get("true"),data,unit,phaseIds,origins,operands,items,uncertainties);
+            case "UNTIL_PREDICATE" -> PerformLoopAssembler.decision(p,Math.max(1,phase.level()),destinations.get("false"),destinations.get("true"),data,unit,phaseIds,origins,operands,items,uncertainties);
             case "COUNT_ENTRY","COUNT_REPEAT" -> PerformLoopAssembler.countDecision(p,phase.operation().equals("COUNT_ENTRY"),destinations.get("false"),destinations.get("true"),data,unit,phaseIds,origins,operands,items,uncertainties);
             case "VARY_INITIAL","VARY_UPDATE" -> !varyingEffectAvailable(p)
                 ?PartialProgramAssembler.opaque(fact,destinations.get("next"),data,unit,phaseIds.activation("unavailable-phase:"+phase.id()),origins,uncertainties,operands,true,"PERFORM_VARYING_OPERANDS_UNAVAILABLE")

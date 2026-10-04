@@ -8,6 +8,7 @@ import io.github.gustavo2358.lower.adapters.cli.CobolLower;
 import io.github.gustavo2358.lower.adapters.sp.SpJsonDecoder;
 import io.github.gustavo2358.lower.application.*;
 import io.github.gustavo2358.lower.domain.SpInput;
+import io.github.gustavo2358.lower.domain.ControlTopology;
 import io.github.gustavo2358.lower.testing.IfInputs;
 import java.util.*;
 import static io.github.gustavo2358.lower.testing.CallOracle.check;
@@ -26,7 +27,20 @@ public final class ConditionalGoToIntegrationSuite {
         return input.statements().stream().filter(SpInput.ConditionalGoToFact.class::isInstance).map(SpInput.ConditionalGoToFact.class::cast).findFirst().orElseThrow();
     }
     private static SpInput replace(SpInput input,SpInput.ConditionalGoToFact g) {
-        return IfInputs.with(input,"statements",input.statements().stream().map(s->s.header().id().equals(g.header().id())?g:s).toList());
+        var topology=input.controlTopology().orElseThrow();
+        var owner=g.header().id().handle();
+        var occurrence=topology.occurrences().stream().filter(o->o.statement().equals(owner)).findFirst().orElseThrow();
+        var outcomes=new ArrayList<>(topology.outcomes().stream().filter(o->!o.statement().equals(owner)||o.kind()!=ControlTopology.OutcomeKind.EXPLICIT_TRANSFER).toList());
+        var ids=new ArrayList<>(outcomes.stream().filter(o->o.statement().equals(owner)).map(ControlTopology.Outcome::id).toList());
+        for(var destination:g.destinations()) {
+            String id="test-outcome/"+owner+"/"+ids.size();ids.add(id);
+            var target=destination.targetEntry().map(e->new ControlTopology.Target(ControlTopology.TargetKind.OCCURRENCE,e.handle(),occurrence.proofs()))
+                .orElse(new ControlTopology.Target(ControlTopology.TargetKind.UNKNOWN_LOCAL,occurrence.region(),occurrence.proofs()));
+            outcomes.add(new ControlTopology.Outcome(id,owner,ControlTopology.OutcomeKind.EXPLICIT_TRANSFER,"target-"+ids.size(),target,"",occurrence.proofs()));
+        }
+        var changed=new ControlTopology.Occurrence(owner,occurrence.region(),ids,occurrence.proofs());
+        topology=new ControlTopology(topology.authority(),topology.occurrences().stream().map(o->o.statement().equals(owner)?changed:o).toList(),topology.regions(),topology.boundaries(),outcomes,topology.bindings(),topology.proofs(),topology.exceptionalEvents(),topology.fileFlows(),topology.sourceContinuations(),topology.entryPoints(),topology.conditionRegistrations(),topology.conditionEvents());
+        return IfInputs.with(IfInputs.with(input,"statements",input.statements().stream().map(s->s.header().id().equals(g.header().id())?g:s).toList()),"controlTopology",Optional.of(topology));
     }
     private static void invalid(SpInput input,String reason) {
         var r=new CobolLowerer().lower(input,CobolLower.OPTIONS);check(r.status()==LoweringResult.Status.INVALID_INPUT,"reject "+reason+": "+r.status());
@@ -49,7 +63,29 @@ public final class ConditionalGoToIntegrationSuite {
         var roots=new ArrayList<SpInput.StatementId>();for(var id:base.structure().roots())if(id.equals(g.header().id()))roots.addAll(ids);else roots.add(id);
         var entry=base.entryInventory().entries().getFirst();entry=IfInputs.with(entry,"start",new SpInput.ExecutableStart(SpInput.Availability.KNOWN,Optional.of(ids.getFirst())));
         var coverage=IfInputs.with(IfInputs.with(base.coverage(),"observedStatements",base.coverage().observedStatements()+n-1),"modeledStatements",base.coverage().modeledStatements()+n-1);
-        return IfInputs.with(IfInputs.with(IfInputs.with(IfInputs.with(base,"statements",facts),"structure",IfInputs.with(base.structure(),"roots",roots)),"entryInventory",IfInputs.with(base.entryInventory(),"entries",List.of(entry))),"coverage",coverage);
+        var topology=base.controlTopology().orElseThrow();String old=g.header().id().handle();
+        var original=topology.occurrences().stream().filter(o->o.statement().equals(old)).findFirst().orElseThrow();
+        var originalOutcomes=topology.outcomes().stream().filter(o->o.statement().equals(old)).toList();
+        var occurrences=new ArrayList<>(topology.occurrences().stream().filter(o->!o.statement().equals(old)).toList());
+        var outcomes=new ArrayList<>(topology.outcomes().stream().filter(o->!o.statement().equals(old)).toList());
+        for(int i=0;i<n;i++) {
+            String owner=ids.get(i).handle();var outcomeIds=new ArrayList<String>();
+            for(var outcome:originalOutcomes) {
+                String id="clone/"+owner+"/"+outcome.role();outcomeIds.add(id);var target=outcome.target();
+                if(outcome.kind()==ControlTopology.OutcomeKind.NORMAL&&i+1<n)
+                    target=new ControlTopology.Target(ControlTopology.TargetKind.OCCURRENCE,ids.get(i+1).handle(),outcome.proofs());
+                outcomes.add(new ControlTopology.Outcome(id,owner,outcome.kind(),outcome.role(),target,outcome.binding(),outcome.proofs()));
+            }
+            occurrences.add(new ControlTopology.Occurrence(owner,original.region(),outcomeIds,original.proofs()));
+        }
+        var regions=topology.regions().stream().map(region->{
+            var members=new ArrayList<String>();for(var member:region.members())if(member.equals(old))ids.forEach(id->members.add(id.handle()));else members.add(member);
+            var target=region.entry();if(target.kind()==ControlTopology.TargetKind.OCCURRENCE&&target.reference().equals(old))target=new ControlTopology.Target(target.kind(),ids.getFirst().handle(),target.proofs());
+            return new ControlTopology.Region(region.id(),region.kind(),region.parent(),target,members,region.regions(),region.boundary(),region.proofs());
+        }).toList();
+        topology=new ControlTopology(topology.authority(),occurrences,regions,topology.boundaries(),outcomes,topology.bindings(),topology.proofs(),topology.exceptionalEvents(),topology.fileFlows(),topology.sourceContinuations(),topology.entryPoints(),topology.conditionRegistrations(),topology.conditionEvents());
+        var result=IfInputs.with(IfInputs.with(IfInputs.with(IfInputs.with(base,"statements",facts),"structure",IfInputs.with(base.structure(),"roots",roots)),"entryInventory",IfInputs.with(base.entryInventory(),"entries",List.of(entry))),"coverage",coverage);
+        return IfInputs.with(result,"controlTopology",Optional.of(topology));
     }
     public static void run() throws Exception {
         var raw=fixture();var base=decode(raw);var g=transfer(base);var codec=new AirJson();

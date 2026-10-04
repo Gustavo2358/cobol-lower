@@ -11,7 +11,7 @@ final class PerformVaryingAdmission {
         catch(NumberFormatException ignored) { return false; }
     }
     static boolean integerReference(DataReference r,OperandRole role,EntryGobackAdmission.Context c) {
-        return integerReference(r,role,c::data);
+        return integerReference(r,role,c::data)&&NumericMoveAdmission.exactCell(r,c);
     }
     static boolean integerReference(DataReference r,OperandRole role,java.util.function.Function<DataId,DataFact> lookup) {
         return r.role()==role && r.provenance().exact() && r.binding().status()==ResolutionStatus.RESOLVED
@@ -21,7 +21,8 @@ final class PerformVaryingAdmission {
     static boolean executable(ProcedurePerformFact p,EntryGobackAdmission.Context c) {
         if(p.varying().isEmpty())return true;
         var v=p.varying().orElseThrow();
-        return v.levels()==1&&v.controls().stream().allMatch(o->o.level()==1)&&levelExecutable(v.controls(),c::data);
+        return v.levels()==1&&v.controls().stream().allMatch(o->o.level()==1)&&levelExecutable(v.controls(),c::data)
+            &&v.controls().stream().flatMap(o->o.references().stream()).allMatch(r->NumericMoveAdmission.exactCell(r,c));
     }
     static boolean levelExecutable(List<VaryingOperand> controls,java.util.function.Function<DataId,DataFact> lookup) {
         if(controls.size()!=3)return false;
@@ -47,6 +48,8 @@ final class PerformVaryingAdmission {
             o.integer().ifPresent(i->need(p,c,canonical(i),"canonical integer operand"));
             for(var r:o.references()) {
                 CallAdmission.reference(r,p.header(),seen,c);
+                if(integerReference(r,r.role(),c::data))need(p,c,NumericMoveAdmission.exactCell(r,c),
+                    "VARYING whole integer operands require a proved independent cell");
                 need(p,c,r.role()==OperandRole.READ || o.role()==VaryingOperandRole.CONTROL_VARIABLE && r.role()==OperandRole.WRITE,"typed varying operand role");
             }
         }

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F03-chain-live-064.json",
-  "sourceSha256" : "6d92f21ac4de2841812f88dddeaba92ae02c9f8f55a1a769a3fcdea66a514957",
+  "referenceSourceSha256": "6d92f21ac4de2841812f88dddeaba92ae02c9f8f55a1a769a3fcdea66a514957",
+  "sourceSha256": "1037074d44f173d51e96e97272eb399eee510408c7ed145af69fda1755ab95ea",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

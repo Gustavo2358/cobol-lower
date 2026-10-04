@@ -30,7 +30,7 @@ final class GoToAdmission {
             need(g,c,r.role()==OperandRole.READ&&r.provenance().equals(g.selectorOrigin()),"conditional selector is one source read");
         });
         need(g,c,!g.selectorInteger()||g.selector().filter(r->r.provenance().exact()
-            &&r.wholeItemAccess().filter(w->c.data(w.data())!=null&&PerformCountAdmission.integer(c.data(w.data()))).isPresent()).isPresent(),"integer selector requires integer declaration");
+            &&NumericMoveAdmission.exactCell(r,c)&&r.wholeItemAccess().filter(w->c.data(w.data())!=null&&PerformCountAdmission.integer(c.data(w.data()))).isPresent()).isPresent(),"integer selector requires integer declaration");
         int ordinal=0;
         for(var d:g.destinations()) {
             c.touch();need(g,c,d.ordinal()==ordinal++,"contiguous ordered destination ordinals");

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compact-perform/cics-escape-until.json",
-  "sourceSha256" : "ff81b1096dfd39718b7611db31b665b4b17dcf569196040155034727fc0f91a9",
+  "referenceSourceSha256": "ff81b1096dfd39718b7611db31b665b4b17dcf569196040155034727fc0f91a9",
+  "sourceSha256": "bd95f1ac9cd377ea05cf2ad664524939ed9f42d126ed02358539716ea96ae350",
   "variant" : "unspecified",
   "states" : [ {
     "statement:4:opaque" : 1

@@ -23,13 +23,19 @@ public final class HandlerStateSuite {
             if(in==null)throw new AssertionError("fixture "+name);return (ObjectNode)JSON.readTree(in);
         }
     }
-    private static Run run(String name) throws Exception {return run(wire(name));}
-    private static Run run(ObjectNode wire) throws Exception {
+    private static Run run(String name) throws Exception {return run(name,false);}
+    private static Run run(String name,boolean dispatch) throws Exception {
+        int before=failures.size();var result=run(wire(name),dispatch);
+        for(int i=before;i<failures.size();i++)failures.set(i,name+": "+failures.get(i));
+        return result;
+    }
+    private static Run run(ObjectNode wire) throws Exception {return run(wire,false);}
+    private static Run run(ObjectNode wire,boolean dispatch) throws Exception {
         var decoded=new SpJsonDecoder(CobolLower.INPUT_LIMITS).decode(JSON.writeValueAsBytes(wire));
         if(!(decoded instanceof SpJsonDecoder.Decoded d))throw new AssertionError("fixture decode "+decoded);
         var result=new CobolLowerer().lower(d.input(),CobolLower.OPTIONS);
-        need(result.status()==LoweringResult.Status.IMPLEMENTATION_LIMIT,"valid input stays NOT_READY "+result.status());
-        need(result.publication().isEmpty(),"no AIR publication");
+        need(result.status()==(dispatch?LoweringResult.Status.SUCCESS:LoweringResult.Status.IMPLEMENTATION_LIMIT),"expected projection status "+result.status());
+        need(result.publication().isPresent()==dispatch,"AIR only for the current executable fixture");
         need(result.admission().input().orElseThrow().equals(d.input()),"typed input preserved");
         var analysis=result.admission().handlerState().orElseThrow();
         var reverse=HandlerStateScheduleProbe.reverse(d.input());
@@ -39,7 +45,8 @@ public final class HandlerStateSuite {
         for(var edge:analysis.derivations())need(nodes.contains(edge.destination())&&edge.source().map(nodes::contains).orElse(true)
             &&edge.callerPremise().map(nodes::contains).orElse(true),"causal references belong to reached facts");
         for(var event:analysis.events()) {
-            need(analysis.derivations().stream().noneMatch(e->e.source().filter(n->n.location().equals(event.statement().handle())).isPresent()),"ABEND emits no continuation");
+            var outgoing=analysis.derivations().stream().filter(e->e.source().filter(n->n.location().equals(event.statement().handle())).isPresent()).toList();
+            need(dispatch?outgoing.stream().allMatch(e->e.authority().startsWith("event:"+event.statement().handle()+"/EXPLICIT_ABEND/SELECT/")):outgoing.isEmpty(),"ABEND has only certified handler dispatch, never normal continuation");
             for(var c:event.candidates()) {
                 need(!c.activations().isEmpty(),"candidate has positive activation provenance");
                 for(var id:c.activations())need(analysis.operations().stream().anyMatch(o->o.statement().equals(id)&&!o.afterSuccessfulCompletion().isEmpty()),"candidate activation actually reached and completed");
@@ -131,7 +138,9 @@ public final class HandlerStateSuite {
         var eligibleResult=run(eligible);expected(eligibleResult,0,Set.of(target(eligibleResult,"statement:0")),false,false,false,false);
         need(event(eligibleResult,0).before().equals(event(bypass,0).before()),"M10 eligibility changes assessment only");
         need(event(run("no-return"),0).status()==EventStatus.NOT_REACHED_IN_PUBLISHED_TOPOLOGY,"recursive call cannot fabricate a return");
-        run("perform-times");
+        var times=run("perform-times",true);
+        expected(times,0,Set.of(target(times,"statement:3")),false,false,false,false);
+        need(times.analysis().selections().stream().anyMatch(s->s.localEntry().isPresent()&&s.target().equals(Optional.of(target(times,"statement:3")))),"PERFORM replacement selects B through explicit ABEND");
         // M7: independent frontend unit products, same spelling and ordinal identities.
         var first=run("two-active-units");var second=run("two-active-units-second");
         need(!first.input().unit().equals(second.input().unit()),"units distinct");

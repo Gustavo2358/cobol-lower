@@ -162,8 +162,15 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         }
     }
 
-    public record ScalarInteger(int digits) { }
-    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarInteger> scalarInteger) {
+    public record ScalarNumber(int digits,int scale,boolean signed,String representation,String trunc) { }
+    public record EditPart(String kind,int count,String text,String negative) { }
+    public record ScalarEdit(List<EditPart> parts,int digits,int scale,int extent) {
+        public ScalarEdit {parts=List.copyOf(parts);}
+    }
+    public record DataFact(DataId id, String canonicalName, Optional<String> picture, Provenance provenance, CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarNumber> scalarNumber,Optional<ScalarEdit> scalarEdit) {
+        public DataFact(DataId id,String canonicalName,Optional<String> picture,Provenance provenance,CoverageStatus coverage,Readiness readiness,Optional<ScalarText> scalarText,Optional<ScalarNumber> scalarNumber) {
+            this(id,canonicalName,picture,provenance,coverage,readiness,scalarText,scalarNumber,Optional.empty());
+        }
         public DataFact(DataId id,String canonicalName,Optional<String> picture,Provenance provenance,CoverageStatus coverage,Readiness readiness,Optional<ScalarText> scalarText) {
             this(id,canonicalName,picture,provenance,coverage,readiness,scalarText,Optional.empty());
         }
@@ -171,7 +178,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
             this(id, canonicalName, picture, provenance, coverage, readiness, Optional.empty());
         }
         public DataFact {
-            Objects.requireNonNull(scalarText, "scalarText");Objects.requireNonNull(scalarInteger);
+            Objects.requireNonNull(scalarText, "scalarText");Objects.requireNonNull(scalarNumber);Objects.requireNonNull(scalarEdit);
             Objects.requireNonNull(id, "id");
             Objects.requireNonNull(canonicalName, "canonicalName");
             Objects.requireNonNull(picture, "picture");
@@ -277,9 +284,11 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public enum LogicalDomain { TEXT }
     public enum StorageClass { WORKING_STORAGE }
     public enum DeclarationScope { LOCAL }
-    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, POSSIBLE_TEXT, UNAVAILABLE }
+    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, FORMATTED_NUMBER, POSSIBLE_TEXT, UNAVAILABLE }
     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
-    public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
+    public enum LiteralKind { ALPHANUMERIC, NUMERIC, FIGURATIVE_ZERO, FIGURATIVE_LOW, FIGURATIVE_HIGH, UNKNOWN;
+        public boolean collatingFill(){return this==FIGURATIVE_LOW||this==FIGURATIVE_HIGH;}
+    }
     public enum OperandRole { READ, WRITE, CALL_TARGET }
     public enum ResolutionStatus { RESOLVED, AMBIGUOUS, UNRESOLVED, INPUT_MISSING }
     public record OperandId(StatementId statement, String handle) {
@@ -312,7 +321,13 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record WholeItemAccess(DataId data) {
         public WholeItemAccess { Objects.requireNonNull(data); }
     }
-    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess,List<StorageFacts.Access> regionalAlternatives,Optional<DataId> logicalWholeItem) implements MoveSource {
+    public record LogicalSlice(DataId data,java.math.BigInteger start,java.math.BigInteger length) {
+        public LogicalSlice { Objects.requireNonNull(data);Objects.requireNonNull(start);Objects.requireNonNull(length); }
+    }
+    public record DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess,List<StorageFacts.Access> regionalAlternatives,Optional<DataId> logicalWholeItem,Optional<LogicalSlice> logicalSlice) implements MoveSource {
+        public DataReference(OperandId id,OperandRole role,Binding binding,Optional<WholeItemAccess> wholeItemAccess,Provenance provenance,Optional<StorageFacts.Access> regionalAccess,List<StorageFacts.Access> regionalAlternatives,Optional<DataId> logicalWholeItem) {
+            this(id,role,binding,wholeItemAccess,provenance,regionalAccess,regionalAlternatives,logicalWholeItem,Optional.empty());
+        }
         public DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance, Optional<StorageFacts.Access> regionalAccess,List<StorageFacts.Access> regionalAlternatives) {
             this(id,role,binding,wholeItemAccess,provenance,regionalAccess,regionalAlternatives,Optional.empty());
         }
@@ -322,14 +337,14 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public DataReference(OperandId id, OperandRole role, Binding binding, Optional<WholeItemAccess> wholeItemAccess, Provenance provenance) {
             this(id,role,binding,wholeItemAccess,provenance,Optional.empty());
         }
-        public DataReference { Objects.requireNonNull(logicalWholeItem); regionalAlternatives=List.copyOf(regionalAlternatives); Objects.requireNonNull(regionalAccess); Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
+        public DataReference { Objects.requireNonNull(logicalSlice); Objects.requireNonNull(logicalWholeItem); regionalAlternatives=List.copyOf(regionalAlternatives); Objects.requireNonNull(regionalAccess); Objects.requireNonNull(id); Objects.requireNonNull(role); Objects.requireNonNull(binding); Objects.requireNonNull(wholeItemAccess); Objects.requireNonNull(provenance); }
     }
     public record NormalContinuation(ContinuationAvailability availability, Optional<StatementId> statement, Provenance provenance) {
         public NormalContinuation { Objects.requireNonNull(availability); Objects.requireNonNull(statement); Objects.requireNonNull(provenance); }
     }
-    public enum TextAdjustmentRule { RIGHT_PAD_SPACE }
-    public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, LogicalValue result, Provenance provenance) {
-        public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance); }
+    public enum TextAdjustmentRule { RIGHT_PAD_SPACE, RIGHT_FIT_SPACE, ZERO_FILL }
+    public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent, Provenance provenance) {
+        public TextAdjustment { Objects.requireNonNull(rule); Objects.requireNonNull(provenance); }
     }
     public record MoveTransfer(MoveSource source,DataReference target,StorageFacts.Move effect) {
         public MoveTransfer { Objects.requireNonNull(source);Objects.requireNonNull(target);Objects.requireNonNull(effect); }
@@ -337,11 +352,11 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
     public record LogicalTransfer(OperandId target,LogicalValue value) {
         public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
-    public record IntegerTransfer(OperandId target,Optional<java.math.BigInteger> value) {
-        public IntegerTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    public record NumericTransfer(OperandId target,Optional<java.math.BigDecimal> value) {
+        public NumericTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
     public record MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<IntegerTransfer> integerTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<NumericTransfer> numericTransfers) implements StatementFact {
         public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<StorageFacts.Move> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,logicalTransfers,List.of());
         }
@@ -363,7 +378,7 @@ public record SpInput(UnitKey unit, Policy policy, List<DataFact> dataDeclaratio
         public MoveFact(StatementHeader header, MoveSource source, DataReference target, CopySemantics copySemantics, NormalContinuation normalContinuation) {
             this(header, source, target, copySemantics, normalContinuation, Optional.empty());
         }
-        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);integerTransfers=List.copyOf(integerTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
+        public MoveFact { additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);numericTransfers=List.copyOf(numericTransfers);Objects.requireNonNull(regionalMove); Objects.requireNonNull(header); Objects.requireNonNull(source); Objects.requireNonNull(target); Objects.requireNonNull(copySemantics); Objects.requireNonNull(normalContinuation); Objects.requireNonNull(textAdjustment); }
     }
 
     /** Input facts are preserved; no executable handler/event lowering is qualified. */

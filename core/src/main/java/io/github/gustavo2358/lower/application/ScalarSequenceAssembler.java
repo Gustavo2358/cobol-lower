@@ -12,7 +12,7 @@ final class ScalarSequenceAssembler {
         var label = new LabelId(unit, ids.id("label", "scalar-linear-sequence", unit.localId(), plan.moves().getFirst().header().id().handle()));
         var instructions = new ArrayList<Instruction>(); var inputs = new ArrayList<OriginId>(); inputs.add(entryOrigin);
         for (var move : plan.moves()) {
-            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands, items);
+            var assign = MoveHandler.translate(move, data, unit, ids, origins, operands,items,uncertainties);
             instructions.add(assign); inputs.add(assign.header().origin());
             inputs.add(origins.source("continuation", move.header().id().handle(), move.normalContinuation().provenance()));
             statements.add(new LoweringResult.StatementLink(move.header().id(), assign.header().id(), label, assign.header().origin()));

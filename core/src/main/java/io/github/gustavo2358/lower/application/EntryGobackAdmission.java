@@ -30,6 +30,12 @@ public final class EntryGobackAdmission implements AdmitInput {
         }
     }
 
+    static boolean validNumber(ScalarNumber n) {
+        return n.trunc()!=null&&Set.of("UNSPECIFIED","STD","BIN","OPT").contains(n.trunc())
+            &&(Objects.equals(n.representation(),"BINARY")||n.trunc().equals("UNSPECIFIED"))&&n.digits()>0&&n.digits()<=31&&n.scale()>= -31&&n.scale()<=31
+            &&n.representation()!=null&&Set.of("DISPLAY","PACKED_DECIMAL","BINARY","NATIVE_BINARY").contains(n.representation())
+            &&(!Set.of("BINARY","NATIVE_BINARY").contains(n.representation())||n.digits()<=18);
+    }
     static void validate(SpInput input, Context c) {
         c.touch();
         var unit = input.unit();
@@ -38,8 +44,9 @@ public final class EntryGobackAdmission implements AdmitInput {
         c.require(!input.policy().policyId().isBlank() && !input.policy().version().isBlank(), Rule.IDENTITY, "policy", null, "Policy identity/version are explicit");
         var points = new HashSet<Integer>();
         for (var data : input.dataDeclarations()) {
-            c.require(data.scalarInteger().isEmpty()||data.scalarText().isEmpty()&&data.scalarInteger().get().digits()>0
-                &&data.provenance().exact()&&data.coverage()==CoverageStatus.MODELED,Rule.PROFILE_FACT,data.id().handle(),data.provenance(),"integer storage proof is exclusive, positive and exact");
+            c.require(NumericFormatting.valid(data),Rule.PROFILE_FACT,data.id().handle(),data.provenance(),"numeric editing descriptor must match its text domain and segment widths");
+            c.require(data.scalarNumber().isEmpty()||data.scalarText().isEmpty()&&validNumber(data.scalarNumber().get())
+                &&data.coverage()==CoverageStatus.MODELED,Rule.PROFILE_FACT,data.id().handle(),data.provenance(),"integer storage proof is exclusive, positive and exact");
             c.touch(); c.identity(data.id().unit(), data.id().handle(), "data", data.provenance());
             c.require(c.data.putIfAbsent(data.id(), data) == null, Rule.DUPLICATE_ID, data.id().handle(), data.provenance(), "Unique DATA identity");
             c.require(!data.canonicalName().isBlank() && data.picture().map(p -> !p.isBlank()).orElse(true), Rule.IDENTITY, data.id().handle(), data.provenance(), "Nonblank DATA text when present");
@@ -93,7 +100,7 @@ public final class EntryGobackAdmission implements AdmitInput {
             boolean noOp = statement instanceof OtherStatement o && o.variant() == Variant.OBSERVED
                 && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                 && diagnosticEvidence.localControl(h.id().handle());
-            boolean currentCapability = statement instanceof MoveFact m&&m.integerTransfers().size()==1+m.additionalTransfers().size()&&diagnosticEvidence.localControl(h.id().handle()) || noOp || (conditionSets.contains(h.id().handle())||conditionIfs.contains(h.id().handle()))&&diagnosticEvidence.localControl(h.id().handle()) || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
+            boolean currentCapability = statement instanceof MoveFact m&&m.numericTransfers().size()==1+m.additionalTransfers().size()&&diagnosticEvidence.localControl(h.id().handle()) || noOp || (conditionSets.contains(h.id().handle())||conditionIfs.contains(h.id().handle()))&&diagnosticEvidence.localControl(h.id().handle()) || statement instanceof ProcedurePerformFact && diagnosticEvidence.invocation(h.id().handle())
                 || !(statement instanceof OtherStatement) && h.coverage() == CoverageStatus.PARTIAL
                 && h.readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                 && diagnosticEvidence.membership(h.id().handle());

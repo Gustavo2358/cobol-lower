@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "compositional-perform-r1/F02-inner-times.json",
-  "sourceSha256" : "ae99d19578f0ceff53651e2bc3d049d6e624e5e95ee8c2c98571602447948a2f",
+  "referenceSourceSha256": "ae99d19578f0ceff53651e2bc3d049d6e624e5e95ee8c2c98571602447948a2f",
+  "sourceSha256": "3e59ed2159f3091d15557e310548d1b731630a4c275717f161932a5fd3639ec7",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1

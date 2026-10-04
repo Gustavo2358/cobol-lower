@@ -76,7 +76,7 @@ public final class PerformReentrySuite {
             }
             for(var mode:List.of("missing","null","invalid","downgrade","future")) {
                 var changed=j.deepCopy();var b=(ObjectNode)changed.path("controlTopology").path("bindings").get(0);
-                switch(mode){case "missing"->b.remove("reentryPolicy");case "null"->b.putNull("reentryPolicy");case "invalid"->b.put("reentryPolicy","RECURSION_IS_FINE");case "downgrade"->changed.put("contractVersion","2.56.0");case "future"->changed.put("contractVersion","2.66.0");}
+                switch(mode){case "missing"->b.remove("reentryPolicy");case "null"->b.putNull("reentryPolicy");case "invalid"->b.put("reentryPolicy","RECURSION_IS_FINE");case "downgrade"->changed.put("contractVersion","2.56.0");case "future"->changed.put("contractVersion","2.67.0");}
                 need(CobolControlSuite.decode(changed) instanceof SpJsonDecoder.Rejected,"reject invalid contract "+mode);mutations++;
             }
             var old=j.deepCopy();old.put("contractVersion","2.56.0");old.path("controlTopology").path("bindings").forEach(b->((ObjectNode)b).remove("reentryPolicy"));

@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/legacy-ordinary-incoming-live.json",
-  "sourceSha256" : "336bb3152b43fff994a47e71ca56ef423215edf3a8abee49ace87e7bb7666173",
+  "referenceSourceSha256": "336bb3152b43fff994a47e71ca56ef423215edf3a8abee49ace87e7bb7666173",
+  "sourceSha256": "2653c089da8852d1e61435851cca0e57422db0c8a9df3f8356e202247a22a7a3",
   "variant" : "published",
   "states" : [ {
     "statement:2:assign" : 1

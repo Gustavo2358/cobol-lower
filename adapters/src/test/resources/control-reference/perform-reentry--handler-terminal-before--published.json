@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "perform-reentry/handler-terminal-before.json",
-  "sourceSha256" : "66b04248962e3c52c61f3e822864760c655c846b406ece94cb9137594dd94024",
+  "referenceSourceSha256": "66b04248962e3c52c61f3e822864760c655c846b406ece94cb9137594dd94024",
+  "sourceSha256": "dccbb6b6d8542277c4cb6f9176fdae21260c62722b085e95e67d257aae333999",
   "variant" : "published",
   "states" : [ {
     "statement:1:opaque" : 1

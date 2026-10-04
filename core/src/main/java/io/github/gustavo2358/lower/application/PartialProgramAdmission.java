@@ -59,7 +59,7 @@ final class PartialProgramAdmission {
                     Rule.ENTRY_START,"controlTopology",null,"usable authoritative topology entry required");
                 if(!c.diagnostics.isEmpty())return rejected(c,Status.BLOCKED_LOWERING);
             }
-            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||PerformCountAdmission.integer(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())||c.regionalStorage.logical().byData.containsKey(d.id())).toList());
+            var data=ScalarDataOrder.canonical(input.dataDeclarations().stream().filter(d->CallAdmission.scalar(d)||NumericMoveAdmission.numeric(d)||RegionalDataTranslator.textual(c.regionalStorage,d.id())||c.regionalStorage.logical().byData.containsKey(d.id())).toList());
             var mapped=new HashSet<DataId>(); data.forEach(d->mapped.add(d.id()));
             var precise=new HashSet<StatementId>(); var fitted=new HashSet<StatementId>();
             for(var s:input.statements()) {
@@ -80,7 +80,7 @@ final class PartialProgramAdmission {
                 else if(s instanceof GoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof ConditionalGoToFact g) eligible=GoToAdmission.precise(g);
                 else if(s instanceof GobackFact) eligible=true;
-                if(s instanceof MoveFact m&&(!m.integerTransfers().isEmpty()||!m.logicalTransfers().isEmpty()||m.regionalMove().isPresent()
+                if(s instanceof MoveFact m&&(!m.numericTransfers().isEmpty()||!m.logicalTransfers().isEmpty()||m.regionalMove().isPresent()
                     &&m.transfers().stream().anyMatch(t->t.effect().kind()!=io.github.gustavo2358.lower.domain.StorageFacts.MoveKind.UNAVAILABLE))) {
                     c.diagnostics.subList(before,c.diagnostics.size()).clear();eligible=true;
                 }

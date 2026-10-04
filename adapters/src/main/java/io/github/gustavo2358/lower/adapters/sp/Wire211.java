@@ -59,23 +59,24 @@ final class Wire211 {
     record ScalarDocument(LogicalDomain logicalDomain, int logicalExtent, StorageClass storageClass, DeclarationScope declarationScope) { }
     record LogicalDocument(LogicalDomain logicalDomain, String value, int logicalExtent) { }
     record WholeDocument(String data) { }
-    record IntegerDocument(int digits) { }
+    record NumberDocument(int digits,int scale,boolean signed,String representation,String trunc) { }
     record DataDocument(String id, String canonicalName, @Nullable String picture, Wire.ProvenanceDocument provenance,
-        CoverageStatus coverage, Wire.ReadinessDocument readiness, @Nullable ScalarDocument scalarText,@Nullable IntegerDocument scalarInteger) { }
+        CoverageStatus coverage, Wire.ReadinessDocument readiness, @Nullable ScalarDocument scalarText,@Nullable NumberDocument scalarNumber,@Nullable io.github.gustavo2358.lower.domain.SpInput.ScalarEdit scalarEdit) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "variant")
     @JsonSubTypes({@JsonSubTypes.Type(value = LiteralDocument.class, name = "LITERAL"),
         @JsonSubTypes.Type(value = DataSourceDocument.class, name = "DATA")})
     sealed interface MoveSourceDocument permits LiteralDocument, DataSourceDocument { }
     record DataSourceDocument(ReferenceDocument reference) implements MoveSourceDocument { }
     record LiteralDocument(String id, LiteralKind kind, String value, Wire.ProvenanceDocument provenance, @Nullable LogicalDocument logicalValue) implements MoveSourceDocument { }
-    record ReferenceDocument(String id, OperandRole role, Wire.BindingDocument binding, Wire.ProvenanceDocument provenance, @Nullable WholeDocument wholeItemAccess, @Nullable RegionalAccessDocument regionalAccess, @Nullable List<RegionalAccessDocument> regionalAlternatives, @Nullable String logicalWholeItem) {
-        ReferenceDocument(String id,OperandRole role,Wire.BindingDocument binding,Wire.ProvenanceDocument provenance,WholeDocument wholeItemAccess,RegionalAccessDocument regionalAccess){this(id,role,binding,provenance,wholeItemAccess,regionalAccess,null,null);}
+    record LogicalSliceDocument(String data,String start,String length) { }
+    record ReferenceDocument(String id, OperandRole role, Wire.BindingDocument binding, Wire.ProvenanceDocument provenance, @Nullable WholeDocument wholeItemAccess, @Nullable RegionalAccessDocument regionalAccess, @Nullable List<RegionalAccessDocument> regionalAlternatives, @Nullable String logicalWholeItem,@Nullable LogicalSliceDocument logicalSlice) {
+        ReferenceDocument(String id,OperandRole role,Wire.BindingDocument binding,Wire.ProvenanceDocument provenance,WholeDocument wholeItemAccess,RegionalAccessDocument regionalAccess){this(id,role,binding,provenance,wholeItemAccess,regionalAccess,null,null,null);}
     }
     record ContinuationDocument(ContinuationAvailability availability, @Nullable String statement, Wire.ProvenanceDocument provenance) { }
     record MoveDocument(Wire.StatementHeaderDocument header, MoveSourceDocument source, ReferenceDocument target,
         CopySemantics copySemantics, ContinuationDocument normalContinuation, @Nullable AdjustmentDocument textAdjustment, @Nullable RegionalMoveDocument regionalMove,List<MoveTransferDocument> additionalTransfers) implements StatementDocument { }
     record GobackDocument(Wire.StatementHeaderDocument header, GobackExit exit, LocalContinuation localContinuation) implements StatementDocument { }
-    record AdjustmentDocument(TextAdjustmentRule rule, int receiverExtent, LogicalDocument result, Wire.ProvenanceDocument provenance) { }
+    record AdjustmentDocument(TextAdjustmentRule rule, int receiverExtent, Wire.ProvenanceDocument provenance) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({@JsonSubTypes.Type(value = DataTargetDocument.class, name = "DATA"),
         @JsonSubTypes.Type(value = LiteralTargetDocument.class, name = "LITERAL")})

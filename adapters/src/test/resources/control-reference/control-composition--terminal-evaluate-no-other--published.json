@@ -1,7 +1,8 @@
 {
   "referenceCommit" : "cb1b87250f133535ab26a3056be0d6da144d81bf",
   "fixture" : "control-composition/terminal-evaluate-no-other.json",
-  "sourceSha256" : "47e78f177571942c4a1c7a7a7efbcf636dd89b0e6a4bce4aa56b63961636d1cd",
+  "referenceSourceSha256": "47e78f177571942c4a1c7a7a7efbcf636dd89b0e6a4bce4aa56b63961636d1cd",
+  "sourceSha256": "7bec0b373e37b51a167fb75e2c8f3195da4e74c3ee3d51b6226842bffa90d893",
   "variant" : "published",
   "states" : [ {
     "statement:0:assign" : 1
