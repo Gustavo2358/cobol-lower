@@ -780,6 +780,6 @@
       "sha256": "700a5e80a8211c6d326a4897ffad8596f359b3a1179aca780305d6f36a85a8f0"
     }
   ],
-  "implementation_state": "Priority2 MOVE merged in PR #58; final73 qualification and FAST passed. See docs/work/priority2-integration.md.",
+  "implementation_state": "Checkpoint3 predicates merged in PR #60, including BOOL codec fix; FAST and local qualification passed; CP1/CP2 preserved. See docs/domain/checkpoint3-predicates.md.",
   "metadata_scope": "Active SP pin is checkpoint3 merged main; AIR and normative IR unchanged; historical campaign evidence remains read-only."
 }
