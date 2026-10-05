@@ -1,6 +1,8 @@
 # Checkpoint 3 — predicados escalares
 
-Autorização: implementação solicitada em 2026-10-04; revisão por PR, sem merge.
+Autorização: implementação solicitada em 2026-10-04; fechamento documental e merge autorizados em seguida.
+
+Frontend integrado pelos PRs #88/#89, pin imutável `3bb653a62161626f804aa7ae90f5c9c24f2d581c`. Conteúdo semântico idêntico ao head qualificado `79908ed5c80a7ae5ecc2c85bb6592f4600c512de`; apenas documentação de fechamento mudou.
 
 ## Regra e autoridade antes da implementação
 
