@@ -30,13 +30,44 @@ final class ConditionNameLowerer {
     }
     private static String key(String statement,String role){return statement+"/"+role;}
     boolean has(String statement,String role){return predicates.containsKey(key(statement,role));}
+    /** Only a wholly literal Boolean tree closes control; no short-circuit of reads/effects. */
+    private static Optional<Boolean> constantBoolean(ConditionNames.Tree root) {
+        record Pending(ConditionNames.Tree tree,boolean finish) { }
+        var todo=new ArrayDeque<Pending>();var values=new IdentityHashMap<ConditionNames.Tree,Boolean>();
+        todo.push(new Pending(root,false));
+        while(!todo.isEmpty()) {
+            var next=todo.pop();var tree=next.tree();
+            if(!next.finish()&&!tree.children().isEmpty()) {
+                todo.push(new Pending(tree,true));
+                for(int i=tree.children().size()-1;i>=0;i--)todo.push(new Pending(tree.children().get(i),false));
+                continue;
+            }
+            if(tree.kind().equals("BOOL"))values.put(tree,Boolean.valueOf(tree.use()));
+            else if(tree.kind().equals("NOT")&&values.containsKey(tree.children().getFirst()))
+                values.put(tree,!values.get(tree.children().getFirst()));
+            else if((tree.kind().equals("AND")||tree.kind().equals("OR"))&&tree.children().stream().allMatch(values::containsKey)) {
+                boolean value=tree.kind().equals("AND");
+                for(var child:tree.children())value=tree.kind().equals("AND")?value&&values.get(child):value||values.get(child);
+                values.put(tree,value);
+            }
+        }
+        return Optional.ofNullable(values.get(root));
+    }
     Terminator branch(SpInput.StatementFact fact,String role,LabelId whenTrue,LabelId whenFalse,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties) {
         var operation=new OperationId(unit,ids.id("operation","condition-name-branch",unit.localId(),key(fact.header().id().handle(),role)));
+        var tree=predicates.get(key(fact.header().id().handle(),role));
+        var constant=constantBoolean(tree);
+        if(constant.isPresent()) {
+            var origin=origins.source("condition-name-decision",fact.header().id().handle(),fact.header().provenance());
+            var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
+            return new Operations.Jump(new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,
+                new Evidence.Precision(exact,exact,exact,exact,exact),List.of()),constant.get()?whenTrue:whenFalse);
+        }
         int before=uncertainties.size();
         var builder=new Builder(operation,ids,origins,uncertainties,fact.header().provenance());
         var previous=fact instanceof SpInput.IfFact f?TextPredicateLowerer.translate(f,operation,data,ids,origins,links,uncertainties):Optional.<Expression>empty();
-        var value=previous.orElseGet(()->builder.tree(predicates.get(key(fact.header().id().handle(),role))));
+        var value=previous.orElseGet(()->builder.tree(tree));
         var reasons=uncertainties.subList(before,uncertainties.size()).stream().map(Evidence.Uncertainty::id).toList();
         var origin=origins.source("condition-name-decision",fact.header().id().handle(),fact.header().provenance());
         var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
@@ -128,13 +159,17 @@ final class ConditionNameLowerer {
         private final Map<Expression,Types.Builtin> scalarTypes=new IdentityHashMap<>();
         private final Map<Expression,BigInteger> textLengths=new IdentityHashMap<>();
         Expression literal(ConditionNames.Tree tree,OriginId origin) {
+            // The pinned AIR JSON codec carries INT but not BoolValue. Preserve
+            // mixed Boolean trees without discarding their other reads/effects.
+            if(tree.kind().equals("BOOL"))return new Expressions.Binary(h(origin,Operand.Role.PREDICATE),Expressions.BinaryOperator.EQ,
+                new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),new Values.IntValue(BigInteger.ZERO)),
+                new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),new Values.IntValue(Boolean.parseBoolean(tree.use())?BigInteger.ZERO:BigInteger.ONE)));
             Values.LiteralValue value;
-            if(tree.kind().equals("BOOL"))value=new Values.BoolValue(Boolean.parseBoolean(tree.use()));
-            else if(tree.kind().equals("TEXT")||tree.kind().equals("SPACES"))value=new Values.TextValue(tree.use());
+            if(tree.kind().equals("TEXT")||tree.kind().equals("SPACES"))value=new Values.TextValue(tree.use());
             else {var n=new java.math.BigDecimal(tree.kind().equals("ZERO")?"0":tree.use());
                 value=n.scale()<=0?new Values.IntValue(n.toBigIntegerExact()):new Values.DecimalValue(n.unscaledValue(),BigInteger.valueOf(n.scale()));}
             var result=new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),value);
-            scalarTypes.put(result,value instanceof Values.TextValue?Types.Builtin.TEXT:value instanceof Values.BoolValue?Types.Builtin.BOOL:value instanceof Values.IntValue?Types.Builtin.INT:Types.Builtin.DECIMAL);
+            scalarTypes.put(result,value instanceof Values.TextValue?Types.Builtin.TEXT:value instanceof Values.IntValue?Types.Builtin.INT:Types.Builtin.DECIMAL);
             if(value instanceof Values.TextValue text)textLengths.put(result,BigInteger.valueOf(text.value().codePointCount(0,text.value().length())));
             return result;
         }
