@@ -1,5 +1,7 @@
 # Checkpoint 3 — predicados escalares
 
+Estado: **MERGED / DONE**, [PR #60](https://github.com/Gustavo2358/cobol-lower/pull/60), merge `4e8e10184907919a0754c2e68585dd7c60482ff7`. FAST remoto do head com pin integrado passou. A árvore mergeada é idêntica ao head `9763601018f9f297d33641a3fe8b1bb8493fc7ac`; código/testes/build permanecem idênticos à correção BOOL qualificada `da89df61ed15b9fbd17e567d739f5440535d6b49`. Full73 e os oito E2Es/codec são evidências reutilizadas, sem nova execução por documentação e pins equivalentes.
+
 Autorização: implementação solicitada em 2026-10-04; fechamento documental e merge autorizados em seguida.
 
 Frontend integrado pelos PRs #88/#89, pin imutável `3bb653a62161626f804aa7ae90f5c9c24f2d581c`. Conteúdo semântico idêntico ao head qualificado `79908ed5c80a7ae5ecc2c85bb6592f4600c512de`; apenas documentação de fechamento mudou.
