@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. UNTYPED.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 GROUP-A.
+         05 FLAG-A PIC X VALUE 'Y'.
+       PROCEDURE DIVISION.
+       IF GROUP-A = 'Y'
+           CALL 'POSSIBLE'
+       END-IF.
+       GOBACK.

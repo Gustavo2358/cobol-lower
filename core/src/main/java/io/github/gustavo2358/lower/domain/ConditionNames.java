@@ -31,12 +31,21 @@ public record ConditionNames(List<Definition> definitions,List<Use> uses,List<As
     }
     public record Tree(String kind,String use,List<Tree> children) {
         public Tree {Objects.requireNonNull(use);children=List.copyOf(children);
-            require(switch(kind){case "TEST"->!use.isBlank()&&children.isEmpty();case "UNKNOWN"->use.isEmpty()&&children.isEmpty();case "NOT"->use.isEmpty()&&children.size()==1;case "AND","OR"->use.isEmpty()&&children.size()>=2;default->false;},"condition tree shape");}
+            require(switch(kind){case "TEST"->!use.isBlank()&&children.stream().allMatch(c->c.kind().equals("READ"));
+                case "READ"->!use.isBlank()&&children.stream().allMatch(c->c.kind().equals("READ"));
+                case "NUMBER"->!use.isBlank()&&children.isEmpty();
+                case "TEXT"->children.isEmpty();
+                case "BOOL"->Set.of("true","false").contains(use)&&children.isEmpty();
+                case "SPACES","ZERO","LOW_VALUES","HIGH_VALUES"->use.isEmpty()&&children.isEmpty();
+                case "EQ","NE","LT","LE","GT","GE"->use.isEmpty()&&children.size()==2&&children.stream().allMatch(Tree::valueTerm);
+                case "UNKNOWN"->Set.of("","PURE","READS_OPEN").contains(use)&&children.stream().allMatch(c->c.kind().equals("READ"));case "NOT"->use.isEmpty()&&children.size()==1&&children.get(0).booleanTerm();case "AND","OR"->use.isEmpty()&&children.size()>=2&&children.stream().allMatch(Tree::booleanTerm);default->false;},"condition tree shape");if(kind.equals("NUMBER"))new java.math.BigDecimal(use);}
+        public boolean booleanTerm(){return Set.of("TEST","UNKNOWN","BOOL","NOT","AND","OR","EQ","NE","LT","LE","GT","GE").contains(kind);}
+        public boolean valueTerm(){return Set.of("READ","NUMBER","TEXT","SPACES","ZERO","LOW_VALUES","HIGH_VALUES","BOOL").contains(kind);}
         public boolean complete(){var todo=new ArrayDeque<Tree>();todo.add(this);while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("UNKNOWN"))return false;todo.addAll(t.children());}return true;}
     }
     public record Predicate(String statement,String role,Tree tree) {
         public Predicate {
-            text(statement); text(role); Objects.requireNonNull(tree);
+            text(statement); text(role); Objects.requireNonNull(tree);require(tree.booleanTerm(),"predicate root must be boolean");
             require(role.equals("IF") || role.matches("EVALUATE_(SUBJECT|WHEN)/[0-9]+")
                     || role.matches("EVALUATE_SELECTOR/[0-9]+/[0-9]+")
                     || role.matches("PERFORM_UNTIL/[0-9]+"), "condition predicate role");
@@ -73,7 +82,8 @@ public record ConditionNames(List<Definition> definitions,List<Use> uses,List<As
             var operand=operands.get(u.operand());var definition=defs.get(u.definition());
             require(definition.anonymous()?u.operand().isEmpty():operand!=null&&operand.statement().equals(u.statement())&&operand.parent().equals(definition.parent())&&operand.write()==(u.access()==Access.WRITE),"condition operand must bind its declared parent");var todo=new ArrayDeque<Index>(u.indices());while(!todo.isEmpty()){var i=todo.removeFirst();if(i.kind().equals("READ"))require(nodes.contains(i.value()),"condition index identity");todo.addAll(i.arguments());}}
         for(var a:assignments)require(refs.get(a.use()).operand().isEmpty()||operands.get(refs.get(a.use()).operand()).write(),"SET operand must write");
-        for(var p:predicates){var todo=new ArrayDeque<Tree>();todo.add(p.tree());while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("TEST"))require(refs.get(t.use()).operand().isEmpty()||!operands.get(refs.get(t.use()).operand()).write(),"condition predicate must read");todo.addAll(t.children());}}
+        for(var p:predicates){var todo=new ArrayDeque<Tree>();todo.add(p.tree());while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("READ")){var operand=operands.get(t.use());require(operand!=null&&operand.statement().equals(p.statement())&&!operand.write(),"predicate READ belongs to owner");}
+            if(t.kind().equals("TEST"))require(refs.get(t.use()).operand().isEmpty()||!operands.get(refs.get(t.use()).operand()).write(),"condition predicate must read");todo.addAll(t.children());}}
     }
     private static void text(String s){require(s!=null&&!s.isBlank(),"condition identity");}
     private static void require(boolean yes,String message){if(!yes)throw new IllegalArgumentException(message);}

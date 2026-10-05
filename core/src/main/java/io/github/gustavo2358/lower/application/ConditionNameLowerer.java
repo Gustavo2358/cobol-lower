@@ -30,19 +30,61 @@ final class ConditionNameLowerer {
     }
     private static String key(String statement,String role){return statement+"/"+role;}
     boolean has(String statement,String role){return predicates.containsKey(key(statement,role));}
-    Optional<Expression> predicate(String statement,String role,OperationId operation,LocalIds ids,
-            SourceOrigins origins,List<Evidence.Uncertainty> uncertainties) {
-        var tree=predicates.get(key(statement,role));if(tree==null)return Optional.empty();
-        return Optional.of(new Builder(operation,ids,origins,uncertainties,statements.get(statement).header().provenance()).tree(tree));
+    /** Only a wholly literal Boolean tree closes control; no short-circuit of reads/effects. */
+    private static Optional<Boolean> constantBoolean(ConditionNames.Tree root) {
+        record Pending(ConditionNames.Tree tree,boolean finish) { }
+        var todo=new ArrayDeque<Pending>();var values=new IdentityHashMap<ConditionNames.Tree,Boolean>();
+        todo.push(new Pending(root,false));
+        while(!todo.isEmpty()) {
+            var next=todo.pop();var tree=next.tree();
+            if(!next.finish()&&!tree.children().isEmpty()) {
+                todo.push(new Pending(tree,true));
+                for(int i=tree.children().size()-1;i>=0;i--)todo.push(new Pending(tree.children().get(i),false));
+                continue;
+            }
+            if(tree.kind().equals("BOOL"))values.put(tree,Boolean.valueOf(tree.use()));
+            else if(tree.kind().equals("NOT")&&values.containsKey(tree.children().getFirst()))
+                values.put(tree,!values.get(tree.children().getFirst()));
+            else if((tree.kind().equals("AND")||tree.kind().equals("OR"))&&tree.children().stream().allMatch(values::containsKey)) {
+                boolean value=tree.kind().equals("AND");
+                for(var child:tree.children())value=tree.kind().equals("AND")?value&&values.get(child):value||values.get(child);
+                values.put(tree,value);
+            }
+        }
+        return Optional.ofNullable(values.get(root));
     }
-    Operations.Branch branch(SpInput.StatementFact fact,String role,LabelId whenTrue,LabelId whenFalse,
+    Terminator branch(SpInput.StatementFact fact,String role,LabelId whenTrue,LabelId whenFalse,
             UnitId unit,LocalIds ids,SourceOrigins origins,List<Evidence.Uncertainty> uncertainties) {
         var operation=new OperationId(unit,ids.id("operation","condition-name-branch",unit.localId(),key(fact.header().id().handle(),role)));
-        int before=uncertainties.size();var value=predicate(fact.header().id().handle(),role,operation,ids,origins,uncertainties).orElseThrow();
+        var tree=predicates.get(key(fact.header().id().handle(),role));
+        var constant=constantBoolean(tree);
+        if(constant.isPresent()) {
+            var origin=origins.source("condition-name-decision",fact.header().id().handle(),fact.header().provenance());
+            var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
+            return new Operations.Jump(new Operations.Header(operation,origin,Evidence.CoverageStatus.MODELED,
+                new Evidence.Precision(exact,exact,exact,exact,exact),List.of()),constant.get()?whenTrue:whenFalse);
+        }
+        int before=uncertainties.size();
+        var builder=new Builder(operation,ids,origins,uncertainties,fact.header().provenance());
+        var previous=fact instanceof SpInput.IfFact f?TextPredicateLowerer.translate(f,operation,data,ids,origins,links,uncertainties):Optional.<Expression>empty();
+        var value=previous.orElseGet(()->builder.tree(tree));
         var reasons=uncertainties.subList(before,uncertainties.size()).stream().map(Evidence.Uncertainty::id).toList();
         var origin=origins.source("condition-name-decision",fact.header().id().handle(),fact.header().provenance());
         var exact=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.EXACT,List.of());
-        var values=new Evidence.Claim(new Scopes.EntityScope(List.of(value.header().id())),reasons.isEmpty()?Evidence.PrecisionStatus.EXACT:Evidence.PrecisionStatus.OPEN,reasons);
+        var values=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),reasons.isEmpty()?Evidence.PrecisionStatus.EXACT:Evidence.PrecisionStatus.OPEN,reasons);
+        if(!builder.executable) {
+            var open=new Evidence.Claim(new Scopes.EntityScope(List.of(operation)),Evidence.PrecisionStatus.OPEN,reasons);
+            var memory=new Envelopes.MemoryEnvelope(builder.safeReads.stream().filter(r->r.header().role()!=Operand.Role.ADDRESS_READ).map(r->r.place().header().id()).toList(),
+                (builder.openExpression||builder.openReads)?new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)):
+                    new Scopes.WithinMemory(new Scopes.ObjectsMemory(List.copyOf(builder.unlocated))),
+                List.of(),builder.openExpression?new Scopes.WithinMemory(new Scopes.AllMemory(unit.publication(),true)):Scopes.NoMemory.INSTANCE,List.of());
+            return new Operations.Opaque(new Operations.Header(operation,origin,Evidence.CoverageStatus.ABSTRACTED,
+                new Evidence.Precision(open,open,builder.openExpression?open:exact,values,exact),reasons),
+                "PREDICATE_NOT_EXECUTABLE",builder.opaqueOperands(),List.of(),
+                new Envelopes.Envelope(memory,new Control.ControlEnvelope(List.of(new Control.JumpAlternative(whenTrue),new Control.JumpAlternative(whenFalse)),
+                    new Scopes.WithinControl(new Scopes.LabelsControl(List.of()))),
+                    new Envelopes.DependencyEnvelope(List.of(),builder.openExpression?Scopes.AnyResource.INSTANCE:Scopes.NoResources.INSTANCE)));
+        }
         return new Operations.Branch(new Operations.Header(operation,origin,reasons.isEmpty()?Evidence.CoverageStatus.MODELED:Evidence.CoverageStatus.ABSTRACTED,
             new Evidence.Precision(exact,exact,exact,values,exact),reasons),value,whenTrue,whenFalse);
     }
@@ -107,10 +149,82 @@ final class ConditionNameLowerer {
         Expression unknown(Types.Builtin type,String code,OriginId origin,List<Expression> dependencies) {
             var header=h(origin,type==Types.Builtin.BOOL?Operand.Role.PREDICATE:Operand.Role.VALUE_READ);
             var reason=new UncertaintyId(operation.publication(),ids.id("uncertainty","condition-name",operation.localId(),header.id().localId()));
-            uncertainties.add(new Evidence.Uncertainty(reason,code,List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(header.id())),"The source condition is modeled; this input lacks the runtime value, access or collation proof.",origin));
+            uncertainties.add(new Evidence.Uncertainty(reason,code,List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(operation)),"The source condition is modeled; this input lacks the runtime value, access or collation proof.",origin));
             return new Expressions.Unknown(header,Types.known(type),dependencies,new Scopes.WithinMemory(new Scopes.AllMemory(operation.publication(),true)),reason);
         }
+        boolean executable=true,openExpression=false,openReads=false;
+        final List<Expressions.Read> safeReads=new ArrayList<>();final List<Place> unlocatedPlaces=new ArrayList<>();final Set<ObjectId> unlocated=new LinkedHashSet<>();
+        List<Operand> opaqueOperands() {var out=new ArrayList<Operand>(safeReads);out.addAll(unlocatedPlaces);return List.copyOf(out);}
+        private final Set<String> addressOperands=new HashSet<>();
+        private final Map<Expression,Types.Builtin> scalarTypes=new IdentityHashMap<>();
+        private final Map<Expression,BigInteger> textLengths=new IdentityHashMap<>();
+        Expression literal(ConditionNames.Tree tree,OriginId origin) {
+            // The pinned AIR JSON codec carries INT but not BoolValue. Preserve
+            // mixed Boolean trees without discarding their other reads/effects.
+            if(tree.kind().equals("BOOL"))return new Expressions.Binary(h(origin,Operand.Role.PREDICATE),Expressions.BinaryOperator.EQ,
+                new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),new Values.IntValue(BigInteger.ZERO)),
+                new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),new Values.IntValue(Boolean.parseBoolean(tree.use())?BigInteger.ZERO:BigInteger.ONE)));
+            Values.LiteralValue value;
+            if(tree.kind().equals("TEXT")||tree.kind().equals("SPACES"))value=new Values.TextValue(tree.use());
+            else {var n=new java.math.BigDecimal(tree.kind().equals("ZERO")?"0":tree.use());
+                value=n.scale()<=0?new Values.IntValue(n.toBigIntegerExact()):new Values.DecimalValue(n.unscaledValue(),BigInteger.valueOf(n.scale()));}
+            var result=new Expressions.Literal(h(origin,Operand.Role.VALUE_READ),value);
+            scalarTypes.put(result,value instanceof Values.TextValue?Types.Builtin.TEXT:value instanceof Values.IntValue?Types.Builtin.INT:Types.Builtin.DECIMAL);
+            if(value instanceof Values.TextValue text)textLengths.put(result,BigInteger.valueOf(text.value().codePointCount(0,text.value().length())));
+            return result;
+        }
+        Expression scalarRead(ConditionNames.Tree tree,List<Expression> addressReads,OriginId rootOrigin) {
+            var reference=references.get(tree.use());
+            var origin=origins.source("predicate-read",reference.id().handle(),reference.provenance());
+            var selected=reference.binding().selected().orElseThrow();var link=data.index().get(selected);
+            var role=addressOperands.contains(tree.use())?Operand.Role.ADDRESS_READ:Operand.Role.VALUE_READ;
+            var objectId=link!=null?link.object():data.nominal().get(selected);var object=objects.get(objectId);
+            Types.TypeRef type=object==null?null:object.typeRef();
+            Expression result;
+            if(addressReads.isEmpty()&&object!=null&&link!=null&&(reference.wholeItemAccess().isPresent()||reference.regionalAccess().isPresent())) {
+                var place=RegionalPlaces.place(reference,link,h(origin,role),ids);
+                result=new Expressions.Read(h(origin,role),place);
+                safeReads.add((Expressions.Read)result);
+                if(place instanceof Places.RegionSlice slice)type=slice.typeRef();
+                links.add(new LoweringResult.OperandLink(reference.id(),place.header().id(),origin));
+            } else {
+                executable=false;if(objectId!=null)unlocated.add(objectId);else openReads=true;
+                var header=h(origin,role);var reason=new UncertaintyId(operation.publication(),ids.id("uncertainty","predicate-access",operation.localId(),header.id().localId()));
+                uncertainties.add(new Evidence.Uncertainty(reason,"PREDICATE_ACCESS_NOT_PROVEN",List.of(Evidence.Dimension.STORAGE,Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(header.id())),"Nominal data binding does not establish a valid executable address; known address reads, bounded content reads and a non-executable frontier remain.",origin));
+                var typeReason=new UncertaintyId(operation.publication(),ids.id("uncertainty","predicate-type",operation.localId(),header.id().localId()));
+                uncertainties.add(new Evidence.Uncertainty(typeReason,"TYPE_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(header.id())),"The open address occurrence has no same-domain proof; the source object's available type remains on that object.",origin));
+                var choiceType=new Types.UnknownType(typeReason);
+                if(type==null)type=choiceType;
+                unlocatedPlaces.add(new Places.Choice(header,List.of(),objectId==null?new Scopes.WithinMemory(new Scopes.AllMemory(operation.publication(),true)):new Scopes.WithinMemory(new Scopes.ObjectsMemory(List.of(objectId))),choiceType));
+                result=new Expressions.Unknown(header,type,addressReads,objectId==null?new Scopes.WithinMemory(new Scopes.AllMemory(operation.publication(),true)):new Scopes.WithinMemory(new Scopes.ObjectsMemory(List.of(objectId))),reason);
+            }
+            links.add(new LoweringResult.OperandLink(reference.id(),result.header().id(),origin));
+            if(type instanceof Types.Known k&&k.type() instanceof Types.Builtin b)scalarTypes.put(result,b);
+            var extent=reference.regionalAccess().flatMap(a->a.slice()).map(x->x.extent()).orElseGet(()->Optional.ofNullable(data.logicalTextExtents().get(selected)).map(BigInteger::valueOf).orElse(null));
+            if(extent!=null)textLengths.put(result,extent);
+            return result;
+        }
+        Expression relation(String kind,Expression left,Expression right,OriginId origin) {
+            var a=scalarTypes.get(left);var b=scalarTypes.get(right);
+            if(a==Types.Builtin.TEXT&&b==Types.Builtin.TEXT){
+                if(!kind.equals("EQ")&&!kind.equals("NE"))return unknownComplete("PREDICATE_COLLATION_UNKNOWN",origin,List.of(left,right));
+                var x=textLengths.get(left);var y=textLengths.get(right);
+                if(x==null||y==null)return unknownComplete("PREDICATE_TEXT_EXTENT_UNKNOWN",origin,List.of(left,right));
+                var extent=x.max(y);left=new Expressions.FitText(h(origin,Operand.Role.VALUE_READ),left,extent," ");right=new Expressions.FitText(h(origin,Operand.Role.VALUE_READ),right,extent," ");
+            } else if((a==Types.Builtin.INT||a==Types.Builtin.DECIMAL)&&(b==Types.Builtin.INT||b==Types.Builtin.DECIMAL)){
+                if(a!=b){if(a==Types.Builtin.INT)left=new Expressions.Unary(h(origin,Operand.Role.VALUE_READ),Expressions.UnaryOperator.TO_DECIMAL,left);
+                    else right=new Expressions.Unary(h(origin,Operand.Role.VALUE_READ),Expressions.UnaryOperator.TO_DECIMAL,right);}
+            } else return unknownComplete("PREDICATE_COMPARISON_DOMAIN_UNAVAILABLE",origin,List.of(left,right));
+            return new Expressions.Binary(h(origin,Operand.Role.PREDICATE),Expressions.BinaryOperator.valueOf(kind),left,right);
+        }
+        Expression unknownComplete(String code,OriginId origin,List<Expression> dependencies) {
+            var header=h(origin,Operand.Role.PREDICATE);var reason=new UncertaintyId(operation.publication(),ids.id("uncertainty","scalar-predicate",operation.localId(),header.id().localId()));
+            uncertainties.add(new Evidence.Uncertainty(reason,code,List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(operation)),"The pure source comparison and its reads are retained; its truth needs the stated domain or interpretation proof.",origin));
+            return new Expressions.Unknown(header,Types.known(Types.Builtin.BOOL),dependencies,Scopes.NoMemory.INSTANCE,reason);
+        }
         Expression tree(ConditionNames.Tree root) {
+            var addressNodes=new ArrayDeque<ConditionNames.Tree>();addressNodes.add(root);
+            while(!addressNodes.isEmpty()){var n=addressNodes.removeFirst();if(n.kind().equals("READ")||n.kind().equals("TEST"))n.children().forEach(c->addressOperands.add(c.use()));addressNodes.addAll(n.children());}
             record Pending(ConditionNames.Tree tree,boolean finish) { }
             var todo=new ArrayDeque<Pending>();var built=new IdentityHashMap<ConditionNames.Tree,Expression>();todo.push(new Pending(root,false));
             var origin=origins.source("condition-name-expression",operation.localId(),source);
@@ -118,8 +232,19 @@ final class ConditionNameLowerer {
                 var next=todo.pop();var tree=next.tree();
                 if(!next.finish()&&!tree.children().isEmpty()){todo.push(new Pending(tree,true));for(int i=tree.children().size()-1;i>=0;i--)todo.push(new Pending(tree.children().get(i),false));continue;}
                 Expression result=switch(tree.kind()) {
-                    case "TEST" -> membership(uses.get(tree.use()));
-                    case "UNKNOWN" -> unknown(Types.Builtin.BOOL,"CONDITION_OTHER_EXPRESSION_UNAVAILABLE",origin,List.of());
+                    case "TEST" -> membership(uses.get(tree.use()),tree.children().stream().map(built::get).toList());
+                    case "READ" -> scalarRead(tree,tree.children().stream().map(built::get).toList(),origin);
+                    case "NUMBER","TEXT","ZERO","SPACES","BOOL" -> literal(tree,origin);
+                    case "LOW_VALUES","HIGH_VALUES" -> {
+                        var reason=new UncertaintyId(operation.publication(),ids.id("uncertainty","predicate-figurative",operation.localId(),Integer.toString(ordinal)));
+                        uncertainties.add(new Evidence.Uncertainty(reason,"PREDICATE_FIGURATIVE_COLLATION_UNKNOWN",List.of(Evidence.Dimension.VALUES),new Scopes.EntityScope(List.of(operation)),"Source figurative character needs collation; it reads no memory.",origin));
+                        var value=new Expressions.Unknown(h(origin,Operand.Role.VALUE_READ),Types.known(Types.Builtin.TEXT),List.of(),Scopes.NoMemory.INSTANCE,reason);scalarTypes.put(value,Types.Builtin.TEXT);yield value;
+                    }
+                    case "EQ","NE","LT","LE","GT","GE" -> relation(tree.kind(),built.get(tree.children().getFirst()),built.get(tree.children().getLast()),origin);
+                    case "UNKNOWN" -> {
+                        if(!tree.use().equals("PURE")){executable=false;if(tree.use().equals("READS_OPEN"))openReads=true;else openExpression=true;}
+                        yield tree.use().equals("PURE")?unknownComplete("CONDITION_OTHER_EXPRESSION_UNAVAILABLE",origin,tree.children().stream().map(built::get).toList()):unknown(Types.Builtin.BOOL,"CONDITION_OTHER_EXPRESSION_UNAVAILABLE",origin,tree.children().stream().map(built::get).toList());
+                    }
                     case "NOT" -> new Expressions.Unary(h(origin,Operand.Role.PREDICATE),Expressions.UnaryOperator.NOT,built.get(tree.children().getFirst()));
                     default -> join(tree.kind().equals("AND")?Expressions.BinaryOperator.AND:Expressions.BinaryOperator.OR,tree.children().stream().map(built::get).toList(),origin);
                 };
@@ -127,25 +252,30 @@ final class ConditionNameLowerer {
             }
             return built.get(root);
         }
-        Expression membership(ConditionNames.Use use) {
+        Expression membership(ConditionNames.Use use,List<Expression> addressReads) {
             var definition=definitions.get(use.definition());
             var origin=origins.derived(ids.id("origin","condition-name-membership",operation.localId(),use.id()),
                 List.of(origins.source("condition-name-use",use.id(),use.provenance()),origins.source("condition-name-definition",definition.id(),definition.provenance())),"SP2.64/condition-variable-membership");
             var alternatives=new ArrayList<Expression>();
             for(var range:definition.ranges()) {
-                if(range.last().isEmpty())alternatives.add(compare(use,definition,range.first(),Expressions.BinaryOperator.EQ,origin));
+                if(range.last().isEmpty())alternatives.add(compare(use,definition,range.first(),Expressions.BinaryOperator.EQ,origin,addressReads));
                 else alternatives.add(join(Expressions.BinaryOperator.AND,List.of(
-                    compare(use,definition,range.first(),Expressions.BinaryOperator.GE,origin),compare(use,definition,range.last().get(),Expressions.BinaryOperator.LE,origin)),origin));
+                    compare(use,definition,range.first(),Expressions.BinaryOperator.GE,origin,addressReads),compare(use,definition,range.last().get(),Expressions.BinaryOperator.LE,origin,addressReads)),origin));
             }
             return join(Expressions.BinaryOperator.OR,alternatives,origin);
         }
-        Expression compare(ConditionNames.Use use,ConditionNames.Definition definition,ConditionNames.Value value,Expressions.BinaryOperator operator,OriginId origin) {
+        Expression compare(ConditionNames.Use use,ConditionNames.Definition definition,ConditionNames.Value value,Expressions.BinaryOperator operator,OriginId origin,List<Expression> addressReads) {
             var dataId=new SpInput.DataId(input.unit(),definition.parent());var link=data.index().get(dataId);
             var object=link==null?null:objects.get(link.object());var type=definition.domain()==ConditionNames.VariableDomain.INTEGER?Types.Builtin.INT:Types.Builtin.TEXT;
             Expression left;
-            if(use.indices().isEmpty()&&object!=null&&object.typeRef() instanceof Types.Known known&&known.type()==type)
+            if(!use.indices().isEmpty()&&!use.operand().isEmpty()) {
+                left=scalarRead(new ConditionNames.Tree("READ",use.operand(),List.of()),addressReads,origin);
+                var indices=new ArrayDeque<ConditionNames.Index>(use.indices());while(!indices.isEmpty()){var i=indices.removeFirst();if(i.kind().equals("UNKNOWN")){executable=false;openExpression=true;}indices.addAll(i.arguments());}
+            }
+            else if(use.indices().isEmpty()&&object!=null&&object.typeRef() instanceof Types.Known known&&known.type()==type)
                 left=new Expressions.Read(h(origin,Operand.Role.VALUE_READ),new Places.ObjectPlace(h(origin,Operand.Role.VALUE_READ),link.object()));
             else left=unknown(type,"CONDITION_VARIABLE_ACCESS_UNAVAILABLE",origin,List.of());
+            if(left instanceof Expressions.Read read)safeReads.add(read);
             if(!use.operand().isEmpty())links.add(new LoweringResult.OperandLink(references.get(use.operand()).id(),left.header().id(),origin));
             Expression right;
             if(type==Types.Builtin.INT&&(value.kind()==ConditionNames.ValueKind.NUMBER||value.kind()==ConditionNames.ValueKind.ZERO)) {
