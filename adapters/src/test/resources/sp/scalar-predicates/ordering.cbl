@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ORDERING.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 NAME-A PIC X VALUE 'A'.
+       PROCEDURE DIVISION.
+       IF NAME-A > 'B'
+           CALL 'ORDER-TRUE'
+       ELSE
+           CALL 'ORDER-FALSE'
+       END-IF.
+       GOBACK.

@@ -1,6 +1,8 @@
 # Condições 88 e SET — checkpoint 1
 
-Status: IN_PROGRESS; PR #58, consumidor do SP 2.64 do frontend #86.
+Checkpoint 1 integrado pelo PR #58, consumidor inicial do SP 2.64 do frontend #86.
+O checkpoint 3 em revisão amplia as árvores no SP 2.67, conforme
+[predicados compartilhados](checkpoint3-predicates.md).
 
 O frontend publica vínculo nominal com a variável, valores/intervalos, usos,
 árvores de predicados e atribuições SET na ordem escrita. O lower apenas traduz

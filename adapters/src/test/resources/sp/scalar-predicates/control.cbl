@@ -1,0 +1,30 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONTROL-PREDICATES.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 FLAG-A PIC X VALUE 'Y'.
+       01 TARGET-A PIC X(8) VALUE 'OLD'.
+       PROCEDURE DIVISION.
+       PERFORM WITH TEST BEFORE UNTIL FLAG-A = 'Y'
+           MOVE 'BAD' TO TARGET-A
+       END-PERFORM.
+       CALL TARGET-A.
+       PERFORM WITH TEST AFTER UNTIL FLAG-A = 'Y'
+           MOVE 'AFTER' TO TARGET-A
+       END-PERFORM.
+       CALL TARGET-A.
+       EVALUATE TRUE
+       WHEN FLAG-A = 'N' OR 1 >= 2
+           MOVE 'BAD' TO TARGET-A
+       WHEN FLAG-A = 'Y' AND 1 < 2
+           MOVE 'GOOD' TO TARGET-A
+       WHEN OTHER
+           MOVE 'OTHER' TO TARGET-A
+       END-EVALUATE.
+       CALL TARGET-A.
+       IF 1.25 < 1
+           CALL 'BADSTATIC'
+       ELSE
+           CALL 'GOODSTATIC'
+       END-IF.
+       GOBACK.

@@ -9,7 +9,7 @@ final class TextFittingWire {
     static boolean normalize(JsonNode root,String version) {
         for(var statement:root.path("statements")) {
             var adjustment=statement.path("textAdjustment");if(!adjustment.isObject())continue;
-            if(version.equals("2.66.0")) {if(adjustment.has("result"))return false;continue;}
+            if(java.util.Set.of("2.66.0","2.67.0").contains(version)) {if(adjustment.has("result"))return false;continue;}
             var result=adjustment.path("result");var source=statement.path("source").path("logicalValue");
             if(!result.path("value").isTextual()||!source.path("value").isTextual()
                     ||!result.path("logicalDomain").asText().equals("TEXT")||!adjustment.path("receiverExtent").canConvertToInt())return false;
