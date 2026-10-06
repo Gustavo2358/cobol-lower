@@ -46,9 +46,14 @@ final class TopologyBinding {
         return roots.size()==1?Optional.of(resolve(roots.getFirst().entry(),null)):Optional.empty();
     }
     Resolved entry(Binding active){return resolve(regions.get(active.region()).entry(),active);}
+    Boundary boundary(String id){return Objects.requireNonNull(boundaries.get(id));}
+    Resolved resolveShared(Target target){return resolve(target,null,false,true);}
     Resolved resolve(Target target,Binding active) { return resolve(target,active,false); }
     /** A handler ingress does not prove restoration of an interrupted PERFORM continuation. */
     Resolved resolve(Target target,Binding active,boolean boundedHandlerCompletion) {
+        return resolve(target,active,boundedHandlerCompletion,false);
+    }
+    private Resolved resolve(Target target,Binding active,boolean boundedHandlerCompletion,boolean shared) {
         var premises=new LinkedHashSet<String>();var seen=new HashSet<String>();
         while(true) {
             premises.addAll(target.proofs());
@@ -57,6 +62,7 @@ final class TopologyBinding {
                     var r=regions.get(target.reference());premises.addAll(r.proofs());target=r.entry();}
                 case COMPLETE -> {if(!seen.add("completion:"+target.reference()))throw new IllegalArgumentException("cyclic topology completion");
                     var r=regions.get(target.reference());var b=boundaries.get(r.boundary());premises.addAll(b.proofs());
+                    if(shared)return new Resolved(TargetKind.COMPLETE,b.id(),List.copyOf(premises));
                     if(active!=null&&active.endpoint().equals(b.id())){premises.addAll(active.proofs());return new Resolved(TargetKind.COMPLETE,b.id(),List.copyOf(premises));}
                     if(boundedHandlerCompletion&&active==null&&r.kind()==RegionKind.PARAGRAPH)
                         return new Resolved(TargetKind.UNKNOWN_LOCAL,"HANDLER_COMPLETION_CONTEXT_UNAVAILABLE/"+b.id(),List.copyOf(premises));

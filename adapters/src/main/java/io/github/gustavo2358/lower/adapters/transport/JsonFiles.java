@@ -34,6 +34,14 @@ public final class JsonFiles {
             throw failure;
         }
     }
+    /** Digest decoded JSON bytes with a bounded buffer, including compressed inputs. */
+    public static String sha256(Path path) throws IOException {
+        try {
+            var digest=java.security.MessageDigest.getInstance("SHA-256");
+            try(var input=new java.security.DigestInputStream(input(path),digest)) {input.transferTo(java.io.OutputStream.nullOutputStream());}
+            return java.util.HexFormat.of().formatHex(digest.digest());
+        } catch(java.security.NoSuchAlgorithmException failure){throw new IllegalStateException(failure);}
+    }
     public static byte[] read(Path path) throws IOException {
         try (var in = input(path)) { return in.readAllBytes(); }
     }

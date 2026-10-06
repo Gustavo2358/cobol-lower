@@ -20,9 +20,14 @@ final class CallAtomicitySuite {
             CallOracle.check(Files.readString(destination).equals("previous-complete-destination"), "codec failure preserves destination");
             for (boolean failWrite : new boolean[]{true, false}) {
                 var operations = new AirFileOutput.FileOperations() {
-                    @Override void write(Path path, byte[] bytes) throws IOException {
-                        if (failWrite) { Files.writeString(path, "partial"); throw new IOException("injected write failure"); }
-                        super.write(path, bytes);
+                    @Override java.io.OutputStream open(Path path) throws IOException {
+                        if (failWrite) return new java.io.FilterOutputStream(super.open(path)) {
+                            @Override public void write(byte[] bytes, int offset, int length) throws IOException {
+                                out.write(bytes, offset, Math.min(length, 7));
+                                throw new IOException("injected write failure");
+                            }
+                        };
+                        return super.open(path);
                     }
                     @Override void move(Path source, Path target, CopyOption... options) throws IOException { throw new IOException("injected move failure"); }
                 };

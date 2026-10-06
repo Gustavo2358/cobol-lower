@@ -51,14 +51,31 @@ public final class FileCompositeFlowSuite {
         List<Flow> successors(Flow point) {
             var term=terms.get(point.label());var stack=point.returns();
             if(term.path("kind").asText().equals("local.invoke")) {
-                var pushed=new ArrayList<>(stack);pushed.add(term.path("resume"));return List.of(new Flow(term.path("entry"),pushed));
+                var pushed=new ArrayList<>(stack);pushed.add(term);return List.of(new Flow(term.path("entry"),pushed));
             }
             if(term.path("kind").asText().equals("local.resume")) {
                 need(!stack.isEmpty(),"no unmatched body return on the ordinary fixture path");
-                return List.of(new Flow(stack.getLast(),stack.subList(0,stack.size()-1)));
+                var frame=stack.getLast();
+                var target=returnTarget(frame,term.path("resumeKey"));
+                return target.isMissingNode()?List.of():List.of(new Flow(target,stack.subList(0,stack.size()-1)));
+            }
+            if(term.path("kind").asText().equals("local.boundary")) {
+                if(stack.isEmpty()||!contains(stack.getLast().path("completionPorts"),term.path("port")))
+                    return List.of(new Flow(term.path("defaultDestination"),stack));
+                var target=returnTarget(stack.getLast(),term.path("resumeKey"));
+                return target.isMissingNode()?List.of():List.of(new Flow(target,stack.subList(0,stack.size()-1)));
             }
             need(!term.path("kind").asText().startsWith("local."),"oracle explicitly covers producer local operations");
             return labels(term).stream().map(to->new Flow(to,stack)).toList();
+        }
+        private static boolean contains(JsonNode values,JsonNode value) {
+            for(var candidate:values)if(candidate.equals(value))return true;
+            return false;
+        }
+        private static JsonNode returnTarget(JsonNode frame,JsonNode key) {
+            if(key.isMissingNode())return frame.path("resume");
+            for(var route:frame.path("resumeRoutes"))if(route.path("key").equals(key))return route.path("destination");
+            return MissingNode.getInstance();
         }
         Set<JsonNode> reached(JsonNode entry,Set<JsonNode> forbidden) {
             var seen=new HashSet<Flow>();var todo=new ArrayDeque<Flow>();todo.add(new Flow(entry,List.of()));

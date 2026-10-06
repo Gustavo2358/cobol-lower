@@ -32,8 +32,14 @@ final class LocalControlOracle {
             return destination.map(label->List.of(new Point(label,stack.subList(0,stack.size()-1)))).orElseGet(List::of);
         }
         if(t instanceof Operations.LocalBoundary b) {
-            if(!stack.isEmpty()&&stack.getLast().completionPorts().contains(b.port()))return List.of(new Point(stack.getLast().resume(),stack.subList(0,stack.size()-1)));
-            return List.of(new Point(b.defaultDestination(),stack));
+            if(stack.isEmpty()||!stack.getLast().completionPorts().contains(b.port()))return List.of(new Point(b.defaultDestination(),stack));
+            var frame=stack.getLast();
+            if(b.resumeKey().isEmpty())return List.of(new Point(frame.resume(),stack.subList(0,stack.size()-1)));
+            // The normative selected-boundary rule first matches top port, then
+            // resolves the exact key on that same frame. An invalid return stops.
+            for(var route:frame.resumeRoutes())if(route.key().equals(b.resumeKey().orElseThrow()))
+                return List.of(new Point(route.destination(),stack.subList(0,stack.size()-1)));
+            return List.of();
         }
         if(t instanceof Operations.LocalUnwind u&&u.all())return List.of(new Point(u.destination(),List.of()));
         if(t instanceof Operations.LocalUnwind u)return u.count().compareTo(java.math.BigInteger.valueOf(stack.size()))>0?List.of():List.of(new Point(u.destination(),stack.subList(0,stack.size()-u.count().intValueExact())));

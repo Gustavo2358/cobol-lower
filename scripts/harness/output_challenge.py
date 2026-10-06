@@ -13,8 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 AIR = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/air/AirFileOutput.java'
 CLI = 'adapters/src/main/java/io/github/gustavo2358/lower/adapters/cli/CobolLower.java'
 CASES = [
- ('AIR-JACKSON', AIR, 'codec.encode(publication)', 'new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)', 'boundary', 'ARCH_AIR_OUTPUT JSON library'),
- ('AIR-NEWLINE', AIR, 'files.write(temporary, bytes);', 'files.write(temporary, (new String(bytes, java.nio.charset.StandardCharsets.UTF_8) + "\\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));', 'semantic', 'exact shared codec bytes'),
+ ('AIR-JACKSON', AIR, 'codec.prepareWrite(publication)', 'new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(publication)', 'boundary', 'ARCH_AIR_OUTPUT JSON library'),
+ ('AIR-NEWLINE', AIR, 'prepared.writeTo(out);', 'prepared.writeTo(out); out.write(10);', 'semantic', 'exact shared codec bytes'),
  ('NON-SUCCESS-WRITES', CLI, 'err.println("Lowering " + result.status());', '''try { output.write(new CobolLowerer().lower(result.admission().input().orElseThrow(), options).publication().orElseThrow(), destination); }
             catch (IOException ex) { throw new IllegalStateException(ex); }
             err.println("Lowering " + result.status());''', 'output', 'non-SUCCESS never invokes physical output'),
@@ -23,7 +23,7 @@ CASES = [
  ('CORE-CODEC', 'core/pom.xml', '</dependencies>', '<dependency><groupId>io.github.gustavo2358</groupId><artifactId>air-json</artifactId></dependency></dependencies>', 'architecture', 'ARCH_DEPENDENCY'),
  ('SUITE-REMOVED', 'adapters/pom.xml', '<execution><id>air-output-suite</id>', '<execution><id>air-output-suite</id>', 'semantic', 'AIR output tests absent/zero/duplicate'),
  ('SUITE-SKIPPED', 'adapters/pom.xml', '<mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass>', '<skip>true</skip><mainClass>io.github.gustavo2358.lower.adapters.air.AirOutputSuite</mainClass>', 'semantic', 'AIR output tests absent/zero/duplicate'),
- ('OUTPUT-BEFORE-ENCODE', AIR, 'byte[] bytes = codec.encode(publication);\n        Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());', 'Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());\n        byte[] bytes = codec.encode(publication);', 'semantic', 'encode completes before any physical publication'),
+ ('OUTPUT-BEFORE-ENCODE', AIR, 'var prepared = partial?codec.prepareWriteForPartialAnalysis(publication):codec.prepareWrite(publication);\n        Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());', 'Path target = destination.toAbsolutePath();\n        Path temporary = files.temporary(target.getParent());\n        var prepared = partial?codec.prepareWriteForPartialAnalysis(publication):codec.prepareWrite(publication);', 'semantic', 'encode completes before any physical publication'),
 ]
 
 def sha(data): return hashlib.sha256(data).hexdigest()

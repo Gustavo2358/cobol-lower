@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-/** Encodes a whole Publication before touching the destination directory. */
+/** Admits and measures the whole Publication before staging incremental output. */
 public final class AirFileOutput {
     private final AirJson codec;
     private final FileOperations files;
@@ -25,13 +25,11 @@ public final class AirFileOutput {
     public void writePartial(Publication publication, Path destination) throws IOException { write(publication,destination,true); }
     private void write(Publication publication, Path destination,boolean partial) throws IOException {
         Objects.requireNonNull(destination);
-        byte[] bytes = partial?codec.encodeForPartialAnalysis(publication).bytes():codec.encode(publication);
+        var prepared = partial?codec.prepareWriteForPartialAnalysis(publication):codec.prepareWrite(publication);
         Path target = destination.toAbsolutePath();
         Path temporary = files.temporary(target.getParent());
         try {
-            if (JsonFiles.compressed(target)) {
-                try (var out = JsonFiles.output(files.open(temporary), target)) { out.write(bytes); }
-            } else files.write(temporary, bytes);
+            try (var out = JsonFiles.output(files.open(temporary), target)) { prepared.writeTo(out); }
             try {
                 files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
             } catch (AtomicMoveNotSupportedException ex) {
@@ -51,7 +49,6 @@ public final class AirFileOutput {
             return Files.createTempFile(directory, ".cobol-lower-air-", ".tmp");
         }
         java.io.OutputStream open(Path path) throws IOException { return Files.newOutputStream(path); }
-        void write(Path path, byte[] bytes) throws IOException { Files.write(path, bytes); }
         void move(Path source, Path target, CopyOption... options) throws IOException { Files.move(source, target, options); }
         void delete(Path path) throws IOException { Files.deleteIfExists(path); }
     }

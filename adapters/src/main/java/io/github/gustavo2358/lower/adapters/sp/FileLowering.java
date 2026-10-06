@@ -10,15 +10,25 @@ import java.util.Objects;
 /** Driving adapter; physical input then the same transport-independent lowering port. */
 public final class FileLowering {
     public sealed interface Result permits Lowered, PhysicalFailure { }
-    public record Lowered(LoweringResult result, java.util.List<io.github.gustavo2358.lower.domain.SpInput> sources, byte[] sourceBytes) implements Result {
+    public record Lowered(LoweringResult result, java.util.List<io.github.gustavo2358.lower.domain.SpInput> sources, byte[] sourceBytes, java.util.Optional<SpFileInput.DocumentIdentity> sourceIdentity) implements Result {
+        public Lowered(LoweringResult result,java.util.List<io.github.gustavo2358.lower.domain.SpInput> sources,byte[] sourceBytes){this(result,sources,sourceBytes,java.util.Optional.empty());}
         public Lowered(LoweringResult result){this(result,java.util.List.of(),new byte[0]);}
-        public Lowered {Objects.requireNonNull(result);sources=java.util.List.copyOf(sources);sourceBytes=sourceBytes.clone();}
+        public Lowered {Objects.requireNonNull(result);Objects.requireNonNull(sourceIdentity);sources=java.util.List.copyOf(sources);sourceBytes=sourceBytes.clone();}
         @Override public byte[] sourceBytes(){return sourceBytes.clone();}
     }
     public record PhysicalFailure(SpJsonDecoder.Diagnostic diagnostic) implements Result { }
     private final SpFileInput reader;
     private final LowerInput port;
     public FileLowering(SpFileInput reader, LowerInput port) { this.reader = Objects.requireNonNull(reader); this.port = Objects.requireNonNull(port); }
+    /** Immutable parsed facts and identity of the admitted stream, without retained bytes. */
+    public Result lowerSnapshot(Path path,LowerInput.Options options) {
+        var read=reader.readSnapshot(path);
+        return switch(read.result()) {
+            case CompilationJsonDecoder.Single decoded -> new Lowered(port.lower(decoded.input(),options),java.util.List.of(decoded.input()),new byte[0],read.identity());
+            case CompilationJsonDecoder.Compilation decoded -> new Lowered(new io.github.gustavo2358.lower.application.CompilationLowerer().lower(decoded.input(),options),decoded.input().units().stream().map(io.github.gustavo2358.lower.domain.SpCompilation.UnitProduct::product).toList(),new byte[0],read.identity());
+            case CompilationJsonDecoder.Rejected failure -> new PhysicalFailure(failure.diagnostic());
+        };
+    }
     public Result lower(Path path, LowerInput.Options options) {
         return lower(path,options,false);
     }

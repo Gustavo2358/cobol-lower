@@ -35,7 +35,7 @@ public final class CobolLower {
         try { input = Path.of(args[0]); destination = Path.of(args[1]); evidence=args.length==4?Path.of(args[3]):null;
             if(evidence!=null && (evidence.toAbsolutePath().normalize().equals(input.toAbsolutePath().normalize()) || evidence.toAbsolutePath().normalize().equals(destination.toAbsolutePath().normalize())))return usage(err); }
         catch (InvalidPathException ex) { return usage(err); }
-        var physical = lowering.lower(input, options,evidence!=null);
+        var physical = (evidence!=null?lowering.lowerSnapshot(input,options):lowering.lower(input,options));
         if (physical instanceof FileLowering.PhysicalFailure failure) {
             var diagnostic = failure.diagnostic();
             err.println("SP " + diagnostic.code() + " " + diagnostic.phase() + " " + diagnostic.location());

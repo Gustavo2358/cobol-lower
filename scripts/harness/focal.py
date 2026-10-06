@@ -22,4 +22,4 @@ def execute(root, build, profile):
     cp = classpath(root, build)
     for main in ("io.github.gustavo2358.lower.testing.FastSuite",
                  "io.github.gustavo2358.lower.adapters.testing.FastAdapterSuite"):
-        subprocess.run(["java", "-ea", "-Xmx1g", "-cp", cp, main], cwd=root, check=True)
+        subprocess.run(["java", "-ea", "-Xss1m", "-Xmx1g", "-cp", cp, main], cwd=root, check=True)

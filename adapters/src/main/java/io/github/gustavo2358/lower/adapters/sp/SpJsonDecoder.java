@@ -14,10 +14,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.type.LogicalType;
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +58,7 @@ public final class SpJsonDecoder {
             .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
             .enable(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
+        mapper.registerModule(new ParagraphDtoSharing());
         // ALLOW_COERCION_OF_SCALARS does not by itself forbid scalar -> String.
         for (var shape : List.of(CoercionInputShape.Integer, CoercionInputShape.Float, CoercionInputShape.Boolean))
             mapper.coercionConfigFor(LogicalType.Textual).setCoercion(shape, CoercionAction.Fail);
@@ -77,14 +75,26 @@ public final class SpJsonDecoder {
     }
 
     private Result decodePayload(byte[] bytes, Meter meter) {
-        if (bytes == null) return reject(Code.INPUT_ERROR, "$");
-        meter.bytes = bytes.length;
+        if(bytes==null)return reject(Code.INPUT_ERROR,"$");
+        meter.bytes=bytes.length;
+        return decodeStream(new java.io.ByteArrayInputStream(bytes),meter);
+    }
+    /** Decode a caller-owned UTF-8 stream without a document-sized byte/character buffer. */
+    public Result decodeStream(java.io.InputStream input) {
+        if(input==null)return reject(Code.INPUT_ERROR,"$");
+        return decodeStream(input,new Meter());
+    }
+    private Result decodeStream(java.io.InputStream input,Meter meter) {
+        try {return decodeNode(SharedSpTree.read(mapper,Utf8JsonInput.reader(input)),meter);}
+        catch(StreamConstraintsException ex){return reject(Code.IMPLEMENTATION_LIMIT,"$ limits");}
+        catch(JsonProcessingException ex){var at=ex.getLocation();return reject(Code.INPUT_ERROR,at==null?"$ DTO":"line:"+at.getLineNr()+",column:"+at.getColumnNr());}
+        catch(CharacterCodingException ex){return reject(Code.INPUT_ERROR,"$ UTF-8");}
+        catch(java.io.IOException ex){return reject(Code.INPUT_ERROR,"$ bytes");}
+    }
+    /** Only the closed envelope parser may supply its owned, physically checked subtree. */
+    Result decodeNode(JsonNode node){return decodeNode(node,new Meter());}
+    private Result decodeNode(JsonNode node,Meter meter) {
         try {
-            // Reject non-UTF-8 encodings even if the JSON library can autodetect them.
-            StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes));
-            if (bytes.length > 1 && (bytes[0] == 0 || bytes[1] == 0)) return reject(Code.INPUT_ERROR, "$");
-            JsonNode node = mapper.readTree(bytes);
             if (node == null || !node.isObject()) return reject(Code.INPUT_ERROR, "$");
             if (!node.path("schema").isTextual() || !node.path("contractVersion").isTextual())
                 return reject(Code.INPUT_ERROR, "$/schema or contractVersion");
@@ -762,16 +772,13 @@ public final class SpJsonDecoder {
         } catch (JsonProcessingException ex) {
             var location = ex.getLocation();
             return reject(Code.INPUT_ERROR, location == null ? "$ DTO" : "line:" + location.getLineNr() + ",column:" + location.getColumnNr());
-        } catch (CharacterCodingException ex) {
-            return reject(Code.INPUT_ERROR, "$ UTF-8");
+
         } catch (Materialize.EffectShape ex) {
             return reject(Code.INPUT_ERROR,"$/statementEffects/"+ex.getMessage());
         } catch (PhysicalShape ex) {
             return reject(Code.INPUT_ERROR, ex.getMessage());
         } catch (IllegalArgumentException ex) {
             return reject(Code.INPUT_ERROR, "$/typed-contract: "+ex.getMessage());
-        } catch (java.io.IOException ex) {
-            return reject(Code.INPUT_ERROR, "$ bytes");
         }
     }
 

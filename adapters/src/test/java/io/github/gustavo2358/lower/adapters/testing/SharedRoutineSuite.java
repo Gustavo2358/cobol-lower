@@ -61,10 +61,22 @@ public final class SharedRoutineSuite {
         var byId=new HashMap<io.github.gustavo2358.air.model.Ids.OriginId,Origins.Origin>();p.origins().forEach(o->byId.put(o.id(),o));
         var body=p.units().getFirst().sequences().stream().map(Sequence::terminator)
             .filter(t->t instanceof Operations.Invoke i&&i.target() instanceof Interactions.LiteralTarget l&&l.name().equals("INP")).findFirst().orElseThrow();
-        var todo=new ArrayDeque<io.github.gustavo2358.air.model.Ids.OriginId>();todo.add(body.header().origin());var seen=new HashSet<io.github.gustavo2358.air.model.Ids.OriginId>();
-        while(!todo.isEmpty()) {var id=todo.removeFirst();if(!seen.add(id))continue;
-            if(byId.get(id) instanceof Origins.Derived d){required.remove(d.rule());todo.addAll(d.inputs());}}
-        if(!required.isEmpty())throw new AssertionError("shared body lost caller proofs: "+required);
+        // Causal invocation proofs belong to active frames. Attaching the union
+        // of all callers to a shared body would attribute another caller's proof
+        // to this execution. Observe complete concrete paths instead.
+        var observed=new HashSet<String>();var sequences=LocalControlOracle.sequences(p);
+        for(var point:LocalControlOracle.reached(p)) {
+            if(!sequences.get(point.label()).terminator().header().id().equals(body.header().id()))continue;
+            var todo=new ArrayDeque<io.github.gustavo2358.air.model.Ids.OriginId>();todo.add(body.header().origin());
+            point.stack().forEach(frame->todo.add(frame.header().origin()));
+            var seen=new HashSet<io.github.gustavo2358.air.model.Ids.OriginId>();var causal=new HashSet<String>();
+            while(!todo.isEmpty()) {var id=todo.removeFirst();if(!seen.add(id))continue;
+                if(byId.get(id) instanceof Origins.Derived d){if(required.contains(d.rule()))causal.add(d.rule());todo.addAll(d.inputs());}}
+            if(causal.size()!=1)throw new AssertionError("shared invocation lost or mixed caller proof: "+causal);
+            observed.addAll(causal);
+        }
+        if(!observed.equals(required))throw new AssertionError("a source caller proof disappeared: "+required+" observed "+observed);
+
     }
     private static void checkContextExplosion()throws Exception {
         for(var name:List.of("ctxboom-04","ctxboom-08","ctxboom-times","ctxboom-until","ctxboom-varying")) {
@@ -193,7 +205,10 @@ public final class SharedRoutineSuite {
             if(calls.get(0).entry().equals(calls.get(1).entry())!=sameState)
                 throw new AssertionError(fixture+": body identity must distinguish entry handler states");
             var reached=LocalControlOracle.reached(p);var seqs=LocalControlOracle.sequences(p);
-            long resumes=reached.stream().filter(point->seqs.get(point.label()).terminator() instanceof Operations.LocalResume).count();
+            long resumes=reached.stream().filter(point->{var term=seqs.get(point.label()).terminator();
+                return term instanceof Operations.LocalResume||term instanceof Operations.LocalBoundary boundary
+                    &&!point.stack().isEmpty()&&point.stack().getLast().completionPorts().contains(boundary.port());
+            }).count();
             if(resumes!=4)throw new AssertionError(fixture+": matched returns "+resumes);
         }
     }

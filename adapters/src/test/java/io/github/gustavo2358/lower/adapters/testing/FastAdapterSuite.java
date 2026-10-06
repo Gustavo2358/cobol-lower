@@ -7,6 +7,8 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        io.github.gustavo2358.lower.adapters.sp.StreamingInputSuite.main(new String[0]);
+        SourceCertificateSuite.main(new String[0]);
         ConditionNameSuite.main(args);
         ScalarPredicateSuite.main(args);
         NumericMoveSuite.main(args);
@@ -41,6 +43,7 @@ public final class FastAdapterSuite {
         DatabaseControlSuite.main(new String[0]);
         CobolControlSuite.main(new String[0]);
         SharedRoutineSuite.main(new String[0]);
+        EmptyBoundaryChainSuite.main(new String[0]);
         UnifiedActivationSuite.main(new String[0]);
         UnifiedStructuralSuite.main(new String[0]);
         PerformReentrySuite.main(new String[0]);

@@ -47,6 +47,28 @@ public final class QualifiedSourceSuite {
                 need(Arrays.equals(snapshot,Files.readAllBytes(snapshotPath)),"failed publication preserves existing snapshot");
                 var codec=new QualifiedSourceJson();var contract=codec.decode(Files.readAllBytes(side));need(contract.units().equals(List.of(evidence)),"memory and file port parity");
                 need(codec.decode(codec.encode(contract)).equals(contract),"producer roundtrip");
+                var streamed=new ByteArrayOutputStream(){@Override public void close(){throw new AssertionError("caller output closed");}};
+                codec.write(contract,streamed);
+                need(Arrays.equals(streamed.toByteArray(),codec.encode(contract)),"streaming deterministic bytes "+name);
+                boolean failed=false;try{codec.write(contract,new OutputStream(){public void write(int value)throws IOException{throw new IOException("injected destination failure");}public void close(){throw new AssertionError("failed caller output closed");}});}catch(IOException expectedFailure){failed=true;}
+                need(failed,"destination failure propagated");
+                var streamedInput=new ByteArrayInputStream(codec.encode(contract)) {public void close(){throw new AssertionError("caller input closed");}};
+                need(codec.decode(streamedInput).equals(contract),"stream admission preserves complete typed certificate");
+                for(var suffix:List.of("{}","x")) {
+                    boolean rejected=false;
+                    try{codec.decode(new ByteArrayInputStream((new String(codec.encode(contract),java.nio.charset.StandardCharsets.UTF_8)+suffix).getBytes(java.nio.charset.StandardCharsets.UTF_8)));}
+                    catch(IOException|IllegalArgumentException bad){rejected=true;}
+                    need(rejected,"trailing evidence rejected");
+                }
+                var physical=new FileLowering(new SpFileInput(CobolLower.INPUT_LIMITS),new CobolLowerer());
+                var sourceSnapshot=(FileLowering.Lowered)physical.lowerSnapshot(sp,CobolLower.POSITIVE_OPTIONS);
+                var identity=sourceSnapshot.sourceIdentity().orElseThrow();
+                need(identity.sha256().equals(java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes))),"identity of admitted bytes");
+                need(sourceSnapshot.sourceBytes().length==0,"bounded snapshot does not retain source bytes");
+                Files.writeString(sp,"changed after admission");
+                var stableSide=dir.resolve("stable-side.json");new QualifiedSourceFileOutput().write(sourceSnapshot,CobolLower.POSITIVE_OPTIONS,air,stableSide);
+                need(codec.decode(Files.readAllBytes(stableSide)).equals(contract),"snapshot survives source mutation");
+
             } finally {try(var paths=Files.walk(dir)){for(var p:paths.sorted(Comparator.reverseOrder()).toList())Files.delete(p);}}
         }
         // Existing R7 adversarial family is projected intact, including RESET and PERFORM.
