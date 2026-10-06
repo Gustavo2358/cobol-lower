@@ -104,7 +104,8 @@ public final class PerformControlCompletionSuite {
         LabelId visible(LabelId label) {
             var point=Objects.requireNonNull(points.get(label),"reachable phase "+label);var seen=new HashSet<LocalControlOracle.Point>();
             while(terms.get(point.label()) instanceof Operations.Jump||terms.get(point.label()) instanceof Operations.LocalInvoke
-                    ||terms.get(point.label()) instanceof Operations.LocalResume||terms.get(point.label()) instanceof Operations.LocalUnwind) {
+                    ||terms.get(point.label()) instanceof Operations.LocalResume||terms.get(point.label()) instanceof Operations.LocalBoundary
+                    ||terms.get(point.label()) instanceof Operations.LocalUnwind) {
                 need(seen.add(point),"administrative path terminates");
                 var next=LocalControlOracle.successors(point,sequences);need(next.size()==1,"one administrative successor");point=next.getFirst();
             }

@@ -22,8 +22,8 @@ public final class DependencyInputFileOutput {
             var air=temporary.resolve("air"+suffix);var source=temporary.resolve("source"+suffix);var output=new AirFileOutput();var result=lowered.result();
             if(result.validation().orElseThrow().status()==io.github.gustavo2358.air.validation.ValidationResult.Status.INCOMPLETE_VALIDATION)output.writePartial(result.publication().orElseThrow(),air);
             else output.write(result.publication().orElseThrow(),air);
-            new QualifiedSourceFileOutput().write(lowered,options,air,source);
-            var airBytes=JsonFiles.read(air);var sourceBytes=JsonFiles.read(source);var evidence=new QualifiedSourceJson().decode(sourceBytes);
+            var evidence=new QualifiedSourceFileOutput().projectAndWrite(lowered,options,air,source);
+            String airHash=JsonFiles.sha256(air),sourceHash=JsonFiles.sha256(source);
             var occurrences=new HashSet<StatementId>();for(var unit:evidence.units())for(var occurrence:unit.occurrences())if(occurrence.namespace().equals("PROGRAM"))occurrences.add(occurrence.id());
             var links=new ArrayList<Map<String,Object>>();
             for(var link:result.statements()) {
@@ -32,9 +32,9 @@ public final class DependencyInputFileOutput {
                 if(occurrences.contains(statement))links.add(map("source",QualifiedSourceJson.value(statement),"operation",id(link.target()),"label",id(link.label()),"origin",id(link.origin())));
             }
             var mapper=new ObjectMapper();links.sort(Comparator.comparing(x->x.get("source").toString()+x.get("operation").toString()));
-            String airName="air-"+sha(airBytes)+suffix,sourceName="source-"+sha(sourceBytes)+suffix;
-            var manifest=map("schema","dependency-input","version","1.0.0","air",map("path",airName,"sha256",sha(airBytes)),
-                "qualifiedSource",map("path",sourceName,"sha256",sha(sourceBytes)),"sourceSha256",evidence.source().sha256(),"correlations",links);
+            String airName="air-"+airHash+suffix,sourceName="source-"+sourceHash+suffix;
+            var manifest=map("schema","dependency-input","version","1.0.0","air",map("path",airName,"sha256",airHash),
+                "qualifiedSource",map("path",sourceName,"sha256",sourceHash),"sourceSha256",evidence.source().sha256(),"correlations",links);
             if(destination.getFileName().toString().equals(airName)||destination.getFileName().toString().equals(sourceName))
                 throw new IllegalArgumentException("manifest conflicts with snapshot path");
             // Content-addressed snapshots are installed first; the manifest is the commit point.
@@ -45,7 +45,7 @@ public final class DependencyInputFileOutput {
     }
     private static void install(Path source,Path destination)throws IOException {
         if(Files.exists(destination)) {
-            if(!Arrays.equals(Files.readAllBytes(source),Files.readAllBytes(destination)))throw new IOException("snapshot content disagreement");
+            if(Files.mismatch(source,destination)!=-1)throw new IOException("snapshot content disagreement");
         } else Files.move(source,destination,StandardCopyOption.ATOMIC_MOVE);
     }
     private static Map<String,Object> id(Id id) {

@@ -7,6 +7,8 @@ import java.util.List;
 public final class FastAdapterSuite {
     private FastAdapterSuite() { }
     public static void main(String[] args) throws Exception {
+        io.github.gustavo2358.lower.adapters.sp.StreamingInputSuite.main(new String[0]);
+        SourceCertificateSuite.main(new String[0]);
         ConditionNameSuite.main(args);
         ScalarPredicateSuite.main(args);
         NumericMoveSuite.main(args);

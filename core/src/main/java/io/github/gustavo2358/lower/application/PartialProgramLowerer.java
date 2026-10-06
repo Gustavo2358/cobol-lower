@@ -107,7 +107,13 @@ final class PartialProgramLowerer implements LowerInput {
                 gap.scope().name() + ": " + gap.detail(), origin));
         }
         var unitCoverage = new Evidence.Coverage(Evidence.InventoryStatus.PARTIAL, new Scopes.UnitScope(unit), items, gaps);
-        var body = new Unit(unit, context==null?Optional.empty():context.parent(input.unit()), data.objects(), context==null?List.of():context.visible(input.unit()), entries, assembly.sequences(), List.of(),
+        var ports=new LinkedHashMap<CompletionPortId,OriginId>();
+        for(var sequence:assembly.sequences()) {
+            if(sequence.terminator() instanceof Operations.LocalBoundary boundary)ports.putIfAbsent(boundary.port(),boundary.header().origin());
+            if(sequence.terminator() instanceof Operations.LocalInvoke invoke)for(var port:invoke.completionPorts())ports.putIfAbsent(port,invoke.header().origin());
+        }
+        var completionPorts=ports.entrySet().stream().map(e->new Entries.CompletionPort(e.getKey(),e.getValue())).toList();
+        var body = new Unit(unit, context==null?Optional.empty():context.parent(input.unit()), data.objects(), context==null?List.of():context.visible(input.unit()), entries, assembly.sequences(), completionPorts,
             Unit.BodyAvailability.AVAILABLE, Optional.empty(), unitCoverage, unitOrigin);
         var premises = new ArrayList<>(StoragePremise.available(input, data, unit, ids, origins));
         premises.addAll(RegionalDataTranslator.premises(plan.storage(),data,unit,ids,origins));
@@ -133,7 +139,9 @@ final class PartialProgramLowerer implements LowerInput {
             ||s.terminator() instanceof Operations.LocalBoundary))required.add(Capabilities.LOCAL_CONTROL);
         if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke i&&i.reentryGuard().isPresent()))required.add(Capabilities.LOCAL_REENTRY_GUARD);
         if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalInvoke i&&!i.resumeRoutes().isEmpty()
-            ||s.terminator() instanceof Operations.LocalResume r&&r.resumeKey().isPresent()))required.add(Capabilities.LOCAL_RESUME_ROUTES);
+            ||s.terminator() instanceof Operations.LocalResume r&&r.resumeKey().isPresent()
+            ||s.terminator() instanceof Operations.LocalBoundary b&&b.resumeKey().isPresent()))required.add(Capabilities.LOCAL_RESUME_ROUTES);
+        if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalBoundary b&&b.resumeKey().isPresent()))required.add(Capabilities.LOCAL_BOUNDARY_ROUTES);
         if(assembly.sequences().stream().anyMatch(s->s.terminator() instanceof Operations.LocalUnwind u&&u.all()))required.add(Capabilities.LOCAL_UNWIND_ALL);
         if(files.available()||input.sourceDependencies().availability()!=SpInput.Availability.UNAVAILABLE)required.add(Capabilities.RESOURCE_BINDINGS);
         var output = new Publication(publication, SemanticVersion.AIR_2_0_0, new Capabilities.Manifest(required,List.of()), origins.artifacts(),

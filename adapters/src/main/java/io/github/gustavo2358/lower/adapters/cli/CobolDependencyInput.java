@@ -15,7 +15,7 @@ public final class CobolDependencyInput {
         try {
             var input=Path.of(args[0]).toAbsolutePath().normalize();var destination=Path.of(args[1]).toAbsolutePath().normalize();
             if(input.equals(destination))return CobolLower.USAGE;
-            var physical=new FileLowering(new SpFileInput(CobolLower.INPUT_LIMITS),new CobolLowerer()).lower(input,CobolLower.POSITIVE_OPTIONS,true);
+            var physical=new FileLowering(new SpFileInput(CobolLower.INPUT_LIMITS),new CobolLowerer()).lowerSnapshot(input,CobolLower.POSITIVE_OPTIONS);
             if(physical instanceof FileLowering.PhysicalFailure failure){err.println("SP "+failure.diagnostic().code());return CobolLower.INPUT;}
             var lowered=(FileLowering.Lowered)physical;var result=lowered.result();
             if(result.publication().isEmpty()){err.println("Lowering "+result.status());return CobolLower.LOWERING;}

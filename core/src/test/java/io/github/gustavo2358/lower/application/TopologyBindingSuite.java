@@ -44,6 +44,8 @@ public final class TopologyBindingSuite {
     }
     public static int run(){
         var f=fixture();var t=f.build();var binder=new TopologyBinding(t);int n=0;
+        need(binder.resolveShared(complete("A")).kind()==TargetKind.COMPLETE&&binder.resolveShared(complete("A")).reference().equals("A/end"),"shared completion preserves boundary before ordinary default");n++;
+        need(binder.resolveShared(target(TargetKind.REGION_ENTRY,"B")).reference().equals("b"),"shared entry resolves published region reference");n++;
         need(binder.resolve(complete("A"),null).reference().equals("b"),"ordinary completion follows default");n++;
         need(binder.resolve(complete("A"),binder.binding("invoke1")).kind()==TargetKind.COMPLETE,"single region returns at endpoint");n++;
         need(binder.resolve(complete("A"),binder.binding("invoke2")).reference().equals("b"),"THRU intermediate A must not return");n++;

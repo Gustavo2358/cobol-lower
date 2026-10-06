@@ -26,7 +26,7 @@ final class HandlerStateAnalyzer {
     private final Map<String,String> registrationTargets=new HashMap<>();
     private final Map<String,Context> contexts=new HashMap<>();
     private final Map<String,Map<String,ControlTopology.Phase>> phases=new HashMap<>();
-    private final Set<Node> reached=new HashSet<>();
+    private final Map<Node,Node> reached=new HashMap<>();
     private final ArrayDeque<Node> work=new ArrayDeque<>();
     private final Set<Derivation> derivations=new HashSet<>();
     private final Set<Frontier> frontiers=new HashSet<>();
@@ -78,10 +78,10 @@ final class HandlerStateAnalyzer {
             if(s instanceof CicsAbendFact a)events.add(assess(a,states));
         }
         return new HandlerStateAnalysis(input.unit(),List.copyOf(targets.values()),operations,events,
-            ordered(reached,HandlerStateAnalyzer::nodeKey),ordered(derivations,HandlerStateAnalyzer::derivationKey),
+            ordered(reached.keySet(),HandlerStateAnalyzer::nodeKey),ordered(derivations,HandlerStateAnalyzer::derivationKey),
             ordered(frontiers,f->nodeKey(f.source())+"/"+f.authority()+"/"+f.reference()),
             new Metrics(topology.occurrences().size(),topology.outcomes().size()+topology.bindings().stream().flatMap(b->b.phases().stream()).mapToLong(p->p.edges().size()).sum(),
-                operations.size(),targets.size(),reached.stream().map(n->n.support().state()).distinct().count(),contexts.size(),pops,reached.size(),joins,maxAtPoint),
+                operations.size(),targets.size(),reached.keySet().stream().map(n->n.support().state()).distinct().count(),contexts.size(),pops,reached.size(),joins,maxAtPoint),
             ordered(selections,x->x.event()+"/"+nodeKey(x.source())));
     }
     private void catalog(CicsHandlerFact h) {
@@ -233,7 +233,7 @@ final class HandlerStateAnalyzer {
                 // The subscriber itself provides the final edge of the cycle.
                 if(!descendants.contains(subscriber.caller().context()))continue;
                 var entry=new Node(callee.id(),"PHASE/"+callee.binding().entryPhase(),subscriber.caller().support());
-                if(!reached.contains(entry))continue;
+                if(!reached.containsKey(entry))continue;
                 insert(new Node(callee.id(),"PHASE/RESUME",ConditionExecutionState.open(unknown(Cause.SOURCE_REENTRY_UNDEFINED).withConditions(subscriber.caller().support().conditions()).withRestorations(subscriber.caller().support().restorations()))),
                     Optional.of(subscriber.caller()),Optional.of(entry),callee.binding().id()+"/SOURCE_REENTRY_POSSIBILITY",
                     List.of(reentryProof(callee.binding().id())));
@@ -286,8 +286,9 @@ final class HandlerStateAnalyzer {
         }
     }
     private void insert(Node node,Optional<Node> source,Optional<Node> caller,String authority,List<String> proofs) {
-        joins++;derivations.add(new Derivation(source,node,caller,authority,merge(proofs,List.of())));
-        if(reached.add(node)) {work.addLast(node);maxAtPoint=Math.max(maxAtPoint,pointCounts.merge(node.context()+"/"+node.location(),1,Integer::sum));}
+        joins++;var existing=reached.putIfAbsent(node,node);var canonical=existing==null?node:existing;
+        derivations.add(new Derivation(source,canonical,caller,authority,merge(proofs,List.of())));
+        if(existing==null) {work.addLast(canonical);maxAtPoint=Math.max(maxAtPoint,pointCounts.merge(canonical.context()+"/"+canonical.location(),1,Integer::sum));}
     }
     private Event assess(CicsAbendFact event,List<Support> states) {
         boolean bypass=event.dispatchEligibility()==CicsAbendEligibility.HANDLERS_BYPASSED;

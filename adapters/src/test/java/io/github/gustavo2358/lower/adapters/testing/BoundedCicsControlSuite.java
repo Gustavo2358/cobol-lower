@@ -100,7 +100,7 @@ public final class BoundedCicsControlSuite {
                 if(expectedDestinations.contains(next.label()))destinationsForContext.add(next.label());
                 else {
                     var term=seqs.get(next.label()).terminator();
-                    need(term instanceof Operations.LocalResume||term instanceof Operations.Jump,"route contains only completion operations");
+                    need(term instanceof Operations.LocalResume||term instanceof Operations.LocalBoundary||term instanceof Operations.Jump,"route contains only completion operations");
                     pending.addAll(LocalControlOracle.successors(next,seqs));
                 }
             }

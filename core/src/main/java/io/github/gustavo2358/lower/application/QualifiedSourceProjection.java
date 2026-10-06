@@ -21,6 +21,7 @@ public final class QualifiedSourceProjection {
         var nodes=new ArrayList<Node>();var derivations=new ArrayList<Derivation>();var selections=new ArrayList<Selection>();
         var targets=new ArrayList<Target>();var events=new ArrayList<Event>();var guards=new ArrayList<Guard>();var proofs=new ArrayList<Proof>();var frontiers=new ArrayList<Frontier>();
         var nodeIds=new HashMap<HandlerStateAnalysis.Node,String>();
+        var supportOwners=new HashMap<HandlerStateAnalysis.Support,Support>();
         var eventGuards=new HashMap<String,List<String>>();
         if(topology.isPresent()) {
             var t=topology.orElseThrow();
@@ -39,13 +40,13 @@ public final class QualifiedSourceProjection {
                 var caller=input.statements().stream().filter(s->s.header().id().handle().equals(b.caller())).findFirst().orElseThrow();
                 proofs.add(new Proof(HandlerStateAnalyzer.reentryProof(b.id()),"CONTROL_POSSIBILITY","undefined-active-reentry-may-complete",origin(caller.header().provenance()),b.proofs()));
             }
-            for(var n:a.nodes()){var id="node:"+nodes.size();nodeIds.put(n,id);nodes.add(new Node(id,n.context(),n.location(),support(n.support())));}
+            for(var n:a.nodes()){var id="node:"+nodes.size();nodeIds.put(n,id);nodes.add(new Node(id,n.context(),n.location(),supportOwners.computeIfAbsent(n.support(),QualifiedSourceProjection::support)));}
             for(var t:a.targets())targets.add(new Target(t.id(),t.form().name(),t.entry().stream().map(QualifiedSourceProjection::id).toList(),
                 t.registrations().stream().map(r->new Registration(id(r.statement()),origin(r.statementOrigin()),origin(r.operandOrigin()))).toList(),operands(t.program()),values(t.program())));
             var selectedDerivations=new HashMap<HandlerStateAnalysis.Derivation,String>();
             for(var s:a.selections()) {
                 var id="selection:"+selections.size();
-                selections.add(new Selection(id,s.event(),nodeIds.get(s.source()),s.target().stream().toList(),s.stateOnEntry().stream().map(QualifiedSourceProjection::support).toList(),s.localEntry().stream().map(nodeIds::get).toList(),eventGuards.get(s.event()),s.proofs(),s.unknownLocalRemainder(),s.localInactivePossible(),s.outerLevelRemainder(),s.bypassed()));
+                selections.add(new Selection(id,s.event(),nodeIds.get(s.source()),s.target().stream().toList(),s.stateOnEntry().stream().map(value->supportOwners.computeIfAbsent(value,QualifiedSourceProjection::support)).toList(),s.localEntry().stream().map(nodeIds::get).toList(),eventGuards.get(s.event()),s.proofs(),s.unknownLocalRemainder(),s.localInactivePossible(),s.outerLevelRemainder(),s.bypassed()));
                 s.localEntry().ifPresent(entry->selectedDerivations.put(new HandlerStateAnalysis.Derivation(Optional.of(s.source()),entry,Optional.empty(),s.event()+"/SELECT/"+s.target().orElseThrow(),s.proofs()),id));
             }
             for(var d:a.derivations())derivations.add(new Derivation("derivation:"+derivations.size(),d.source().stream().map(nodeIds::get).toList(),nodeIds.get(d.destination()),d.callerPremise().stream().map(nodeIds::get).toList(),d.authority(),d.proofs(),Optional.ofNullable(selectedDerivations.get(d)).stream().toList()));

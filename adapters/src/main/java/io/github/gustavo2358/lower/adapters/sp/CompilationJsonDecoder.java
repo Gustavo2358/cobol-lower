@@ -15,12 +15,17 @@ public final class CompilationJsonDecoder {
         mapper=JsonMapper.builder(JsonFactory.builder().enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION).streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(limits.maxDepth()).maxStringLength(Integer.MAX_VALUE).maxNumberLength(Integer.MAX_VALUE).build()).build()).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();unitDecoder=new SpJsonDecoder(limits);
     }
     public Result decode(byte[] bytes){
+        if(bytes==null)return reject(SpJsonDecoder.Code.INPUT_ERROR,"compilation shape");
+        return decodeStream(new java.io.ByteArrayInputStream(bytes));
+    }
+    public Result decodeStream(java.io.InputStream stream){return decodeStream(stream,(schema,version)->{});}
+    Result decodeStream(java.io.InputStream stream,java.util.function.BiConsumer<String,String> identity){
         try {
-            if(bytes==null)throw new IllegalArgumentException("null bytes");
-            java.nio.charset.StandardCharsets.UTF_8.newDecoder().onMalformedInput(java.nio.charset.CodingErrorAction.REPORT).onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT).decode(java.nio.ByteBuffer.wrap(bytes));
-            var root=mapper.readTree(bytes);if(root==null||!root.isObject())throw new IllegalArgumentException("object required");
+            if(stream==null)throw new IllegalArgumentException("null input");
+            var root=mapper.readTree(Utf8JsonInput.reader(stream));if(root==null||!root.isObject())throw new IllegalArgumentException("object required");
+            identity.accept(root.path("schema").asText(),root.path("contractVersion").asText());
             if(!root.path("schema").asText().equals("cobol-semantic-compilation")){
-                var decoded=unitDecoder.decode(bytes);return decoded instanceof SpJsonDecoder.Decoded d?new Single(d.input()):new Rejected(((SpJsonDecoder.Rejected)decoded).diagnostic());
+                var decoded=unitDecoder.decodeNode(root);return decoded instanceof SpJsonDecoder.Decoded d?new Single(d.input()):new Rejected(((SpJsonDecoder.Rejected)decoded).diagnostic());
             }
             keys(root,"schema","contractVersion","inventoryStatus","unitInventory","units");
             if(!text(root.get("contractVersion")).equals("1.0.0"))return reject(SpJsonDecoder.Code.UNSUPPORTED_CONTRACT,"compilation version");
@@ -28,7 +33,7 @@ public final class CompilationJsonDecoder {
             var units=new ArrayList<SpCompilation.UnitProduct>();
             for(var u:array(root.get("units"))){
                 keys(u,"product","parent","ownedData","globalData","dataCaptures","fileCaptures");
-                var decoded=unitDecoder.decode(mapper.writeValueAsBytes(u.get("product")));
+                var decoded=unitDecoder.decodeNode(u.get("product"));
                 if(decoded instanceof SpJsonDecoder.Rejected r)return new Rejected(r.diagnostic());var input=((SpJsonDecoder.Decoded)decoded).input();
                 var owned=dataIds(input.unit(),u.get("ownedData"));var globals=dataIds(input.unit(),u.get("globalData"));
                 var captures=new ArrayList<SpCompilation.DataCapture>();for(var c:array(u.get("dataCaptures"))){

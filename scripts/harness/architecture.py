@@ -115,7 +115,7 @@ def output_boundary_errors(root):
         if "package io.github.gustavo2358.air." in text:
             errors.append("ARCH_AIR_OUTPUT upstream package ownership: " + str(path))
     for path in (root / "adapters/target/classes").rglob("*.class"):
-        if "/adapters/sp/" in path.as_posix() or ("/adapters/source/" in path.as_posix() and path.name in {"QualifiedSourceJson.class", "QualifiedSourceFileOutput.class", "DependencyInputFileOutput.class"}):
+        if "/adapters/sp/" in path.as_posix() or ("/adapters/source/" in path.as_posix() and path.name in {"QualifiedSourceJson.class", "QualifiedSourceJson$Element.class", "QualifiedSourceFileOutput.class", "DependencyInputFileOutput.class"}):
             continue
         result = subprocess.run(["javap", "-v", "-p", str(path)], text=True, capture_output=True)
         if result.returncode:
