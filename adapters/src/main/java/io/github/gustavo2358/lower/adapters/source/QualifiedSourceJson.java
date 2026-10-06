@@ -11,6 +11,7 @@ import io.github.gustavo2358.lower.source.QualifiedSourceDependencies.*;
 /** Closed v1 codec with explicit field mapping; no polymorphic/bean deserialization. */
 public final class QualifiedSourceJson {
     private final ObjectMapper mapper=JsonMapper.builder(JsonFactory.builder().enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION).build()).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
+    private final ObjectReader elementReader=mapper.reader().without(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
     public QualifiedSourceDependencies decode(byte[] bytes) throws IOException {
         return decode(new ByteArrayInputStream(bytes));
     }
@@ -34,8 +35,15 @@ public final class QualifiedSourceJson {
         }
         return List.copyOf(result);
     }
+    private <T> void rows(JsonParser parser,Element<T> element,java.util.function.Consumer<T> append)throws IOException {
+        if(parser.currentToken()!=JsonToken.START_ARRAY)throw new IllegalArgumentException("array required");
+        while(parser.nextToken()!=JsonToken.END_ARRAY) {
+            if(parser.currentToken()==null)throw new EOFException("unfinished source inventory");
+            append.accept(element.read(parser));
+        }
+    }
     private JsonNode tree(JsonParser parser)throws IOException {
-        return mapper.reader().without(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).readTree(parser);
+        return elementReader.readTree(parser);
     }
     private QualifiedSourceDependencies readSourceStream(JsonParser parser)throws IOException {
         String schema=null,version=null,producer=null;Document source=null;
@@ -65,8 +73,8 @@ public final class QualifiedSourceJson {
         List<Statement> statements=null;
         List<Occurrence> occurrences=null;
         List<Target> targets=null;
-        List<Node> nodes=null;
-        List<Derivation> derivations=null;
+        var inventory=new io.github.gustavo2358.lower.source.SourceInventories.Builder();
+
         List<Selection> selections=null;
         List<Event> events=null;
         List<Guard> guards=null;
@@ -85,8 +93,8 @@ public final class QualifiedSourceJson {
                 case "statements" -> statements=array(parser,p->readStatement(tree(p)));
                 case "occurrences" -> occurrences=array(parser,p->readOccurrence(tree(p)));
                 case "targets" -> targets=array(parser,p->readTarget(tree(p)));
-                case "nodes" -> nodes=array(parser,p->readNode(tree(p)));
-                case "derivations" -> derivations=array(parser,p->readDerivation(tree(p)));
+                case "nodes" -> rows(parser,p->readNode(tree(p)),inventory::addNode);
+                case "derivations" -> rows(parser,p->readDerivation(tree(p)),inventory::addDerivation);
                 case "selections" -> selections=array(parser,p->readSelection(tree(p)));
                 case "events" -> events=array(parser,p->readEvent(tree(p)));
                 case "guards" -> guards=array(parser,p->readGuard(tree(p)));
@@ -97,7 +105,8 @@ public final class QualifiedSourceJson {
         }
         fields.removeAll(Set.of("nominalValues","nativeFiles"));
         if(!fields.equals(Set.of("unit","controlAvailable","statements","occurrences","targets","nodes","derivations","selections","events","guards","proofs","frontiers")))throw new IllegalArgumentException("closed source evidence fields");
-        return new UnitEvidence(unit,controlAvailable,statements,occurrences,targets,nodes,derivations,selections,events,guards,proofs,frontiers,nominalValues,nativeFiles);
+        var owned=inventory.build();
+        return new UnitEvidence(unit,controlAvailable,statements,occurrences,targets,owned.nodes(),owned.derivations(),selections,events,guards,proofs,frontiers,nominalValues,nativeFiles);
     }
     public byte[] encode(QualifiedSourceDependencies value) throws IOException {return mapper.writeValueAsBytes(value(value));}
     /** Stream exactly the legacy mapping; the caller retains output ownership. */

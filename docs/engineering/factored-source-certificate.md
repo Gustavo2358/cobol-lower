@@ -1,7 +1,7 @@
 # Lossless factored source certificate — design before implementation
 
-Status: internal column owner being implemented and qualified in the consumer;
-producer conversion remains pending. No general closeout claim.
+Status: shared internal column owner implemented in producer and consumer;
+qualification and final performance comparisons pending. No general closeout claim.
 
 The R7 source certificate is a finite typed AND/OR graph. Sharing source bodies in
 AIR does not make source binding contexts equivalent. Source value transfer can

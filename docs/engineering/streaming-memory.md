@@ -116,3 +116,34 @@ fields, reject extra/duplicate/truncated/trailing input and test stream ownershi
 The bytecode boundary admits the codec's private `QualifiedSourceJson$Element`
 parser callback beside its existing codec owner. No output adapter gains AIR JSON
 serialization authority. The malicious AIR-Jackson challenge stays denied.
+
+## Lossless owned column inventories
+
+A unit-local builder copies every logical tuple into primitive ordinal columns,
+with dictionaries of exact equal immutable strings, supports and proof lists.
+Node and derivation rows are correlated by their original ordinal, not by a
+Cartesian product. All opaque IDs are retained verbatim; no prefix or source
+name has semantic significance. Freezing severs all builder aliases and lookup
+maps. The only immutable views exempt from List.copyOf are private final owner
+classes created by this factory; arbitrary caller lists are still copied.
+
+The expansion bijection is get(i) == the original record at i. Shared values use
+full equality including context, support, source, caller, proof alternatives and
+selection. No graph fact is removed; all closed-wire and grounding validation
+runs on the same expansion. Decoder builds one row per admitted element, in any
+field order, and retains no expanded history. Builder is one-shot. Overflow or
+invalid input fails admission. get is O(1); build and dictionary admission are
+expected O(N+D+tuple payload), owned storage O(unique values + column cells),
+with an O(unique values) temporary dictionary. Validation remains O(N+D) work
+and scratch. Unique facts remain intrinsically proportional to their size.
+
+Independent tests compare arbitrary IDs, equal/different supports and caller
+premises to manually authored records, reject ungrounded/foreign references as
+before, mutate input lists after freeze, attempt view mutation and builder reuse,
+and compare every legacy transport byte and result. Large profiles use identical
+logical inventories and observations, not a smaller graph.
+
+Projection demand only filters its private inverted qualification index to locations
+used by published dependency occurrences and native file uses. All source nodes,
+derivations, proofs and branches remain in the certificate; every observed location
+retains the same full qualification list. This removes an unused index, not facts.
