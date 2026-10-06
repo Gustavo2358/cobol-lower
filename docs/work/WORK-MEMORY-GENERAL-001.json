@@ -8,5 +8,5 @@
     "independent control/dependency preservation and performance qualification",
     "exact cross-repository pins"
   ],
-  "notes": " Final local qualification is in progress. Human review and merge remain pending; source checkpoints do not mark DONE."
+  "notes": " Final local qualification is in progress. Human review and merge remain pending; source checkpoints do not mark DONE. Review F2: real admitted 10,000-empty-region chain; explicit pending boundary stack preserves full ports/defaults/proofs and depth-first emission. New review validation and exact downstream repin are recorded separately from prior qualification."
 }

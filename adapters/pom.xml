@@ -20,6 +20,8 @@
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.StorageBoundarySuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution><execution><id>incomplete-file-effects-suite</id><phase>test</phase><goals><goal>java</goal></goals>
       <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.IncompleteFileEffectsSuite</mainClass><classpathScope>test</classpathScope></configuration>
+    </execution><execution><id>empty-boundary-chain-suite</id><phase>test</phase><goals><goal>java</goal></goals>
+      <configuration><mainClass>io.github.gustavo2358.lower.adapters.testing.EmptyBoundaryChainSuite</mainClass><classpathScope>test</classpathScope></configuration>
     </execution></executions>
   </plugin></plugins></build>
 </project>

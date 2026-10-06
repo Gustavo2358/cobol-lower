@@ -133,6 +133,9 @@ final class TopologyProgramAssembler {
     private LabelId boundDestination(Target target,Context context,SpInput.StatementFact fact,String role) {
         if(target.kind()==TargetKind.ESCAPE)return compactEscape(target,context,fact,role);
         var r=context.frame()==FrameKind.BODY?topology.resolveShared(target):topology.resolve(target,context.binding(),context.handler());
+        return resolvedDestination(r,context,fact,role);
+    }
+    private LabelId resolvedDestination(TopologyBinding.Resolved r,Context context,SpInput.StatementFact fact,String role) {
         if(r.kind()==TargetKind.OCCURRENCE) {
             work.addLast(context.at(r.reference()));
             return label(r.reference(),context.ids());
@@ -436,18 +439,31 @@ final class TopologyProgramAssembler {
     private CompletionPortId completionPort(String boundary) {
         return new CompletionPortId(unit,occurrenceIds.id("completion-port","topology-boundary",unit.localId(),boundary));
     }
+    private record PendingBoundary(TopologyBinding.Resolved boundary,LabelId label,OriginId origin,OperationId operation) { }
     private LabelId compactBoundary(TopologyBinding.Resolved boundary,Context body,SpInput.StatementFact fact) {
-        var at=new LabelId(unit,body.ids().id("label","shared-boundary",unit.localId(),boundary.reference()));
-        if(synthetic.add(at)) {
+        var pending=new ArrayDeque<PendingBoundary>();
+        LabelId next;
+        while(true) {
+            var at=new LabelId(unit,body.ids().id("label","shared-boundary",unit.localId(),boundary.reference()));
+            if(!synthetic.add(at)){next=at;break;}
             var origin=evidence("shared-boundary/"+boundary.reference(),boundary.proofs(),body.ids());
             var op=new OperationId(unit,body.ids().id("operation","shared-boundary",unit.localId(),boundary.reference()));
-            var next=boundDestination(topology.boundary(boundary.reference()).ordinaryDefault(),body,fact,"boundary-default/"+boundary.reference());
-            if(body.support()!=null)publishReturn(returnGroup(body,"body/"+boundary.reference()),new ReturnSignal(body.support(),null,""));
-            var term=new Operations.LocalBoundary(new Operations.Header(op,origin,Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(op),List.of()),
-                completionPort(boundary.reference()),next,LocalActivationFrames.fallback(unit),Optional.ofNullable(body.support()).map(this::resumeKey));
-            sequences.add(new Sequence(at,List.of(),term,origin));PartialProgramAssembler.link(fact.header().id(),term,at,links,items);
+            pending.addLast(new PendingBoundary(boundary,at,origin,op));
+            var target=topology.boundary(boundary.reference()).ordinaryDefault();
+            var resolved=topology.resolveShared(target);
+            if(resolved.kind()==TargetKind.COMPLETE){boundary=resolved;continue;}
+            next=resolvedDestination(resolved,body,fact,"boundary-default/"+boundary.reference());break;
         }
-        return at;
+        // Preserve depth-first emission without a Java call frame per empty region.
+        while(!pending.isEmpty()) {
+            var saved=pending.removeLast();
+            if(body.support()!=null)publishReturn(returnGroup(body,"body/"+saved.boundary().reference()),new ReturnSignal(body.support(),null,""));
+            var term=new Operations.LocalBoundary(new Operations.Header(saved.operation(),saved.origin(),Evidence.CoverageStatus.MODELED,ScalarEvidence.assign(saved.operation()),List.of()),
+                completionPort(saved.boundary().reference()),next,LocalActivationFrames.fallback(unit),Optional.ofNullable(body.support()).map(this::resumeKey));
+            sequences.add(new Sequence(saved.label(),List.of(),term,saved.origin()));PartialProgramAssembler.link(fact.header().id(),term,saved.label(),links,items);
+            next=saved.label();
+        }
+        return next;
     }
     private Terminator compactResume(Context context,String kind,SpInput.StatementFact fact,OriginId origin) {
         var op=new OperationId(unit,context.ids().id("operation","compact-resume",unit.localId(),kind));

@@ -54,3 +54,20 @@ caller's proof to this path. Proof inventory, invocation origin closure and sour
 state derivation remain published; sharing never removes a causal marker. This
 changes representation ownership, and reviewers must assess it alongside full
 consumer provenance/support comparisons before closure.
+# Long ordinary-default boundary chains (review F2, pre-code)
+
+An admitted finite chain of empty regions may cross arbitrarily many completion
+boundaries without language nesting or recursive PERFORM. Materialization must
+not use a Java call frame per default boundary. An explicit pending stack reserves
+each full boundary identity and evidence on descent, resolves the non-boundary
+tail, then emits each saved boundary on ascent. This preserves the previous
+depth-first sequence/link order, every port/default/proof, and top-frame return
+selection. Pending ownership is O(chain length), Java stack depth is constant
+with respect to that chain, and finite inventory plus existing identity
+deduplication establish termination. No larger Xss or cardinality cutoff.
+
+The independent oracle follows every emitted default with no semantic builder
+internals, checks distinct caller returns at the final port, evidence and
+inventory-permutation determinism. The real admitted SP/lower path is exercised
+with 100 and 10,000 empty regions at Xss1m; neighboring shared PERFORM/CICS laws
+remain mandatory.
