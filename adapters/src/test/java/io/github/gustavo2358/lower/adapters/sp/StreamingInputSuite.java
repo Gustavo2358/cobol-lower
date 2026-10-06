@@ -10,7 +10,16 @@ public final class StreamingInputSuite {
         @Override public void close(){closed=true;}
     }
     private static void require(boolean value,String message){if(!value)throw new AssertionError(message);}
+    private record Payload(String id,String facts) {
+        @Override public int hashCode(){throw new AssertionError("whole payload hash required");}
+    }
     public static void main(String[] args)throws Exception {
+        int[] mappings={0};var owned=new ParagraphMemo<String,Payload,Object>(Payload::id,p->{mappings[0]++;return new Object();});
+        var canonical=owned.get(new Payload("Aa","first"));
+        require(canonical==owned.get(new Payload("Aa","first")),"equal payload not shared");
+        require(canonical!=owned.get(new Payload("BB","first")),"colliding identities merged");
+        require(canonical!=owned.get(new Payload("Aa","changed proof")),"same identity hid a different payload");
+        require(mappings[0]==3,"duplicate or omitted translation");
         var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
         String paragraph="{\"id\":\"Aa\",\"entry\":\"e\",\"statements\":[\"e\"],\"completions\":[\"e\"],\"provenance\":{\"exact\":true}}";
         var rows=new ArrayList<String>();for(int i=0;i<40;i++)rows.add("{\"variant\":\"PERFORM_PROCEDURE\",\"procedures\":["+paragraph+"]}");
@@ -23,6 +32,10 @@ public final class StreamingInputSuite {
         var second=SharedSpTree.read(mapper,new StringReader(different));
         require(second.equals(mapper.readTree(different)),"distinct payload lost");
         require(second.path("statements").get(0).path("procedures").get(0)!=second.path("statements").get(1).path("procedures").get(0),"hash collision merged different identity");
+        var sameIdPhysical=physical.replaceFirst("true","false");
+        var sameIdTree=SharedSpTree.read(mapper,new StringReader(sameIdPhysical));
+        require(sameIdTree.equals(mapper.readTree(sameIdPhysical)),"same identity different full payload changed facts");
+        require(sameIdTree.path("statements").get(0).path("procedures").get(0)!=sameIdTree.path("statements").get(1).path("procedures").get(0),"identity-only sharing hid a proof variant");
         var dtoMapper=new com.fasterxml.jackson.databind.ObjectMapper().registerModule(new ParagraphDtoSharing())
             .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
             .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -33,6 +46,9 @@ public final class StreamingInputSuite {
         var descriptors=dtoMapper.readValue(dtoBytes,Wire211.PerformParagraphDocument[].class);
         require(descriptors.length==2&&descriptor.equals(descriptors[0])&&descriptor.equals(descriptors[1]),"typed descriptor facts changed");
         require(descriptors[0]==descriptors[1],"typed descriptor retained repeatedly");
+        var variant=new Wire211.PerformParagraphDocument("opaque","entry",List.of("entry","other"),List.of("other"),origin);
+        var variants=dtoMapper.readValue(dtoMapper.writeValueAsBytes(List.of(descriptor,variant,descriptor)),Wire211.PerformParagraphDocument[].class);
+        require(variants[0]!=variants[1]&&variants[0]==variants[2]&&variant.equals(variants[1]),"same-ID typed variants were merged or duplicate ownership returned");
         var missing=dtoMapper.valueToTree(descriptor);((com.fasterxml.jackson.databind.node.ObjectNode)missing).remove("entry");
         boolean missingRejected=false;
         try{dtoMapper.readValue(dtoMapper.writeValueAsBytes(List.of(descriptor,missing)),Wire211.PerformParagraphDocument[].class);}

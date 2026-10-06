@@ -1131,7 +1131,7 @@ final class Materialize {
     }
     static SpInput input(Wire211.Document d) {
         var unit = unitKey(d.unit(), null);
-        var paragraphs=new java.util.HashMap<Wire211.PerformParagraphDocument,PerformParagraph>();
+        var paragraphs=new ParagraphMemo<String,Wire211.PerformParagraphDocument,PerformParagraph>(Wire211.PerformParagraphDocument::id,key->new PerformParagraph(new ProcedureId(unit,key.id()),new StatementId(unit,key.entry()),key.statements().stream().map(id->new StatementId(unit,id)).toList(),key.completions().stream().map(id->new StatementId(unit,id)).toList(),provenance(key.provenance(),unit)));
         return new SpInput(unit, policy(d.policy(), unit), d.dataDeclarations().stream().map(v -> {
             var scalar = Optional.ofNullable(v.scalarText()).map(t -> new ScalarText(t.logicalDomain(), t.logicalExtent(), t.storageClass(), t.declarationScope()));
             return new DataFact(new DataId(unit, v.id()), v.canonicalName(), Optional.ofNullable(v.picture()),
@@ -1139,7 +1139,7 @@ final class Materialize {
         }).toList(), d.statements().stream().map(v -> statement(v, unit,paragraphs)).toList(), structure(d.structure(), unit),
             d.gaps().stream().map(v -> gap(v, unit)).toList(), coverage(d.coverage(), unit), entryInventory(d.entryInventory(), unit), Optional.of(storage(d.storageIndependence(), unit)), true, Optional.of(physicalStorage(d.storage(),unit)));
     }
-    private static StatementFact statement(Wire211.StatementDocument value, UnitKey unit,java.util.Map<Wire211.PerformParagraphDocument,PerformParagraph> paragraphs) {
+    private static StatementFact statement(Wire211.StatementDocument value, UnitKey unit,ParagraphMemo<String,Wire211.PerformParagraphDocument,PerformParagraph> paragraphs) {
         var h = statementHeader(value.header(), unit);
         return switch (value) {
             case Wire211.ConditionalGoToDocument v -> new ConditionalGoToFact(h,Optional.ofNullable(v.selector()).map(r->reference(r,h.id(),unit)),
@@ -1165,8 +1165,7 @@ final class Materialize {
             case Wire211.ProcedurePerformDocument v -> new ProcedurePerformFact(h,
                 Optional.ofNullable(v.start()).map(t->new PerformTarget(new ProcedureId(unit,t.id()),provenance(t.referenceOrigin(),unit),provenance(t.paragraphOrigin(),unit))),
                 Optional.ofNullable(v.end()).map(t->new PerformTarget(new ProcedureId(unit,t.id()),provenance(t.referenceOrigin(),unit),provenance(t.paragraphOrigin(),unit))),
-                v.procedures().stream().map(r->paragraphs.computeIfAbsent(r,key->new PerformParagraph(new ProcedureId(unit,key.id()),new StatementId(unit,key.entry()),
-                    key.statements().stream().map(id->new StatementId(unit,id)).toList(),key.completions().stream().map(id->new StatementId(unit,id)).toList(),provenance(key.provenance(),unit)))).toList(),
+                v.procedures().stream().map(paragraphs::get).toList(),
                 continuation(v.normalContinuation(),unit),Optional.ofNullable(v.loop()).map(l->loop(l,h.id(),unit)),Optional.ofNullable(v.times()).map(t->new PerformCount(t.profile(),Optional.ofNullable(t.integer()),Optional.ofNullable(t.reference()).map(ref->reference(ref,h.id(),unit)),provenance(t.provenance(),unit))),Optional.ofNullable(v.varying()).map(x->new PerformVarying(x.levels(),x.controls().stream().map(o->new VaryingOperand(o.level(),o.role(),Optional.ofNullable(o.integer()),o.references().stream().map(ref->reference(ref,h.id(),unit)).toList(),provenance(o.provenance(),unit))).toList(),x.afterLoops().stream().map(l->loop(l,h.id(),unit)).toList())),v.gapCodes());
             case Wire211.PerformDocument v -> new PerformFact(h, v.profile(), Optional.ofNullable(v.target()).map(t ->
                 new PerformTarget(new ProcedureId(unit, t.id()), provenance(t.referenceOrigin(), unit), provenance(t.paragraphOrigin(), unit))),

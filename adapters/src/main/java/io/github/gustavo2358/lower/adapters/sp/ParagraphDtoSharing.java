@@ -23,10 +23,9 @@ final class ParagraphDtoSharing extends SimpleModule {
   @Override public Object deserialize(JsonParser parser,DeserializationContext context)throws IOException {
    Object value=_delegatee.deserialize(parser,context);if(value==null)return null;
    Object attribute=context.getAttribute(ParagraphDtoSharing.class);
-   Map<?,?> known;
-   if(attribute==null){var fresh=new HashMap<Object,Object>();context.setAttribute(ParagraphDtoSharing.class,fresh);fresh.put(value,value);return value;}
-   known=(Map<?,?>)attribute;Object previous=known.get(value);if(previous!=null)return previous;
-   @SuppressWarnings("unchecked") var owned=(Map<Object,Object>)known;owned.put(value,value);return value;
+   if(attribute==null){attribute=new ParagraphMemo<String,Wire211.PerformParagraphDocument,Wire211.PerformParagraphDocument>(Wire211.PerformParagraphDocument::id,java.util.function.Function.identity());context.setAttribute(ParagraphDtoSharing.class,attribute);}
+   @SuppressWarnings("unchecked") var owned=(ParagraphMemo<String,Wire211.PerformParagraphDocument,Wire211.PerformParagraphDocument>)attribute;
+   return owned.get((Wire211.PerformParagraphDocument)value);
   }
  }
 }

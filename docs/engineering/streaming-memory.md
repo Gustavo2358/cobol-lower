@@ -134,7 +134,9 @@ runs on the same expansion. Decoder builds one row per admitted element, in any
 field order, and retains no expanded history. Builder is one-shot. Overflow or
 invalid input fails admission. get is O(1); build and dictionary admission are
 expected O(N+D+tuple payload), owned storage O(unique values + column cells),
-with an O(unique values) temporary dictionary. Validation remains O(N+D) work
+with an O(unique values) temporary dictionary. Snapshots of at most 4096 total
+rows use one immutable expansion with canonical payloads, releasing columns;
+large snapshots retain no expanded rows. Validation remains O(N+D) work
 and scratch. Unique facts remain intrinsically proportional to their size.
 
 Independent tests compare arbitrary IDs, equal/different supports and caller
@@ -177,3 +179,30 @@ compact wire can eliminate repeated disk/parse bytes but is not necessary for
 the memory law; old inputs/versions remain accepted or rejected unchanged.
 Independent physical-tree equality, complete payload retention/permutation and
 provenance differences, historical version/negative suites and N900 qualify it.
+
+## Identity buckets before complete equality (pre-code law)
+
+Full-payload HashMap keys rehash statement/completion membership and provenance
+for every lookup, including unique paragraphs. Retained no-increase performance
+REDs final-01/final-02 justify replacing only this work. Published identity selects
+an owner-local bucket; complete immutable payload equality still decides reuse.
+Same-ID variants, colliding identities and all physical/typed failures remain
+independent. No payload hash is needed. Cost is cheap-key lookup plus unavoidable
+full equality within a bucket; distinct variants can still make buckets large.
+Finite iteration terminates; no cap, source heuristic or semantic omission is used.
+The independent oracle makes full payload hashing throw and checks hand-authored
+equal payloads, same-ID unequal proofs and Aa/BB key collisions.
+
+## Bounded small-snapshot representation law (pre-code)
+
+All tuples are still built in exact primitive columns and canonical dictionaries.
+When a unit snapshot has at most 4096 total node/derivation rows, expand those
+rows once into immutable lists and release the column arrays; repeated consumers
+then reuse immutable records. Above that fixed representation budget, keep only
+columns/dictionaries, with no expanded row cache. This never changes cardinality,
+admission, support/proof/context alternatives, order or wire. Expansion uses the
+canonical dictionaries, so repeated large support/proof payloads are shared, not
+copied per row. Extra row-object overhead is bounded per unit; intrinsic payload
+size is unchanged. Boundary, collision, ownership and full-row equality laws plus
+large constrained-heap qualification are mandatory. This is a physical storage
+choice, not a fixture-specific fast path or an analysis cutoff.
