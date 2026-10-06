@@ -22,7 +22,7 @@ public final class CompilationJsonDecoder {
     Result decodeStream(java.io.InputStream stream,java.util.function.BiConsumer<String,String> identity){
         try {
             if(stream==null)throw new IllegalArgumentException("null input");
-            var root=mapper.readTree(Utf8JsonInput.reader(stream));if(root==null||!root.isObject())throw new IllegalArgumentException("object required");
+            var root=SharedSpTree.read(mapper,Utf8JsonInput.reader(stream));if(root==null||!root.isObject())throw new IllegalArgumentException("object required");
             identity.accept(root.path("schema").asText(),root.path("contractVersion").asText());
             if(!root.path("schema").asText().equals("cobol-semantic-compilation")){
                 var decoded=unitDecoder.decodeNode(root);return decoded instanceof SpJsonDecoder.Decoded d?new Single(d.input()):new Rejected(((SpJsonDecoder.Rejected)decoded).diagnostic());

@@ -65,7 +65,7 @@ public final class AirOutputSuite {
     private static final class CountingFiles extends AirFileOutput.FileOperations {
         int calls;
         @Override Path temporary(Path directory) throws IOException { calls++; return super.temporary(directory); }
-        @Override void write(Path path, byte[] bytes) throws IOException { calls++; super.write(path, bytes); }
+        @Override java.io.OutputStream open(Path path) throws IOException { calls++; return super.open(path); }
         @Override void move(Path source, Path target, CopyOption... options) throws IOException { calls++; super.move(source, target, options); }
         @Override void delete(Path path) throws IOException { calls++; super.delete(path); }
     }
@@ -169,10 +169,15 @@ public final class AirOutputSuite {
         check(!Files.exists(output) && files.calls == 0, "codec failure without old file leaves nothing");
         Files.write(output, old);
         var interrupted = new AirFileOutput(new AirJson(), new AirFileOutput.FileOperations() {
-            @Override void write(Path path, byte[] bytes) throws IOException {
+            @Override java.io.OutputStream open(Path path) throws IOException {
                 check(!path.equals(output), "write occurs in temporary file");
                 check(path.getParent().equals(output.getParent()), "temporary file in destination directory");
-                Files.write(path, Arrays.copyOf(bytes, 17)); throw new IOException("injected partial temporary write");
+                return new java.io.FilterOutputStream(super.open(path)) {
+                    @Override public void write(byte[] bytes, int offset, int length) throws IOException {
+                        out.write(bytes, offset, Math.min(length, 17));
+                        throw new IOException("injected partial temporary write");
+                    }
+                };
             }
         });
         failure(run(new String[]{input.toString(),output.toString()},new EntryGobackLowerer(),interrupted),6,"injected partial temporary write");

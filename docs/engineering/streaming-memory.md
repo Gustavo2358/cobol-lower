@@ -147,3 +147,33 @@ Projection demand only filters its private inverted qualification index to locat
 used by published dependency occurrences and native file uses. All source nodes,
 derivations, proofs and branches remain in the certificate; every observed location
 retains the same full qualification list. This removes an unused index, not facts.
+
+## Publication-owned repeated paragraph payloads
+
+The legacy SP wire repeats complete procedure descriptors inside PERFORM rows.
+The physical reader admits root fields in any order and reads one statement row
+at a time with the existing closed Jackson binding. Before retaining the row,
+its procedure descriptors are interned by full JsonNode equality (all fields,
+provenance, order and unknown fields). These descriptors and their subtrees are
+read-only throughout historical normalization; no reference/binding field is
+normalized inside the closed paragraph descriptor. Unknown shapes remain subject
+to exactly the existing closed DTO rejection. The memo is document-local and
+is discarded before normalization. Compilation unit metadata/order is unchanged.
+
+A contextual deserializer similarly shares full equal typed paragraph DTOs within
+one read. It delegates all coercion, missing/extra/type and record construction
+checks to the existing deserializer before interning. The modern materializer
+shares the resulting immutable typed PerformParagraphs by their complete DTO
+key within a unit. Different origins, entries, statement/completion order or
+fields never share. No source name, range pattern, size threshold or hash-only
+identity is used. Membership lists still retain every binding-to-paragraph relation.
+
+Space follows distinct paragraph payloads plus wire membership cells and the
+largest statement row. Time is linear in wire bytes plus full equality/dictionary
+work; legacy physical wire remains potentially quadratic in source memberships.
+This is a bounded ownership fix without requiring incompatible producer wire.
+The frontend already shares equal immutable paragraph transport owners. A future
+compact wire can eliminate repeated disk/parse bytes but is not necessary for
+the memory law; old inputs/versions remain accepted or rejected unchanged.
+Independent physical-tree equality, complete payload retention/permutation and
+provenance differences, historical version/negative suites and N900 qualify it.

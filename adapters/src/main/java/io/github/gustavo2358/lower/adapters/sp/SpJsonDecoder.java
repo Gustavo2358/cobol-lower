@@ -58,6 +58,7 @@ public final class SpJsonDecoder {
             .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
             .enable(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
+        mapper.registerModule(new ParagraphDtoSharing());
         // ALLOW_COERCION_OF_SCALARS does not by itself forbid scalar -> String.
         for (var shape : List.of(CoercionInputShape.Integer, CoercionInputShape.Float, CoercionInputShape.Boolean))
             mapper.coercionConfigFor(LogicalType.Textual).setCoercion(shape, CoercionAction.Fail);
@@ -84,7 +85,7 @@ public final class SpJsonDecoder {
         return decodeStream(input,new Meter());
     }
     private Result decodeStream(java.io.InputStream input,Meter meter) {
-        try {return decodeNode(mapper.readTree(Utf8JsonInput.reader(input)),meter);}
+        try {return decodeNode(SharedSpTree.read(mapper,Utf8JsonInput.reader(input)),meter);}
         catch(StreamConstraintsException ex){return reject(Code.IMPLEMENTATION_LIMIT,"$ limits");}
         catch(JsonProcessingException ex){var at=ex.getLocation();return reject(Code.INPUT_ERROR,at==null?"$ DTO":"line:"+at.getLineNr()+",column:"+at.getColumnNr());}
         catch(CharacterCodingException ex){return reject(Code.INPUT_ERROR,"$ UTF-8");}

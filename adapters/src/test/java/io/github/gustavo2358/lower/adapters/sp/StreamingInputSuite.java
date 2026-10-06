@@ -11,6 +11,33 @@ public final class StreamingInputSuite {
     }
     private static void require(boolean value,String message){if(!value)throw new AssertionError(message);}
     public static void main(String[] args)throws Exception {
+        var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
+        String paragraph="{\"id\":\"Aa\",\"entry\":\"e\",\"statements\":[\"e\"],\"completions\":[\"e\"],\"provenance\":{\"exact\":true}}";
+        var rows=new ArrayList<String>();for(int i=0;i<40;i++)rows.add("{\"variant\":\"PERFORM_PROCEDURE\",\"procedures\":["+paragraph+"]}");
+        String physical="{\"statements\":["+String.join(",",rows)+"],\"other\":42}";
+        var tree=SharedSpTree.read(mapper,new StringReader(physical));
+        require(tree.equals(mapper.readTree(physical)),"physical tree changed");
+        var first=tree.path("statements").get(0).path("procedures").get(0);
+        for(var row:tree.path("statements"))require(row.path("procedures").get(0)==first,"equal paragraph payload retained repeatedly");
+        String different=physical.replaceFirst("Aa","BB");
+        var second=SharedSpTree.read(mapper,new StringReader(different));
+        require(second.equals(mapper.readTree(different)),"distinct payload lost");
+        require(second.path("statements").get(0).path("procedures").get(0)!=second.path("statements").get(1).path("procedures").get(0),"hash collision merged different identity");
+        var dtoMapper=new com.fasterxml.jackson.databind.ObjectMapper().registerModule(new ParagraphDtoSharing())
+            .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
+            .enable(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        var location=new Wire.LocationDocument("synthetic.cbl",1,0,1,4);
+        var origin=new Wire.ProvenanceDocument(location,location,List.of(),true);
+        var descriptor=new Wire211.PerformParagraphDocument("opaque", "entry",List.of("entry","end"),List.of("end"),origin);
+        var dtoBytes=dtoMapper.writeValueAsBytes(List.of(descriptor,descriptor));
+        var descriptors=dtoMapper.readValue(dtoBytes,Wire211.PerformParagraphDocument[].class);
+        require(descriptors.length==2&&descriptor.equals(descriptors[0])&&descriptor.equals(descriptors[1]),"typed descriptor facts changed");
+        require(descriptors[0]==descriptors[1],"typed descriptor retained repeatedly");
+        var missing=dtoMapper.valueToTree(descriptor);((com.fasterxml.jackson.databind.node.ObjectNode)missing).remove("entry");
+        boolean missingRejected=false;
+        try{dtoMapper.readValue(dtoMapper.writeValueAsBytes(List.of(descriptor,missing)),Wire211.PerformParagraphDocument[].class);}
+        catch(com.fasterxml.jackson.databind.JsonMappingException expectedFailure){missingRejected=true;}
+        require(missingRejected,"memo bypassed missing field rejection");
         byte[] raw;
         try(var resource=StreamingInputSuite.class.getResourceAsStream("/sp/cobol-semantic-product.json")){raw=resource.readAllBytes();}
         var decoder=new SpJsonDecoder(new SpJsonDecoder.Limits(64));
